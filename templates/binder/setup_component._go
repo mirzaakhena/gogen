@@ -1,0 +1,15 @@
+package binder
+
+// AppBinder define all framework used in this apps
+type AppBinder struct {
+}
+
+// NewAppBinder setup all the framework or library needded for this apps to be running
+func NewAppBinder() (*AppBinder, error) {
+
+	app := AppBinder{ //
+
+	}
+
+	return &app, nil
+}

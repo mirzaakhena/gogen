@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"io/ioutil"
 	"log"
-	"os"
-	"os/exec"
 	"strings"
 
 	"gopkg.in/yaml.v2"
@@ -24,11 +22,8 @@ func NewUsecase() Generator {
 
 func (d *usecase) Generate(args ...string) error {
 
-	{
-		_, err := os.Stat(".application_schema/")
-		if os.IsNotExist(err) {
-			return fmt.Errorf("please call `gogen init` first")
-		}
+	if IsNotExist(".application_schema/") {
+		return fmt.Errorf("please call `gogen init` first")
 	}
 
 	if len(args) < 3 {
@@ -37,57 +32,41 @@ func (d *usecase) Generate(args ...string) error {
 	usecaseName := args[USECASE_NAME_INDEX]
 
 	// if schema file is not found
-	if _, err := os.Stat(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName)); os.IsNotExist(err) {
-
-		WriteFile(
-			".application_schema/usecases/usecase._yml",
-			fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName),
-			struct{}{},
-		)
-
-		CreateFolder("usecases/%s/inport", strings.ToLower(usecaseName))
-
-		CreateFolder("usecases/%s/interactor", strings.ToLower(usecaseName))
-
-		CreateFolder("usecases/%s/outport", strings.ToLower(usecaseName))
-
-	}
+	WriteFileIfNotExist(
+		".application_schema/usecases/usecase._yml",
+		fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName),
+		struct{}{},
+	)
 
 	tp := ReadYAML(usecaseName)
 
 	WriteFile(
-		"usecases/usecase/inport/inport._go",
-		fmt.Sprintf("usecases/%s/inport/inport.go", usecaseName),
+		"inport/inport._go",
+		fmt.Sprintf("inport/%s.go", usecaseName),
 		tp,
 	)
 
 	WriteFile(
-		"usecases/usecase/outport/outport._go",
-		fmt.Sprintf("usecases/%s/outport/outport.go", usecaseName),
+		"outport/outport._go",
+		fmt.Sprintf("outport/%s.go", usecaseName),
 		tp,
 	)
 
 	// check interactor file. only create if not exist
-	if _, err := os.Stat(fmt.Sprintf("usecases/%s/interactor/interactor.go", usecaseName)); os.IsNotExist(err) {
-
-		WriteFile(
-			"usecases/usecase/interactor/interactor._go",
-			fmt.Sprintf("usecases/%s/interactor/interactor.go", usecaseName),
-			tp,
-		)
-
-	}
+	WriteFileIfNotExist(
+		"interactor/interactor._go",
+		fmt.Sprintf("interactor/%s.go", usecaseName),
+		tp,
+	)
 
 	// check interactor_test file. only create if not exist
-	if _, err := os.Stat(fmt.Sprintf("usecases/%s/interactor/interactor_test.go", usecaseName)); os.IsNotExist(err) {
-		WriteFile(
-			"usecases/usecase/interactor/interactor_test._go",
-			fmt.Sprintf("usecases/%s/interactor/interactor_test.go", usecaseName),
-			tp,
-		)
-	}
+	WriteFileIfNotExist(
+		"interactor/interactor_test._go",
+		fmt.Sprintf("interactor/%s_test.go", usecaseName),
+		tp,
+	)
 
-	goFormat(tp.PackagePath)
+	GoFormat(tp.PackagePath)
 
 	GenerateMock(tp.PackagePath, usecaseName)
 
@@ -176,14 +155,4 @@ type Usecase struct {
 type Variable struct {
 	Name     string
 	Datatype string
-}
-
-func goFormat(path string) {
-	fmt.Println("go fmt")
-	cmd := exec.Command("go", "fmt", fmt.Sprintf("%s/...", path))
-	cmd.Stdout = os.Stdout
-	cmd.Stderr = os.Stderr
-	if err := cmd.Run(); err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
-	}
 }

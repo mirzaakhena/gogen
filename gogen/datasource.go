@@ -2,7 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"os"
 	"strings"
 )
 
@@ -20,15 +19,12 @@ func NewDatasource() Generator {
 
 func (d *datasource) Generate(args ...string) error {
 
-	{
-		_, err := os.Stat(".application_schema/")
-		if os.IsNotExist(err) {
-			return fmt.Errorf("please call `gogen init` first")
-		}
+	if IsNotExist(".application_schema/") {
+		return fmt.Errorf("please call `gogen init` first")
 	}
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define usecase name. ex: `gogen datasource production CreateOrder`")
+		return fmt.Errorf("please define datasource and usecase name. ex: `gogen datasource production CreateOrder`")
 	}
 
 	datasourceName := args[DATASOURCE_NAME_INDEX]
@@ -39,7 +35,7 @@ func (d *datasource) Generate(args ...string) error {
 
 	CreateFolder("datasources/%s", strings.ToLower(datasourceName))
 
-	WriteFile(
+	WriteFileIfNotExist(
 		"datasources/datasource/datasource._go",
 		fmt.Sprintf("datasources/%s/%s.go", datasourceName, usecaseName),
 		tp,

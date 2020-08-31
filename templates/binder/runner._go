@@ -1,0 +1,8 @@
+package binder
+
+// Run will setup anything that need to run the apps
+// for example run the router or consumer or grpc server
+// an also prepare for the gracefully shutdown
+func (a *AppBinder) Run() {
+
+}

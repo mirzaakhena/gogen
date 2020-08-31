@@ -33,6 +33,15 @@ func GetPackagePath() string {
 	return x[1]
 }
 
+func WriteFileIfNotExist(templateFile, outputFile string, data interface{}) error {
+
+	if IsNotExist(outputFile) {
+		return WriteFile(templateFile, outputFile, data)
+	}
+
+	return nil
+}
+
 func WriteFile(templateFile, outputFile string, data interface{}) error {
 
 	var buffer bytes.Buffer
@@ -142,8 +151,23 @@ func GenerateMock(packagePath, usecaseName string) {
 		"mockery", "-all",
 		// "-case", "snake",
 		"-output", "datasources/mocks/",
-		"-dir", fmt.Sprintf("usecases/%s/outport/", strings.ToLower(usecaseName)))
+		"-dir", "outport/")
 
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+}
+
+func IsNotExist(fileOrDir string) bool {
+	_, err := os.Stat(fileOrDir)
+	return os.IsNotExist(err)
+}
+
+func GoFormat(path string) {
+	fmt.Println("go fmt")
+	cmd := exec.Command("go", "fmt", fmt.Sprintf("%s/...", path))
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {

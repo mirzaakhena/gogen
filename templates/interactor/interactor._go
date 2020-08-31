@@ -3,8 +3,8 @@ package interactor
 import (
 	"context"
 
-	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/inport"
-	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/outport"
+	"{{.PackagePath}}/inport"
+	"{{.PackagePath}}/outport"
 )
 
 // New{{PascalCase .Name}}Inport ...

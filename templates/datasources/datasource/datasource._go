@@ -3,7 +3,7 @@ package production
 import (
 	"context"
 
-	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/outport"
+	"{{.PackagePath}}/outport"
 )
 
 // New{{PascalCase .Name}} ...

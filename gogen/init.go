@@ -11,11 +11,11 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder(".application_schema/usecases")
 
-	CreateFolder(".application_schema/models")
+	// CreateFolder(".application_schema/models")
 
-	CreateFolder(".application_schema/controllers")
+	// CreateFolder(".application_schema/controllers")
 
-	CreateFolder(".application_schema/datasources")
+	// CreateFolder(".application_schema/datasources")
 
 	CreateFolder("binder/")
 
@@ -31,27 +31,55 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("binder/")
 
-	CreateFolder("usecases/")
+	CreateFolder("inport/")
+
+	CreateFolder("interactor/")
+
+	CreateFolder("outport/")
 
 	CreateFolder("utils/")
 
-	WriteFile(
+	mainApps := MainApps{PackagePath: GetPackagePath()}
+
+	WriteFileIfNotExist(
 		"main._go",
 		"main.go",
-		struct{}{},
+		&mainApps,
 	)
 
-	WriteFile(
+	WriteFileIfNotExist(
 		"config._toml",
 		"config.toml",
 		struct{}{},
 	)
 
-	WriteFile(
+	WriteFileIfNotExist(
 		"README._md",
 		"README.md",
 		struct{}{},
 	)
 
+	WriteFileIfNotExist(
+		"binder/runner._go",
+		"binder/runner.go",
+		struct{}{},
+	)
+
+	WriteFileIfNotExist(
+		"binder/setup_component._go",
+		"binder/setup_component.go",
+		struct{}{},
+	)
+
+	WriteFileIfNotExist(
+		"binder/wiring_component._go",
+		"binder/wiring_component.go",
+		struct{}{},
+	)
+
 	return nil
+}
+
+type MainApps struct {
+	PackagePath string ``
 }

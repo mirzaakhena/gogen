@@ -11,8 +11,15 @@ const message string = `try execute gogen by
   gogen <command>
 
 some command available is
-  model <model name> 
+  init
   usecase <usecase name>
+  datasource <datasource name> <usecase name>
+  controller <controller type> <usecase name>
+
+some controller type available is
+  restapi
+  consumer
+  grpc
 `
 
 func main() {
@@ -45,6 +52,14 @@ func main() {
 		}
 
 	case "datasource":
+
+		gen := gogen.NewDatasource()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
+	case "controller":
 
 		gen := gogen.NewDatasource()
 		if err := gen.Generate(os.Args...); err != nil {

@@ -4,13 +4,12 @@ import (
 	"context"
 	"testing"
 
-	"{{.PackagePath}}/datasource/mocks"
-	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/inport"
-	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/outport"
+	"{{.PackagePath}}/datasources/mocks"
+	"{{.PackagePath}}/inport"
+	"{{.PackagePath}}/outport"
 
 	"github.com/stretchr/testify/assert"
 )
-
 
 func Test_Normal(t *testing.T) {
 
