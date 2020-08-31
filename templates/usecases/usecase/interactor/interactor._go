@@ -1,0 +1,35 @@
+package interactor
+
+import (
+	"context"
+
+	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/inport"
+	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/outport"
+)
+
+// New{{PascalCase .Name}}Inport ...
+func New{{PascalCase .Name}}Inport(outputPort outport.{{PascalCase .Name}}) inport.{{PascalCase .Name}} {
+	return &{{CamelCase .Name}}Usecase{
+		dataSource: outputPort,
+	}
+}
+
+type {{CamelCase .Name}}Usecase struct {
+	dataSource outport.{{PascalCase .Name}}
+}
+
+func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{PascalCase .Name}}Request) (*inport.{{PascalCase .Name}}Response, error) {
+
+	{{range .Outports}}
+	{
+		_, err := _r.dataSource.{{PascalCase .Name}}(ctx, outport.{{PascalCase .Name}}Request{ //
+		})
+		if err != nil {
+			return nil, err
+		}		
+	} {{end}}
+
+	return &inport.{{PascalCase .Name}}Response{//
+	
+	}, nil
+}

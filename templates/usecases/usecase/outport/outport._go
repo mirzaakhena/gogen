@@ -1,0 +1,22 @@
+package outport
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}} ...
+type {{PascalCase .Name}} interface { {{range .Outports}}
+	{{PascalCase .Name}}(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error) {{end}}
+}
+{{range .Outports}}
+// {{PascalCase .Name}}Request ...
+type {{PascalCase .Name}}Request struct { {{range .RequestFieldObjs}}
+	{{PascalCase .Name}} {{.Datatype}} `` //{{end}}
+}
+
+// {{PascalCase .Name}}Response ...
+type {{PascalCase .Name}}Response struct { {{range .ResponseFieldObjs}}
+	{{PascalCase .Name}} {{.Datatype}} `` //{{end}}
+} 
+{{end}}
+

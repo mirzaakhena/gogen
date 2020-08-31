@@ -1,0 +1,18 @@
+
+
+inport:
+  requestFields: []
+  responseFields: []
+
+outports:
+
+  - name: Action1
+    outportExtends: []
+    requestFields: []
+    responseFields: []
+
+  - name: Action2
+    outportExtends: []
+    requestFields: []
+    responseFields: []    
+

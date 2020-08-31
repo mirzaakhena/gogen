@@ -1,0 +1,20 @@
+package inport
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}} ...
+type {{PascalCase .Name}} interface {
+	Handle(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error)
+}
+
+// {{PascalCase .Name}}Request ...
+type {{PascalCase .Name}}Request struct { {{range .Inport.RequestFieldObjs}}
+	{{PascalCase .Name}} {{.Datatype}} `` //{{end}}
+}
+
+// {{PascalCase .Name}}Response ...
+type {{PascalCase .Name}}Response struct { {{range .Inport.ResponseFieldObjs}}
+	{{PascalCase .Name}} {{.Datatype}} `` //{{end}}
+}
