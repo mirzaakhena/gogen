@@ -44,6 +44,14 @@ func main() {
 			os.Exit(0)
 		}
 
+	case "datasource":
+
+		gen := gogen.NewDatasource()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
 	default:
 		fmt.Printf("command %s is not recognized. %s\n", command, message)
 		os.Exit(0)

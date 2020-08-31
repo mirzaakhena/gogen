@@ -53,7 +53,7 @@ func (d *usecase) Generate(args ...string) error {
 
 	}
 
-	tp := readYAML(usecaseName)
+	tp := ReadYAML(usecaseName)
 
 	WriteFile(
 		"usecases/usecase/inport/inport._go",
@@ -94,7 +94,7 @@ func (d *usecase) Generate(args ...string) error {
 	return nil
 }
 
-func readYAML(usecaseName string) *Usecase {
+func ReadYAML(usecaseName string) *Usecase {
 
 	content, err := ioutil.ReadFile(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName))
 	if err != nil {

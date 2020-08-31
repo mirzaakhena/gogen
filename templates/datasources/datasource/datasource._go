@@ -1,0 +1,25 @@
+package production
+
+import (
+	"context"
+
+	"{{.PackagePath}}/usecases/{{LowerCase .Name}}/outport"
+)
+
+// New{{PascalCase .Name}} ...
+func New{{PascalCase .Name}}() outport.{{PascalCase .Name}} {
+	return &{{CamelCase .Name}}{}
+}
+
+type {{CamelCase .Name}} struct {
+
+}
+{{range .Outports}}
+func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req outport.{{PascalCase .Name}}Request) (*outport.{{PascalCase .Name}}Response, error) {
+
+	return &outport.{{PascalCase .Name}}Response{ {{range .ResponseFields}}
+		{{PascalCase .}}: "", {{end}}
+	}, nil
+
+}
+{{end}}
