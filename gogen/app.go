@@ -19,7 +19,7 @@ type Generator interface {
 	Generate(args ...string) error
 }
 
-func getGopath() string {
+func GetGopath() string {
 	gopath := os.Getenv("GOPATH")
 	if gopath == "" {
 		gopath = build.Default.GOPATH
@@ -29,7 +29,7 @@ func getGopath() string {
 
 func GetPackagePath() string {
 	a, _ := filepath.Abs("./")
-	x := strings.Split(a, getGopath()+"/src/")
+	x := strings.Split(a, GetGopath()+"/src/")
 	return x[1]
 }
 
@@ -50,7 +50,7 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 	{
 
 		// open template file
-		file, err := os.Open(getGopath() + "/src/github.com/mirzaakhena/gogen/templates/" + templateFile)
+		file, err := os.Open(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/%s", GetGopath(), templateFile))
 		if err != nil {
 			return err
 		}

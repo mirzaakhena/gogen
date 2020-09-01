@@ -3,11 +3,11 @@ inport:
   responseFields: []
 
 outports:
-  - name: Action1
+  - name: {{.Name}}Action1
     requestFields: []
     responseFields: []
 
-  - name: Action2
+  - name: {{.Name}}Action2
     requestFields: []
     responseFields: []    
 

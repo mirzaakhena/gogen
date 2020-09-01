@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_Normal(t *testing.T) {
+func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 

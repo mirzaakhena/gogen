@@ -31,7 +31,14 @@ func (d *datasource) Generate(args ...string) error {
 
 	usecaseName := args[DATASOURCE_USECASE_NAME_INDEX]
 
-	tp := ReadYAML(usecaseName)
+	if IsNotExist(fmt.Sprintf("/.application_schema/usecases/%s.yml", usecaseName)) {
+		return fmt.Errorf("Usecase `%s` is not found. Generate it by call `gogen usecase %s` first", usecaseName, usecaseName)
+	}
+
+	tp, err := ReadYAML(usecaseName)
+	if err != nil {
+		return err
+	}
 
 	CreateFolder("datasources/%s", strings.ToLower(datasourceName))
 

@@ -39,12 +39,14 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("utils/")
 
-	mainApps := MainApps{PackagePath: GetPackagePath()}
-
 	WriteFileIfNotExist(
 		"main._go",
 		"main.go",
-		&mainApps,
+		struct {
+			PackagePath string
+		}{
+			PackagePath: GetPackagePath(),
+		},
 	)
 
 	WriteFileIfNotExist(
@@ -78,8 +80,4 @@ func (d *applicationSchema) Generate(args ...string) error {
 	)
 
 	return nil
-}
-
-type MainApps struct {
-	PackagePath string ``
 }

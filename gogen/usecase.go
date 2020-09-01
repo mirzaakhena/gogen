@@ -35,10 +35,17 @@ func (d *usecase) Generate(args ...string) error {
 	WriteFileIfNotExist(
 		".application_schema/usecases/usecase._yml",
 		fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName),
-		struct{}{},
+		struct {
+			Name string
+		}{
+			Name: usecaseName,
+		},
 	)
 
-	tp := ReadYAML(usecaseName)
+	tp, err := ReadYAML(usecaseName)
+	if err != nil {
+		return err
+	}
 
 	WriteFile(
 		"inport/inport._go",
@@ -73,17 +80,19 @@ func (d *usecase) Generate(args ...string) error {
 	return nil
 }
 
-func ReadYAML(usecaseName string) *Usecase {
+func ReadYAML(usecaseName string) (*Usecase, error) {
 
 	content, err := ioutil.ReadFile(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName))
 	if err != nil {
 		log.Fatal(err)
+		return nil, fmt.Errorf("cannot read %s.yml", usecaseName)
 	}
 
 	tp := Usecase{}
 
 	if err = yaml.Unmarshal(content, &tp); err != nil {
 		log.Fatalf("error: %+v", err)
+		return nil, fmt.Errorf("%s.yml is unrecognized usecase file", usecaseName)
 	}
 
 	tp.Name = usecaseName
@@ -91,18 +100,12 @@ func ReadYAML(usecaseName string) *Usecase {
 	tp.Inport.RequestFieldObjs = ExtractField(tp.Inport.RequestFields)
 	tp.Inport.ResponseFieldObjs = ExtractField(tp.Inport.ResponseFields)
 
-	// x, _ := json.Marshal(tp.Inport)
-	// fmt.Printf("%v\n", string(x))
-
 	for i, out := range tp.Outports {
 		tp.Outports[i].RequestFieldObjs = ExtractField(out.RequestFields)
 		tp.Outports[i].ResponseFieldObjs = ExtractField(out.ResponseFields)
-
-		// x, _ := json.Marshal(out)
-		// fmt.Printf("%v\n", string(x))
 	}
 
-	return &tp
+	return &tp, nil
 
 }
 
