@@ -1,0 +1,58 @@
+package restapi
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+	"github.com/jinzhu/gorm"
+
+	datasource "{{.PackagePath}}/datasources/production"
+	usecase "{{.PackagePath}}/interactor"
+)
+
+// {{PascalCase .Name}} ...
+func {{PascalCase .Name}}(r *gin.Engine) {
+	outputPort := datasource.New{{PascalCase .Name}}Outport(db)
+	inputPort := usecase.New{{PascalCase .Name}}Inport(outputPort)
+	r.POST("/{{CamelCase .Name}}", {{CamelCase .Name}}(inputPort))
+}
+
+func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}Inport) gin.HandlerFunc {
+
+	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFields}}
+		{{PascalCase .}}    string `json:"{{CamelCase .}}"` {{end}}
+	}
+
+	return func(c *gin.Context) {
+
+		// receive json
+		var jsonReq {{CamelCase .Name}}Request
+		if err := c.BindJSON(&jsonReq); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// convert to request
+		var req inport.{{PascalCase .Name}}Request
+		err := copier.Copy(&req, jsonReq)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}		
+		log.Info("%v", req)
+
+		// run the usecase
+		res, err := inputPort.Handle(context.Background(), req)
+		if err != nil {
+			log.Error("%v", err.Error())
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// return the response
+		c.JSON(http.StatusOK, res)
+
+	}
+}

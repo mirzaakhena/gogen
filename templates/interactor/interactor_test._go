@@ -19,11 +19,15 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 
 	outputPort := mocks.{{PascalCase .Name}}{}
   {{range .Outports}}
-	outputPort.On("{{PascalCase .Name}}", ctx, outport.{{PascalCase .Name}}Request{ // 
-	
-	}).Return(nil, nil) 
+	{
+		outputPort.On("{{PascalCase .Name}}", ctx, outport.{{PascalCase .Name}}Request{ // 
+		
+		}).Return(&outport.{{PascalCase .Name}}Response{ //
+
+		}, nil) 		
+	}
   {{end}}
-	res, err := New{{PascalCase .Name}}Inport(&outputPort).Handle(ctx, req)
+	res, err := New{{PascalCase .Name}}(&outputPort).Handle(ctx, req)
 
 	assert.Nil(t, err)
 

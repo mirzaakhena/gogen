@@ -61,7 +61,7 @@ func main() {
 
 	case "controller":
 
-		gen := gogen.NewDatasource()
+		gen := gogen.NewController()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)

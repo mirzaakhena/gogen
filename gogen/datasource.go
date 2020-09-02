@@ -24,14 +24,14 @@ func (d *datasource) Generate(args ...string) error {
 	}
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define datasource and usecase name. ex: `gogen datasource production CreateOrder`")
+		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen datasource production CreateOrder`")
 	}
 
 	datasourceName := args[DATASOURCE_NAME_INDEX]
 
 	usecaseName := args[DATASOURCE_USECASE_NAME_INDEX]
 
-	if IsNotExist(fmt.Sprintf("/.application_schema/usecases/%s.yml", usecaseName)) {
+	if IsNotExist(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName)) {
 		return fmt.Errorf("Usecase `%s` is not found. Generate it by call `gogen usecase %s` first", usecaseName, usecaseName)
 	}
 

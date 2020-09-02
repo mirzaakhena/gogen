@@ -7,8 +7,8 @@ import (
 	"{{.PackagePath}}/outport"
 )
 
-// New{{PascalCase .Name}}Inport ...
-func New{{PascalCase .Name}}Inport(outputPort outport.{{PascalCase .Name}}) inport.{{PascalCase .Name}} {
+// New{{PascalCase .Name}} ...
+func New{{PascalCase .Name}}(outputPort outport.{{PascalCase .Name}}) inport.{{PascalCase .Name}} {
 	return &{{CamelCase .Name}}Usecase{
 		dataSource: outputPort,
 	}
