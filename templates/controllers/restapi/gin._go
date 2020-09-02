@@ -14,7 +14,7 @@ import (
 
 // {{PascalCase .Name}} ...
 func {{PascalCase .Name}}(r *gin.Engine) {
-	outputPort := datasource.New{{PascalCase .Name}}Outport(db)
+	outputPort := datasource.New{{PascalCase .Name}}Outport()
 	inputPort := usecase.New{{PascalCase .Name}}Inport(outputPort)
 	r.POST("/{{CamelCase .Name}}", {{CamelCase .Name}}(inputPort))
 }
