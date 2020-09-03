@@ -162,5 +162,7 @@ func (d *controller) Generate(args ...string) error {
 		return fmt.Errorf("%s is not recognized. Only have restapi, consumer, grpc", cType)
 	}
 
+	GoFormat(tp.PackagePath)
+
 	return nil
 }

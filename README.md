@@ -73,5 +73,6 @@ production is sample datasource. It can be anything you like. It will create one
 
 ### 5. Create controller
 ```
-
+gogen controller restapi gin CreateOrder
 ```
+- controllers/restapi/CreateOrder.go

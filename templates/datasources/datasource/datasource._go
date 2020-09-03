@@ -1,4 +1,4 @@
-package production
+package {{.DatasourceName}}
 
 import (
 	"context"
@@ -17,8 +17,8 @@ type {{CamelCase .Name}} struct {
 {{range .Outports}}
 func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req outport.{{PascalCase .Name}}Request) (*outport.{{PascalCase .Name}}Response, error) {
 
-	return &outport.{{PascalCase .Name}}Response{ {{range .ResponseFields}}
-		{{PascalCase .}}: "", {{end}}
+	return &outport.{{PascalCase .Name}}Response{ //
+
 	}, nil
 
 }

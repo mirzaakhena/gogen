@@ -15,8 +15,6 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 
-	req := inport.{{PascalCase .Name}}Request{}
-
 	outputPort := mocks.{{PascalCase .Name}}{}
   {{range .Outports}}
 	{
@@ -27,6 +25,10 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 		}, nil) 		
 	}
   {{end}}
+	req := inport.{{PascalCase .Name}}Request{ //
+
+	}
+	
 	res, err := New{{PascalCase .Name}}(&outputPort).Handle(ctx, req)
 
 	assert.Nil(t, err)

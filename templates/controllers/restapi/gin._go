@@ -6,23 +6,14 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
-	"github.com/jinzhu/gorm"
 
-	datasource "{{.PackagePath}}/datasources/production"
-	usecase "{{.PackagePath}}/interactor"
+	"{{.PackagePath}}/inport"
 )
 
-// {{PascalCase .Name}} ...
-func {{PascalCase .Name}}(r *gin.Engine) {
-	outputPort := datasource.New{{PascalCase .Name}}Outport()
-	inputPort := usecase.New{{PascalCase .Name}}Inport(outputPort)
-	r.POST("/{{CamelCase .Name}}", {{CamelCase .Name}}(inputPort))
-}
+func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc {
 
-func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}Inport) gin.HandlerFunc {
-
-	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFields}}
-		{{PascalCase .}}    string `json:"{{CamelCase .}}"` {{end}}
+	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFieldObjs}}
+		{{PascalCase .Name}} {{.Datatype}} `json:"{{CamelCase .Name}}"` {{end}}
 	}
 
 	return func(c *gin.Context) {
@@ -40,13 +31,11 @@ func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}Inport) gin.Handle
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
-		}		
-		log.Info("%v", req)
+		}
 
 		// run the usecase
 		res, err := inputPort.Handle(context.Background(), req)
 		if err != nil {
-			log.Error("%v", err.Error())
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
 		}
