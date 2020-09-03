@@ -2,13 +2,16 @@ package binder
 
 // AppBinder define all framework used in this apps
 type AppBinder struct {
+	// Router *gin.Engine
 }
 
 // NewAppBinder setup all the framework or library needded for this apps to be running
 func NewAppBinder() (*AppBinder, error) {
 
-	app := AppBinder{ //
+	// router := gin.New()
 
+	app := AppBinder{ //
+	// 	Router: router,
 	}
 
 	return &app, nil

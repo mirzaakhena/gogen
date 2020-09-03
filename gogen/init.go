@@ -28,6 +28,8 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("%sdatasources/mocks", baseFolder)
 
+	CreateFolder("%sdatasources/production", baseFolder)
+
 	CreateFolder("%sentities/model", baseFolder)
 
 	CreateFolder("%sentities/repository", baseFolder)

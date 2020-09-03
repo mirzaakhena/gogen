@@ -10,7 +10,7 @@ import (
 	"{{.PackagePath}}/inport"
 )
 
-func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc {
+func {{PascalCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc {
 
 	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFieldObjs}}
 		{{PascalCase .Name}} {{.Datatype}} `json:"{{CamelCase .Name}}"` {{end}}
@@ -27,8 +27,7 @@ func {{CamelCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc 
 
 		// convert to request
 		var req inport.{{PascalCase .Name}}Request
-		err := copier.Copy(&req, jsonReq)
-		if err != nil {
+		if err := copier.Copy(&req, jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
 		}

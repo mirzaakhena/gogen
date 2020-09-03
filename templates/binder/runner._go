@@ -5,4 +5,8 @@ package binder
 // an also prepare for the gracefully shutdown
 func (a *AppBinder) Run() {
 
+  //	if err := a.Router.Run(); err != nil {
+	//	  panic(err)
+	//  }
+
 }

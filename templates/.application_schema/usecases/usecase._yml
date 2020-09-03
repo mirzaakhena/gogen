@@ -1,5 +1,5 @@
 controllers: []
-datasources: []
+datasources: [production]
 
 inport:
   requestFields: []

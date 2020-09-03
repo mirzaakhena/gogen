@@ -3,4 +3,10 @@ package binder
 // Bind will binding usecase, datasource and controller all together
 func (a *AppBinder) Bind() {
 
+	// {
+	// 	outputPort := production.NewCreateOrder()
+	// 	inputPort := interactor.NewCreateOrder(outputPort)
+	// 	a.Router.GET("/createOrder", restapi.CreateOrder(inputPort))
+	// }
+
 }
