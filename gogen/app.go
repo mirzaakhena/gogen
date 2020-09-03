@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go/build"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -13,6 +14,8 @@ import (
 	"regexp"
 	"strings"
 	"unicode"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Generator interface {
@@ -173,4 +176,56 @@ func GoFormat(path string) {
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
 	}
+}
+
+func ReadYAML(usecaseName string) (*Usecase, error) {
+
+	content, err := ioutil.ReadFile(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName))
+	if err != nil {
+		log.Fatal(err)
+		return nil, fmt.Errorf("cannot read %s.yml", usecaseName)
+	}
+
+	tp := Usecase{}
+
+	if err = yaml.Unmarshal(content, &tp); err != nil {
+		log.Fatalf("error: %+v", err)
+		return nil, fmt.Errorf("%s.yml is unrecognized usecase file", usecaseName)
+	}
+
+	tp.Name = usecaseName
+	tp.PackagePath = GetPackagePath()
+	tp.Inport.RequestFieldObjs = extractField(tp.Inport.RequestFields)
+	tp.Inport.ResponseFieldObjs = extractField(tp.Inport.ResponseFields)
+
+	for i, out := range tp.Outports {
+		tp.Outports[i].RequestFieldObjs = extractField(out.RequestFields)
+		tp.Outports[i].ResponseFieldObjs = extractField(out.ResponseFields)
+	}
+
+	return &tp, nil
+
+}
+
+func extractField(fields []string) []Variable {
+
+	vars := []Variable{}
+
+	for _, field := range fields {
+		s := strings.Split(field, " ")
+		name := strings.TrimSpace(s[0])
+
+		datatype := "string"
+		if len(s) > 1 {
+			datatype = strings.TrimSpace(s[1])
+		}
+
+		vars = append(vars, Variable{
+			Name:     name,
+			Datatype: datatype,
+		})
+
+	}
+
+	return vars
 }

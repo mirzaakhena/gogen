@@ -2,11 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"io/ioutil"
-	"log"
-	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -78,58 +73,6 @@ func (d *usecase) Generate(args ...string) error {
 	GenerateMock(tp.PackagePath, usecaseName)
 
 	return nil
-}
-
-func ReadYAML(usecaseName string) (*Usecase, error) {
-
-	content, err := ioutil.ReadFile(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName))
-	if err != nil {
-		log.Fatal(err)
-		return nil, fmt.Errorf("cannot read %s.yml", usecaseName)
-	}
-
-	tp := Usecase{}
-
-	if err = yaml.Unmarshal(content, &tp); err != nil {
-		log.Fatalf("error: %+v", err)
-		return nil, fmt.Errorf("%s.yml is unrecognized usecase file", usecaseName)
-	}
-
-	tp.Name = usecaseName
-	tp.PackagePath = GetPackagePath()
-	tp.Inport.RequestFieldObjs = ExtractField(tp.Inport.RequestFields)
-	tp.Inport.ResponseFieldObjs = ExtractField(tp.Inport.ResponseFields)
-
-	for i, out := range tp.Outports {
-		tp.Outports[i].RequestFieldObjs = ExtractField(out.RequestFields)
-		tp.Outports[i].ResponseFieldObjs = ExtractField(out.ResponseFields)
-	}
-
-	return &tp, nil
-
-}
-
-func ExtractField(fields []string) []Variable {
-
-	vars := []Variable{}
-
-	for _, field := range fields {
-		s := strings.Split(field, " ")
-		name := strings.TrimSpace(s[0])
-
-		datatype := "string"
-		if len(s) > 1 {
-			datatype = strings.TrimSpace(s[1])
-		}
-
-		vars = append(vars, Variable{
-			Name:     name,
-			Datatype: datatype,
-		})
-
-	}
-
-	return vars
 }
 
 type Inport struct {

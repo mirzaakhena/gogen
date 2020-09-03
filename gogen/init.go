@@ -1,5 +1,10 @@
 package gogen
 
+import (
+	"fmt"
+	"strings"
+)
+
 type applicationSchema struct {
 }
 
@@ -9,39 +14,39 @@ func NewApplicationSchema() Generator {
 
 func (d *applicationSchema) Generate(args ...string) error {
 
-	CreateFolder(".application_schema/usecases")
+	if len(args) < 3 {
+		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
+	}
 
-	// CreateFolder(".application_schema/models")
+	baseFolder := fmt.Sprintf("./%s/", strings.TrimSpace(args[2]))
 
-	// CreateFolder(".application_schema/controllers")
+	CreateFolder("%s.application_schema/usecases", baseFolder)
 
-	// CreateFolder(".application_schema/datasources")
+	CreateFolder("%sbinder/", baseFolder)
 
-	CreateFolder("binder/")
+	CreateFolder("%scontrollers/", baseFolder)
 
-	CreateFolder("controllers/")
+	CreateFolder("%sdatasources/mocks", baseFolder)
 
-	CreateFolder("datasources/mocks")
+	CreateFolder("%sentities/model", baseFolder)
 
-	CreateFolder("entities/model")
+	CreateFolder("%sentities/repository", baseFolder)
 
-	CreateFolder("entities/repository")
+	CreateFolder("%sshared/", baseFolder)
 
-	CreateFolder("shared/")
+	CreateFolder("%sbinder/", baseFolder)
 
-	CreateFolder("binder/")
+	CreateFolder("%sinport/", baseFolder)
 
-	CreateFolder("inport/")
+	CreateFolder("%sinteractor/", baseFolder)
 
-	CreateFolder("interactor/")
+	CreateFolder("%soutport/", baseFolder)
 
-	CreateFolder("outport/")
-
-	CreateFolder("utils/")
+	CreateFolder("%sutils/", baseFolder)
 
 	WriteFileIfNotExist(
 		"main._go",
-		"main.go",
+		fmt.Sprintf("%smain.go", baseFolder),
 		struct {
 			PackagePath string
 		}{
@@ -51,31 +56,31 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	WriteFileIfNotExist(
 		"config._toml",
-		"config.toml",
+		fmt.Sprintf("%sconfig.toml", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
 		"README._md",
-		"README.md",
+		fmt.Sprintf("%sREADME.md", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
 		"binder/runner._go",
-		"binder/runner.go",
+		fmt.Sprintf("%sbinder/runner.go", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
 		"binder/setup_component._go",
-		"binder/setup_component.go",
+		fmt.Sprintf("%sbinder/setup_component.go", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
 		"binder/wiring_component._go",
-		"binder/wiring_component.go",
+		fmt.Sprintf("%sbinder/wiring_component.go", baseFolder),
 		struct{}{},
 	)
 
