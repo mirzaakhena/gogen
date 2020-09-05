@@ -20,6 +20,11 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	baseFolder := fmt.Sprintf("./%s/", strings.TrimSpace(args[2]))
 
+	directory := ""
+	if baseFolder != "." {
+		directory = fmt.Sprintf("/%s", baseFolder)
+	}
+
 	CreateFolder("%s.application_schema/usecases", baseFolder)
 
 	CreateFolder("%sbinder/", baseFolder)
@@ -51,8 +56,10 @@ func (d *applicationSchema) Generate(args ...string) error {
 		fmt.Sprintf("%smain.go", baseFolder),
 		struct {
 			PackagePath string
+			Directory   string
 		}{
 			PackagePath: GetPackagePath(),
+			Directory:   directory,
 		},
 	)
 

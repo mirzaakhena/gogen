@@ -50,5 +50,7 @@ func (d *datasource) Generate(args ...string) error {
 		tp,
 	)
 
+	GoFormat(tp.PackagePath)
+
 	return nil
 }

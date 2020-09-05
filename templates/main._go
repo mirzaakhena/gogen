@@ -1,7 +1,7 @@
 package main
 
 import (
-	"{{.PackagePath}}/binder"
+	"{{.PackagePath}}{{.Directory}}/binder"
 )
 
 //go:generate mockery -all -output datasources/mocks/ -dir outport/

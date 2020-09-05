@@ -48,7 +48,7 @@ func (d *controller) Generate(args ...string) error {
 
 		if cLib == "gin" {
 
-			WriteFile(
+			WriteFileIfNotExist(
 				"controllers/restapi/gin._go",
 				fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
 				tp,
