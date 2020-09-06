@@ -5,6 +5,10 @@ import (
 	"strings"
 )
 
+const (
+	INIT_PROJECT_INDEX int = 2
+)
+
 type applicationSchema struct {
 }
 
@@ -18,12 +22,16 @@ func (d *applicationSchema) Generate(args ...string) error {
 		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
 	}
 
-	baseFolder := fmt.Sprintf("./%s/", strings.TrimSpace(args[2]))
+	directory := strings.TrimSpace(args[2])
 
-	directory := ""
-	if baseFolder != "." {
-		directory = fmt.Sprintf("/%s", baseFolder)
+	baseFolder := fmt.Sprintf("%s/", directory)
+
+	folder := ""
+	if directory != "." {
+		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
 	}
+
+	fmt.Printf("directory :%s\n", folder)
 
 	CreateFolder("%s.application_schema/usecases", baseFolder)
 
@@ -32,8 +40,6 @@ func (d *applicationSchema) Generate(args ...string) error {
 	CreateFolder("%scontrollers/", baseFolder)
 
 	CreateFolder("%sdatasources/mocks", baseFolder)
-
-	CreateFolder("%sdatasources/production", baseFolder)
 
 	CreateFolder("%sentities/model", baseFolder)
 
@@ -59,7 +65,7 @@ func (d *applicationSchema) Generate(args ...string) error {
 			Directory   string
 		}{
 			PackagePath: GetPackagePath(),
-			Directory:   directory,
+			Directory:   folder,
 		},
 	)
 
@@ -90,7 +96,11 @@ func (d *applicationSchema) Generate(args ...string) error {
 	WriteFileIfNotExist(
 		"binder/wiring_component._go",
 		fmt.Sprintf("%sbinder/wiring_component.go", baseFolder),
-		struct{}{},
+		struct {
+			PackagePath string
+		}{
+			PackagePath: GetPackagePath(),
+		},
 	)
 
 	return nil

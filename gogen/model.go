@@ -17,11 +17,10 @@ type Outport struct {
 }
 
 type Usecase struct {
-	Name           string    ``                //
-	PackagePath    string    ``                //
-	Inport         Inport    `yaml:"inport"`   //
-	Outports       []Outport `yaml:"outports"` //
-	DatasourceName string    ``                //
+	Name        string    ``                //
+	PackagePath string    ``                //
+	Inport      Inport    `yaml:"inport"`   //
+	Outports    []Outport `yaml:"outports"` //
 }
 
 type Variable struct {

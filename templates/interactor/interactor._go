@@ -21,6 +21,7 @@ type {{CamelCase .Name}}Usecase struct {
 func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{PascalCase .Name}}Request) (*inport.{{PascalCase .Name}}Response, error) {
 
 	{{range .Outports}}
+	// GOGEN_MARKER_INTERACTOR_OUTPORT
 	{
 		_, err := _r.dataSource.{{PascalCase .Name}}(ctx, outport.{{PascalCase .Name}}Request{ //
 		})
@@ -28,6 +29,8 @@ func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{P
 			return nil, err
 		}		
 	} {{end}}
+
+	// GOGEN_CODE_INJECTION_INTERACTOR_OUTPORTS
 
 	return &inport.{{PascalCase .Name}}Response{//
 	

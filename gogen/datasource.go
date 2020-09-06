@@ -40,8 +40,6 @@ func (d *datasource) Generate(args ...string) error {
 		return err
 	}
 
-	tp.DatasourceName = datasourceName
-
 	CreateFolder("datasources/%s", strings.ToLower(datasourceName))
 
 	WriteFileIfNotExist(

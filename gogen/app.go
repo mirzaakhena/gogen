@@ -51,7 +51,6 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 
 	// this process can be refactor later
 	{
-
 		// open template file
 		file, err := os.Open(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/%s", GetGopath(), templateFile))
 		if err != nil {
