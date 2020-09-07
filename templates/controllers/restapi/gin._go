@@ -10,6 +10,7 @@ import (
 	"{{.PackagePath}}/inport"
 )
 
+// {{PascalCase .Name}} ...
 func {{PascalCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc {
 
 	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFieldObjs}}

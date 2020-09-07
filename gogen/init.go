@@ -31,29 +31,25 @@ func (d *applicationSchema) Generate(args ...string) error {
 		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
 	}
 
-	fmt.Printf("directory :%s\n", folder)
-
 	CreateFolder("%s.application_schema/usecases", baseFolder)
 
 	CreateFolder("%sbinder/", baseFolder)
 
 	CreateFolder("%scontrollers/", baseFolder)
 
-	CreateFolder("%sdatasources/mocks", baseFolder)
+	CreateFolder("%sdatasources/", baseFolder)
 
-	CreateFolder("%sentities/model", baseFolder)
-
-	CreateFolder("%sentities/repository", baseFolder)
-
-	CreateFolder("%sshared/", baseFolder)
-
-	CreateFolder("%sbinder/", baseFolder)
+	CreateFolder("%sentities/", baseFolder)
 
 	CreateFolder("%sinport/", baseFolder)
 
 	CreateFolder("%sinteractor/", baseFolder)
 
 	CreateFolder("%soutport/", baseFolder)
+
+	CreateFolder("%srepositories/", baseFolder)
+
+	CreateFolder("%sservices/", baseFolder)
 
 	CreateFolder("%sutils/", baseFolder)
 

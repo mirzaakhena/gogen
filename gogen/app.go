@@ -45,6 +45,19 @@ func WriteFileIfNotExist(templateFile, outputFile string, data interface{}) erro
 	return nil
 }
 
+func InjectFileIfAlreadyExist(codePiece, injectedFile string) {
+
+}
+
+// function that used in templates
+var FuncMap = template.FuncMap{
+	"CamelCase":  CamelCase,
+	"PascalCase": PascalCase,
+	"SnakeCase":  SnakeCase,
+	"UpperCase":  UpperCase,
+	"LowerCase":  LowerCase,
+}
+
 func WriteFile(templateFile, outputFile string, data interface{}) error {
 
 	var buffer bytes.Buffer
@@ -67,16 +80,7 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 		}
 	}
 
-	// function that used in templates
-	funcMap := template.FuncMap{
-		"CamelCase":  CamelCase,
-		"PascalCase": PascalCase,
-		"SnakeCase":  SnakeCase,
-		"UpperCase":  UpperCase,
-		"LowerCase":  LowerCase,
-	}
-
-	tpl := template.Must(template.New("something").Funcs(funcMap).Parse(buffer.String()))
+	tpl := template.Must(template.New("something").Funcs(FuncMap).Parse(buffer.String()))
 
 	fileOut, err := os.Create(outputFile)
 	if err != nil {

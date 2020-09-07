@@ -6,8 +6,9 @@ import (
 
 const (
 	CONTROLLER_TYPE_INDEX         int = 2
-	CONTROLLER_LIBRARY_INDEX      int = 3
-	CONTROLLER_USECASE_NAME_INDEX int = 4
+	CONTROLLER_USECASE_NAME_INDEX int = 3
+	// CONTROLLER_LIBRARY_INDEX      int = 3
+	// CONTROLLER_USECASE_NAME_INDEX int = 4
 )
 
 type controller struct {
@@ -23,13 +24,13 @@ func (d *controller) Generate(args ...string) error {
 		return fmt.Errorf("please call `gogen init` first")
 	}
 
-	if len(args) < 5 {
-		return fmt.Errorf("please define controller_type, library/framework and usecase_name. ex: `gogen controller restapi gin-gonic CreateOrder`")
+	if len(args) < 4 {
+		return fmt.Errorf("please define controller_type, library/framework and usecase_name. ex: `gogen controller restapi CreateOrder`")
 	}
 
 	cType := args[CONTROLLER_TYPE_INDEX]
 
-	cLib := args[CONTROLLER_LIBRARY_INDEX]
+	// cLib := args[CONTROLLER_LIBRARY_INDEX]
 
 	usecaseName := args[CONTROLLER_USECASE_NAME_INDEX]
 
@@ -46,121 +47,143 @@ func (d *controller) Generate(args ...string) error {
 
 		CreateFolder("controllers/restapi")
 
-		if cLib == "gin" {
+		WriteFileIfNotExist(
+			"controllers/restapi/gin._go",
+			fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+			tp,
+		)
 
-			WriteFileIfNotExist(
-				"controllers/restapi/gin._go",
-				fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
-				tp,
-			)
+	} else if cType == "consumer" {
 
-		} else //
+		CreateFolder("controllers/restapi")
 
-		if cLib == "echo" {
+		WriteFileIfNotExist(
+			"controllers/restapi/gin._go",
+			fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+			tp,
+		)
 
-			WriteFileIfNotExist(
-				"controllers/restapi/echo._go",
-				fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		if cLib == "net/http" {
-
-			WriteFileIfNotExist(
-				"controllers/restapi/net-http._go",
-				fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		if cLib == "mux" {
-
-			WriteFileIfNotExist(
-				"controllers/restapi/mux._go",
-				fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		{
-			return fmt.Errorf("%s is not recognized. Only have gin, echo, net/http, mux", cLib)
-		}
-
-	} else //
-
-	if cType == "consumer" {
-
-		CreateFolder("controllers/consumer")
-
-		if cLib == "nsq" {
-
-			WriteFileIfNotExist(
-				"controllers/consumer/nsq._go",
-				fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		if cLib == "rabbitmq" {
-
-			WriteFileIfNotExist(
-				"controllers/consumer/nsq._go",
-				fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		if cLib == "kafka" {
-
-			WriteFileIfNotExist(
-				"controllers/consumer/kafka._go",
-				fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
-				tp,
-			)
-
-		} else //
-
-		{
-			return fmt.Errorf("%s is not recognized. Only have nsq, rabbitmq, kafka", cLib)
-		}
-
-	} else //
-
-	if cType == "grpc" {
-
-		CreateFolder("controllers/grpc")
-
-		if cLib == "grpc" {
-			WriteFileIfNotExist(
-				"controllers/grpc/grpc._go",
-				fmt.Sprintf("controllers/grpc/%s.go", usecaseName),
-				tp,
-			)
-		} else //
-
-		if cLib == "net/rpc" {
-			WriteFileIfNotExist(
-				"controllers/grpc/rpc._go",
-				fmt.Sprintf("controllers/grpc/%s.go", usecaseName),
-				tp,
-			)
-		} else //
-
-		{
-			return fmt.Errorf("%s is not recognized. Only have grpc, net/rpc", cLib)
-		}
-
-	} else //
-
-	{
-		return fmt.Errorf("%s is not recognized. Only have restapi, consumer, grpc", cType)
 	}
+
+	// if cType == "restapi" {
+
+	// CreateFolder("controllers/restapi")
+
+	// if cLib == "gin" {
+
+	// WriteFileIfNotExist(
+	// 	"controllers/restapi/gin._go",
+	// 	fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+	// 	tp,
+	// )
+
+	// 	} else //
+
+	// 	if cLib == "echo" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/restapi/echo._go",
+	// 			fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	if cLib == "net/http" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/restapi/net-http._go",
+	// 			fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	if cLib == "mux" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/restapi/mux._go",
+	// 			fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	{
+	// 		return fmt.Errorf("%s is not recognized. Only have gin, echo, net/http, mux", cLib)
+	// 	}
+
+	// } else //
+
+	// if cType == "consumer" {
+
+	// 	CreateFolder("controllers/consumer")
+
+	// 	if cLib == "nsq" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/consumer/nsq._go",
+	// 			fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	if cLib == "rabbitmq" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/consumer/nsq._go",
+	// 			fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	if cLib == "kafka" {
+
+	// 		WriteFileIfNotExist(
+	// 			"controllers/consumer/kafka._go",
+	// 			fmt.Sprintf("controllers/consumer/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+
+	// 	} else //
+
+	// 	{
+	// 		return fmt.Errorf("%s is not recognized. Only have nsq, rabbitmq, kafka", cLib)
+	// 	}
+
+	// } else //
+
+	// if cType == "grpc" {
+
+	// 	CreateFolder("controllers/grpc")
+
+	// 	if cLib == "grpc" {
+	// 		WriteFileIfNotExist(
+	// 			"controllers/grpc/grpc._go",
+	// 			fmt.Sprintf("controllers/grpc/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+	// 	} else //
+
+	// 	if cLib == "net/rpc" {
+	// 		WriteFileIfNotExist(
+	// 			"controllers/grpc/rpc._go",
+	// 			fmt.Sprintf("controllers/grpc/%s.go", usecaseName),
+	// 			tp,
+	// 		)
+	// 	} else //
+
+	// 	{
+	// 		return fmt.Errorf("%s is not recognized. Only have grpc, net/rpc", cLib)
+	// 	}
+
+	// } else //
+
+	// {
+	// 	return fmt.Errorf("%s is not recognized. Only have restapi, consumer, grpc", cType)
+	// }
 
 	GoFormat(tp.PackagePath)
 

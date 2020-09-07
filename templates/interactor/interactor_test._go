@@ -11,12 +11,14 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Test_{{PascalCase .Name}}_Normal ...
 func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 
 	outputPort := mocks.{{PascalCase .Name}}{}
   {{range .Outports}}
+	// GOGEN_MARKER_INTERACTOR_TEST_OUTPORT {{PascalCase .Name}}
 	{
 		outputPort.On("{{PascalCase .Name}}", ctx, outport.{{PascalCase .Name}}Request{ // 
 		
@@ -25,6 +27,9 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 		}, nil) 		
 	}
   {{end}}
+	
+	// GOGEN_CODE_INJECTION_INTERACTOR_TEST_OUTPORTS
+
 	req := inport.{{PascalCase .Name}}Request{ //
 
 	}

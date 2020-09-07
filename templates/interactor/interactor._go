@@ -18,17 +18,19 @@ type {{CamelCase .Name}}Usecase struct {
 	dataSource outport.{{PascalCase .Name}}
 }
 
+// Handle ...
 func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{PascalCase .Name}}Request) (*inport.{{PascalCase .Name}}Response, error) {
 
 	{{range .Outports}}
-	// GOGEN_MARKER_INTERACTOR_OUTPORT
+	// GOGEN_MARKER_INTERACTOR_OUTPORT {{PascalCase .Name}}
 	{
 		_, err := _r.dataSource.{{PascalCase .Name}}(ctx, outport.{{PascalCase .Name}}Request{ //
 		})
 		if err != nil {
 			return nil, err
 		}		
-	} {{end}}
+	} 
+	{{end}}
 
 	// GOGEN_CODE_INJECTION_INTERACTOR_OUTPORTS
 

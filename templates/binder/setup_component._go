@@ -1,17 +1,40 @@
 package binder
 
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
+	"github.com/mirzaakhena/golang-nsq/messagebroker"
+)
+
 // AppBinder define all framework used in this apps
 type AppBinder struct {
-	// Router *gin.Engine
+	Router   *gin.Engine
+	Database *gorm.DB
+	Consumer messagebroker.Consumer
 }
 
 // NewAppBinder setup all the framework or library needded for this apps to be running
 func NewAppBinder() (*AppBinder, error) {
 
-	// router := gin.New()
+	router := gin.Default()
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "Ready")
+	})
+
+	// database, err := gorm.Open("", "")
+	// if err != nil {
+	// 	return nil, err
+	// }
+
+	// consumer := messagebroker.NewConsumer("")
 
 	app := AppBinder{ //
-	// 	Router: router,
+		Router: router,
+		// Database: database,
+		// Consumer: consumer,
 	}
 
 	return &app, nil
