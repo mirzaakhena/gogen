@@ -1,0 +1,62 @@
+packagePath: github.com/mirzaakhena/sample
+
+entities:
+  - name: UserPoint
+    fields:
+      - name: UserID
+        dataType: string
+      - name: Point
+        dataType: int
+      - name: PointBalance
+        dataType: int
+      - name: EventState
+        dataType: enum
+        enumReference: EventStateEnum
+    repositories:
+      - name: SavePoint
+
+  - name: UserPointExpired
+    fields:
+      - name: UserID
+        dataType: string
+      - name: TotalPoint
+        dataType: int
+      - name: StartPeriod
+        dataType: time.Time
+      - name: EndPeriod
+        dataType: time.Time
+      - name: ExpiryDate
+        dataType: time.Time
+
+enums:
+  - name: EventStateEnum
+    values:
+      - text: REGISTER
+      - text: ORDER
+      - text: EXPIRED
+      - text: BUY_VOUCHER
+
+usecases:
+  - name: CreateOrder
+    controllers: []
+    datasources: []
+
+    inport:
+      requestFields: []
+      responseFields: []
+
+    outports:
+      - name: CreateOrderAction1
+        requestFields: []
+        responseFields: []
+
+      - name: CreateOrderAction2
+        requestFields: []
+        responseFields: []
+
+    outportExtends: []
+
+services:
+  - name: SomeService
+    requestFields: []
+    responseFields: []

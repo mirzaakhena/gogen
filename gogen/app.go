@@ -5,7 +5,6 @@ import (
 	"bytes"
 	"fmt"
 	"go/build"
-	"html/template"
 	"io/ioutil"
 	"log"
 	"os"
@@ -13,6 +12,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"text/template"
 	"unicode"
 
 	"gopkg.in/yaml.v2"
@@ -151,13 +151,13 @@ func CreateFolder(format string, a ...interface{}) {
 }
 
 func GenerateMock(packagePath, usecaseName string) {
-	fmt.Printf("mockery %s", usecaseName)
+	fmt.Printf("mockery %s\n", usecaseName)
 
 	cmd := exec.Command(
 		"mockery", "-all",
 		// "-case", "snake",
 		"-output", "datasources/mocks/",
-		"-dir", "outport/")
+		"-dir", fmt.Sprintf("usecases/%s/outport/", usecaseName))
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -169,6 +169,11 @@ func GenerateMock(packagePath, usecaseName string) {
 func IsNotExist(fileOrDir string) bool {
 	_, err := os.Stat(fileOrDir)
 	return os.IsNotExist(err)
+}
+
+func IsExist(fileOrDir string) bool {
+	_, err := os.Stat(fileOrDir)
+	return err == nil
 }
 
 func GoFormat(path string) {
@@ -198,21 +203,21 @@ func ReadYAML(usecaseName string) (*Usecase, error) {
 
 	tp.Name = usecaseName
 	tp.PackagePath = GetPackagePath()
-	tp.Inport.RequestFieldObjs = extractField(tp.Inport.RequestFields)
-	tp.Inport.ResponseFieldObjs = extractField(tp.Inport.ResponseFields)
+	tp.Inport.RequestFieldObjs = ExtractField(tp.Inport.RequestFields)
+	tp.Inport.ResponseFieldObjs = ExtractField(tp.Inport.ResponseFields)
 
 	for i, out := range tp.Outports {
-		tp.Outports[i].RequestFieldObjs = extractField(out.RequestFields)
-		tp.Outports[i].ResponseFieldObjs = extractField(out.ResponseFields)
+		tp.Outports[i].RequestFieldObjs = ExtractField(out.RequestFields)
+		tp.Outports[i].ResponseFieldObjs = ExtractField(out.ResponseFields)
 	}
 
 	return &tp, nil
 
 }
 
-func extractField(fields []string) []Variable {
+func ExtractField(fields []string) []*Variable {
 
-	vars := []Variable{}
+	vars := []*Variable{}
 
 	for _, field := range fields {
 		s := strings.Split(field, " ")
@@ -223,7 +228,7 @@ func extractField(fields []string) []Variable {
 			datatype = strings.TrimSpace(s[1])
 		}
 
-		vars = append(vars, Variable{
+		vars = append(vars, &Variable{
 			Name:     name,
 			Datatype: datatype,
 		})

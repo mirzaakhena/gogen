@@ -2,10 +2,10 @@ package gogen
 
 import (
 	"fmt"
-)
+	"io/ioutil"
+	"strings"
 
-const (
-	USECASE_NAME_INDEX int = 2
+	"gopkg.in/yaml.v2"
 )
 
 type usecase struct {
@@ -16,6 +16,80 @@ func NewUsecase() Generator {
 }
 
 func (d *usecase) Generate(args ...string) error {
+	if IsNotExist("gogen_schema.yml") {
+		return fmt.Errorf("please call `gogen init .` first")
+	}
+
+	if len(args) < 3 {
+		return fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
+	}
+
+	usecaseName := args[2]
+
+	// Read gogen_schema and put it into object app
+	app := Application{}
+	{
+		content, err := ioutil.ReadFile("gogen_schema.yml")
+		if err != nil {
+			return err
+		}
+		if err = yaml.Unmarshal(content, &app); err != nil {
+			return err
+		}
+	}
+
+	for _, uc := range app.Usecases {
+		if uc.Name == strings.TrimSpace(usecaseName) {
+			return fmt.Errorf("Usecase with name %s already exist", usecaseName)
+		}
+	}
+
+	var inportModels []*Model
+	inportModels = append(inportModels, &Model{
+		Name:   "modelName",
+		Fields: []string{"field1 builtinType", "field2 OtherOutportType"},
+	})
+
+	inport := Inport{
+		RequestFields:  []string{"Req1 string", "Req2 int"},
+		ResponseFields: []string{"Res1 float64", "Res2 bool"},
+		Models:         inportModels,
+	}
+
+	var outportModels []*Model
+	outportModels = append(outportModels, &Model{
+		Name:   "modelName",
+		Fields: []string{"field1 builtinType", "field2 OtherOutportType"},
+	})
+
+	var outports []*Outport
+	outports = append(outports, &Outport{
+		Name:           "OutportName",
+		RequestFields:  []string{"Req1 string", "Req2 int"},
+		ResponseFields: []string{"Res1 float64", "Res2 bool"},
+		OutportExtends: []string{"Service1", "Repo1"},
+		Models:         outportModels,
+	})
+
+	app.Usecases = append(app.Usecases, &Usecase{
+		Name:     usecaseName,
+		Inport:   &inport,
+		Outports: outports,
+	})
+
+	output, err := yaml.Marshal(app)
+	if err != nil {
+		return err
+	}
+
+	if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func Abc(args ...string) error {
 
 	if IsNotExist(".application_schema/") {
 		return fmt.Errorf("please call `gogen init` first")
@@ -24,7 +98,7 @@ func (d *usecase) Generate(args ...string) error {
 	if len(args) < 3 {
 		return fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
 	}
-	usecaseName := args[USECASE_NAME_INDEX]
+	usecaseName := args[2]
 
 	// if schema file is not found
 	WriteFileIfNotExist(
@@ -67,10 +141,6 @@ func (d *usecase) Generate(args ...string) error {
 		fmt.Sprintf("interactor/%s_test.go", usecaseName),
 		tp,
 	)
-
-	GoFormat(tp.PackagePath)
-
-	GenerateMock(tp.PackagePath, usecaseName)
 
 	return nil
 }

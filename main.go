@@ -43,6 +43,14 @@ func main() {
 			os.Exit(0)
 		}
 
+	case "entity":
+
+		gen := gogen.NewEntity()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
 	case "usecase":
 
 		gen := gogen.NewUsecase()
@@ -51,25 +59,17 @@ func main() {
 			os.Exit(0)
 		}
 
-	case "datasource":
+	case "service":
 
-		gen := gogen.NewDatasource()
+		gen := gogen.NewService()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
 		}
 
-	case "controller":
+	case "update":
 
-		gen := gogen.NewController()
-		if err := gen.Generate(os.Args...); err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(0)
-		}
-
-	case "bind":
-
-		gen := gogen.NewBinder()
+		gen := gogen.NewGenerate()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)

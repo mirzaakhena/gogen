@@ -2,11 +2,10 @@ package gogen
 
 import (
 	"fmt"
+	"io/ioutil"
 	"strings"
-)
 
-const (
-	INIT_PROJECT_INDEX int = 2
+	"gopkg.in/yaml.v2"
 )
 
 type applicationSchema struct {
@@ -17,6 +16,44 @@ func NewApplicationSchema() Generator {
 }
 
 func (d *applicationSchema) Generate(args ...string) error {
+
+	if IsExist("gogen_schema.yml") {
+
+		app := Application{}
+		{
+			content, err := ioutil.ReadFile("gogen_schema.yml")
+			if err != nil {
+				return err
+			}
+
+			if err = yaml.Unmarshal(content, &app); err != nil {
+				return fmt.Errorf("gogen_schema.yml exist but the format is invalid")
+			}
+
+		}
+
+	} else {
+
+		app := Application{}
+
+		{
+			app.PackagePath = GetPackagePath()
+		}
+
+		{
+			s := strings.Split(app.PackagePath, "/")
+			app.ApplicationName = s[len(s)-1]
+		}
+
+		output, err := yaml.Marshal(app)
+		if err != nil {
+			return err
+		}
+		if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
+			return err
+		}
+
+	}
 
 	if len(args) < 3 {
 		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
@@ -31,8 +68,6 @@ func (d *applicationSchema) Generate(args ...string) error {
 		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
 	}
 
-	CreateFolder("%s.application_schema/usecases", baseFolder)
-
 	CreateFolder("%sbinder/", baseFolder)
 
 	CreateFolder("%scontrollers/", baseFolder)
@@ -41,11 +76,7 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("%sentities/", baseFolder)
 
-	CreateFolder("%sinport/", baseFolder)
-
-	CreateFolder("%sinteractor/", baseFolder)
-
-	CreateFolder("%soutport/", baseFolder)
+	CreateFolder("%susecases/", baseFolder)
 
 	CreateFolder("%srepositories/", baseFolder)
 
