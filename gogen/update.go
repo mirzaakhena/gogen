@@ -3,6 +3,7 @@ package gogen
 import (
 	"fmt"
 	"io/ioutil"
+	"strings"
 
 	"gopkg.in/yaml.v2"
 )
@@ -80,9 +81,8 @@ func (d *generate) Generate(args ...string) error {
 
 	// SERVICE
 	{
+		CreateFolder("services/")
 		for _, sc := range app.Services {
-
-			serviceName := LowerCase(sc.Name)
 
 			for _, sm := range sc.ServiceMethods {
 
@@ -90,11 +90,38 @@ func (d *generate) Generate(args ...string) error {
 				sm.ResponseFieldObjs = ExtractField(sm.ResponseFields)
 			}
 
-			CreateFolder("services/")
 			WriteFile(
 				"services/service._go",
-				fmt.Sprintf("services/%s.go", serviceName),
+				fmt.Sprintf("services/%s.go", strings.ToLower(sc.Name)),
 				sc,
+			)
+
+		}
+	}
+
+	// ENTITY
+	{
+		CreateFolder("entities/")
+		for _, et := range app.Entities {
+
+			et.FieldObjs = ExtractField(et.Fields)
+
+			WriteFile(
+				"entities/entity._go",
+				fmt.Sprintf("entities/%s.go", strings.ToLower(et.Name)),
+				et,
+			)
+
+		}
+
+		for _, rp := range app.Repositories {
+
+			rp.PackagePath = GetPackagePath()
+
+			WriteFile(
+				"repositories/repository._go",
+				fmt.Sprintf("repositories/%s.go", strings.ToLower(rp.Name)),
+				rp,
 			)
 
 		}

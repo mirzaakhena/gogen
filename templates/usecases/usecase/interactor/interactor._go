@@ -32,7 +32,7 @@ func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{P
 	} 
 	{{end}}
 
-	// GOGEN_CODE_INJECTION_INTERACTOR_OUTPORTS
+	// GOGEN_INJECTOR_INTERACTOR_OUTPORTS
 
 	return &inport.{{PascalCase .Name}}Response{//
 	

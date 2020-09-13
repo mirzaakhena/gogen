@@ -26,4 +26,4 @@ func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req ou
 }
 {{end}}
 
-// GOGEN_CODE_INJECTION_DATASOURCE 
+// GOGEN_INJECTOR_DATASOURCE 

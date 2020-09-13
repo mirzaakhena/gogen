@@ -67,6 +67,8 @@ type Entity struct {
 }
 
 type Repository struct {
-	Name        string    `yaml:"name"`        // MANDATORY. name of the Repo
-	RepoMethods []*Method `yaml:"repoMethods"` //
+	Name        string   `yaml:"name"`        // MANDATORY. name of the Repo
+	EntityName  string   `yaml:"entityName"`  //
+	MethodNames []string `yaml:"methodNames"` //
+	PackagePath string   `yaml:"-"`           //
 }

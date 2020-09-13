@@ -51,8 +51,8 @@ func (d *service) Generate(args ...string) error {
 	serviceMethods = append(serviceMethods, &Method{
 		RequestFields:  []string{"Req1 string", "Req2 int"},
 		ResponseFields: []string{"Res1 float64", "Res2 bool"},
+		MethodName:     fmt.Sprintf("%sMethodName", serviceName),
 		Models:         models,
-		MethodName:     "MethodName",
 	})
 
 	app.Services = append(app.Services, &Service{

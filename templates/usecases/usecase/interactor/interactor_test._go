@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"{{.PackagePath}}/datasources/mocks"
-	"{{.PackagePath}}/inport"
-	"{{.PackagePath}}/outport"
+	"{{.PackagePath}}/usecases/{{PascalCase .Name}}/inport"
+	"{{.PackagePath}}/usecases/{{PascalCase .Name}}/outport"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -28,7 +28,7 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 	}
   {{end}}
 	
-	// GOGEN_CODE_INJECTION_INTERACTOR_TEST_OUTPORTS
+	// GOGEN_INJECTOR_INTERACTOR_TEST_OUTPORTS
 
 	req := inport.{{PascalCase .Name}}Request{ //
 

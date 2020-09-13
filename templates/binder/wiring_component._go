@@ -3,6 +3,6 @@ package binder
 // Bind will binding usecase, datasource and controller all together
 func (a *AppBinder) Bind() {
 
-	// GOGEN_CODE_INJECTION_BINDER_RESTAPI_GIN
+	// GOGEN_INJECTOR_BINDER_RESTAPI_GIN
 
 }

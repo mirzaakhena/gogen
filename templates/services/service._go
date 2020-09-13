@@ -8,16 +8,16 @@ import (
 
 // {{PascalCase .Name}} ...
 type {{PascalCase .Name}} interface { {{range .ServiceMethods}}
-	{{PascalCase $.Name}}{{PascalCase .MethodName}}(ctx context.Context, req {{PascalCase $.Name}}{{PascalCase .MethodName}}Request) (*{{PascalCase $.Name}}{{PascalCase .MethodName}}Response, error) {{end}}
+	{{PascalCase .MethodName}}(ctx context.Context, req {{PascalCase .MethodName}}Request) (*{{PascalCase .MethodName}}Response, error) {{end}}
 }
 {{range .ServiceMethods}}
-// {{PascalCase $.Name}}{{PascalCase .MethodName}}Request ...
-type {{PascalCase $.Name}}{{PascalCase .MethodName}}Request struct { {{range .RequestFieldObjs}}
+// {{PascalCase .MethodName}}Request ...
+type {{PascalCase .MethodName}}Request struct { {{range .RequestFieldObjs}}
 	{{PascalCase .Name}} {{.Datatype}} {{end}}
 }
 
-// {{PascalCase $.Name}}{{PascalCase .MethodName}}Response ...
-type {{PascalCase $.Name}}{{PascalCase .MethodName}}Response struct { {{range .ResponseFieldObjs}}
+// {{PascalCase .MethodName}}Response ...
+type {{PascalCase .MethodName}}Response struct { {{range .ResponseFieldObjs}}
 	{{PascalCase .Name}} {{.Datatype}} {{end}}
 } 
 {{end}}

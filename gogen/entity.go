@@ -49,6 +49,12 @@ func (d *entity) Generate(args ...string) error {
 		Fields: []string{"Field1 string", "Field2 int"},
 	})
 
+	app.Repositories = append(app.Repositories, &Repository{
+		Name:        fmt.Sprintf("%sRepo", entityName),
+		EntityName:  entityName,
+		MethodNames: []string{fmt.Sprintf("%sRepoSave", entityName)},
+	})
+
 	output, err := yaml.Marshal(app)
 	if err != nil {
 		return err

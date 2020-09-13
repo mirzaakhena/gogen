@@ -63,7 +63,7 @@ func UsecaseIsExist(usecaseName string, data interface{}) bool {
 	scanner := bufio.NewScanner(file)
 
 	marker := fmt.Sprintf("// GOGEN_MARKER_BINDER_RESTAPI_GIN %s", PascalCase(usecaseName))
-	codeInjection := "// GOGEN_CODE_INJECTION_BINDER_RESTAPI_GIN"
+	codeInjection := "// GOGEN_INJECTOR_BINDER_RESTAPI_GIN"
 	for scanner.Scan() {
 		row := scanner.Text()
 		trimRow := strings.TrimSpace(row)
