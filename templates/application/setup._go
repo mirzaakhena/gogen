@@ -3,9 +3,9 @@ package application
 import (
 	"net/http"
 
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
+	"github.com/gin-gonic/gin"	
 	"github.com/mirzaakhena/golang-nsq/messagebroker"
+	"gorm.io/gorm"
 )
 
 // Application define all framework used in this apps

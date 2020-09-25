@@ -153,16 +153,20 @@ func CreateFolder(format string, a ...interface{}) {
 func GenerateMock(packagePath, usecaseName string) {
 	fmt.Printf("mockery %s\n", usecaseName)
 
+	uc := strings.ToLower(usecaseName)
+
 	cmd := exec.Command(
-		"mockery", "-all",
+		"mockery",
+		// "-all",
 		// "-case", "snake",
-		"-output", "datasources/mocks/",
-		"-dir", fmt.Sprintf("usecases/%s/outport/", usecaseName))
+		"-output", fmt.Sprintf("usecase/%s/mocks/", uc),
+		"--name", fmt.Sprintf("%sOutport", usecaseName),
+		"--dir", fmt.Sprintf("usecase/%s/port/", uc))
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
-		log.Fatalf("cmd.Run() failed with %s\n", err)
+		log.Fatalf("mockery failed with %s\n", err)
 	}
 }
 

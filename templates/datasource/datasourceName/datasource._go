@@ -3,7 +3,7 @@ package {{.DatasourceName}}
 import (
 	"context"
 
-	"{{.PackagePath}}/outport"
+	"{{.PackagePath}}/usecases/{{PascalCase .UsecaseName}}/outport"
 )
 
 // New{{PascalCase .UsecaseName}}Datasource ...

@@ -1,0 +1,32 @@
+package port
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}}Outport ...
+type {{PascalCase .Name}}Outport interface {
+	SaveProduct(ctx context.Context, req SaveProductRequest) (*SaveProductResponse, error)
+	IsExist(ctx context.Context, req IsExistRequest) (*IsExistResponse, error)
+}
+
+// SaveProductRequest ...
+type SaveProductRequest struct {
+	ProductName string
+	Price       float64
+}
+
+// SaveProductResponse ...
+type SaveProductResponse struct {
+	ID int
+}
+
+// IsExistRequest ...
+type IsExistRequest struct {
+	Name string
+}
+
+// IsExistResponse ...
+type IsExistResponse struct {
+	YesItHas bool
+}

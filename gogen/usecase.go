@@ -2,6 +2,7 @@ package gogen
 
 import (
 	"fmt"
+	"strings"
 )
 
 type usecase struct {
@@ -53,35 +54,33 @@ func (d *usecase) Generate(args ...string) error {
 			PackagePath: packagePath,
 		}
 
-		CreateFolder("usecases/%s/inport", uc.Name)
+		CreateFolder("usecase/%s/port", strings.ToLower(uc.Name))
+
 		WriteFile(
-			"usecases/usecase/inport/inport._go",
-			fmt.Sprintf("usecases/%s/inport/inport.go", uc.Name),
+			"usecase/usecaseName/port/inport._go",
+			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		CreateFolder("usecases/%s/outport", uc.Name)
 		WriteFile(
-			"usecases/usecase/outport/outport._go",
-			fmt.Sprintf("usecases/%s/outport/outport.go", uc.Name),
+			"usecase/usecaseName/port/outport._go",
+			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		CreateFolder("usecases/%s/interactor", uc.Name)
 		WriteFileIfNotExist(
-			"usecases/usecase/interactor/interactor._go",
-			fmt.Sprintf("usecases/%s/interactor/interactor.go", uc.Name),
+			"usecase/usecaseName/interactor._go",
+			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
+			uc,
+		)
+
+		WriteFileIfNotExist(
+			"usecase/usecaseName/interactor_test._go",
+			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
 		GenerateMock(packagePath, uc.Name)
-
-		WriteFileIfNotExist(
-			"usecases/usecase/interactor/interactor_test._go",
-			fmt.Sprintf("usecases/%s/interactor/interactor_test.go", uc.Name),
-			uc,
-		)
-
 	}
 
 	return nil
