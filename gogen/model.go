@@ -59,6 +59,12 @@ type Datasource struct {
 }
 
 type Controller struct {
-	PackagePath string `yaml:"-"` //
-	UsecaseName string ``         //
+	PackagePath  string      `yaml:"-"` //
+	UsecaseName  string      ``         //
+	InportFields []*NameType ``
+}
+
+type NameType struct {
+	Name string
+	Type string
 }

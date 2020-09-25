@@ -13,9 +13,8 @@ import (
 // {{PascalCase .UsecaseName}} ...
 func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
 
-	type dtoRequest struct { 
-		Name  string  `json:"name"`  //
-		Price float64 `json:"price"` //
+	type dtoRequest struct { {{range .InportFields}}
+		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
 	}
 
 	return func(c *gin.Context) {

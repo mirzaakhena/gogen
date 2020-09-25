@@ -1,7 +1,10 @@
 package gogen
 
 import (
+	"bufio"
 	"fmt"
+	"os"
+	"strings"
 )
 
 type controller struct {
@@ -24,6 +27,39 @@ func (d *controller) Generate(args ...string) error {
 	ct := Controller{}
 	ct.UsecaseName = usecaseName
 	ct.PackagePath = GetPackagePath()
+
+	file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+	if err != nil {
+		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	scanner.Split(bufio.ScanLines)
+
+	state := 0
+	for scanner.Scan() {
+		if strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
+			state = 1
+		} else //
+		if state == 1 {
+			if strings.HasPrefix(scanner.Text(), "}") {
+				state = 2
+				break
+			} else {
+				completeFieldWithType := strings.TrimSpace(scanner.Text())
+				fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
+				ct.InportFields = append(ct.InportFields, &NameType{
+					Name: strings.TrimSpace(fieldWithType[0]),
+					Type: strings.TrimSpace(fieldWithType[1]),
+				})
+			}
+		}
+	}
+
+	if state == 0 {
+		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+	}
 
 	if controllerType == "restapi.gin" {
 
