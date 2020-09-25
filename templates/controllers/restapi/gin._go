@@ -7,27 +7,28 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 
-	"{{.PackagePath}}/inport"
+	"{{.PackagePath}}/usecases/{{.UsecaseName}}/inport"
 )
 
-// {{PascalCase .Name}} ...
-func {{PascalCase .Name}}(inputPort inport.{{PascalCase .Name}}) gin.HandlerFunc {
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}(inputPort inport.{{PascalCase .UsecaseName}}) gin.HandlerFunc {
 
-	type {{CamelCase .Name}}Request struct { {{range .Inport.RequestFieldObjs}}
-		{{PascalCase .Name}} {{.Datatype}} `json:"{{CamelCase .Name}}"` {{end}}
+	type dtoRequest struct { 
+		Name  string  `json:"name"`  //
+		Price float64 `json:"price"` //
 	}
 
 	return func(c *gin.Context) {
 
 		// receive json
-		var jsonReq {{CamelCase .Name}}Request
+		var jsonReq dtoRequest
 		if err := c.BindJSON(&jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
 		}
 
 		// convert to request
-		var req inport.{{PascalCase .Name}}Request
+		var req inport.{{PascalCase .UsecaseName}}Request
 		if err := copier.Copy(&req, jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return

@@ -21,18 +21,24 @@ type {{CamelCase .Name}}Usecase struct {
 // Handle ...
 func (_r *{{CamelCase .Name}}Usecase) Handle(ctx context.Context, req inport.{{PascalCase .Name}}Request) (*inport.{{PascalCase .Name}}Response, error) {
 
-	{{range .Outports}}
-	// GOGEN_MARKER_INTERACTOR_OUTPORT {{PascalCase .Name}}
 	{
-		_, err := _r.dataSource.{{PascalCase .Name}}(ctx, outport.{{PascalCase .Name}}Request{ //
+		_, err := _r.dataSource.GetData(ctx, outport.GetDataRequest{ //
+			SomeID: 20,
 		})
 		if err != nil {
 			return nil, err
 		}		
 	} 
-	{{end}}
 
-	// GOGEN_INJECTOR_INTERACTOR_OUTPORTS
+	{
+		_, err := _r.dataSource.SaveData(ctx, outport.SaveDataRequest{ //
+			Name  : "mirza",
+			Price : 14,
+		})
+		if err != nil {
+			return nil, err
+		}		
+	}
 
 	return &inport.{{PascalCase .Name}}Response{//
 	

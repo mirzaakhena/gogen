@@ -39,14 +39,6 @@ func (d *generate) Generate(args ...string) error {
 
 			uc.PackagePath = GetPackagePath()
 
-			uc.Inport.RequestFieldObjs = ExtractField(uc.Inport.RequestFields)
-			uc.Inport.ResponseFieldObjs = ExtractField(uc.Inport.ResponseFields)
-
-			for i, out := range uc.Outports {
-				uc.Outports[i].RequestFieldObjs = ExtractField(out.RequestFields)
-				uc.Outports[i].ResponseFieldObjs = ExtractField(out.ResponseFields)
-			}
-
 			CreateFolder("usecases/%s/inport", uc.Name)
 			WriteFile(
 				"usecases/usecase/inport/inport._go",
@@ -83,12 +75,6 @@ func (d *generate) Generate(args ...string) error {
 	{
 		CreateFolder("services/")
 		for _, sc := range app.Services {
-
-			for _, sm := range sc.ServiceMethods {
-
-				sm.RequestFieldObjs = ExtractField(sm.RequestFields)
-				sm.ResponseFieldObjs = ExtractField(sm.ResponseFields)
-			}
 
 			WriteFile(
 				"services/service._go",

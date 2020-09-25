@@ -12,9 +12,9 @@ gogen init .
 it will create the basic project structure
 ```
 .application_schema/usecases/
-binder/runner.go
-binder/setup_component.go
-binder/wiring_component.go
+appliation/runner.go
+appliation/setup.go
+appliation/wiring.go
 controllers/
 datasources/mocks
 entities/

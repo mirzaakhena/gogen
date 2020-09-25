@@ -2,10 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"io/ioutil"
-	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 type usecase struct {
@@ -16,9 +12,9 @@ func NewUsecase() Generator {
 }
 
 func (d *usecase) Generate(args ...string) error {
-	if IsNotExist("gogen_schema.yml") {
-		return fmt.Errorf("please call `gogen init .` first")
-	}
+	// if IsNotExist("gogen_schema.yml") {
+	// 	return fmt.Errorf("please call `gogen init .` first")
+	// }
 
 	if len(args) < 3 {
 		return fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
@@ -26,64 +22,66 @@ func (d *usecase) Generate(args ...string) error {
 
 	usecaseName := args[2]
 
-	// Read gogen_schema and put it into object app
-	app := Application{}
+	// Read the structure
+	// app := Application{}
+	// {
+	// 	app.PackagePath = GetPackagePath()
+	// 	s := strings.Split(app.PackagePath, "/")
+	// 	app.ApplicationName = s[len(s)-1]
+	// }
+
+	// app.Usecases = append(app.Usecases, &Usecase{
+	// 	Name: usecaseName,
+	// })
+
+	// output, err := yaml.Marshal(app)
+	// if err != nil {
+	// 	return err
+	// }
+
+	// if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
+	// 	return err
+	// }
+
+	// USECASE
 	{
-		content, err := ioutil.ReadFile("gogen_schema.yml")
-		if err != nil {
-			return err
+
+		packagePath := GetPackagePath()
+
+		uc := Usecase{
+			Name:        usecaseName,
+			PackagePath: packagePath,
 		}
-		if err = yaml.Unmarshal(content, &app); err != nil {
-			return err
-		}
-	}
 
-	for _, uc := range app.Usecases {
-		if uc.Name == strings.TrimSpace(usecaseName) {
-			return fmt.Errorf("Usecase with name %s already exist", usecaseName)
-		}
-	}
+		CreateFolder("usecases/%s/inport", uc.Name)
+		WriteFile(
+			"usecases/usecase/inport/inport._go",
+			fmt.Sprintf("usecases/%s/inport/inport.go", uc.Name),
+			uc,
+		)
 
-	var inportModels []*Model
-	inportModels = append(inportModels, &Model{
-		Name:   "modelName",
-		Fields: []string{"field1 builtinType", "field2 OtherOutportType"},
-	})
+		CreateFolder("usecases/%s/outport", uc.Name)
+		WriteFile(
+			"usecases/usecase/outport/outport._go",
+			fmt.Sprintf("usecases/%s/outport/outport.go", uc.Name),
+			uc,
+		)
 
-	inport := Inport{
-		RequestFields:  []string{"Req1 string", "Req2 int"},
-		ResponseFields: []string{"Res1 float64", "Res2 bool"},
-		Models:         inportModels,
-	}
+		CreateFolder("usecases/%s/interactor", uc.Name)
+		WriteFileIfNotExist(
+			"usecases/usecase/interactor/interactor._go",
+			fmt.Sprintf("usecases/%s/interactor/interactor.go", uc.Name),
+			uc,
+		)
 
-	var outportModels []*Model
-	outportModels = append(outportModels, &Model{
-		Name:   "modelName",
-		Fields: []string{"field1 builtinType", "field2 OtherOutportType"},
-	})
+		GenerateMock(packagePath, uc.Name)
 
-	var outports []*Outport
-	outports = append(outports, &Outport{
-		Name:           "OutportName",
-		RequestFields:  []string{"Req1 string", "Req2 int"},
-		ResponseFields: []string{"Res1 float64", "Res2 bool"},
-		OutportExtends: []string{"Service1", "Repo1"},
-		Models:         outportModels,
-	})
+		WriteFileIfNotExist(
+			"usecases/usecase/interactor/interactor_test._go",
+			fmt.Sprintf("usecases/%s/interactor/interactor_test.go", uc.Name),
+			uc,
+		)
 
-	app.Usecases = append(app.Usecases, &Usecase{
-		Name:     usecaseName,
-		Inport:   &inport,
-		Outports: outports,
-	})
-
-	output, err := yaml.Marshal(app)
-	if err != nil {
-		return err
-	}
-
-	if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
-		return err
 	}
 
 	return nil

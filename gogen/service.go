@@ -47,17 +47,8 @@ func (d *service) Generate(args ...string) error {
 		Fields: []string{"Field1 BuiltinType", "Field2 OtherOutportType"},
 	})
 
-	var serviceMethods []*Method
-	serviceMethods = append(serviceMethods, &Method{
-		RequestFields:  []string{"Req1 string", "Req2 int"},
-		ResponseFields: []string{"Res1 float64", "Res2 bool"},
-		MethodName:     fmt.Sprintf("%sMethodName", serviceName),
-		Models:         models,
-	})
-
 	app.Services = append(app.Services, &Service{
-		Name:           serviceName,
-		ServiceMethods: serviceMethods,
+		Name: serviceName,
 	})
 
 	output, err := yaml.Marshal(app)

@@ -6,24 +6,21 @@ import (
 	"{{.PackagePath}}/outport"
 )
 
-// New{{PascalCase .Name}} ...
-func New{{PascalCase .Name}}() outport.{{PascalCase .Name}} {
-	return &{{CamelCase .Name}}{}
+// New{{PascalCase .UsecaseName}}Datasource ...
+func New{{PascalCase .UsecaseName}}Datasource() outport.{{PascalCase .UsecaseName}} {
+	return &{{CamelCase .UsecaseName}}{}
 }
 
-type {{CamelCase .Name}} struct {
+type {{CamelCase .UsecaseName}} struct {
 
 }
-{{range .Outports}}
-// GOGEN_MARKER_DATASOURCE {{$.DatasourceName}} {{PascalCase .Name}}
-// {{PascalCase .Name}} ...
-func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req outport.{{PascalCase .Name}}Request) (*outport.{{PascalCase .Name}}Response, error) {
 
-	return &outport.{{PascalCase .Name}}Response{ //
+{{range .OutportMethods}}
+// {{.}} ...
+func (_r *{{CamelCase $.UsecaseName}}) {{.}}(ctx context.Context, req outport.{{.}}Request) (*outport.{{.}}Response, error) {
+
+	return &outport.{{.}}Response{ //
 
 	}, nil
+} {{end}}
 
-}
-{{end}}
-
-// GOGEN_INJECTOR_DATASOURCE 

@@ -20,35 +20,13 @@ type Method struct {
 	ResponseFieldObjs []*Variable `yaml:"-"`              //
 }
 
-type Inport struct {
-	RequestFields     []string    `yaml:"requestFields"`  //
-	ResponseFields    []string    `yaml:"responseFields"` //
-	Models            []*Model    `yaml:"models"`         //
-	RequestFieldObjs  []*Variable `yaml:"-"`              //
-	ResponseFieldObjs []*Variable `yaml:"-"`              //
-}
-
-type Outport struct {
-	Name              string      `yaml:"name"`           //
-	OutportExtends    []string    `yaml:"outportExtends"` // can inputed by Repository or Service interface
-	RequestFields     []string    `yaml:"requestFields"`  //
-	ResponseFields    []string    `yaml:"responseFields"` //
-	Models            []*Model    `yaml:"models"`         //
-	RequestFieldObjs  []*Variable `yaml:"-"`              //
-	ResponseFieldObjs []*Variable `yaml:"-"`              //
-}
-
 type Usecase struct {
-	Name           string     `yaml:"name"`     //
-	Inport         *Inport    `yaml:"inport"`   //
-	Outports       []*Outport `yaml:"outports"` //
-	PackagePath    string     `yaml:"-"`        //
-	DatasourceName string     `yaml:"-"`
+	Name        string `yaml:"name"` //
+	PackagePath string `yaml:"-"`    //
 }
 
 type Service struct {
-	Name           string    `yaml:"name"`           //
-	ServiceMethods []*Method `yaml:"serviceMethods"` //
+	Name string `yaml:"name"` //
 }
 
 type Application struct {
@@ -71,4 +49,16 @@ type Repository struct {
 	EntityName  string   `yaml:"entityName"`  //
 	MethodNames []string `yaml:"methodNames"` //
 	PackagePath string   `yaml:"-"`           //
+}
+
+type Datasource struct {
+	DatasourceName string   `yaml:"name"` //
+	UsecaseName    string   ``            //
+	PackagePath    string   `yaml:"-"`    //
+	OutportMethods []string ``            //
+}
+
+type Controller struct {
+	PackagePath string `yaml:"-"` //
+	UsecaseName string ``         //
 }

@@ -43,14 +43,6 @@ func main() {
 			os.Exit(0)
 		}
 
-	case "entity":
-
-		gen := gogen.NewEntity()
-		if err := gen.Generate(os.Args...); err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(0)
-		}
-
 	case "usecase":
 
 		gen := gogen.NewUsecase()
@@ -59,21 +51,45 @@ func main() {
 			os.Exit(0)
 		}
 
-	case "service":
+	case "datasource":
 
-		gen := gogen.NewService()
+		gen := gogen.NewDatasource()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
 		}
 
-	case "update":
+	case "controller":
 
-		gen := gogen.NewGenerate()
+		gen := gogen.NewController()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
 		}
+
+	// case "service":
+
+	// 	gen := gogen.NewService()
+	// 	if err := gen.Generate(os.Args...); err != nil {
+	// 		fmt.Printf("%s\n", err.Error())
+	// 		os.Exit(0)
+	// 	}
+
+	// case "entity":
+
+	// 	gen := gogen.NewEntity()
+	// 	if err := gen.Generate(os.Args...); err != nil {
+	// 		fmt.Printf("%s\n", err.Error())
+	// 		os.Exit(0)
+	// 	}
+
+	// case "update":
+
+	// 	gen := gogen.NewGenerate()
+	// 	if err := gen.Generate(os.Args...); err != nil {
+	// 		fmt.Printf("%s\n", err.Error())
+	// 		os.Exit(0)
+	// 	}
 
 	default:
 		fmt.Printf("command %s is not recognized. %s\n", command, message)

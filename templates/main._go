@@ -1,20 +1,20 @@
 package main
 
 import (
-	"{{.PackagePath}}{{.Directory}}/binder"
+	"{{.PackagePath}}{{.Directory}}/application"
 )
 
 //go:generate mockery -all -output datasources/mocks/ -dir outport/
 
 func main() {
 
-	appBinder, err := binder.NewAppBinder()
+	app, err := application.NewApplication()
 	if err != nil {
 		panic(err)
 	}
 
-	appBinder.Bind()
+	app.Bind()
 
-	appBinder.Run()
+	app.Run()
 
 }

@@ -1,4 +1,4 @@
-package binder
+package application
 
 import (
 	"context"
@@ -13,7 +13,7 @@ import (
 // Run will setup anything that need to run the apps
 // for example run the router or consumer or grpc server
 // an also prepare for the gracefully shutdown
-func (a *AppBinder) Run() {
+func (a *Application) Run() {
 
 	srv := &http.Server{
 		Addr:    ":8080",

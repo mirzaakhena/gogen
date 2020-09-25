@@ -2,10 +2,7 @@ package gogen
 
 import (
 	"fmt"
-	"io/ioutil"
 	"strings"
-
-	"gopkg.in/yaml.v2"
 )
 
 type applicationSchema struct {
@@ -17,43 +14,43 @@ func NewApplicationSchema() Generator {
 
 func (d *applicationSchema) Generate(args ...string) error {
 
-	if IsExist("gogen_schema.yml") {
+	// if IsExist("gogen_schema.yml") {
 
-		app := Application{}
-		{
-			content, err := ioutil.ReadFile("gogen_schema.yml")
-			if err != nil {
-				return err
-			}
+	// 	app := Application{}
+	// 	{
+	// 		content, err := ioutil.ReadFile("gogen_schema.yml")
+	// 		if err != nil {
+	// 			return err
+	// 		}
 
-			if err = yaml.Unmarshal(content, &app); err != nil {
-				return fmt.Errorf("gogen_schema.yml exist but the format is invalid")
-			}
+	// 		if err = yaml.Unmarshal(content, &app); err != nil {
+	// 			return fmt.Errorf("gogen_schema.yml exist but the format is invalid")
+	// 		}
 
-		}
+	// 	}
 
-	} else {
+	// } else {
 
-		app := Application{}
+	// 	app := Application{}
 
-		{
-			app.PackagePath = GetPackagePath()
-		}
+	// 	{
+	// 		app.PackagePath = GetPackagePath()
+	// 	}
 
-		{
-			s := strings.Split(app.PackagePath, "/")
-			app.ApplicationName = s[len(s)-1]
-		}
+	// 	{
+	// 		s := strings.Split(app.PackagePath, "/")
+	// 		app.ApplicationName = s[len(s)-1]
+	// 	}
 
-		output, err := yaml.Marshal(app)
-		if err != nil {
-			return err
-		}
-		if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
-			return err
-		}
+	// 	output, err := yaml.Marshal(app)
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// 	if err := ioutil.WriteFile("gogen_schema.yml", output, 0644); err != nil {
+	// 		return err
+	// 	}
 
-	}
+	// }
 
 	if len(args) < 3 {
 		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
@@ -68,7 +65,7 @@ func (d *applicationSchema) Generate(args ...string) error {
 		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
 	}
 
-	CreateFolder("%sbinder/", baseFolder)
+	CreateFolder("%sapplication/", baseFolder)
 
 	CreateFolder("%scontrollers/", baseFolder)
 
@@ -109,20 +106,20 @@ func (d *applicationSchema) Generate(args ...string) error {
 	)
 
 	WriteFileIfNotExist(
-		"binder/runner._go",
-		fmt.Sprintf("%sbinder/runner.go", baseFolder),
+		"application/runner._go",
+		fmt.Sprintf("%sapplication/runner.go", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
-		"binder/setup_component._go",
-		fmt.Sprintf("%sbinder/setup_component.go", baseFolder),
+		"application/setup._go",
+		fmt.Sprintf("%sapplication/setup.go", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
-		"binder/wiring_component._go",
-		fmt.Sprintf("%sbinder/wiring_component.go", baseFolder),
+		"application/wiring._go",
+		fmt.Sprintf("%sapplication/wiring.go", baseFolder),
 		struct {
 			PackagePath string
 		}{

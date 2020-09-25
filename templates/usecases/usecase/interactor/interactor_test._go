@@ -17,18 +17,24 @@ func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 	ctx := context.Background()
 
 	outputPort := mocks.{{PascalCase .Name}}{}
-  {{range .Outports}}
-	// GOGEN_MARKER_INTERACTOR_TEST_OUTPORT {{PascalCase .Name}}
+
 	{
-		outputPort.On("{{PascalCase .Name}}", ctx, outport.{{PascalCase .Name}}Request{ // 
-		
-		}).Return(&outport.{{PascalCase .Name}}Response{ //
+		outputPort.On("GetData", ctx, outport.GetDataRequest{ // 
+			SomeID: 20,
+		}).Return(&outport.GetDataResponse{ //
 
 		}, nil) 		
 	}
-  {{end}}
-	
-	// GOGEN_INJECTOR_INTERACTOR_TEST_OUTPORTS
+
+	{
+		outputPort.On("SaveData", ctx, outport.SaveDataRequest{ // 
+			Name:  "mirza",
+			Price: 14,			
+		}).Return(&outport.SaveDataResponse{ //
+
+		}, nil) 		
+	}	
+
 
 	req := inport.{{PascalCase .Name}}Request{ //
 

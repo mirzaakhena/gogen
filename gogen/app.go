@@ -203,13 +203,6 @@ func ReadYAML(usecaseName string) (*Usecase, error) {
 
 	tp.Name = usecaseName
 	tp.PackagePath = GetPackagePath()
-	tp.Inport.RequestFieldObjs = ExtractField(tp.Inport.RequestFields)
-	tp.Inport.ResponseFieldObjs = ExtractField(tp.Inport.ResponseFields)
-
-	for i, out := range tp.Outports {
-		tp.Outports[i].RequestFieldObjs = ExtractField(out.RequestFields)
-		tp.Outports[i].ResponseFieldObjs = ExtractField(out.ResponseFields)
-	}
 
 	return &tp, nil
 
