@@ -14,22 +14,40 @@ func NewController() Generator {
 func (d *controller) Generate(args ...string) error {
 
 	if len(args) < 3 {
-		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen controller CreateOrder`")
+		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen controller restapi.gin CreateOrder`")
 	}
 
-	usecaseName := args[2]
+	controllerType := args[2]
+
+	usecaseName := args[3]
 
 	ct := Controller{}
 	ct.UsecaseName = usecaseName
 	ct.PackagePath = GetPackagePath()
 
-	CreateFolder("controllers/restapi")
+	if controllerType == "restapi.gin" {
 
-	WriteFileIfNotExist(
-		"controllers/restapi/gin._go",
-		fmt.Sprintf("controllers/restapi/%s.go", usecaseName),
-		ct,
-	)
+		CreateFolder("controller/restapi")
+
+		WriteFileIfNotExist(
+			"controller/restapi/gin._go",
+			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
+			ct,
+		)
+
+	} else //
+
+	if controllerType == "restapi.http" {
+
+		CreateFolder("controller/restapi")
+
+		WriteFileIfNotExist(
+			"controller/restapi/http._go",
+			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
+			ct,
+		)
+
+	}
 
 	GoFormat(ct.PackagePath)
 

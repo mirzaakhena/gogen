@@ -7,11 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 
-	"{{.PackagePath}}/usecases/{{.UsecaseName}}/inport"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
 // {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}(inputPort inport.{{PascalCase .UsecaseName}}) gin.HandlerFunc {
+func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
 
 	type dtoRequest struct { 
 		Name  string  `json:"name"`  //
@@ -28,7 +28,7 @@ func {{PascalCase .UsecaseName}}(inputPort inport.{{PascalCase .UsecaseName}}) g
 		}
 
 		// convert to request
-		var req inport.{{PascalCase .UsecaseName}}Request
+		var req port.{{PascalCase .UsecaseName}}Request
 		if err := copier.Copy(&req, jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return

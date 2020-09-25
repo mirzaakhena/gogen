@@ -42,7 +42,7 @@ func (d *datasource) Generate(args ...string) error {
 	ds.UsecaseName = usecaseName
 	ds.PackagePath = GetPackagePath()
 
-	file, err := os.Open(fmt.Sprintf("usecases/%s/outport/outport.go", usecaseName))
+	file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
 	if err != nil {
 		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 	}
@@ -53,7 +53,7 @@ func (d *datasource) Generate(args ...string) error {
 
 	state := 0
 	for scanner.Scan() {
-		if strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %s interface {", usecaseName)) {
+		if strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", usecaseName)) {
 			state = 1
 		} else //
 		if state == 1 {
@@ -63,17 +63,20 @@ func (d *datasource) Generate(args ...string) error {
 			} else {
 				completeMethod := strings.TrimSpace(scanner.Text())
 				methodNameOnly := strings.Split(completeMethod, "(")[0]
-				fmt.Println(methodNameOnly)
 				ds.OutportMethods = append(ds.OutportMethods, methodNameOnly)
 			}
 		}
 	}
 
-	CreateFolder("datasources/%s", strings.ToLower(datasourceName))
+	if state == 0 {
+		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+	}
+
+	CreateFolder("datasource/%s", strings.ToLower(datasourceName))
 
 	WriteFileIfNotExist(
-		"datasources/datasource/datasource._go",
-		fmt.Sprintf("datasources/%s/%s.go", datasourceName, usecaseName),
+		"datasource/datasourceName/datasource._go",
+		fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName),
 		ds,
 	)
 

@@ -1,0 +1,59 @@
+package restapi
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+
+	"bitbucket.org/mirzaakhena/belajar-generation/usecase/createorder/port"
+	"github.com/jinzhu/copier"
+)
+
+func CreateOrder(inputPort port.CreateOrderInport) http.HandlerFunc {
+
+	type dtoRequest struct {
+		Name  string  `json:"name"`  //
+		Price float64 `json:"price"` //
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		// receive json
+		var jsonReq dtoRequest
+
+		if err := json.NewDecoder(r.Body).Decode(&jsonReq); err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			bytes, _ := json.Marshal(err.Error())
+			_, _ = w.Write([]byte(bytes))
+			return
+		}
+
+		// convert to request
+		var req port.CreateOrderRequest
+		if err := copier.Copy(&req, jsonReq); err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			bytes, _ := json.Marshal(err.Error())
+			_, _ = w.Write([]byte(bytes))
+			return
+		}
+
+		// run the usecase
+		res, err := inputPort.Handle(context.Background(), req)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			bytes, _ := json.Marshal(err.Error())
+			_, _ = w.Write([]byte(bytes))
+			return
+		}
+
+		// return the response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		bytes, _ := json.Marshal(res)
+		_, _ = w.Write([]byte(bytes))
+
+	}
+}

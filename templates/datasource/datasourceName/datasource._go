@@ -3,11 +3,11 @@ package {{.DatasourceName}}
 import (
 	"context"
 
-	"{{.PackagePath}}/usecases/{{PascalCase .UsecaseName}}/outport"
+	"{{.PackagePath}}/usecases/{{LowerCase .UsecaseName}}/port"
 )
 
 // New{{PascalCase .UsecaseName}}Datasource ...
-func New{{PascalCase .UsecaseName}}Datasource() outport.{{PascalCase .UsecaseName}} {
+func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}} {
 	return &{{CamelCase .UsecaseName}}{}
 }
 
@@ -17,9 +17,9 @@ type {{CamelCase .UsecaseName}} struct {
 
 {{range .OutportMethods}}
 // {{.}} ...
-func (_r *{{CamelCase $.UsecaseName}}) {{.}}(ctx context.Context, req outport.{{.}}Request) (*outport.{{.}}Response, error) {
+func (_r *{{CamelCase $.UsecaseName}}) {{.}}(ctx context.Context, req port.{{.}}Request) (*port.{{.}}Response, error) {
 
-	return &outport.{{.}}Response{ //
+	return &port.{{.}}Response{ //
 
 	}, nil
 } {{end}}
