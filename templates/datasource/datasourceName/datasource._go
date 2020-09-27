@@ -3,11 +3,11 @@ package {{.DatasourceName}}
 import (
 	"context"
 
-	"{{.PackagePath}}/usecases/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
 // New{{PascalCase .UsecaseName}}Datasource ...
-func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}} {
+func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}}Outport {
 	return &{{CamelCase .UsecaseName}}{}
 }
 

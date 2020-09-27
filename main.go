@@ -17,8 +17,11 @@ some command available is
   controller <controller type> <usecase name>
 
 some controller type available is
-  restapi
-  consumer
+	restapi.gin
+	restapi.http
+
+for some controller here is under development
+  consumer.nsq
   grpc
 `
 
@@ -66,30 +69,6 @@ func main() {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
 		}
-
-	// case "service":
-
-	// 	gen := gogen.NewService()
-	// 	if err := gen.Generate(os.Args...); err != nil {
-	// 		fmt.Printf("%s\n", err.Error())
-	// 		os.Exit(0)
-	// 	}
-
-	// case "entity":
-
-	// 	gen := gogen.NewEntity()
-	// 	if err := gen.Generate(os.Args...); err != nil {
-	// 		fmt.Printf("%s\n", err.Error())
-	// 		os.Exit(0)
-	// 	}
-
-	// case "update":
-
-	// 	gen := gogen.NewGenerate()
-	// 	if err := gen.Generate(os.Args...); err != nil {
-	// 		fmt.Printf("%s\n", err.Error())
-	// 		os.Exit(0)
-	// 	}
 
 	default:
 		fmt.Printf("command %s is not recognized. %s\n", command, message)

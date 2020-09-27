@@ -31,9 +31,9 @@ func GetGopath() string {
 }
 
 func GetPackagePath() string {
-	a, _ := filepath.Abs("./")
-	x := strings.Split(a, GetGopath()+"/src/")
-	return x[1]
+	currentPath, _ := filepath.Abs("./")
+	pathAfterGopath := strings.Split(currentPath, GetGopath()+"/src/")
+	return pathAfterGopath[1]
 }
 
 func WriteFileIfNotExist(templateFile, outputFile string, data interface{}) error {
@@ -43,10 +43,6 @@ func WriteFileIfNotExist(templateFile, outputFile string, data interface{}) erro
 	}
 
 	return nil
-}
-
-func InjectFileIfAlreadyExist(codePiece, injectedFile string) {
-
 }
 
 // function that used in templates
@@ -153,15 +149,20 @@ func CreateFolder(format string, a ...interface{}) {
 func GenerateMock(packagePath, usecaseName string) {
 	fmt.Printf("mockery %s\n", usecaseName)
 
-	uc := strings.ToLower(usecaseName)
+	lowercaseUsecaseName := strings.ToLower(usecaseName)
 
 	cmd := exec.Command(
 		"mockery",
-		// "-all",
-		// "-case", "snake",
-		"-output", fmt.Sprintf("usecase/%s/mocks/", uc),
+
+		// read file under path usecase/USECASE_NAME/port/
+		"--dir", fmt.Sprintf("usecase/%s/port/", lowercaseUsecaseName),
+
+		// specifically interface with name that has suffix 'Outport'
 		"--name", fmt.Sprintf("%sOutport", usecaseName),
-		"--dir", fmt.Sprintf("usecase/%s/port/", uc))
+
+		// put the mock under usecase/%s/mocks/
+		"-output", fmt.Sprintf("usecase/%s/mocks/", lowercaseUsecaseName),
+	)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr

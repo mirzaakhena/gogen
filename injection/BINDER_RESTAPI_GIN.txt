@@ -1,6 +1,0 @@
-  // GOGEN_MARKER_BINDER_RESTAPI_GIN {{PascalCase .Name}}
-	{
-		outputPort := production.New{{PascalCase .Name}}()
-		inputPort := interactor.New{{PascalCase .Name}}(outputPort)
-		a.Router.GET("/createOrder", restapi.{{PascalCase .Name}}(inputPort))
-	}
