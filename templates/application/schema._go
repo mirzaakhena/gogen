@@ -1,0 +1,12 @@
+package application
+
+func (a *Application) SetupSchema() {
+	// catchError(a.Database.AutoMigrate(&table.MenuGroup{}))
+	// catchError(a.Database.AutoMigrate(&table.MenuItem{}))
+}
+
+func catchError(err error) {
+	if err != nil {
+		panic(err)
+	}
+}

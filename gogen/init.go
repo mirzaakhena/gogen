@@ -29,19 +29,19 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("%sapplication/", baseFolder)
 
-	CreateFolder("%scontrollers/", baseFolder)
+	CreateFolder("%scontroller/", baseFolder)
 
-	CreateFolder("%sdatasources/", baseFolder)
+	CreateFolder("%sdatasource/", baseFolder)
 
-	CreateFolder("%sentities/", baseFolder)
+	CreateFolder("%sdomain/model/", baseFolder)
 
-	CreateFolder("%susecases/", baseFolder)
+	CreateFolder("%sdomain/repository/", baseFolder)
 
-	CreateFolder("%srepositories/", baseFolder)
+	CreateFolder("%susecase/", baseFolder)
 
-	CreateFolder("%sservices/", baseFolder)
+	CreateFolder("%sservice/", baseFolder)
 
-	CreateFolder("%sutils/", baseFolder)
+	CreateFolder("%sutil/", baseFolder)
 
 	WriteFileIfNotExist(
 		"main._go",
@@ -74,19 +74,21 @@ func (d *applicationSchema) Generate(args ...string) error {
 	)
 
 	WriteFileIfNotExist(
-		"application/setup._go",
-		fmt.Sprintf("%sapplication/setup.go", baseFolder),
+		"application/application._go",
+		fmt.Sprintf("%sapplication/application.go", baseFolder),
 		struct{}{},
 	)
 
 	WriteFileIfNotExist(
-		"application/wiring._go",
-		fmt.Sprintf("%sapplication/wiring.go", baseFolder),
-		struct {
-			PackagePath string
-		}{
-			PackagePath: GetPackagePath(),
-		},
+		"application/schema._go",
+		fmt.Sprintf("%sapplication/schema.go", baseFolder),
+		struct{}{},
+	)
+
+	WriteFileIfNotExist(
+		"application/registry._go",
+		fmt.Sprintf("%sapplication/registry.go", baseFolder),
+		struct{}{},
 	)
 
 	return nil

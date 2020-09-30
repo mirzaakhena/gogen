@@ -1,0 +1,11 @@
+package application
+
+func (a *Application) RegisterUsecase() {
+
+	// {
+	// 	outport := production.NewCreateOrderDatasource()
+	// 	inport := createorder.NewCreateOrderUsecase(outport)
+	// 	a.Router.POST("/createorder", a.Interceptor, restapi.CreateOrder(inport))
+	// }
+
+}

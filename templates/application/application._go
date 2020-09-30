@@ -1,0 +1,68 @@
+package application
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
+)
+
+// Application define all framework used in this apps
+type Application struct {
+	Router      *gin.Engine
+	Database    *gorm.DB
+	Interceptor gin.HandlerFunc
+}
+
+// NewApplication setup all the framework or library needded for this apps to be running
+func NewApplication() (*Application, error) {
+
+	router := gin.Default()
+
+	router.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "Ready")
+	})
+
+	interceptor := func(c *gin.Context) {
+
+		// if somethingHappen {
+		//   c.Abort()
+		//   return
+		// }
+
+		c.Next()
+	}
+
+	dialect := "sqlite"
+
+	var dialector gorm.Dialector
+
+	if dialect == "sqlite" {
+		connectionString := "data.db"
+		dialector = sqlite.Open(connectionString)
+	} else //
+
+	if dialect == "mysql" {
+		connectionString := "root:@tcp(127.0.0.1:3306)/mydatabase?charset=utf8mb4&parseTime=True&loc=Local"
+		dialector = mysql.Open(connectionString)
+	}
+
+	database, err := gorm.Open(dialector, &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Silent),
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	app := Application{ //
+		Router:      router,
+		Database:    database,
+		Interceptor: interceptor,
+	}
+
+	return &app, nil
+}

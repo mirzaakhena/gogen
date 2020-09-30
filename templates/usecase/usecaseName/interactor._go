@@ -7,6 +7,8 @@ import (
 	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/port"
 )
 
+//go:generate mockery --dir port/ --name {{PascalCase .Name}}Outport -output mocks/
+
 // New{{PascalCase .Name}}Usecase ...
 func New{{PascalCase .Name}}Usecase(outputPort port.{{PascalCase .Name}}Outport) port.{{PascalCase .Name}}Inport {
 	return &{{CamelCase .Name}}Interactor{

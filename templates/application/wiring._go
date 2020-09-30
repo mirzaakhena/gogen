@@ -1,8 +1,0 @@
-package application
-
-// Bind will binding usecase, datasource and controller all together
-func (a *Application) Bind() {
-
-	// GOGEN_INJECTOR_BINDER_RESTAPI_GIN
-
-}

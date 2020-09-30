@@ -4,8 +4,6 @@ import (
 	"{{.PackagePath}}{{.Directory}}/application"
 )
 
-//go:generate mockery -all -output datasources/mocks/ -dir outport/
-
 func main() {
 
 	app, err := application.NewApplication()
@@ -13,7 +11,9 @@ func main() {
 		panic(err)
 	}
 
-	app.Bind()
+	app.SetupSchema()
+
+	app.RegisterUsecase()
 
 	app.Run()
 
