@@ -33,17 +33,13 @@ func (d *applicationSchema) Generate(args ...string) error {
 
 	CreateFolder("%sdatasource/", baseFolder)
 
-	CreateFolder("%sdomain/model/", baseFolder)
-
-	CreateFolder("%sdomain/repository/", baseFolder)
+	CreateFolder("%smodel/", baseFolder)
 
 	CreateFolder("%susecase/", baseFolder)
 
-	CreateFolder("%sservice/", baseFolder)
-
 	CreateFolder("%sutil/", baseFolder)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"main._go",
 		fmt.Sprintf("%smain.go", baseFolder),
 		struct {
@@ -55,37 +51,37 @@ func (d *applicationSchema) Generate(args ...string) error {
 		},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"config._toml",
 		fmt.Sprintf("%sconfig.toml", baseFolder),
 		struct{}{},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"README._md",
 		fmt.Sprintf("%sREADME.md", baseFolder),
 		struct{}{},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/runner._go",
 		fmt.Sprintf("%sapplication/runner.go", baseFolder),
 		struct{}{},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/application._go",
 		fmt.Sprintf("%sapplication/application.go", baseFolder),
 		struct{}{},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/schema._go",
 		fmt.Sprintf("%sapplication/schema.go", baseFolder),
 		struct{}{},
 	)
 
-	WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/registry._go",
 		fmt.Sprintf("%sapplication/registry.go", baseFolder),
 		struct{}{},

@@ -11,10 +11,11 @@ type {{PascalCase .Name}}Inport interface {
 
 // {{PascalCase .Name}}Request ...
 type {{PascalCase .Name}}Request struct {
-
+	Name  string
+	Price float64
 }
 
 // {{PascalCase .Name}}Response ...
 type {{PascalCase .Name}}Response struct { 
-
+	ID int
 }

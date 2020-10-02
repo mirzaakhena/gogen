@@ -213,25 +213,25 @@ func ReadYAML(usecaseName string) (*Usecase, error) {
 
 }
 
-func ExtractField(fields []string) []*Variable {
+// func ExtractField(fields []string) []*Variable {
 
-	vars := []*Variable{}
+// 	vars := []*Variable{}
 
-	for _, field := range fields {
-		s := strings.Split(field, " ")
-		name := strings.TrimSpace(s[0])
+// 	for _, field := range fields {
+// 		s := strings.Split(field, " ")
+// 		name := strings.TrimSpace(s[0])
 
-		datatype := "string"
-		if len(s) > 1 {
-			datatype = strings.TrimSpace(s[1])
-		}
+// 		datatype := "string"
+// 		if len(s) > 1 {
+// 			datatype = strings.TrimSpace(s[1])
+// 		}
 
-		vars = append(vars, &Variable{
-			Name:     name,
-			Datatype: datatype,
-		})
+// 		vars = append(vars, &Variable{
+// 			Name:     name,
+// 			Datatype: datatype,
+// 		})
 
-	}
+// 	}
 
-	return vars
-}
+// 	return vars
+// }

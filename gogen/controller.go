@@ -65,7 +65,7 @@ func (d *controller) Generate(args ...string) error {
 
 		CreateFolder("controller/restapi")
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"controller/restapi/gin._go",
 			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
 			ct,
@@ -77,7 +77,7 @@ func (d *controller) Generate(args ...string) error {
 
 		CreateFolder("controller/restapi")
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"controller/restapi/http._go",
 			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
 			ct,

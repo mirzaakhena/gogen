@@ -1,0 +1,49 @@
+presentation
+
+Tujuan SOC Infrastruktur dan Logic
+Infrastruktur
+  Framework
+  Database
+  kominukasi
+  Messaging
+
+Ciri bisa diganti2
+
+Logic
+  Bisnis proses
+  Algoritma
+  validasi
+
+Ciri tidak bisa diganti
+
+Ada 2 jenis data
+  Data master, ciri bisa di buat CRUD
+  Data transaksi, ciri tidak bisa CRUD
+
+------------------------------------
+
+CoffeeShop
+
+Menu
+  Name
+  Price
+
+Payment
+  User
+  Balance
+
+User
+  Name
+  Email
+  Password
+
+Order
+  User
+  List of OrderItem
+  Price
+
+OrderItem
+  Menu
+  Quantity
+
+

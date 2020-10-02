@@ -1,181 +1,40 @@
-package {{LowerCase .Name}}
+package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
-	"fmt"
 	"testing"
 
-	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/mocks"
-	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/mocks"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
+func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 
-	outputPort := mocks.{{PascalCase .Name}}Outport{}
-
+	outputPort := mocks.{{PascalCase .UsecaseName}}Outport{}
+	{{range .OutportMethods}}
 	{
-		outputPort.On("IsExist", ctx, port.IsExistRequest{ //
-			Name: "book",
-		}).Return(&port.IsExistResponse{ //
-			YesItHas: false,
+		outputPort.On("{{.}}", ctx, port.{{.}}Request{ //
+
+		}).Return(&port.{{.}}Response{ //
+
 		}, nil)
+	} 
+	{{end}}
+
+	req := port.{{PascalCase .UsecaseName}}Request{ //
+
 	}
 
-	{
-		outputPort.On("SaveProduct", ctx, port.SaveProductRequest{ //
-			ProductName: "book",
-			Price:       14,
-		}).Return(&port.SaveProductResponse{ //
-			ID: 5,
-		}, nil)
-	}
-
-	req := port.{{PascalCase .Name}}Request{ //
-		Name:  "book",
-		Price: 14,
-	}
-
-	res, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
+	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).Handle(ctx, req)
 
 	assert.Nil(t, err)
 
-	assert.Equal(t, &port.{{PascalCase .Name}}Response{ //
-		ID: 5,
+	assert.Equal(t, &port.{{PascalCase .UsecaseName}}Response{ //
+
 	}, res)
 
 }
 
-func Test_{{PascalCase .Name}}_ZeroPrice(t *testing.T) {
-
-	ctx := context.Background()
-
-	outputPort := mocks.{{PascalCase .Name}}Outport{}
-
-	{
-		outputPort.On("IsExist", ctx, port.IsExistRequest{ //
-			Name: "book",
-		}).Return(&port.IsExistResponse{ //
-			YesItHas: false,
-		}, nil)
-	}
-
-	{
-		outputPort.On("SaveProduct", ctx, port.SaveProductRequest{ //
-			ProductName: "book",
-			Price:       0,
-		}).Return(&port.SaveProductResponse{ //
-			ID: 5,
-		}, nil)
-	}
-
-	req := port.{{PascalCase .Name}}Request{ //
-		Name:  "book",
-		Price: 0,
-	}
-
-	_, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
-
-	assert.EqualError(t, err, "product price must > 0")
-
-}
-
-func Test_{{PascalCase .Name}}_ExistName(t *testing.T) {
-
-	ctx := context.Background()
-
-	outputPort := mocks.{{PascalCase .Name}}Outport{}
-
-	{
-		outputPort.On("IsExist", ctx, port.IsExistRequest{ //
-			Name: "book",
-		}).Return(&port.IsExistResponse{ //
-			YesItHas: true,
-		}, nil)
-	}
-
-	{
-		outputPort.On("SaveProduct", ctx, port.SaveProductRequest{ //
-			ProductName: "book",
-			Price:       14,
-		}).Return(&port.SaveProductResponse{ //
-			ID: 5,
-		}, nil)
-	}
-
-	req := port.{{PascalCase .Name}}Request{ //
-		Name:  "book",
-		Price: 14,
-	}
-
-	_, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
-
-	assert.EqualError(t, err, "product with name book already exist")
-
-}
-
-func Test_{{PascalCase .Name}}_IsExistError(t *testing.T) {
-
-	ctx := context.Background()
-
-	outputPort := mocks.{{PascalCase .Name}}Outport{}
-
-	{
-		outputPort.On("IsExist", ctx, port.IsExistRequest{ //
-			Name: "book",
-		}).Return(nil, fmt.Errorf("IsExist is error"))
-	}
-
-	{
-		outputPort.On("SaveProduct", ctx, port.SaveProductRequest{ //
-			ProductName: "book",
-			Price:       14,
-		}).Return(&port.SaveProductResponse{ //
-			ID: 5,
-		}, nil)
-	}
-
-	req := port.{{PascalCase .Name}}Request{ //
-		Name:  "book",
-		Price: 14,
-	}
-
-	_, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
-
-	assert.EqualError(t, err, "IsExist is error")
-
-}
-
-func Test_{{PascalCase .Name}}_SaveProductError(t *testing.T) {
-
-	ctx := context.Background()
-
-	outputPort := mocks.{{PascalCase .Name}}Outport{}
-
-	{
-		outputPort.On("IsExist", ctx, port.IsExistRequest{ //
-			Name: "book",
-		}).Return(&port.IsExistResponse{ //
-			YesItHas: false,
-		}, nil)
-	}
-
-	{
-		outputPort.On("SaveProduct", ctx, port.SaveProductRequest{ //
-			ProductName: "book",
-			Price:       14,
-		}).Return(nil, fmt.Errorf("SaveProduct is error"))
-	}
-
-	req := port.{{PascalCase .Name}}Request{ //
-		Name:  "book",
-		Price: 14,
-	}
-
-	_, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
-
-	assert.EqualError(t, err, "SaveProduct is error")
-
-}

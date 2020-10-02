@@ -6,27 +6,23 @@ import (
 
 // {{PascalCase .Name}}Outport ...
 type {{PascalCase .Name}}Outport interface {
-	SaveProduct(ctx context.Context, req SaveProductRequest) (*SaveProductResponse, error)
-	IsExist(ctx context.Context, req IsExistRequest) (*IsExistResponse, error)
+	Save(ctx context.Context, req SaveRequest) (*SaveResponse, error)
+	// DoSomething(ctx context.Context, req DoSomethingRequest) (*DoSomethingResponse, error)
 }
 
-// SaveProductRequest ...
-type SaveProductRequest struct {
-	ProductName string
-	Price       float64
+// SaveRequest ...
+type SaveRequest struct {
+
 }
 
-// SaveProductResponse ...
-type SaveProductResponse struct {
-	ID int
+// SaveResponse ...
+type SaveResponse struct {
+
 }
 
-// IsExistRequest ...
-type IsExistRequest struct {
-	Name string
-}
+// DoSomethingRequest ...
+// type DoSomethingRequest struct {}
 
-// IsExistResponse ...
-type IsExistResponse struct {
-	YesItHas bool
-}
+// DoSomethingResponse ...
+// type DoSomethingResponse struct {}
+

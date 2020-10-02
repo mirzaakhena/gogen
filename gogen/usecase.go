@@ -32,25 +32,25 @@ func (d *usecase) Generate(args ...string) error {
 
 		CreateFolder("usecase/%s/port", strings.ToLower(uc.Name))
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport._go",
 			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport._go",
 			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor._go",
 			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test._go",
 			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(uc.Name)),
 			uc,

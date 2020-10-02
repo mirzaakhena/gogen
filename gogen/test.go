@@ -7,38 +7,22 @@ import (
 	"strings"
 )
 
-type datasource struct {
+type test struct {
 }
 
-func NewDatasource() Generator {
-	return &datasource{}
+func NewTest() Generator {
+	return &test{}
 }
 
-func (d *datasource) Generate(args ...string) error {
+func (d *test) Generate(args ...string) error {
 
-	// if IsNotExist(".application_schema/") {
-	// 	return fmt.Errorf("please call `gogen init` first")
-	// }
-
-	if len(args) < 4 {
-		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen datasource production CreateOrder`")
+	if len(args) < 3 {
+		return fmt.Errorf("please define test usecase. ex: `gogen test CreateOrder`")
 	}
 
-	datasourceName := args[2]
+	usecaseName := args[2]
 
-	usecaseName := args[3]
-
-	// if IsNotExist(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName)) {
-	// 	return fmt.Errorf("Usecase `%s` is not found. Generate it by call `gogen usecase %s` first", usecaseName, usecaseName)
-	// }
-
-	// tp, err := ReadYAML(usecaseName)
-	// if err != nil {
-	// 	return err
-	// }
-
-	ds := Datasource{}
-	ds.DatasourceName = datasourceName
+	ds := Test{}
 	ds.UsecaseName = usecaseName
 	ds.PackagePath = GetPackagePath()
 
@@ -72,15 +56,13 @@ func (d *datasource) Generate(args ...string) error {
 		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 	}
 
-	CreateFolder("datasource/%s", strings.ToLower(datasourceName))
-
 	_ = WriteFileIfNotExist(
-		"datasource/datasourceName/datasource._go",
-		fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName),
+		"usecase/usecaseName/interactor_test._go",
+		fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(usecaseName)),
 		ds,
 	)
 
-	GoFormat(ds.PackagePath)
+	GenerateMock(ds.PackagePath, ds.UsecaseName)
 
 	return nil
 }

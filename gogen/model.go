@@ -1,70 +1,36 @@
 package gogen
 
-type Variable struct {
-	Name     string `yaml:"-"` //
-	Datatype string `yaml:"-"` //
+import (
+	"fmt"
+	"strings"
+)
+
+type model struct {
 }
 
-type Model struct {
-	Name      string      `yaml:"name"`
-	Fields    []string    `yaml:"fields"`
-	FieldObjs []*Variable `yaml:"-"`
+func NewModel() Generator {
+	return &model{}
 }
 
-type Method struct {
-	MethodName        string      `yaml:"methodName"`     //
-	RequestFields     []string    `yaml:"requestFields"`  //
-	ResponseFields    []string    `yaml:"responseFields"` //
-	Models            []*Model    `yaml:"models"`         //
-	RequestFieldObjs  []*Variable `yaml:"-"`              //
-	ResponseFieldObjs []*Variable `yaml:"-"`              //
-}
+func (d *model) Generate(args ...string) error {
 
-type Usecase struct {
-	Name        string `yaml:"name"` //
-	PackagePath string `yaml:"-"`    //
-}
+	if len(args) < 3 {
+		return fmt.Errorf("please define model name. ex: `gogen model Menu`")
+	}
 
-type Service struct {
-	Name string `yaml:"name"` //
-}
+	modelName := args[2]
 
-type Application struct {
-	ApplicationName string        `yaml:"applicationName"` // name of application
-	PackagePath     string        `yaml:"packagePath"`     // golang path of application
-	Entities        []*Entity     `yaml:"entities"`        // list of entity used in this apps
-	Usecases        []*Usecase    `yaml:"usecases"`        // list of usecase used in this apps
-	Services        []*Service    `yaml:"services"`        // list of service used in this apps
-	Repositories    []*Repository `yaml:"repositories"`    // list of repo used in this apps
-}
+	CreateFolder("model/")
 
-type Entity struct {
-	Name      string      `yaml:"name"`   // MANDATORY. name of the entity
-	Fields    []string    `yaml:"fields"` // MANDATORY. all field under the entity
-	FieldObjs []*Variable `yaml:"-"`      //
-}
+	_ = WriteFileIfNotExist(
+		"model/model._go",
+		fmt.Sprintf("model/%s.go", strings.ToLower(modelName)),
+		struct {
+			Name string
+		}{
+			Name: modelName,
+		},
+	)
 
-type Repository struct {
-	Name        string   `yaml:"name"`        // MANDATORY. name of the Repo
-	EntityName  string   `yaml:"entityName"`  //
-	MethodNames []string `yaml:"methodNames"` //
-	PackagePath string   `yaml:"-"`           //
-}
-
-type Datasource struct {
-	DatasourceName string   `yaml:"name"` //
-	UsecaseName    string   ``            //
-	PackagePath    string   `yaml:"-"`    //
-	OutportMethods []string ``            //
-}
-
-type Controller struct {
-	PackagePath  string      `yaml:"-"` //
-	UsecaseName  string      ``         //
-	InportFields []*NameType ``
-}
-
-type NameType struct {
-	Name string
-	Type string
+	return nil
 }

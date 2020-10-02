@@ -2,6 +2,7 @@ package {{LowerCase .Name}}
 
 import (
 	"context"
+	"fmt"
 
 	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/port"
 )
@@ -23,16 +24,37 @@ type {{CamelCase .Name}}Interactor struct {
 func (_r *{{CamelCase .Name}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
 
 	{
-		_, err := _r.datasource.Save(ctx, port.SaveRequest{ //
+		response, err := _r.datasource.IsExist(ctx, port.IsExistRequest{ //
+			Name: req.Name,
+		})
+		if err != nil {
+			return nil, err
+		}
+		if response.YesItHas {
+			return nil, fmt.Errorf("product with name %s already exist", req.Name)
+		}
+	}
 
+	var productID int
+	{
+
+		if req.Price <= 0 {
+			return nil, fmt.Errorf("product price must > 0")
+		}
+
+		res, err := _r.datasource.SaveProduct(ctx, port.SaveProductRequest{ //
+			ProductName: req.Name,
+			Price:       req.Price,
 		})
 
 		if err != nil {
 			return nil, err
 		}
+
+		productID = res.ID
 	}
 
 	return &port.{{PascalCase .Name}}Response{ //
-
+		ID: productID,
 	}, nil
 }

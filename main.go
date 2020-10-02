@@ -17,8 +17,8 @@ some command available is
   controller <controller type> <usecase name>
 
 some controller type available is
-	restapi.gin
-	restapi.http
+  restapi.gin
+  restapi.http
 
 for some controller here is under development
   consumer.nsq
@@ -54,6 +54,14 @@ func main() {
 			os.Exit(0)
 		}
 
+	case "test":
+
+		gen := gogen.NewTest()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
 	case "datasource":
 
 		gen := gogen.NewDatasource()
@@ -65,6 +73,14 @@ func main() {
 	case "controller":
 
 		gen := gogen.NewController()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
+	case "model":
+
+		gen := gogen.NewModel()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
