@@ -5,7 +5,7 @@ func (a *Application) RegisterUsecase() {
 	// {
 	// 	outport := production.NewCreateOrderDatasource()
 	// 	inport := createorder.NewCreateOrderUsecase(outport)
-	// 	a.Router.POST("/createorder", a.Interceptor, restapi.CreateOrder(inport))
+	// 	a.Router.POST("/createorder", restapi.CreateOrder(inport))
 	// }
 
 }

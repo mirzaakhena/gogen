@@ -40,7 +40,7 @@ func (d *controller) Generate(args ...string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -67,7 +67,7 @@ func (d *controller) Generate(args ...string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {

@@ -15,12 +15,13 @@ type {{CamelCase .UsecaseName}} struct {
 
 }
 
-{{range .OutportMethods}}
-// {{.}} ...
-func (_r *{{CamelCase $.UsecaseName}}) {{.}}(ctx context.Context, req port.{{.}}Request) (*port.{{.}}Response, error) {
+{{range .Outports}}
+// {{PascalCase .Name}} ...
+func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
+	// _ = req.{{PascalCase .Name}} {{end}}
 
-	return &port.{{.}}Response{ //
-
+	return &port.{{PascalCase .Name}}Response{ // {{range .ResponseFields}}
+		// {{PascalCase .Name}}: ...,{{end}}
 	}, nil
 } {{end}}
 

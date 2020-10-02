@@ -14,7 +14,6 @@ import (
 type Application struct {
 	Router      *gin.Engine
 	Database    *gorm.DB
-	Interceptor gin.HandlerFunc
 }
 
 // NewApplication setup all the framework or library needded for this apps to be running
@@ -25,16 +24,6 @@ func NewApplication() (*Application, error) {
 	router.GET("/ping", func(c *gin.Context) {
 		c.String(http.StatusOK, "Ready")
 	})
-
-	interceptor := func(c *gin.Context) {
-
-		// if somethingHappen {
-		//   c.Abort()
-		//   return
-		// }
-
-		c.Next()
-	}
 
 	dialect := "sqlite"
 
@@ -61,7 +50,6 @@ func NewApplication() (*Application, error) {
 	app := Application{ //
 		Router:      router,
 		Database:    database,
-		Interceptor: interceptor,
 	}
 
 	return &app, nil

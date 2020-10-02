@@ -1,21 +1,28 @@
 package gogen
 
 type Usecase struct {
-	Name        string `yaml:"name"` //
-	PackagePath string `yaml:"-"`    //
+	Name                 string      `yaml:"name"` //
+	PackagePath          string      `yaml:"-"`    //
+	InportRequestFields  []*NameType ``
+	InportResponseFields []*NameType ``
 }
 
 type Datasource struct {
-	DatasourceName string   `yaml:"name"` //
-	UsecaseName    string   ``            //
-	PackagePath    string   `yaml:"-"`    //
-	OutportMethods []string ``            //
+	DatasourceName string     `yaml:"name"` //
+	UsecaseName    string     ``            //
+	PackagePath    string     `yaml:"-"`    //
+	Outports       []*Outport //
 }
 
 type Test struct {
-	UsecaseName    string   ``         //
-	PackagePath    string   `yaml:"-"` //
-	OutportMethods []string ``         //
+	UsecaseName          string      //
+	PackagePath          string      //
+	Outports             []*Outport  //
+	InportRequestFields  []*NameType //
+	InportResponseFields []*NameType //
+	Type                 string      //
+
+	// OutportMethods       []string             //
 }
 
 type Controller struct {
@@ -32,6 +39,12 @@ type NameType struct {
 
 type Model struct {
 	Name string
+}
+
+type Outport struct {
+	Name           string
+	RequestFields  []*NameType ``
+	ResponseFields []*NameType ``
 }
 
 // type Variable struct {

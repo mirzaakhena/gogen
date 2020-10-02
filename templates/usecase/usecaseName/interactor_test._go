@@ -21,8 +21,7 @@ func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 		}).Return(&port.{{.}}Response{ //
 
 		}, nil)
-	} 
-	{{end}}
+	} {{end}}
 
 	req := port.{{PascalCase .UsecaseName}}Request{ //
 

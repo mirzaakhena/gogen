@@ -21,6 +21,8 @@ type {{CamelCase .Name}}Interactor struct {
 
 // Handle ...
 func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
+	{{range .InportFields}}
+	_ = req.{{.Name}} {{end}}
 
 	{
 		_, err := _r.datasource.Read(ctx, port.ReadRequest{ //
@@ -32,7 +34,7 @@ func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req po
 		}
 	}
 
-	return &port.{{PascalCase .Name}}Response{ //
-
+	return &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
+		// req.{{.Name}} = ... {{end}}
 	}, nil
 }
