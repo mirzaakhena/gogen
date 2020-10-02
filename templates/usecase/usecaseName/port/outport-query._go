@@ -1,0 +1,20 @@
+package port
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}}Outport ...
+type {{PascalCase .Name}}Outport interface {
+	Read(ctx context.Context, req ReadRequest) (*ReadResponse, error)
+}
+
+// ReadRequest ...
+type ReadRequest struct {
+
+}
+
+// ReadResponse ...
+type ReadResponse struct {
+
+}

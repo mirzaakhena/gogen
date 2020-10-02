@@ -22,6 +22,7 @@ type Controller struct {
 	PackagePath  string      `yaml:"-"` //
 	UsecaseName  string      ``         //
 	InportFields []*NameType ``
+	Type         string
 }
 
 type NameType struct {

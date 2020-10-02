@@ -1,0 +1,20 @@
+package port
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}}Inport ...
+type {{PascalCase .Name}}Inport interface {
+	HandleCommand(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error)
+}
+
+// {{PascalCase .Name}}Request ...
+type {{PascalCase .Name}}Request struct {
+
+}
+
+// {{PascalCase .Name}}Response ...
+type {{PascalCase .Name}}Response struct { 
+
+}

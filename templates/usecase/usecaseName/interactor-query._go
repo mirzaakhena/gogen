@@ -1,0 +1,38 @@
+package {{LowerCase .Name}}
+
+import (
+	"context"
+
+	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/port"
+)
+
+//go:generate mockery --dir port/ --name {{PascalCase .Name}}Outport -output mocks/
+
+// New{{PascalCase .Name}}Usecase ...
+func New{{PascalCase .Name}}Usecase(outputPort port.{{PascalCase .Name}}Outport) port.{{PascalCase .Name}}Inport {
+	return &{{CamelCase .Name}}Interactor{
+		datasource: outputPort,
+	}
+}
+
+type {{CamelCase .Name}}Interactor struct {
+	datasource port.{{PascalCase .Name}}Outport
+}
+
+// Handle ...
+func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
+
+	{
+		_, err := _r.datasource.Read(ctx, port.ReadRequest{ //
+
+		})
+
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	return &port.{{PascalCase .Name}}Response{ //
+
+	}, nil
+}

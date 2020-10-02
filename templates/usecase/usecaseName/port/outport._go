@@ -7,7 +7,6 @@ import (
 // {{PascalCase .Name}}Outport ...
 type {{PascalCase .Name}}Outport interface {
 	Save(ctx context.Context, req SaveRequest) (*SaveResponse, error)
-	// DoSomething(ctx context.Context, req DoSomethingRequest) (*DoSomethingResponse, error)
 }
 
 // SaveRequest ...
@@ -19,10 +18,3 @@ type SaveRequest struct {
 type SaveResponse struct {
 
 }
-
-// DoSomethingRequest ...
-// type DoSomethingRequest struct {}
-
-// DoSomethingResponse ...
-// type DoSomethingResponse struct {}
-

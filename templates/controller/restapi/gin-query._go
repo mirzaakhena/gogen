@@ -1,0 +1,38 @@
+package restapi
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+)
+
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		{{range .InportFields}}
+		{{CamelCase .Name}}Value := c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
+
+		// assign value from query to request object
+		var req port.{{PascalCase .UsecaseName}}Request
+		{ {{range .InportFields}}
+			// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value {{end}}
+		}
+
+		// run the usecase
+		res, err := inputPort.HandleQuery(context.Background(), req)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// return the response
+		c.JSON(http.StatusOK, res)
+
+	}
+}

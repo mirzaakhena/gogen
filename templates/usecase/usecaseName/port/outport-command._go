@@ -1,0 +1,20 @@
+package port
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}}Outport ...
+type {{PascalCase .Name}}Outport interface {
+	Write(ctx context.Context, req WriteRequest) (*WriteResponse, error)
+}
+
+// WriteRequest ...
+type WriteRequest struct {
+
+}
+
+// WriteResponse ...
+type WriteResponse struct {
+
+}

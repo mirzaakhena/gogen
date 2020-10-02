@@ -1,0 +1,40 @@
+package {{LowerCase .UsecaseName}}
+
+import (
+	"context"
+	"testing"
+
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/mocks"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"github.com/stretchr/testify/assert"
+)
+
+func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
+
+	ctx := context.Background()
+
+	outputPort := mocks.{{PascalCase .UsecaseName}}Outport{}
+	{{range .OutportMethods}}
+	{
+		outputPort.On("{{.}}", ctx, port.{{.}}Request{ //
+
+		}).Return(&port.{{.}}Response{ //
+
+		}, nil)
+	} 
+	{{end}}
+
+	req := port.{{PascalCase .UsecaseName}}Request{ //
+
+	}
+
+	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).HandleCommand(ctx, req)
+
+	assert.Nil(t, err)
+
+	assert.Equal(t, &port.{{PascalCase .UsecaseName}}Response{ //
+
+	}, res)
+
+}
+
