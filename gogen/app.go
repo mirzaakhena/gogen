@@ -213,6 +213,27 @@ func ReadYAML(usecaseName string) (*Usecase, error) {
 
 }
 
+func ReadLineByLine(filepath string) []string {
+	var lineOfCodes []string
+	{
+		file, err := os.Open(filepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+
+		scanner.Split(bufio.ScanLines)
+
+		for scanner.Scan() {
+			lineOfCodes = append(lineOfCodes, scanner.Text())
+		}
+	}
+
+	return lineOfCodes
+}
+
 // func ExtractField(fields []string) []*Variable {
 
 // 	vars := []*Variable{}

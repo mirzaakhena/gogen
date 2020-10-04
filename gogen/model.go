@@ -2,7 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"strings"
 )
 
 type model struct {
@@ -24,7 +23,7 @@ func (d *model) Generate(args ...string) error {
 
 	_ = WriteFileIfNotExist(
 		"model/model._go",
-		fmt.Sprintf("model/%s.go", strings.ToLower(modelName)),
+		fmt.Sprintf("model/%s.go", modelName),
 		struct {
 			Name string
 		}{

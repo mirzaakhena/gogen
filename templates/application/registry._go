@@ -1,11 +1,20 @@
 package application
 
+import (
+	"{{.PackagePath}}/controller/restapi"
+	"{{.PackagePath}}/datasource/production"
+	"{{.PackagePath}}/usecase/menuactivation"
+)
+
 func (a *Application) RegisterUsecase() {
-
-	// {
-	// 	outport := production.NewCreateOrderDatasource()
-	// 	inport := createorder.NewCreateOrderUsecase(outport)
-	// 	a.Router.POST("/createorder", restapi.CreateOrder(inport))
-	// }
-
+	menuActivation(a)
+	// CODE_INJECTION function_called
 }
+
+func menuActivation(a *Application) {
+	outport := production.NewMenuActivationDatasource()
+	inport := menuactivation.NewMenuActivationUsecase(outport)
+	a.Router.POST("/menuactivation", restapi.MenuActivation(inport))
+}
+
+// CODE_INJECTION function_declared

@@ -21,18 +21,21 @@ type {{CamelCase .Name}}Interactor struct {
 
 // Handle ...
 func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
-	{{range .InportFields}}
+	{{range .InportRequestFields}}
 	_ = req.{{.Name}} {{end}}
-
+	{{range .Outports}}
 	{
-		_, err := _r.datasource.Read(ctx, port.ReadRequest{ //
-
+		resOutport, err := _r.datasource.{{PascalCase .Name}}(ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
+			// {{PascalCase .Name}}: ...,{{end}}
 		})
 
 		if err != nil {
 			return nil, err
 		}
-	}
+		{{range .ResponseFields}}
+		_ = resOutport.{{PascalCase .Name}} {{end}}
+
+	} {{end}}
 
 	return &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
 		// req.{{.Name}} = ... {{end}}
