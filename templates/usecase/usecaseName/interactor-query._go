@@ -38,6 +38,6 @@ func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req po
 	} {{end}}
 
 	return &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
-		// req.{{.Name}} = ... {{end}}
+		// {{.Name}}: ..., {{end}}
 	}, nil
 }

@@ -36,7 +36,7 @@ func (d *datasource) Generate(args ...string) error {
 	{
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 		defer file.Close()
 
@@ -63,7 +63,7 @@ func (d *datasource) Generate(args ...string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error2. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 	}
 
@@ -71,7 +71,7 @@ func (d *datasource) Generate(args ...string) error {
 
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 		defer file.Close()
 
@@ -103,7 +103,7 @@ func (d *datasource) Generate(args ...string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error4. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 	}
 
@@ -111,7 +111,7 @@ func (d *datasource) Generate(args ...string) error {
 
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 		defer file.Close()
 
@@ -143,7 +143,7 @@ func (d *datasource) Generate(args ...string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error6. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 	}
 
