@@ -1,6 +1,6 @@
 # Gogen
 
-Helping generate your boiler structure and boiler plate code based on clean architecure
+Helping generate your boiler plate and code structure based on clean architecure.
 
 
 ## Step by step to working with gogen
