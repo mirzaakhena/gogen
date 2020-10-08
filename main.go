@@ -11,8 +11,10 @@ const message string = `try execute gogen by
   gogen <command>
 
 some command available is
-  init
-  usecase <usecase name>
+	init .
+	model <model name>
+	usecase command | query <usecase name>
+	test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type> <usecase name>
 
@@ -22,7 +24,9 @@ some controller type available is
 
 for some controller here is under development
   consumer.nsq
-  grpc
+	grpc
+	
+usecase name is using pascal case
 `
 
 func main() {

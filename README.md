@@ -2,6 +2,14 @@
 
 Helping generate your boiler plate and code structure based on clean architecure.
 
+## Download it
+```
+$ go get github.com/mirzaakhena/gogen
+```
+Install it into your local system
+```
+$ go install $GOPATH/src/github.com/mirzaakhena/gogen/
+```
 
 ## Step by step to working with gogen
 
@@ -57,6 +65,13 @@ usecase/createorder/interactor.go
 `interactor.go` is the core implementation of the usecase. It implement the method from inport and call the method from outport.
 
 gogen only gives you the basic "template code". If you want to add/change your request response in your inport.go or outport.go, and want to have the "new method and the fields" appear in your interactor.go, then after you add the new field in the request or response struct (inport or outport), you can just simply delete the interactor.go, then call the `gogen usecase CreateOrder` again. It Will generate the new "helper code" for you.
+
+Another variant of this usecase command is
+```
+gogen usecase query ShowOrder
+```
+
+For now we only have `command` and `query` usecase. You can try it to see the different.
 
 ## 3. Create your usecase test file
 
