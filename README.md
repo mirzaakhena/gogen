@@ -25,6 +25,16 @@ main.go
 README.md
 ```
 
+`application.go` is the place you can instantiate the technology you want to use in your system. For example you want to setup gin, echo, message broker, database connection or anything.
+
+`registry.go` is where you can bind your usecase, datasource and controller also you define the router here.
+
+`runner.go` is the file for running the apps. This already have gracefully shutdown feature.
+
+
+`schema.go` is the file for define your model to migrate into database.
+
+
 ## 2. Create your basic usecase structure
 
 Let say you have a usecase named CreateOrder (It is better to have PascalCase for usecase name). This usecase is for (of course) to create an order. We can easily recognize it as a "command" usecase. Let's use our gogen code generator to create it for us.
@@ -39,6 +49,14 @@ usecase/createorder/port/inport.go
 usecase/createorder/port/outport.go
 usecase/createorder/interactor.go
 ```
+
+`inport.go` is just an interface with only one method that will be a incoming gateway for your usecase. The method name is a gogen convention. You must not change the method name.
+
+`outport.go` is an interface with many method that will be required only by your usecase. It must not shared to another usecase.
+
+`interactor.go` is the core implementation of the usecase. It implement the method from inport and call the method from outport.
+
+gogen only gives you the basic "template code". If you want to add/change your request response in your inport.go or outport.go, and want to have the "new method and the fields" appear in your interactor.go, then after you add the new field in the request or response struct (inport or outport), you can just simply delete the interactor.go, then call the `gogen usecase CreateOrder` again. It Will generate the new "helper code" for you.
 
 ## 3. Create your usecase test file
 
@@ -61,6 +79,10 @@ $ go generate
 or just simply delete the mock/ folder and call the `gogen test CreteOrder` again.
 
 ## 4. Create datasource for your usecase
+
+Datasource is the implemetor of your outport. You need to define where is your datasource. You can give any datasource name you like.
+For the example you just want to hardcode any data for your apps. You can simply create the "hardcode" datasource version. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "testing" datasource version. For now, we will try to generate code for "production" datasource version.
+
 ```
 gogen datasource production CreateOrder
 ```
@@ -68,8 +90,14 @@ This will generate
 ```
 datasource/production/CreateOrder.go
 ```
+You can start define what the data we must provide to run our usecase here.
 
 ## 5. Create controller for your usecase
+
+In gogen, i define controller as any technology that will receive input from outside world. It can be rest api, grpc, consumer for event handling, or anything.
+
+For now i only implement the gin framework version.
+
 ```
 gogen controller restapi.gin CreateOrder
 ```
@@ -80,7 +108,10 @@ controller/restapi/CreateOrder.go
 ```
 
 ## 6. Glue your usecase, datasource, and controller together
-open file `application/registry.go`
+
+After generate the usecase, datasource and controller, we need to bind them all. You can open file `application/registry.go`
+
+Then write this code.
 
 ```
 package application
@@ -101,4 +132,13 @@ func createorder(a *Application) {
 	a.Router.POST("/createorder", restapi.CreateOrder(inport))
 }
 ```
-For now this require manual effort to type manually (coding). Well actually we can do code injection. But this can be another feature to add in the future
+For now this require manual effort to type manually (coding). Well actually we can do code injection here. But this can be another feature to add in the future
+
+## 7. Create your model
+This will simply create Order struct. That's it.
+```
+gogen model Order
+```
+
+
+Any other interesting idea?
