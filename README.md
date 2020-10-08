@@ -1,78 +1,102 @@
 # Gogen
 
-Helping generate your boiler structure and boiler plate code
+Helping generate your boiler structure and boiler plate code based on clean architecure
 
 
 ## Step by step to working with gogen
 
-### 1. Create basic project structure
+## 1. Create basic project structure
 ```
 gogen init .
 ```
-it will create the basic project structure
+this command will create the basic project structure in the current directory
 ```
-.application_schema/usecases/
-appliation/runner.go
-appliation/setup.go
-appliation/wiring.go
-controllers/
-datasources/mocks
-entities/
-usecases/<usecase_name>/inport/
-usecases/<usecase_name>/interactor/
-usecases/<usecase_name>/outport/
-repositories/
-services/
-utils/
+application/application.go
+application/registry.go
+application/runner.go
+application/schema.go
+controller/
+datasource/
+model/
+usecase/
+util/
 config.toml
 main.go
 README.md
 ```
 
-### 2. Create your basic usecase structure
+## 2. Create your basic usecase structure
+
+Let say you have a usecase named CreateOrder (It is better to have PascalCase for usecase name). This usecase is for (of course) to create an order. We can easily recognize it as a "command" usecase. Let's use our gogen code generator to create it for us.
 ```
-gogen usecase CreateOrder
-```
-When you run this command in the first time, you will have those files generated for you
-- .application_schema/usecases/CreateOrder.yml
-- inport/CreateOrder.go
-- interactor/CreateOrder.go
-- interactor/CreateOrder_test.go
-- outport/CreateOrder.go
-- datasources/mocks/CreateOrder.go
-
-You can start run test your code by running the interactor/CreateOrder_test.go test file
-
-### 3. Define your usecase input port and output port
-Open file inport/CreateOrder.go you will find empty request and empty response struct
-
-Open file outport/CreateOrder.go you also will find empty request and empty response struct
-
-Open file .application_schema/usecases/CreateOrder.yml 
-
-update the inport (input port) and outport (output port) 
-
-run the command again
-```
-gogen usecase CreateOrder
+gogen usecase command CreateOrder
 ```
 
-Then you will get inport/CreateOrder.go, outport/CreateOrder.go and datasources/mocks/CreateOrder.go is updated
+When you run this command, you will have those files generated for you
 
-But this command will not change the interactor/CreateOrder.go and interactor/CreateOrder_test.go to protect your current logic adn test code. So you need to update it manually.
+```
+usecase/createorder/port/inport.go
+usecase/createorder/port/outport.go
+usecase/createorder/interactor.go
+```
 
+## 3. Create your usecase test file
 
-### 4. Create datasource
+For test mock, we will need mockery. So you need to install it first
+```
+gogen test CreateOrder
+```
+This command will add new files
+```
+usecase/createorder/mocks/CreateOrderOutport.go
+usecase/createorder/interactor_test.go
+```
+
+If you want to update your mock file you can use
+```
+$ cd /usecase/createorder
+$ go generate
+```
+
+or just simply delete the mock/ folder and call the `gogen test CreteOrder` again.
+
+## 4. Create datasource for your usecase
 ```
 gogen datasource production CreateOrder
 ```
-production is sample datasource. It can be anything you like. It will create one file under one folder
-- datasources/production/CreateOrder.go
-
-
-
-### 5. Create controller
+This will generate
 ```
-gogen controller restapi gin CreateOrder
+datasource/production/CreateOrder.go
 ```
-- controllers/restapi/CreateOrder.go
+
+## 5. Create controller for your usecase
+```
+gogen controller restapi.gin CreateOrder
+```
+This will generate
+
+```
+controller/restapi/CreateOrder.go
+```
+
+## 6. Glue your usecase, datasource, and controller together
+open file `application/registry.go`
+```
+package application
+
+import (
+	"your/golang/path/controller/restapi"
+	"your/golang/path/datasource/production"
+	"your/golang/path/usecase/createorder"
+)
+
+func (a *Application) RegisterUsecase() {
+	createOrder(a)
+}
+
+func createorder(a *Application) {
+	outport := production.NewCreateOrderDatasource()
+	inport := createorder.NewCreateOrderUsecase(outport)
+	a.Router.POST("/createorder", restapi.CreateOrder(inport))
+}
+```
