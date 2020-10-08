@@ -81,6 +81,7 @@ controller/restapi/CreateOrder.go
 
 ## 6. Glue your usecase, datasource, and controller together
 open file `application/registry.go`
+
 ```
 package application
 
@@ -100,3 +101,4 @@ func createorder(a *Application) {
 	a.Router.POST("/createorder", restapi.CreateOrder(inport))
 }
 ```
+For now this require manual effort to type manually (coding). Well actually we can do code injection. But this can be another feature to add in the future
