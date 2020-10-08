@@ -32,7 +32,8 @@ func (_r *{{CamelCase .Name}}Interactor) HandleCommand(ctx context.Context, req 
 		if err != nil {
 			return nil, err
 		}
-		{{range .ResponseFields}}
+
+		_ = resOutport {{range .ResponseFields}}
 		_ = resOutport.{{PascalCase .Name}} {{end}}
 
 	} {{end}}

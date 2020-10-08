@@ -74,7 +74,9 @@ func (d *controller) Generate(args ...string) error {
 				if strings.HasPrefix(scanner.Text(), "}") {
 					state = 2
 					break
-				} else {
+				} else //
+
+				{
 					completeFieldWithType := strings.TrimSpace(scanner.Text())
 					if len(completeFieldWithType) == 0 {
 						continue

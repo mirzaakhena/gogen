@@ -2,8 +2,6 @@ package application
 
 func (a *Application) SetupSchema() {
 	// catchError(a.Database.AutoMigrate(&table.MenuGroup{}))
-
-	// CODE_INJECTION model_initialize
 }
 
 func catchError(err error) {
