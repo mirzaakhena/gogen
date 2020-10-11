@@ -38,19 +38,19 @@ func (d *controller) Generate(args ...string) error {
 		scanner := bufio.NewScanner(file)
 		scanner.Split(bufio.ScanLines)
 
-		state := 0
+		state := "FIND_INTERFACE"
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
-				state = 1
+			if state == "FIND_INTERFACE" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
+				state = "FIND_METHOD_SIGNATURE"
 			} else //
-			if state == 1 {
+			if state == "FIND_METHOD_SIGNATURE" {
 				completeMethod := strings.TrimSpace(scanner.Text())
 				methodNameOnly := strings.Split(completeMethod, "(")[0]
 				ct.Type = methodNameOnly
 				break
 			}
 		}
-		if state == 0 {
+		if state == "FIND_INTERFACE" {
 			return fmt.Errorf("not found inport method HandleQuery or HandleCommand.")
 		}
 	}
@@ -65,14 +65,13 @@ func (d *controller) Generate(args ...string) error {
 		scanner := bufio.NewScanner(file)
 		scanner.Split(bufio.ScanLines)
 
-		state := 0
+		state := "FIND_REQUEST_STRUCT"
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
-				state = 1
+			if state == "FIND_REQUEST_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
+				state = "FIND_FIELD_AND_TYPE"
 			} else //
-			if state == 1 {
+			if state == "FIND_FIELD_AND_TYPE" {
 				if strings.HasPrefix(scanner.Text(), "}") {
-					state = 2
 					break
 				} else //
 
@@ -89,7 +88,7 @@ func (d *controller) Generate(args ...string) error {
 				}
 			}
 		}
-		if state == 0 {
+		if state == "FIND_REQUEST_STRUCT" {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 	}

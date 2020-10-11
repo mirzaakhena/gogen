@@ -1,9 +1,9 @@
 package application
 
 import (
-//	".../controller/restapi"
-//	".../datasource/production"
-//	".../usecase/menuactivation"
+	// "your/golang/path/controller/restapi"
+	// "your/golang/path/datasource/production"
+	// "your/golang/path/usecase/menuactivation"
 )
 
 func (a *Application) RegisterUsecase() {
