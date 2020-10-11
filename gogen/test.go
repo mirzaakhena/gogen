@@ -49,7 +49,7 @@ func (d *test) Generate(args ...string) error {
 			}
 		}
 		if state == 0 {
-			return fmt.Errorf("not found inport method HandleQuery or HandleCommand.")
+			return fmt.Errorf("usecase %s is not found", usecaseName)
 		}
 	}
 

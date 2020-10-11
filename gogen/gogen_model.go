@@ -25,10 +25,12 @@ type Test struct {
 }
 
 type Controller struct {
-	PackagePath  string
-	UsecaseName  string
-	InportFields []*NameType
-	Type         string
+	PackagePath string
+	UsecaseName string
+	// InportFields         []*NameType
+	InportRequestFields  []*NameType
+	InportResponseFields []*NameType
+	Type                 string
 }
 
 type NameType struct {

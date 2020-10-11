@@ -82,6 +82,14 @@ func main() {
 			os.Exit(0)
 		}
 
+	case "registry":
+
+		gen := gogen.NewRegistry()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
 	case "model":
 
 		gen := gogen.NewModel()

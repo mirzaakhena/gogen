@@ -51,7 +51,7 @@ func (d *controller) Generate(args ...string) error {
 			}
 		}
 		if state == "FIND_INTERFACE" {
-			return fmt.Errorf("not found inport method HandleQuery or HandleCommand.")
+			return fmt.Errorf("usecase %s is not found", usecaseName)
 		}
 	}
 
@@ -81,7 +81,7 @@ func (d *controller) Generate(args ...string) error {
 						continue
 					}
 					fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-					ct.InportFields = append(ct.InportFields, &NameType{
+					ct.InportRequestFields = append(ct.InportRequestFields, &NameType{
 						Name: strings.TrimSpace(fieldWithType[0]),
 						Type: strings.TrimSpace(fieldWithType[1]),
 					})
@@ -89,6 +89,44 @@ func (d *controller) Generate(args ...string) error {
 			}
 		}
 		if state == "FIND_REQUEST_STRUCT" {
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+		}
+	}
+
+	{
+		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		if err != nil {
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		scanner.Split(bufio.ScanLines)
+
+		state := "FIND_RESPONSE_STRUCT"
+		for scanner.Scan() {
+			if state == "FIND_RESPONSE_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", usecaseName)) {
+				state = "FIND_FIELD_AND_TYPE"
+			} else //
+			if state == "FIND_FIELD_AND_TYPE" {
+				if strings.HasPrefix(scanner.Text(), "}") {
+					break
+				} else //
+
+				{
+					completeFieldWithType := strings.TrimSpace(scanner.Text())
+					if len(completeFieldWithType) == 0 {
+						continue
+					}
+					fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
+					ct.InportResponseFields = append(ct.InportResponseFields, &NameType{
+						Name: strings.TrimSpace(fieldWithType[0]),
+						Type: strings.TrimSpace(fieldWithType[1]),
+					})
+				}
+			}
+		}
+		if state == "FIND_RESPONSE_STRUCT" {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
 	}

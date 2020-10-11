@@ -38,7 +38,7 @@ func GetPackagePath() string {
 
 func WriteFileIfNotExist(templateFile, outputFile string, data interface{}) error {
 
-	if IsNotExist(outputFile) {
+	if !IsExist(outputFile) {
 		return WriteFile(templateFile, outputFile, data)
 	}
 
@@ -171,14 +171,24 @@ func GenerateMock(packagePath, usecaseName string) {
 	}
 }
 
-func IsNotExist(fileOrDir string) bool {
-	_, err := os.Stat(fileOrDir)
-	return os.IsNotExist(err)
-}
+// func IsNotExist(fileOrDir string) bool {
+// 	_, err := os.Stat(fileOrDir)
+// 	return os.IsNotExist(err)
+// }
 
 func IsExist(fileOrDir string) bool {
+	// _, err := os.Stat(fileOrDir)
+	// return err == nil
+
 	_, err := os.Stat(fileOrDir)
-	return err == nil
+	if err == nil {
+		return true
+	}
+	if os.IsNotExist(err) {
+		return false
+	}
+	return false
+
 }
 
 func GoFormat(path string) {

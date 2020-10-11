@@ -12,14 +12,18 @@ import (
 // {{PascalCase .UsecaseName}} ...
 func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
 
+	type dtoResponse struct { {{range .InportResponseFields}}
+		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	}
+
 	return func(c *gin.Context) {
 
-		{{range .InportFields}}
+		{{range .InportRequestFields}}
 		// {{CamelCase .Name}}Value := c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
 
 		// assign value from query to request object
 		var req port.{{PascalCase .UsecaseName}}Request
-		{ {{range .InportFields}}
+		{ {{range .InportRequestFields}}
 			// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value {{end}}
 		}
 
@@ -30,8 +34,14 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 			return
 		}
 
+		var jsonRes dtoResponse
+		if err := copier.Copy(&jsonRes, res); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
 		// return the response
-		c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, jsonRes)
 
 	}
 }
