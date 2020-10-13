@@ -47,3 +47,13 @@ type Outport struct {
 	RequestFields  []*NameType
 	ResponseFields []*NameType
 }
+
+type ErrorSet struct {
+	Errors []ErrorItem `yaml:"errors"`
+}
+
+type ErrorItem struct {
+	Code    int    `yaml:"code"`
+	Literal string `yaml:"literal"`
+	Message string `yaml:"message"`
+}

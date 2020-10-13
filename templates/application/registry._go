@@ -1,19 +1,11 @@
 package application
 
 import (
-	// "your/golang/path/controller/restapi"
-	// "your/golang/path/datasource/production"
-	// "your/golang/path/usecase/menuactivation"
+
 )
 
 func (a *Application) RegisterUsecase() {
-	// menuActivation(a)
-	
+	//code_injection function call
 }
 
-// func menuActivation(a *Application) {
-//	outport := production.NewMenuActivationDatasource()
-//	inport := menuactivation.NewMenuActivationUsecase(outport)
-//	a.Router.POST("/menuactivation", restapi.MenuActivation(inport))
-// }
-
+//code_injection function declaration

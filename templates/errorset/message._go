@@ -1,0 +1,5 @@
+package errorset
+
+var message = map[ErrorCodeType]string{ {{range .Errors}}
+	{{.Literal}}: "{{.Message}}", {{end}}
+}
