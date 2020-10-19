@@ -1,4 +1,0 @@
-errors:
-  - code: 1000
-    literal: SampleCommonError
-    message: This is a sample of common error

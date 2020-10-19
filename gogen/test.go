@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type test struct {
@@ -24,7 +26,7 @@ func (d *test) Generate(args ...string) error {
 
 	ds := Test{}
 	ds.UsecaseName = usecaseName
-	ds.PackagePath = GetPackagePath()
+	ds.PackagePath = templator.GetPackagePath()
 
 	{
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
@@ -242,7 +244,7 @@ func (d *test) Generate(args ...string) error {
 	}
 
 	if ds.Type == "HandleQuery" {
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-query._go",
 			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(usecaseName)),
 			ds,
@@ -250,14 +252,14 @@ func (d *test) Generate(args ...string) error {
 	} else //
 
 	if ds.Type == "HandleCommand" {
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-command._go",
 			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(usecaseName)),
 			ds,
 		)
 	}
 
-	GenerateMock(ds.PackagePath, ds.UsecaseName)
+	templator.GenerateMock(ds.PackagePath, ds.UsecaseName)
 
 	return nil
 }

@@ -1,5 +1,0 @@
-package errorset
-
-const ( {{range .Errors}}
-	{{.Literal}} = ErrorCodeType({{.Code}}) {{end}}
-)

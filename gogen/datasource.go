@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type datasource struct {
@@ -31,7 +33,7 @@ func (d *datasource) Generate(args ...string) error {
 	ds := Datasource{}
 	ds.DatasourceName = datasourceName
 	ds.UsecaseName = usecaseName
-	ds.PackagePath = GetPackagePath()
+	ds.PackagePath = templator.GetPackagePath()
 
 	{
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
@@ -147,15 +149,15 @@ func (d *datasource) Generate(args ...string) error {
 		}
 	}
 
-	CreateFolder("datasource/%s", strings.ToLower(datasourceName))
+	templator.CreateFolder("datasource/%s", strings.ToLower(datasourceName))
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"datasource/datasourceName/datasource._go",
 		fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName),
 		ds,
 	)
 
-	GoFormat(ds.PackagePath)
+	templator.GoFormat(ds.PackagePath)
 
 	return nil
 }

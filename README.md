@@ -124,9 +124,11 @@ controller/restapi/CreateOrder.go
 
 ## 6. Glue your usecase, datasource, and controller together
 
-After generate the usecase, datasource and controller, we need to bind them all. You can open file `application/registry.go`
-
-Then write this code.
+After generate the usecase, datasource and controller, we need to bind them all by calling this command:
+```
+gogen registry restapi production CreateOrder
+```
+Then open file `application/registry.go` then you will find this
 
 ```
 package application
@@ -139,6 +141,7 @@ import (
 
 func (a *Application) RegisterUsecase() {
 	createOrder(a)
+  //code_injection function call
 }
 
 func createorder(a *Application) {
@@ -146,8 +149,20 @@ func createorder(a *Application) {
 	inport := createorder.NewCreateOrderUsecase(outport)
 	a.Router.POST("/createorder", restapi.CreateOrder(inport))
 }
+
+//code_injection function declaration
 ```
-For now this require manual effort to type manually (coding). Well actually we can do code injection here. But this can be another feature to add in the future
+gogen registry will inject some code in `registry.go`. Basically you can also write it by yourself, 
+but you need to notice that we have two comment line. 
+```
+//code_injection function call
+
+and
+
+//code_injection function declaration
+```
+gogen will look at that comment to do the code injection.
+if you remove that comment line, gogen registry will no longer work anymore.
 
 ## 7. Create your model
 This will simply create Order struct. That's it.

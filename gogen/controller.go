@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type controller struct {
@@ -24,9 +26,15 @@ func (d *controller) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
+	return GenerateController(controllerType, usecaseName)
+
+}
+
+func GenerateController(controllerType, usecaseName string) error {
+
 	ct := Controller{}
 	ct.UsecaseName = usecaseName
-	ct.PackagePath = GetPackagePath()
+	ct.PackagePath = templator.GetPackagePath()
 
 	{
 		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
@@ -133,10 +141,10 @@ func (d *controller) Generate(args ...string) error {
 
 	if controllerType == "restapi.gin" {
 
-		CreateFolder("controller/restapi")
+		templator.CreateFolder("controller/restapi")
 
 		if ct.Type == "HandleQuery" {
-			_ = WriteFileIfNotExist(
+			_ = templator.WriteFileIfNotExist(
 				"controller/restapi/gin-query._go",
 				fmt.Sprintf("controller/restapi/%s.go", usecaseName),
 				ct,
@@ -144,7 +152,7 @@ func (d *controller) Generate(args ...string) error {
 		} else //
 
 		if ct.Type == "HandleCommand" {
-			_ = WriteFileIfNotExist(
+			_ = templator.WriteFileIfNotExist(
 				"controller/restapi/gin-command._go",
 				fmt.Sprintf("controller/restapi/%s.go", usecaseName),
 				ct,
@@ -155,9 +163,9 @@ func (d *controller) Generate(args ...string) error {
 
 	if controllerType == "restapi.http" {
 
-		CreateFolder("controller/restapi")
+		templator.CreateFolder("controller/restapi")
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"controller/restapi/http._go",
 			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
 			ct,
@@ -165,7 +173,7 @@ func (d *controller) Generate(args ...string) error {
 
 	}
 
-	GoFormat(ct.PackagePath)
+	templator.GoFormat(ct.PackagePath)
 
 	return nil
 }

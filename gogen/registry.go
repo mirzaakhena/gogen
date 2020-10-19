@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type registry struct {
@@ -26,15 +28,15 @@ func (d *registry) Generate(args ...string) error {
 	datasourceName := args[3]
 	usecaseName := args[4]
 
-	if !IsExist(fmt.Sprintf("controller/%s/%s.go", controllerName, usecaseName)) {
+	if !templator.IsExist(fmt.Sprintf("controller/%s/%s.go", controllerName, usecaseName)) {
 		return fmt.Errorf("controller %s/%s is not found", controllerName, usecaseName)
 	}
 
-	if !IsExist(fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName)) {
+	if !templator.IsExist(fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName)) {
 		return fmt.Errorf("datasource %s/%s is not found", datasourceName, usecaseName)
 	}
 
-	if !IsExist(fmt.Sprintf("usecase/%s", usecaseName)) {
+	if !templator.IsExist(fmt.Sprintf("usecase/%s", usecaseName)) {
 		return fmt.Errorf("usecase %s is not found", usecaseName)
 	}
 
@@ -45,8 +47,8 @@ func %s(a *Application) {
 	a.Router.POST("/%s", %s.%s(inport))
 }`
 
-	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", CamelCase(usecaseName), datasourceName, usecaseName, LowerCase(usecaseName), usecaseName, LowerCase(usecaseName), controllerName, usecaseName)
-	funcCallInjectedCode := fmt.Sprintf("	%s(a)", CamelCase(usecaseName))
+	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", templator.CamelCase(usecaseName), datasourceName, usecaseName, templator.LowerCase(usecaseName), usecaseName, templator.LowerCase(usecaseName), controllerName, usecaseName)
+	funcCallInjectedCode := fmt.Sprintf("	%s(a)", templator.CamelCase(usecaseName))
 
 	file, err := os.Open("application/registry.go")
 	if err != nil {

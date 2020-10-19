@@ -3,6 +3,8 @@ package gogen
 import (
 	"fmt"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type applicationSchema struct {
@@ -27,61 +29,61 @@ func (d *applicationSchema) Generate(args ...string) error {
 		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
 	}
 
-	CreateFolder("%sapplication/", baseFolder)
+	templator.CreateFolder("%sapplication/", baseFolder)
 
-	CreateFolder("%scontroller/", baseFolder)
+	templator.CreateFolder("%scontroller/", baseFolder)
 
-	CreateFolder("%sdatasource/", baseFolder)
+	templator.CreateFolder("%sdatasource/", baseFolder)
 
-	CreateFolder("%smodel/", baseFolder)
+	templator.CreateFolder("%smodel/", baseFolder)
 
-	CreateFolder("%susecase/", baseFolder)
+	templator.CreateFolder("%susecase/", baseFolder)
 
-	CreateFolder("%sutil/", baseFolder)
+	templator.CreateFolder("%sutil/", baseFolder)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"main._go",
 		fmt.Sprintf("%smain.go", baseFolder),
 		struct {
 			PackagePath string
 			Directory   string
 		}{
-			PackagePath: GetPackagePath(),
+			PackagePath: templator.GetPackagePath(),
 			Directory:   folder,
 		},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"config._toml",
 		fmt.Sprintf("%sconfig.toml", baseFolder),
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"README._md",
 		fmt.Sprintf("%sREADME.md", baseFolder),
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"application/runner._go",
 		fmt.Sprintf("%sapplication/runner.go", baseFolder),
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"application/application._go",
 		fmt.Sprintf("%sapplication/application.go", baseFolder),
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"application/schema._go",
 		fmt.Sprintf("%sapplication/schema.go", baseFolder),
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
+	_ = templator.WriteFileIfNotExist(
 		"application/registry._go",
 		fmt.Sprintf("%sapplication/registry.go", baseFolder),
 		struct{}{},

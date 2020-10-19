@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/templator"
 )
 
 type usecase struct {
@@ -24,24 +26,24 @@ func (d *usecase) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
-	packagePath := GetPackagePath()
+	packagePath := templator.GetPackagePath()
 
 	uc := Usecase{
 		Name:        usecaseName,
 		PackagePath: packagePath,
 	}
 
-	CreateFolder("usecase/%s/port", strings.ToLower(uc.Name))
+	templator.CreateFolder("usecase/%s/port", strings.ToLower(uc.Name))
 
 	if usecaseType == "command" {
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-command._go",
 			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport-command._go",
 			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
 			uc,
@@ -235,7 +237,7 @@ func (d *usecase) Generate(args ...string) error {
 			}
 		}
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-command._go",
 			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
 			uc,
@@ -245,13 +247,13 @@ func (d *usecase) Generate(args ...string) error {
 
 	if usecaseType == "query" {
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-query._go",
 			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport-query._go",
 			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
 			uc,
@@ -445,7 +447,7 @@ func (d *usecase) Generate(args ...string) error {
 			}
 		}
 
-		_ = WriteFileIfNotExist(
+		_ = templator.WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-query._go",
 			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
 			uc,
