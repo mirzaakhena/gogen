@@ -2,8 +2,6 @@ package gogen
 
 import (
 	"fmt"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type model struct {
@@ -21,15 +19,29 @@ func (d *model) Generate(args ...string) error {
 
 	modelName := args[2]
 
-	templator.CreateFolder("model/")
+	folderPath := "hehe"
 
-	_ = templator.WriteFileIfNotExist(
+	return GenerateModel(modelName, folderPath)
+}
+
+func GenerateModel(modelName, folderPath string) error {
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
+	}
+
+	CreateFolder("model/")
+
+	_ = WriteFileIfNotExist(
 		"model/model._go",
-		fmt.Sprintf("model/%s.go", modelName),
+		fmt.Sprintf("%s/model/%s.go", folderPath, modelName),
 		struct {
-			Name string
+			Name      string
+			Directory string
 		}{
-			Name: modelName,
+			Name:      modelName,
+			Directory: folderImport,
 		},
 	)
 

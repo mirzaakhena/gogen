@@ -3,7 +3,7 @@ package {{LowerCase .Name}}
 import (
 	"context"
 
-	"{{.PackagePath}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
 )
 
 //go:generate mockery --dir port/ --name {{PascalCase .Name}}Outport -output mocks/

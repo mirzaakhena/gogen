@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/mocks"
-	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/mocks"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
 	"github.com/stretchr/testify/assert"
 )
 

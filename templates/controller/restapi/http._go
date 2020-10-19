@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
 	"github.com/jinzhu/copier"
 )
 

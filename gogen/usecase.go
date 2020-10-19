@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type usecase struct {
@@ -26,31 +24,44 @@ func (d *usecase) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
-	packagePath := templator.GetPackagePath()
+	folderPath := "hehe"
+
+	return GenerateUsecase(usecaseType, usecaseName, folderPath)
+}
+
+func GenerateUsecase(usecaseType, usecaseName, folderPath string) error {
+
+	packagePath := GetPackagePath()
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
+	}
 
 	uc := Usecase{
 		Name:        usecaseName,
 		PackagePath: packagePath,
+		Directory:   folderImport,
 	}
 
-	templator.CreateFolder("usecase/%s/port", strings.ToLower(uc.Name))
+	CreateFolder("%s/usecase/%s/port", folderPath, strings.ToLower(uc.Name))
 
 	if usecaseType == "command" {
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-command._go",
-			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport-command._go",
-			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -87,7 +98,7 @@ func (d *usecase) Generate(args ...string) error {
 		}
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error2. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -124,7 +135,7 @@ func (d *usecase) Generate(args ...string) error {
 		}
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -159,7 +170,7 @@ func (d *usecase) Generate(args ...string) error {
 
 		for _, ot := range uc.Outports {
 
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -199,7 +210,7 @@ func (d *usecase) Generate(args ...string) error {
 
 		for _, ot := range uc.Outports {
 
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error7. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -237,9 +248,9 @@ func (d *usecase) Generate(args ...string) error {
 			}
 		}
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-command._go",
-			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/interactor.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
@@ -247,20 +258,20 @@ func (d *usecase) Generate(args ...string) error {
 
 	if usecaseType == "query" {
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-query._go",
-			fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport-query._go",
-			fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error9. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -297,7 +308,7 @@ func (d *usecase) Generate(args ...string) error {
 		}
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error10. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -334,7 +345,7 @@ func (d *usecase) Generate(args ...string) error {
 		}
 
 		{
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error11. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -369,7 +380,7 @@ func (d *usecase) Generate(args ...string) error {
 
 		for _, ot := range uc.Outports {
 
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error13. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -409,7 +420,7 @@ func (d *usecase) Generate(args ...string) error {
 
 		for _, ot := range uc.Outports {
 
-			file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 			if err != nil {
 				return fmt.Errorf("error15. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 			}
@@ -447,9 +458,9 @@ func (d *usecase) Generate(args ...string) error {
 			}
 		}
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-query._go",
-			fmt.Sprintf("usecase/%s/interactor.go", strings.ToLower(uc.Name)),
+			fmt.Sprintf("%s/usecase/%s/interactor.go", folderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 

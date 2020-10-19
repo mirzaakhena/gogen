@@ -3,6 +3,7 @@ package gogen
 type Usecase struct {
 	Name                 string
 	PackagePath          string
+	Directory            string
 	Outports             []*Outport
 	InportRequestFields  []*NameType
 	InportResponseFields []*NameType
@@ -12,12 +13,14 @@ type Datasource struct {
 	DatasourceName string
 	UsecaseName    string
 	PackagePath    string
+	Directory      string
 	Outports       []*Outport
 }
 
 type Test struct {
 	UsecaseName          string
 	PackagePath          string
+	Directory            string
 	Outports             []*Outport
 	InportRequestFields  []*NameType
 	InportResponseFields []*NameType
@@ -25,9 +28,9 @@ type Test struct {
 }
 
 type Controller struct {
-	PackagePath string
-	UsecaseName string
-	// InportFields         []*NameType
+	PackagePath          string
+	UsecaseName          string
+	Directory            string
 	InportRequestFields  []*NameType
 	InportResponseFields []*NameType
 	Type                 string

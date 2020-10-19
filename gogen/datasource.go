@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type datasource struct {
@@ -18,10 +16,6 @@ func NewDatasource() Generator {
 
 func (d *datasource) Generate(args ...string) error {
 
-	// if IsNotExist(".application_schema/") {
-	// 	return fmt.Errorf("please call `gogen init` first")
-	// }
-
 	if len(args) < 4 {
 		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen datasource production CreateOrder`")
 	}
@@ -30,13 +24,27 @@ func (d *datasource) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
+	folderPath := "hehe"
+
+	return GenerateDatasource(datasourceName, usecaseName, folderPath)
+
+}
+
+func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
+	}
+
 	ds := Datasource{}
+	ds.Directory = folderImport
 	ds.DatasourceName = datasourceName
 	ds.UsecaseName = usecaseName
-	ds.PackagePath = templator.GetPackagePath()
+	ds.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -71,7 +79,7 @@ func (d *datasource) Generate(args ...string) error {
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -111,7 +119,7 @@ func (d *datasource) Generate(args ...string) error {
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -149,15 +157,15 @@ func (d *datasource) Generate(args ...string) error {
 		}
 	}
 
-	templator.CreateFolder("datasource/%s", strings.ToLower(datasourceName))
+	CreateFolder("%s/datasource/%s", folderPath, strings.ToLower(datasourceName))
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"datasource/datasourceName/datasource._go",
-		fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName),
+		fmt.Sprintf("%s/datasource/%s/%s.go", folderPath, datasourceName, usecaseName),
 		ds,
 	)
 
-	templator.GoFormat(ds.PackagePath)
+	GoFormat(ds.PackagePath)
 
 	return nil
 }

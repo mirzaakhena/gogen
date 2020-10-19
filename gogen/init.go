@@ -3,8 +3,6 @@ package gogen
 import (
 	"fmt"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type applicationSchema struct {
@@ -20,72 +18,75 @@ func (d *applicationSchema) Generate(args ...string) error {
 		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
 	}
 
-	directory := strings.TrimSpace(args[2])
+	folderPath := strings.TrimSpace(args[2])
 
-	baseFolder := fmt.Sprintf("%s/", directory)
+	return GenerateInit(folderPath)
+}
 
-	folder := ""
-	if directory != "." {
-		folder = fmt.Sprintf("/%s", strings.TrimSpace(args[2]))
+func GenerateInit(folderPath string) error {
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
 	}
 
-	templator.CreateFolder("%sapplication/", baseFolder)
+	CreateFolder("%s/application/", folderPath)
 
-	templator.CreateFolder("%scontroller/", baseFolder)
+	CreateFolder("%s/controller/", folderPath)
 
-	templator.CreateFolder("%sdatasource/", baseFolder)
+	CreateFolder("%s/datasource/", folderPath)
 
-	templator.CreateFolder("%smodel/", baseFolder)
+	CreateFolder("%s/model/", folderPath)
 
-	templator.CreateFolder("%susecase/", baseFolder)
+	CreateFolder("%s/usecase/", folderPath)
 
-	templator.CreateFolder("%sutil/", baseFolder)
+	CreateFolder("%s/util/", folderPath)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"main._go",
-		fmt.Sprintf("%smain.go", baseFolder),
+		fmt.Sprintf("%s/main.go", folderPath),
 		struct {
 			PackagePath string
 			Directory   string
 		}{
-			PackagePath: templator.GetPackagePath(),
-			Directory:   folder,
+			PackagePath: GetPackagePath(),
+			Directory:   folderImport,
 		},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"config._toml",
-		fmt.Sprintf("%sconfig.toml", baseFolder),
+		fmt.Sprintf("%s/config.toml", folderPath),
 		struct{}{},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"README._md",
-		fmt.Sprintf("%sREADME.md", baseFolder),
+		fmt.Sprintf("%s/README.md", folderPath),
 		struct{}{},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/runner._go",
-		fmt.Sprintf("%sapplication/runner.go", baseFolder),
+		fmt.Sprintf("%s/application/runner.go", folderPath),
 		struct{}{},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/application._go",
-		fmt.Sprintf("%sapplication/application.go", baseFolder),
+		fmt.Sprintf("%s/application/application.go", folderPath),
 		struct{}{},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/schema._go",
-		fmt.Sprintf("%sapplication/schema.go", baseFolder),
+		fmt.Sprintf("%s/application/schema.go", folderPath),
 		struct{}{},
 	)
 
-	_ = templator.WriteFileIfNotExist(
+	_ = WriteFileIfNotExist(
 		"application/registry._go",
-		fmt.Sprintf("%sapplication/registry.go", baseFolder),
+		fmt.Sprintf("%s/application/registry.go", folderPath),
 		struct{}{},
 	)
 

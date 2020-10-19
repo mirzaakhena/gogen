@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type controller struct {
@@ -26,18 +24,26 @@ func (d *controller) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
-	return GenerateController(controllerType, usecaseName)
+	folderPath := "hehe"
+
+	return GenerateController(controllerType, usecaseName, folderPath)
 
 }
 
-func GenerateController(controllerType, usecaseName string) error {
+func GenerateController(controllerType, usecaseName, folderPath string) error {
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
+	}
 
 	ct := Controller{}
 	ct.UsecaseName = usecaseName
-	ct.PackagePath = templator.GetPackagePath()
+	ct.Directory = folderImport
+	ct.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -64,7 +70,7 @@ func GenerateController(controllerType, usecaseName string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -102,7 +108,7 @@ func GenerateController(controllerType, usecaseName string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -141,20 +147,20 @@ func GenerateController(controllerType, usecaseName string) error {
 
 	if controllerType == "restapi.gin" {
 
-		templator.CreateFolder("controller/restapi")
+		CreateFolder("%s/controller/restapi", folderPath)
 
 		if ct.Type == "HandleQuery" {
-			_ = templator.WriteFileIfNotExist(
+			_ = WriteFileIfNotExist(
 				"controller/restapi/gin-query._go",
-				fmt.Sprintf("controller/restapi/%s.go", usecaseName),
+				fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
 				ct,
 			)
 		} else //
 
 		if ct.Type == "HandleCommand" {
-			_ = templator.WriteFileIfNotExist(
+			_ = WriteFileIfNotExist(
 				"controller/restapi/gin-command._go",
-				fmt.Sprintf("controller/restapi/%s.go", usecaseName),
+				fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
 				ct,
 			)
 		}
@@ -163,17 +169,17 @@ func GenerateController(controllerType, usecaseName string) error {
 
 	if controllerType == "restapi.http" {
 
-		templator.CreateFolder("controller/restapi")
+		CreateFolder("%s/controller/restapi", folderPath)
 
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"controller/restapi/http._go",
-			fmt.Sprintf("controller/restapi/%s.go", usecaseName),
+			fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
 			ct,
 		)
 
 	}
 
-	templator.GoFormat(ct.PackagePath)
+	GoFormat(ct.PackagePath)
 
 	return nil
 }

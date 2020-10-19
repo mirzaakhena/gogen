@@ -5,8 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type test struct {
@@ -24,12 +22,25 @@ func (d *test) Generate(args ...string) error {
 
 	usecaseName := args[2]
 
+	folderPath := "hehe"
+
+	return GenerateTest(usecaseName, folderPath)
+}
+
+func GenerateTest(usecaseName, folderPath string) error {
+
+	var folderImport string
+	if folderPath != "." {
+		folderImport = fmt.Sprintf("/%s", folderPath)
+	}
+
 	ds := Test{}
 	ds.UsecaseName = usecaseName
-	ds.PackagePath = templator.GetPackagePath()
+	ds.Directory = folderImport
+	ds.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -56,7 +67,7 @@ func (d *test) Generate(args ...string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -91,7 +102,7 @@ func (d *test) Generate(args ...string) error {
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -131,7 +142,7 @@ func (d *test) Generate(args ...string) error {
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -170,7 +181,7 @@ func (d *test) Generate(args ...string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -207,7 +218,7 @@ func (d *test) Generate(args ...string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
 		if err != nil {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
 		}
@@ -244,22 +255,22 @@ func (d *test) Generate(args ...string) error {
 	}
 
 	if ds.Type == "HandleQuery" {
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-query._go",
-			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
 			ds,
 		)
 	} else //
 
 	if ds.Type == "HandleCommand" {
-		_ = templator.WriteFileIfNotExist(
+		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-command._go",
-			fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
 			ds,
 		)
 	}
 
-	templator.GenerateMock(ds.PackagePath, ds.UsecaseName)
+	GenerateMock(ds.PackagePath, ds.UsecaseName, folderPath)
 
 	return nil
 }

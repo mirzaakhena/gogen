@@ -7,8 +7,6 @@ import (
 	"io/ioutil"
 	"os"
 	"strings"
-
-	"github.com/mirzaakhena/templator"
 )
 
 type registry struct {
@@ -28,29 +26,39 @@ func (d *registry) Generate(args ...string) error {
 	datasourceName := args[3]
 	usecaseName := args[4]
 
-	if !templator.IsExist(fmt.Sprintf("controller/%s/%s.go", controllerName, usecaseName)) {
+	folderPath := "hehe"
+
+	return GenerateRegistry(controllerName, datasourceName, usecaseName, folderPath)
+
+}
+
+func GenerateRegistry(controllerName, datasourceName, usecaseName, folderPath string) error {
+
+	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", folderPath, controllerName, usecaseName)) {
 		return fmt.Errorf("controller %s/%s is not found", controllerName, usecaseName)
 	}
 
-	if !templator.IsExist(fmt.Sprintf("datasource/%s/%s.go", datasourceName, usecaseName)) {
+	if !IsExist(fmt.Sprintf("%s/datasource/%s/%s.go", folderPath, datasourceName, usecaseName)) {
 		return fmt.Errorf("datasource %s/%s is not found", datasourceName, usecaseName)
 	}
 
-	if !templator.IsExist(fmt.Sprintf("usecase/%s", usecaseName)) {
+	if !IsExist(fmt.Sprintf("%s/usecase/%s", folderPath, usecaseName)) {
 		return fmt.Errorf("usecase %s is not found", usecaseName)
 	}
 
 	funcDeclare := `
-func %s(a *Application) {
+func %sHandler(a *Application) {
 	outport := %s.New%sDatasource()
 	inport := %s.New%sUsecase(outport)
 	a.Router.POST("/%s", %s.%s(inport))
 }`
 
-	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", templator.CamelCase(usecaseName), datasourceName, usecaseName, templator.LowerCase(usecaseName), usecaseName, templator.LowerCase(usecaseName), controllerName, usecaseName)
-	funcCallInjectedCode := fmt.Sprintf("	%s(a)", templator.CamelCase(usecaseName))
+	funcCall := "	%sHandler(a)"
 
-	file, err := os.Open("application/registry.go")
+	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", CamelCase(usecaseName), datasourceName, usecaseName, LowerCase(usecaseName), usecaseName, LowerCase(usecaseName), controllerName, usecaseName)
+	funcCallInjectedCode := fmt.Sprintf(funcCall, CamelCase(usecaseName))
+
+	file, err := os.Open(fmt.Sprintf("%s/application/registry.go", folderPath))
 	if err != nil {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
 	}
@@ -76,7 +84,7 @@ func %s(a *Application) {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile("application/registry.go", buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry.go", folderPath), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 
