@@ -73,7 +73,16 @@ gogen usecase query ShowOrder
 
 For now we only have `command` and `query` usecase. You can try it to see the different.
 
-## 3. Create your usecase test file
+## 3. Create your custom outport method
+
+After you run the `gogen usecase` you need to delete the `port/outport.go` and `interactor.go` file. Then call this command
+```
+gogen outports CreateOrder CheckOrderID SaveOrder PublishOrder
+```
+Open the outport file you will found that there are 3 new methods defined.
+After that run again the `gogen usecase command CreateOrder`
+
+## 4. Create your usecase test file
 
 For test mock, we will need mockery. So you need to install it first
 ```
@@ -93,7 +102,7 @@ $ go generate
 
 or just simply delete the mock/ folder and call the `gogen test CreteOrder` again.
 
-## 4. Create datasource for your usecase
+## 5. Create datasource for your usecase
 
 Datasource is the implemetor of your outport. You need to define where is your datasource. You can give any datasource name you like.
 For the example you just want to hardcode any data for your apps. You can simply create the "hardcode" datasource version. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "testing" datasource version. For now, we will try to generate code for "production" datasource version.
@@ -107,7 +116,7 @@ datasource/production/CreateOrder.go
 ```
 You can start define what the data we must provide to run our usecase here.
 
-## 5. Create controller for your usecase
+## 6. Create controller for your usecase
 
 In gogen, i define controller as any technology that will receive input from outside world. It can be rest api, grpc, consumer for event handling, or anything.
 
@@ -122,7 +131,7 @@ This will generate
 controller/restapi/CreateOrder.go
 ```
 
-## 6. Glue your usecase, datasource, and controller together
+## 7. Glue your usecase, datasource, and controller together
 
 After generate the usecase, datasource and controller, we need to bind them all by calling this command:
 ```
@@ -164,7 +173,7 @@ and
 gogen will look at that comment to do the code injection.
 if you remove that comment line, gogen registry will no longer work anymore.
 
-## 7. Create your model
+## 8. Create your model
 This will simply create Order struct. That's it.
 ```
 gogen model Order

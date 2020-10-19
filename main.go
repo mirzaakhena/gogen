@@ -17,7 +17,7 @@ some command available is
   test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>
-	registry <controller type> <datasource name> <usecase name>
+  registry <controller type> <datasource name> <usecase name>
   outports <usecase name> <method1> <method2> <method3> ...
 
 some controller type available is
