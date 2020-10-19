@@ -26,7 +26,7 @@ func (d *registry) Generate(args ...string) error {
 	datasourceName := args[3]
 	usecaseName := args[4]
 
-	folderPath := "hehe"
+	folderPath := "."
 
 	return GenerateRegistry(controllerName, datasourceName, usecaseName, folderPath)
 

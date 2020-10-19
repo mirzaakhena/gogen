@@ -22,7 +22,7 @@ func (d *test) Generate(args ...string) error {
 
 	usecaseName := args[2]
 
-	folderPath := "hehe"
+	folderPath := "."
 
 	return GenerateTest(usecaseName, folderPath)
 }

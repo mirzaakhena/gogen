@@ -24,7 +24,7 @@ func (d *controller) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
-	folderPath := "hehe"
+	folderPath := "."
 
 	return GenerateController(controllerType, usecaseName, folderPath)
 

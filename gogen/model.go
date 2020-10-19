@@ -19,7 +19,7 @@ func (d *model) Generate(args ...string) error {
 
 	modelName := args[2]
 
-	folderPath := "hehe"
+	folderPath := "."
 
 	return GenerateModel(modelName, folderPath)
 }

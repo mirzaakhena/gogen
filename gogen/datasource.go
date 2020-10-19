@@ -24,7 +24,7 @@ func (d *datasource) Generate(args ...string) error {
 
 	usecaseName := args[3]
 
-	folderPath := "hehe"
+	folderPath := "."
 
 	return GenerateDatasource(datasourceName, usecaseName, folderPath)
 
