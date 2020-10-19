@@ -35,7 +35,7 @@ func GenerateModel(req ModelRequest) error {
 		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
-	CreateFolder("model/")
+	CreateFolder("%s/model/", req.FolderPath)
 
 	_ = WriteFileIfNotExist(
 		"model/model._go",

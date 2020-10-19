@@ -1,0 +1,21 @@
+package port
+
+import (
+	"context"
+)
+
+// {{PascalCase .Name}}Outport ...
+type {{PascalCase .Name}}Outport interface { {{range .Methods}}
+	{{PascalCase .}}(ctx context.Context, req {{PascalCase .}}Request) (*{{PascalCase .}}Response, error) {{end}}
+}
+
+{{range .Methods}}
+// {{PascalCase .}}Request ...
+type {{PascalCase .}}Request struct {
+
+}
+
+// {{PascalCase .}}Response ...
+type {{PascalCase .}}Response struct {
+
+} {{end}}

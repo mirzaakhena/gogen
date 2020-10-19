@@ -17,7 +17,8 @@ some command available is
   test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>
-  registry <controller type> <datasource name> <usecase name>
+	registry <controller type> <datasource name> <usecase name>
+  outports <usecase name> <method1> <method2> <method3> ...
 
 some controller type available is
   restapi.gin
@@ -94,6 +95,14 @@ func main() {
 	case "model":
 
 		gen := gogen.NewModel()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
+
+	case "outports":
+
+		gen := gogen.NewOutport()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
