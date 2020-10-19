@@ -17,30 +17,34 @@ func (d *model) Generate(args ...string) error {
 		return fmt.Errorf("please define model name. ex: `gogen model Menu`")
 	}
 
-	modelName := args[2]
-
-	folderPath := "."
-
-	return GenerateModel(modelName, folderPath)
+	return GenerateModel(ModelRequest{
+		ModelName:  args[2],
+		FolderPath: ".",
+	})
 }
 
-func GenerateModel(modelName, folderPath string) error {
+type ModelRequest struct {
+	ModelName  string
+	FolderPath string
+}
+
+func GenerateModel(req ModelRequest) error {
 
 	var folderImport string
-	if folderPath != "." {
-		folderImport = fmt.Sprintf("/%s", folderPath)
+	if req.FolderPath != "." {
+		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
 	CreateFolder("model/")
 
 	_ = WriteFileIfNotExist(
 		"model/model._go",
-		fmt.Sprintf("%s/model/%s.go", folderPath, modelName),
+		fmt.Sprintf("%s/model/%s.go", req.FolderPath, req.ModelName),
 		struct {
 			Name      string
 			Directory string
 		}{
-			Name:      modelName,
+			Name:      req.ModelName,
 			Directory: folderImport,
 		},
 	)

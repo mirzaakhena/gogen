@@ -20,29 +20,33 @@ func (d *test) Generate(args ...string) error {
 		return fmt.Errorf("please define test usecase. ex: `gogen test CreateOrder`")
 	}
 
-	usecaseName := args[2]
-
-	folderPath := "."
-
-	return GenerateTest(usecaseName, folderPath)
+	return GenerateTest(TestRequest{
+		UsecaseName: args[2],
+		FolderPath:  ".",
+	})
 }
 
-func GenerateTest(usecaseName, folderPath string) error {
+type TestRequest struct {
+	UsecaseName string
+	FolderPath  string
+}
+
+func GenerateTest(req TestRequest) error {
 
 	var folderImport string
-	if folderPath != "." {
-		folderImport = fmt.Sprintf("/%s", folderPath)
+	if req.FolderPath != "." {
+		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
 	ds := Test{}
-	ds.UsecaseName = usecaseName
+	ds.UsecaseName = req.UsecaseName
 	ds.Directory = folderImport
 	ds.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -51,7 +55,7 @@ func GenerateTest(usecaseName, folderPath string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", req.UsecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -62,14 +66,14 @@ func GenerateTest(usecaseName, folderPath string) error {
 			}
 		}
 		if state == 0 {
-			return fmt.Errorf("usecase %s is not found", usecaseName)
+			return fmt.Errorf("usecase %s is not found", req.UsecaseName)
 		}
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -78,7 +82,7 @@ func GenerateTest(usecaseName, folderPath string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", req.UsecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -96,15 +100,15 @@ func GenerateTest(usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -136,15 +140,15 @@ func GenerateTest(usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -176,14 +180,14 @@ func GenerateTest(usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -192,7 +196,7 @@ func GenerateTest(usecaseName, folderPath string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", req.UsecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -218,9 +222,9 @@ func GenerateTest(usecaseName, folderPath string) error {
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -229,7 +233,7 @@ func GenerateTest(usecaseName, folderPath string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", req.UsecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -257,7 +261,7 @@ func GenerateTest(usecaseName, folderPath string) error {
 	if ds.Type == "HandleQuery" {
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-query._go",
-			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
 			ds,
 		)
 	} else //
@@ -265,12 +269,12 @@ func GenerateTest(usecaseName, folderPath string) error {
 	if ds.Type == "HandleCommand" {
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test-command._go",
-			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
 			ds,
 		)
 	}
 
-	GenerateMock(ds.PackagePath, ds.UsecaseName, folderPath)
+	GenerateMock(ds.PackagePath, ds.UsecaseName, req.FolderPath)
 
 	return nil
 }

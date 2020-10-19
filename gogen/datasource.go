@@ -20,33 +20,37 @@ func (d *datasource) Generate(args ...string) error {
 		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen datasource production CreateOrder`")
 	}
 
-	datasourceName := args[2]
-
-	usecaseName := args[3]
-
-	folderPath := "."
-
-	return GenerateDatasource(datasourceName, usecaseName, folderPath)
+	return GenerateDatasource(DatasourceRequest{
+		DatasourceName: args[2],
+		UsecaseName:    args[3],
+		FolderPath:     ".",
+	})
 
 }
 
-func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
+type DatasourceRequest struct {
+	DatasourceName string
+	UsecaseName    string
+	FolderPath     string
+}
+
+func GenerateDatasource(req DatasourceRequest) error {
 
 	var folderImport string
-	if folderPath != "." {
-		folderImport = fmt.Sprintf("/%s", folderPath)
+	if req.FolderPath != "." {
+		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
 	ds := Datasource{}
 	ds.Directory = folderImport
-	ds.DatasourceName = datasourceName
-	ds.UsecaseName = usecaseName
+	ds.DatasourceName = req.DatasourceName
+	ds.UsecaseName = req.UsecaseName
 	ds.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -55,7 +59,7 @@ func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
 
 		state := 0
 		for scanner.Scan() {
-			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", usecaseName)) {
+			if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", req.UsecaseName)) {
 				state = 1
 			} else //
 			if state == 1 {
@@ -73,15 +77,15 @@ func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("error2. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error2. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -113,15 +117,15 @@ func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("error4. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error4. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	for _, ot := range ds.Outports {
 
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -153,15 +157,15 @@ func GenerateDatasource(datasourceName, usecaseName, folderPath string) error {
 		}
 
 		if state == 0 {
-			return fmt.Errorf("error6. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("error6. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
-	CreateFolder("%s/datasource/%s", folderPath, strings.ToLower(datasourceName))
+	CreateFolder("%s/datasource/%s", req.FolderPath, strings.ToLower(req.DatasourceName))
 
 	_ = WriteFileIfNotExist(
 		"datasource/datasourceName/datasource._go",
-		fmt.Sprintf("%s/datasource/%s/%s.go", folderPath, datasourceName, usecaseName),
+		fmt.Sprintf("%s/datasource/%s/%s.go", req.FolderPath, req.DatasourceName, req.UsecaseName),
 		ds,
 	)
 

@@ -2,7 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"strings"
 )
 
 type applicationSchema struct {
@@ -18,33 +17,37 @@ func (d *applicationSchema) Generate(args ...string) error {
 		return fmt.Errorf("try `gogen init .` for current directory as active project\nor  `gogen init <your project name>` for create new project directory. But remember do `cd <your project name>` to start working")
 	}
 
-	folderPath := strings.TrimSpace(args[2])
-
-	return GenerateInit(folderPath)
+	return GenerateInit(InitRequest{
+		FolderPath: args[2],
+	})
 }
 
-func GenerateInit(folderPath string) error {
+type InitRequest struct {
+	FolderPath string
+}
+
+func GenerateInit(req InitRequest) error {
 
 	var folderImport string
-	if folderPath != "." {
-		folderImport = fmt.Sprintf("/%s", folderPath)
+	if req.FolderPath != "." {
+		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
-	CreateFolder("%s/application/", folderPath)
+	CreateFolder("%s/application/", req.FolderPath)
 
-	CreateFolder("%s/controller/", folderPath)
+	CreateFolder("%s/controller/", req.FolderPath)
 
-	CreateFolder("%s/datasource/", folderPath)
+	CreateFolder("%s/datasource/", req.FolderPath)
 
-	CreateFolder("%s/model/", folderPath)
+	CreateFolder("%s/model/", req.FolderPath)
 
-	CreateFolder("%s/usecase/", folderPath)
+	CreateFolder("%s/usecase/", req.FolderPath)
 
-	CreateFolder("%s/util/", folderPath)
+	CreateFolder("%s/util/", req.FolderPath)
 
 	_ = WriteFileIfNotExist(
 		"main._go",
-		fmt.Sprintf("%s/main.go", folderPath),
+		fmt.Sprintf("%s/main.go", req.FolderPath),
 		struct {
 			PackagePath string
 			Directory   string
@@ -56,37 +59,37 @@ func GenerateInit(folderPath string) error {
 
 	_ = WriteFileIfNotExist(
 		"config._toml",
-		fmt.Sprintf("%s/config.toml", folderPath),
+		fmt.Sprintf("%s/config.toml", req.FolderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"README._md",
-		fmt.Sprintf("%s/README.md", folderPath),
+		fmt.Sprintf("%s/README.md", req.FolderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"application/runner._go",
-		fmt.Sprintf("%s/application/runner.go", folderPath),
+		fmt.Sprintf("%s/application/runner.go", req.FolderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"application/application._go",
-		fmt.Sprintf("%s/application/application.go", folderPath),
+		fmt.Sprintf("%s/application/application.go", req.FolderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"application/schema._go",
-		fmt.Sprintf("%s/application/schema.go", folderPath),
+		fmt.Sprintf("%s/application/schema.go", req.FolderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"application/registry._go",
-		fmt.Sprintf("%s/application/registry.go", folderPath),
+		fmt.Sprintf("%s/application/registry.go", req.FolderPath),
 		struct{}{},
 	)
 

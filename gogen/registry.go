@@ -16,49 +16,55 @@ func NewRegistry() Generator {
 	return &registry{}
 }
 
-func (d *registry) Generate(args ...string) error {
-
-	if len(args) < 5 {
-		return fmt.Errorf("please define controller, datasource, usecase name. ex: `gogen registry restapi production CreateMenu`")
-	}
-
-	controllerName := args[2]
-	datasourceName := args[3]
-	usecaseName := args[4]
-
-	folderPath := "."
-
-	return GenerateRegistry(controllerName, datasourceName, usecaseName, folderPath)
-
-}
-
-func GenerateRegistry(controllerName, datasourceName, usecaseName, folderPath string) error {
-
-	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", folderPath, controllerName, usecaseName)) {
-		return fmt.Errorf("controller %s/%s is not found", controllerName, usecaseName)
-	}
-
-	if !IsExist(fmt.Sprintf("%s/datasource/%s/%s.go", folderPath, datasourceName, usecaseName)) {
-		return fmt.Errorf("datasource %s/%s is not found", datasourceName, usecaseName)
-	}
-
-	if !IsExist(fmt.Sprintf("%s/usecase/%s", folderPath, usecaseName)) {
-		return fmt.Errorf("usecase %s is not found", usecaseName)
-	}
-
-	funcDeclare := `
+const funcDeclare = `
 func %sHandler(a *Application) {
 	outport := %s.New%sDatasource()
 	inport := %s.New%sUsecase(outport)
 	a.Router.POST("/%s", %s.%s(inport))
 }`
 
-	funcCall := "	%sHandler(a)"
+const funcCall = "	%sHandler(a)"
 
-	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", CamelCase(usecaseName), datasourceName, usecaseName, LowerCase(usecaseName), usecaseName, LowerCase(usecaseName), controllerName, usecaseName)
-	funcCallInjectedCode := fmt.Sprintf(funcCall, CamelCase(usecaseName))
+func (d *registry) Generate(args ...string) error {
 
-	file, err := os.Open(fmt.Sprintf("%s/application/registry.go", folderPath))
+	if len(args) < 5 {
+		return fmt.Errorf("please define controller, datasource, usecase name. ex: `gogen registry restapi production CreateMenu`")
+	}
+
+	return GenerateRegistry(RegistryRequest{
+		ControllerName: args[2],
+		DatasourceName: args[3],
+		UsecaseName:    args[4],
+		FolderPath:     ".",
+	})
+
+}
+
+type RegistryRequest struct {
+	ControllerName string
+	DatasourceName string
+	UsecaseName    string
+	FolderPath     string
+}
+
+func GenerateRegistry(req RegistryRequest) error {
+
+	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", req.FolderPath, req.ControllerName, req.UsecaseName)) {
+		return fmt.Errorf("controller %s/%s is not found", req.ControllerName, req.UsecaseName)
+	}
+
+	if !IsExist(fmt.Sprintf("%s/datasource/%s/%s.go", req.FolderPath, req.DatasourceName, req.UsecaseName)) {
+		return fmt.Errorf("datasource %s/%s is not found", req.DatasourceName, req.UsecaseName)
+	}
+
+	if !IsExist(fmt.Sprintf("%s/usecase/%s", req.FolderPath, req.UsecaseName)) {
+		return fmt.Errorf("usecase %s is not found", req.UsecaseName)
+	}
+
+	funcDeclareInjectedCode := fmt.Sprintf(funcDeclare+"\n", CamelCase(req.UsecaseName), req.DatasourceName, req.UsecaseName, LowerCase(req.UsecaseName), req.UsecaseName, LowerCase(req.UsecaseName), req.ControllerName, req.UsecaseName)
+	funcCallInjectedCode := fmt.Sprintf(funcCall, CamelCase(req.UsecaseName))
+
+	file, err := os.Open(fmt.Sprintf("%s/application/registry.go", req.FolderPath))
 	if err != nil {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
 	}
@@ -84,7 +90,7 @@ func %sHandler(a *Application) {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry.go", folderPath), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry.go", req.FolderPath), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 

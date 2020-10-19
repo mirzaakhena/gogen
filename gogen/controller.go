@@ -20,32 +20,36 @@ func (d *controller) Generate(args ...string) error {
 		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen controller restapi.gin CreateOrder`")
 	}
 
-	controllerType := args[2]
-
-	usecaseName := args[3]
-
-	folderPath := "."
-
-	return GenerateController(controllerType, usecaseName, folderPath)
+	return GenerateController(ControllerRequest{
+		ControllerType: args[2],
+		UsecaseName:    args[3],
+		FolderPath:     ".",
+	})
 
 }
 
-func GenerateController(controllerType, usecaseName, folderPath string) error {
+type ControllerRequest struct {
+	ControllerType string
+	UsecaseName    string
+	FolderPath     string
+}
+
+func GenerateController(req ControllerRequest) error {
 
 	var folderImport string
-	if folderPath != "." {
-		folderImport = fmt.Sprintf("/%s", folderPath)
+	if req.FolderPath != "." {
+		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
 	ct := Controller{}
-	ct.UsecaseName = usecaseName
+	ct.UsecaseName = req.UsecaseName
 	ct.Directory = folderImport
 	ct.PackagePath = GetPackagePath()
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -54,7 +58,7 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 
 		state := "FIND_INTERFACE"
 		for scanner.Scan() {
-			if state == "FIND_INTERFACE" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", usecaseName)) {
+			if state == "FIND_INTERFACE" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sInport interface {", req.UsecaseName)) {
 				state = "FIND_METHOD_SIGNATURE"
 			} else //
 			if state == "FIND_METHOD_SIGNATURE" {
@@ -65,14 +69,14 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 			}
 		}
 		if state == "FIND_INTERFACE" {
-			return fmt.Errorf("usecase %s is not found", usecaseName)
+			return fmt.Errorf("usecase %s is not found", req.UsecaseName)
 		}
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -81,7 +85,7 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 
 		state := "FIND_REQUEST_STRUCT"
 		for scanner.Scan() {
-			if state == "FIND_REQUEST_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", usecaseName)) {
+			if state == "FIND_REQUEST_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", req.UsecaseName)) {
 				state = "FIND_FIELD_AND_TYPE"
 			} else //
 			if state == "FIND_FIELD_AND_TYPE" {
@@ -103,14 +107,14 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 			}
 		}
 		if state == "FIND_REQUEST_STRUCT" {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
 	{
-		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)))
+		file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 		if err != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 		defer file.Close()
 
@@ -119,7 +123,7 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 
 		state := "FIND_RESPONSE_STRUCT"
 		for scanner.Scan() {
-			if state == "FIND_RESPONSE_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", usecaseName)) {
+			if state == "FIND_RESPONSE_STRUCT" && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", req.UsecaseName)) {
 				state = "FIND_FIELD_AND_TYPE"
 			} else //
 			if state == "FIND_FIELD_AND_TYPE" {
@@ -141,18 +145,18 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 			}
 		}
 		if state == "FIND_RESPONSE_STRUCT" {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 	}
 
-	if controllerType == "restapi.gin" {
+	if req.ControllerType == "restapi.gin" {
 
-		CreateFolder("%s/controller/restapi", folderPath)
+		CreateFolder("%s/controller/restapi", req.FolderPath)
 
 		if ct.Type == "HandleQuery" {
 			_ = WriteFileIfNotExist(
 				"controller/restapi/gin-query._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
+				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
 				ct,
 			)
 		} else //
@@ -160,20 +164,20 @@ func GenerateController(controllerType, usecaseName, folderPath string) error {
 		if ct.Type == "HandleCommand" {
 			_ = WriteFileIfNotExist(
 				"controller/restapi/gin-command._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
+				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
 				ct,
 			)
 		}
 
 	} else //
 
-	if controllerType == "restapi.http" {
+	if req.ControllerType == "restapi.http" {
 
-		CreateFolder("%s/controller/restapi", folderPath)
+		CreateFolder("%s/controller/restapi", req.FolderPath)
 
 		_ = WriteFileIfNotExist(
 			"controller/restapi/http._go",
-			fmt.Sprintf("%s/controller/restapi/%s.go", folderPath, usecaseName),
+			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
 			ct,
 		)
 
