@@ -15,20 +15,29 @@ func NewOutport() Generator {
 func (d *outport) Generate(args ...string) error {
 
 	if len(args) < 3 {
-		return fmt.Errorf("please define usecase name. ex: `gogen outport CreateOrder CheckOrder SaveOrder`")
+		return fmt.Errorf("please define usecase name. ex: `gogen outports CreateOrder CheckOrder SaveOrder`")
+	}
+
+	methods := []OutportStruct{}
+	for _, m := range args[3:] {
+		methods = append(methods, OutportStruct{Name: m})
 	}
 
 	return GenerateOutport(OutportRequest{
 		UsecaseName: args[2],
-		Methods:     args[3:],
+		Outports:    methods,
 		FolderPath:  ".",
 	})
 }
 
 type OutportRequest struct {
 	UsecaseName string
-	Methods     []string
+	Outports    []OutportStruct
 	FolderPath  string
+}
+
+type OutportStruct struct {
+	Name string
 }
 
 func GenerateOutport(req OutportRequest) error {
@@ -42,14 +51,14 @@ func GenerateOutport(req OutportRequest) error {
 	}
 
 	_ = WriteFileIfNotExist(
-		"usecase/usecaseName/port/outport._go",
+		"usecase/usecaseName/port/outportx._go",
 		fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
 		struct {
-			Name    string
-			Methods []string
+			Name     string
+			Outports []OutportStruct
 		}{
-			Name:    req.UsecaseName,
-			Methods: req.Methods,
+			Name:     req.UsecaseName,
+			Outports: req.Outports,
 		},
 	)
 

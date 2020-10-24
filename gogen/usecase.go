@@ -21,16 +21,18 @@ func (d *usecase) Generate(args ...string) error {
 	}
 
 	return GenerateUsecase(UsecaseRequest{
-		UsecaseType: args[2],
-		UsecaseName: args[3],
-		FolderPath:  ".",
+		UsecaseType:    args[2],
+		UsecaseName:    args[3],
+		FolderPath:     ".",
+		OutportMethods: []string{"DoSomething"},
 	})
 }
 
 type UsecaseRequest struct {
-	UsecaseType string
-	UsecaseName string
-	FolderPath  string
+	UsecaseType    string
+	UsecaseName    string
+	OutportMethods []string
+	FolderPath     string
 }
 
 func GenerateUsecase(req UsecaseRequest) error {
@@ -48,22 +50,39 @@ func GenerateUsecase(req UsecaseRequest) error {
 		Directory:   folderImport,
 	}
 
+	// set outport methods
+	{
+		outports := []*Outport{}
+		for _, methodName := range req.OutportMethods {
+			outports = append(outports, &Outport{
+				Name:           methodName,
+				RequestFields:  nil,
+				ResponseFields: nil,
+			})
+		}
+		uc.Outports = outports
+	}
+
+	// Create Port Folder
 	CreateFolder("%s/usecase/%s/port", req.FolderPath, strings.ToLower(uc.Name))
 
 	if req.UsecaseType == "command" {
 
+		// Create inport file
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-command._go",
 			fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
+		// Create outport file
 		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/outport-command._go",
+			"usecase/usecaseName/port/outport._go",
 			fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
+		// Read inport request field
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -101,6 +120,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// Read inport response field
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -138,6 +158,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport methods name
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -172,6 +193,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport request field
 		for _, ot := range uc.Outports {
 
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
@@ -212,6 +234,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport response field
 		for _, ot := range uc.Outports {
 
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
@@ -252,6 +275,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// create interactor file
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-command._go",
 			fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),
@@ -262,18 +286,21 @@ func GenerateUsecase(req UsecaseRequest) error {
 
 	if req.UsecaseType == "query" {
 
+		// create inport folder
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport-query._go",
 			fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
+		// create outport folder
 		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/outport-query._go",
+			"usecase/usecaseName/port/outport._go",
 			fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
 			uc,
 		)
 
+		// read inport request field
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -311,6 +338,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read inport response field
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -348,6 +376,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport methods name
 		{
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
@@ -382,6 +411,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport request fields
 		for _, ot := range uc.Outports {
 
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
@@ -422,6 +452,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// read outport response fields
 		for _, ot := range uc.Outports {
 
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
@@ -462,6 +493,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 			}
 		}
 
+		// create interactor file
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor-query._go",
 			fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),

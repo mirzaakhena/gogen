@@ -5,17 +5,17 @@ import (
 )
 
 // {{PascalCase .Name}}Outport ...
-type {{PascalCase .Name}}Outport interface { {{range .Methods}}
-	{{PascalCase .}}(ctx context.Context, req {{PascalCase .}}Request) (*{{PascalCase .}}Response, error) {{end}}
+type {{PascalCase .Name}}Outport interface { {{range .Outports}}
+	{{Pascal .Name}}(ctx context.Context, req {{Pascal .Name}}Request) (*{{Pascal .Name}}Response, error) {{end}}
+}
+{{range .Outports}}
+// {{Pascal .Name}}Request ...
+type {{Pascal .Name}}Request struct {
+
 }
 
-{{range .Methods}}
-// {{PascalCase .}}Request ...
-type {{PascalCase .}}Request struct {
+// {{Pascal .Name}}Response ...
+type {{Pascal .Name}}Response struct {
 
 }
-
-// {{PascalCase .}}Response ...
-type {{PascalCase .}}Response struct {
-
-} {{end}}
+{{end}}
