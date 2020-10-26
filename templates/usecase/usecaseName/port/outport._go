@@ -6,16 +6,16 @@ import (
 
 // {{PascalCase .Name}}Outport ...
 type {{PascalCase .Name}}Outport interface { {{range .Outports}}
-	{{Pascal .Name}}(ctx context.Context, req {{Pascal .Name}}Request) (*{{Pascal .Name}}Response, error) {{end}}
+	{{PascalCase .Name}}(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error) {{end}}
 }
 {{range .Outports}}
-// {{Pascal .Name}}Request ...
-type {{Pascal .Name}}Request struct {
+// {{PascalCase .Name}}Request ...
+type {{PascalCase .Name}}Request struct {
 
 }
 
-// {{Pascal .Name}}Response ...
-type {{Pascal .Name}}Response struct {
+// {{PascalCase .Name}}Response ...
+type {{PascalCase .Name}}Response struct {
 
 }
 {{end}}

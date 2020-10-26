@@ -21,10 +21,10 @@ func (d *usecase) Generate(args ...string) error {
 	}
 
 	return GenerateUsecase(UsecaseRequest{
-		UsecaseType:    args[2],
-		UsecaseName:    args[3],
-		FolderPath:     ".",
-		OutportMethods: []string{"DoSomething"},
+		UsecaseType: args[2],
+		UsecaseName: args[3],
+		FolderPath:  ".",
+		// OutportMethods: []string{"DoSomething"},
 	})
 }
 
@@ -48,6 +48,15 @@ func GenerateUsecase(req UsecaseRequest) error {
 		Name:        req.UsecaseName,
 		PackagePath: packagePath,
 		Directory:   folderImport,
+	}
+
+	firstTime := false
+
+	if !IsExist(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name))) {
+		if len(req.OutportMethods) == 0 {
+			req.OutportMethods = []string{"DoSomething"}
+			firstTime = true
+		}
 	}
 
 	// set outport methods
@@ -159,7 +168,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 		}
 
 		// read outport methods name
-		{
+		if !firstTime {
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
 				return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)

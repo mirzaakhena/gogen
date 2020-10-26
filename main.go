@@ -18,7 +18,6 @@ some command available is
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>
   registry <controller type> <datasource name> <usecase name>
-  outports <usecase name> <method1> <method2> <method3> ...
 
 some controller type available is
   restapi.gin
@@ -100,13 +99,13 @@ func main() {
 			os.Exit(0)
 		}
 
-	case "outports":
+	// case "outports":
 
-		gen := gogen.NewOutport()
-		if err := gen.Generate(os.Args...); err != nil {
-			fmt.Printf("%s\n", err.Error())
-			os.Exit(0)
-		}
+	// 	gen := gogen.NewOutport()
+	// 	if err := gen.Generate(os.Args...); err != nil {
+	// 		fmt.Printf("%s\n", err.Error())
+	// 		os.Exit(0)
+	// 	}
 
 	default:
 		fmt.Printf("command %s is not recognized. %s\n", command, message)
