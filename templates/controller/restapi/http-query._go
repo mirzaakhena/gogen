@@ -1,0 +1,58 @@
+package restapi
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+
+	"github.com/jinzhu/copier"
+
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"	
+)
+
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) http.HandlerFunc {
+
+	type dtoResponse struct { {{range .InportResponseFields}}
+		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		query := r.URL.Query()
+
+		// assign value from query to request object
+		var req port.{{PascalCase .UsecaseName}}Request
+		{ {{range .InportRequestFields}}
+			if {{CamelCase .Name}}Value, ok := query["{{CamelCase .Name}}"]; ok && len({{CamelCase .Name}}Value) > 0 {
+				// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value[0]
+			} {{end}}
+		}
+
+		// run the usecase
+		res, err := inputPort.HandleQuery(context.Background(), req)
+		if err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			bytes, _ := json.Marshal(err.Error())
+			_, _ = w.Write([]byte(bytes))
+			return
+		}
+
+		var jsonRes dtoResponse
+		if err := copier.Copy(&jsonRes, res); err != nil {
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusBadRequest)
+			bytes, _ := json.Marshal(err.Error())
+			_, _ = w.Write([]byte(bytes))
+			return
+		}		
+
+		// return the response
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		bytes, _ := json.Marshal(res)
+		_, _ = w.Write([]byte(bytes))
+
+	}
+}

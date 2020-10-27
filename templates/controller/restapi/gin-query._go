@@ -19,13 +19,10 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 
 	return func(c *gin.Context) {
 
-		{{range .InportRequestFields}}
-		// {{CamelCase .Name}}Value := c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
-
 		// assign value from query to request object
 		var req port.{{PascalCase .UsecaseName}}Request
 		{ {{range .InportRequestFields}}
-			// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value {{end}}
+			// req.{{PascalCase .Name}} = c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
 		}
 
 		// run the usecase

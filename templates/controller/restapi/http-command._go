@@ -5,13 +5,15 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
 	"github.com/jinzhu/copier"
+
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"	
 )
 
+// {{PascalCase .UsecaseName}} ...
 func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) http.HandlerFunc {
 
-	type dtoRequest struct { {{range .InportFields}}
+	type dtoRequest struct { {{range .InportRequestFields}}
 		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
 	}
 
@@ -19,7 +21,6 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 
 		// receive json
 		var jsonReq dtoRequest
-
 		if err := json.NewDecoder(r.Body).Decode(&jsonReq); err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -39,7 +40,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		}
 
 		// run the usecase
-		res, err := inputPort.Handle(context.Background(), req)
+		res, err := inputPort.HandleCommand(context.Background(), req)
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)

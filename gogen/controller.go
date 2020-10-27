@@ -181,6 +181,22 @@ func GenerateController(req ControllerRequest) error {
 			ct,
 		)
 
+		if ct.Type == "HandleQuery" {
+			_ = WriteFileIfNotExist(
+				"controller/restapi/http-query._go",
+				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+				ct,
+			)
+		} else //
+
+		if ct.Type == "HandleCommand" {
+			_ = WriteFileIfNotExist(
+				"controller/restapi/http-command._go",
+				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+				ct,
+			)
+		}
+
 	}
 
 	GoFormat(ct.PackagePath)
