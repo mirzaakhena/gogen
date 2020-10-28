@@ -386,7 +386,7 @@ func GenerateUsecase(req UsecaseRequest) error {
 		}
 
 		// read outport methods name
-		{
+		if !firstTime {
 			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
 			if err != nil {
 				return fmt.Errorf("error11. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
