@@ -31,8 +31,8 @@ type Controller struct {
 	PackagePath          string
 	UsecaseName          string
 	Directory            string
-	InportRequestFields  []*NameType
-	InportResponseFields []*NameType
+	InportRequestFields  []NameType
+	InportResponseFields []NameType
 	Type                 string
 }
 
