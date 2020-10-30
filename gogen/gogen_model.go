@@ -5,8 +5,8 @@ type Usecase struct {
 	PackagePath          string
 	Directory            string
 	Outports             []*Outport
-	InportRequestFields  []*NameType
-	InportResponseFields []*NameType
+	InportRequestFields  []NameType
+	InportResponseFields []NameType
 }
 
 type Datasource struct {
@@ -22,8 +22,8 @@ type Test struct {
 	PackagePath          string
 	Directory            string
 	Outports             []*Outport
-	InportRequestFields  []*NameType
-	InportResponseFields []*NameType
+	InportRequestFields  []NameType
+	InportResponseFields []NameType
 	Type                 string
 }
 
@@ -47,8 +47,8 @@ type Model struct {
 
 type Outport struct {
 	Name           string
-	RequestFields  []*NameType
-	ResponseFields []*NameType
+	RequestFields  []NameType
+	ResponseFields []NameType
 }
 
 type ErrorSet struct {

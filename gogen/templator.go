@@ -231,7 +231,7 @@ func GoFormat(path string) {
 // 	return lineOfCodes
 // }
 
-func ReadInterfaceMethodName(node *ast.File) (string, error) {
+func ReadInterfaceMethodName(node *ast.File, interfaceName string) ([]string, error) {
 
 	for _, dec := range node.Decls {
 		if gen, ok := dec.(*ast.GenDecl); ok {
@@ -241,23 +241,26 @@ func ReadInterfaceMethodName(node *ast.File) (string, error) {
 			for _, specs := range gen.Specs {
 				if ts, ok := specs.(*ast.TypeSpec); ok {
 					if iface, ok := ts.Type.(*ast.InterfaceType); ok {
-						if !strings.HasSuffix(ts.Name.String(), "Inport") {
+						if ts.Name.String() != interfaceName {
 							continue
 						}
+						methods := []string{}
 						for _, meths := range iface.Methods.List {
 							for _, name := range meths.Names {
-								return name.String(), nil
+								methods = append(methods, name.String())
 							}
 						}
+						return methods, nil
+
 					}
 				}
 			}
 		}
 	}
-	return "", fmt.Errorf("Inport interface not found")
+	return nil, fmt.Errorf("interface %s not found", interfaceName)
 }
 
-func ReadFieldInStruct(node *ast.File, usecaseName, structType string) []NameType {
+func ReadFieldInStruct(node *ast.File, structName string) []NameType {
 
 	for _, dec := range node.Decls {
 		if gen, ok := dec.(*ast.GenDecl); ok {
@@ -267,7 +270,7 @@ func ReadFieldInStruct(node *ast.File, usecaseName, structType string) []NameTyp
 			for _, specs := range gen.Specs {
 				if ts, ok := specs.(*ast.TypeSpec); ok {
 					if istruct, ok := ts.Type.(*ast.StructType); ok {
-						if !strings.HasSuffix(ts.Name.String(), fmt.Sprintf("%s%s", usecaseName, structType)) {
+						if !strings.HasSuffix(ts.Name.String(), structName) {
 							continue
 						}
 						nameTypes := []NameType{}

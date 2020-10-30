@@ -1,9 +1,9 @@
 package gogen
 
 import (
-	"bufio"
 	"fmt"
-	"os"
+	"go/parser"
+	"go/token"
 	"strings"
 )
 
@@ -91,197 +91,9 @@ func GenerateUsecase(req UsecaseRequest) error {
 			uc,
 		)
 
-		// Read inport request field
-		{
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error1. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						uc.InportRequestFields = append(uc.InportRequestFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-							Type: strings.TrimSpace(fieldWithType[1]),
-						})
-					}
-				}
-			}
-			if state == 0 {
-				return fmt.Errorf("not found Request struct")
-			}
-		}
-
-		// Read inport response field
-		{
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error2. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						uc.InportResponseFields = append(uc.InportResponseFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-							Type: strings.TrimSpace(fieldWithType[1]),
-						})
-					}
-				}
-			}
-			if state == 0 {
-				return fmt.Errorf("not found Response struct")
-			}
-		}
-
-		// read outport methods name
-		if !firstTime {
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error3. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeMethod := strings.TrimSpace(scanner.Text())
-						methodNameOnly := strings.Split(completeMethod, "(")[0]
-						uc.Outports = append(uc.Outports, &Outport{
-							Name: methodNameOnly,
-						})
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error4. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-		}
-
-		// read outport request field
-		for _, ot := range uc.Outports {
-
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error5. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", ot.Name)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						ot.RequestFields = append(ot.RequestFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-						})
-
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error6. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-		}
-
-		// read outport response field
-		for _, ot := range uc.Outports {
-
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error7. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", ot.Name)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						ot.ResponseFields = append(ot.ResponseFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-						})
-
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error8. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
+		err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
+		if err != nil {
+			return err
 		}
 
 		// create interactor file
@@ -309,197 +121,9 @@ func GenerateUsecase(req UsecaseRequest) error {
 			uc,
 		)
 
-		// read inport request field
-		{
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error9. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						uc.InportRequestFields = append(uc.InportRequestFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-							Type: strings.TrimSpace(fieldWithType[1]),
-						})
-					}
-				}
-			}
-			if state == 0 {
-				return fmt.Errorf("not found Request struct")
-			}
-		}
-
-		// read inport response field
-		{
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error10. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						uc.InportResponseFields = append(uc.InportResponseFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-							Type: strings.TrimSpace(fieldWithType[1]),
-						})
-					}
-				}
-			}
-			if state == 0 {
-				return fmt.Errorf("not found Response struct")
-			}
-		}
-
-		// read outport methods name
-		if !firstTime {
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error11. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sOutport interface {", req.UsecaseName)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-						completeMethod := strings.TrimSpace(scanner.Text())
-						methodNameOnly := strings.Split(completeMethod, "(")[0]
-						uc.Outports = append(uc.Outports, &Outport{
-							Name: methodNameOnly,
-						})
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error12. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-		}
-
-		// read outport request fields
-		for _, ot := range uc.Outports {
-
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error13. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sRequest struct {", ot.Name)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						ot.RequestFields = append(ot.RequestFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-						})
-
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error14. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-		}
-
-		// read outport response fields
-		for _, ot := range uc.Outports {
-
-			file, err := os.Open(fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)))
-			if err != nil {
-				return fmt.Errorf("error15. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
-			defer file.Close()
-
-			scanner := bufio.NewScanner(file)
-			scanner.Split(bufio.ScanLines)
-
-			state := 0
-			for scanner.Scan() {
-				if state == 0 && strings.HasPrefix(scanner.Text(), fmt.Sprintf("type %sResponse struct {", ot.Name)) {
-					state = 1
-				} else //
-				if state == 1 {
-					if strings.HasPrefix(scanner.Text(), "}") {
-						state = 2
-						break
-					} else {
-
-						completeFieldWithType := strings.TrimSpace(scanner.Text())
-						if len(completeFieldWithType) == 0 {
-							continue
-						}
-						fieldWithType := strings.SplitN(completeFieldWithType, " ", 2)
-						ot.ResponseFields = append(ot.ResponseFields, &NameType{
-							Name: strings.TrimSpace(fieldWithType[0]),
-						})
-
-					}
-				}
-			}
-
-			if state == 0 {
-				return fmt.Errorf("error16. not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-			}
+		err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
+		if err != nil {
+			return err
 		}
 
 		// create interactor file
@@ -513,6 +137,48 @@ func GenerateUsecase(req UsecaseRequest) error {
 
 	{
 		return fmt.Errorf("use type `command` or `query`")
+	}
+
+	return nil
+}
+
+func readInportOutport(uc *Usecase, folderPath, usecaseName string, firstTime bool) error {
+	{
+		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
+		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
+		if errParse != nil {
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+		}
+
+		uc.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Request"))
+		uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Response"))
+	}
+
+	if !firstTime {
+
+		inportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
+		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
+		if errParse != nil {
+			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+		}
+
+		interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", usecaseName, "Outport"))
+		if err != nil {
+			return fmt.Errorf("usecase %s is not found 111", usecaseName)
+		}
+
+		for _, methodName := range interfaceNames {
+			uc.Outports = append(uc.Outports, &Outport{
+				Name: methodName,
+			})
+
+			for _, ot := range uc.Outports {
+				ot.RequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Request"))
+				ot.ResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Response"))
+			}
+
+		}
+
 	}
 
 	return nil
