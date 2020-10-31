@@ -20,7 +20,7 @@ type {{CamelCase .Name}}Interactor struct {
 }
 
 // Handle ...
-func (_r *{{CamelCase .Name}}Interactor) HandleCommand(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
+func (_r *{{CamelCase .Name}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
 	
 	// TODO validate {{PascalCase .Name}} request {{range .InportRequestFields}}
 	_ = req.{{.Name}} // helper field{{end}}

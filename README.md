@@ -44,9 +44,9 @@ README.md
 
 ## 2. Create your basic usecase structure
 
-Let say you have a usecase named CreateOrder (It is better to have PascalCase for usecase name). This usecase is for (of course) to create an order. We can easily recognize it as a "command" usecase. Let's use our gogen code generator to create it for us.
+Let say you have a usecase named CreateOrder (It is better to have PascalCase for usecase name). This usecase is for (of course) to create an order. Let's use our gogen code generator to create it for us.
 ```
-gogen usecase command CreateOrder
+gogen usecase CreateOrder
 ```
 
 When you run this command, you will have those files generated for you
@@ -64,13 +64,6 @@ usecase/createorder/interactor.go
 `interactor.go` is the core implementation of the usecase. It implement the method from inport and call the method from outport.
 
 gogen only gives you the basic "template code". If you want to add/change your request response in your inport.go or outport.go, and want to have the "new method and the fields" appear in your interactor.go, then after you add the new field in the request or response struct (inport or outport), you can just simply delete the interactor.go, then call the `gogen usecase CreateOrder` again. It Will generate the new "helper code" for you.
-
-Another variant of this usecase command is
-```
-gogen usecase query ShowOrder
-```
-
-For now we only have `command` and `query` usecase. You can try it to see the different.
 
 ## 3. Create your custom outport method
 

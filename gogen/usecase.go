@@ -16,20 +16,18 @@ func NewUsecase() Generator {
 
 func (d *usecase) Generate(args ...string) error {
 
-	if len(args) < 4 {
-		return fmt.Errorf("please define usecase name and type (command/query). ex: `gogen usecase command CreateOrder`")
+	if len(args) < 3 {
+		return fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
 	}
 
 	return GenerateUsecase(UsecaseRequest{
-		UsecaseType: args[2],
-		UsecaseName: args[3],
+		UsecaseName: args[2],
 		FolderPath:  ".",
 		// OutportMethods: []string{"DoSomething"},
 	})
 }
 
 type UsecaseRequest struct {
-	UsecaseType    string
 	UsecaseName    string
 	OutportMethods []string
 	FolderPath     string
@@ -75,69 +73,31 @@ func GenerateUsecase(req UsecaseRequest) error {
 	// Create Port Folder
 	CreateFolder("%s/usecase/%s/port", req.FolderPath, strings.ToLower(uc.Name))
 
-	if req.UsecaseType == "command" {
+	// Create inport file
+	_ = WriteFileIfNotExist(
+		"usecase/usecaseName/port/inport._go",
+		fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name)),
+		uc,
+	)
 
-		// Create inport file
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/inport-command._go",
-			fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
+	// Create outport file
+	_ = WriteFileIfNotExist(
+		"usecase/usecaseName/port/outport._go",
+		fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
+		uc,
+	)
 
-		// Create outport file
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/outport._go",
-			fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
-
-		err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
-		if err != nil {
-			return err
-		}
-
-		// create interactor file
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/interactor-command._go",
-			fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
-
-	} else //
-
-	if req.UsecaseType == "query" {
-
-		// create inport folder
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/inport-query._go",
-			fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
-
-		// create outport folder
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/port/outport._go",
-			fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
-
-		err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
-		if err != nil {
-			return err
-		}
-
-		// create interactor file
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/interactor-query._go",
-			fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),
-			uc,
-		)
-
-	} else //
-
-	{
-		return fmt.Errorf("use type `command` or `query`")
+	err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
+	if err != nil {
+		return err
 	}
+
+	// create interactor file
+	_ = WriteFileIfNotExist(
+		"usecase/usecaseName/interactor._go",
+		fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),
+		uc,
+	)
 
 	return nil
 }

@@ -28,7 +28,7 @@ func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 		// {{.Name}}: ..., {{end}}
 	}
 
-	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).HandleQuery(ctx, req)
+	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).Handle(ctx, req)
 
 	assert.Nil(t, err)
 

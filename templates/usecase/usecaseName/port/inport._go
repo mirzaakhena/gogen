@@ -6,7 +6,7 @@ import (
 
 // {{PascalCase .Name}}Inport ...
 type {{PascalCase .Name}}Inport interface {
-	HandleQuery(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error)
+	Handle(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error)
 }
 
 // {{PascalCase .Name}}Request ...

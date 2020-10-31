@@ -52,12 +52,6 @@ func GenerateController(req ControllerRequest) error {
 		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 	}
 
-	interfaceName, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", req.UsecaseName, "Inport"))
-	if err != nil {
-		return fmt.Errorf("usecase %s is not found", req.UsecaseName)
-	}
-	ct.Type = interfaceName[0]
-
 	ct.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ct.UsecaseName, "Request"))
 
 	ct.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ct.UsecaseName, "Response"))
@@ -66,21 +60,11 @@ func GenerateController(req ControllerRequest) error {
 
 		CreateFolder("%s/controller/restapi", req.FolderPath)
 
-		if ct.Type == "HandleQuery" {
-			_ = WriteFileIfNotExist(
-				"controller/restapi/gin-query._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-				ct,
-			)
-		} else //
-
-		if ct.Type == "HandleCommand" {
-			_ = WriteFileIfNotExist(
-				"controller/restapi/gin-command._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-				ct,
-			)
-		}
+		_ = WriteFileIfNotExist(
+			"controller/restapi/gin._go",
+			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+			ct,
+		)
 
 	} else //
 
@@ -93,22 +77,6 @@ func GenerateController(req ControllerRequest) error {
 			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
 			ct,
 		)
-
-		if ct.Type == "HandleQuery" {
-			_ = WriteFileIfNotExist(
-				"controller/restapi/http-query._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-				ct,
-			)
-		} else //
-
-		if ct.Type == "HandleCommand" {
-			_ = WriteFileIfNotExist(
-				"controller/restapi/http-command._go",
-				fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-				ct,
-			)
-		}
 
 	}
 

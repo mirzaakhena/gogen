@@ -51,12 +51,6 @@ func GenerateTest(req TestRequest) error {
 			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 		}
 
-		interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", req.UsecaseName, "Inport"))
-		if err != nil {
-			return fmt.Errorf("usecase %s is not found 0000", req.UsecaseName)
-		}
-		ds.Type = interfaceNames[0]
-
 		ds.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Request"))
 
 		ds.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Response"))
@@ -89,21 +83,11 @@ func GenerateTest(req TestRequest) error {
 
 	}
 
-	if ds.Type == "HandleQuery" {
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/interactor_test-query._go",
-			fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
-			ds,
-		)
-	} else //
-
-	if ds.Type == "HandleCommand" {
-		_ = WriteFileIfNotExist(
-			"usecase/usecaseName/interactor_test-command._go",
-			fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
-			ds,
-		)
-	}
+	_ = WriteFileIfNotExist(
+		"usecase/usecaseName/interactor_test._go",
+		fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
+		ds,
+	)
 
 	GenerateMock(ds.PackagePath, ds.UsecaseName, req.FolderPath)
 

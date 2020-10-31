@@ -1,8 +1,10 @@
-package gogen
+package main
 
 import (
 	"fmt"
 	"os"
+
+	"github.com/mirzaakhena/gogen/gogen"
 )
 
 const message string = `try execute gogen by
@@ -11,7 +13,7 @@ const message string = `try execute gogen by
 some command available is
   init .
   model <model name>
-  usecase command | query <usecase name>
+  usecase <usecase name>
   test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>
@@ -43,7 +45,7 @@ func main() {
 
 	case "init":
 
-		gen := NewApplicationSchema()
+		gen := gogen.NewApplicationSchema()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -51,7 +53,7 @@ func main() {
 
 	case "usecase":
 
-		gen := NewUsecase()
+		gen := gogen.NewUsecase()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -59,7 +61,7 @@ func main() {
 
 	case "test":
 
-		gen := NewTest()
+		gen := gogen.NewTest()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -67,7 +69,7 @@ func main() {
 
 	case "datasource":
 
-		gen := NewDatasource()
+		gen := gogen.NewDatasource()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -75,7 +77,7 @@ func main() {
 
 	case "controller":
 
-		gen := NewController()
+		gen := gogen.NewController()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -83,7 +85,7 @@ func main() {
 
 	case "registry":
 
-		gen := NewRegistry()
+		gen := gogen.NewRegistry()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -91,7 +93,7 @@ func main() {
 
 	case "model":
 
-		gen := NewModel()
+		gen := gogen.NewModel()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -99,7 +101,7 @@ func main() {
 
 	// case "outports":
 
-	// 	gen := NewOutport()
+	// 	gen := gogen.NewOutport()
 	// 	if err := gen.Generate(os.Args...); err != nil {
 	// 		fmt.Printf("%s\n", err.Error())
 	// 		os.Exit(0)
