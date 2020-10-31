@@ -70,7 +70,11 @@ Calling this command will add new method on your `outport`'s interface
 gogen outport CreateOrder CheckOrderID SaveOrder PublishOrder
 ```
 Open the outport file you will found that there are 3 new methods defined.
-Delete the interactor file and run again the `gogen usecase CreateOrder`
+Delete the existing interactor file and run again this command
+```
+gogen usecase CreateOrder
+```
+Open your new interactor file. Now you see you have the template of outport method called in your interactor's file.
 
 ## 4. Create your usecase test file
 
