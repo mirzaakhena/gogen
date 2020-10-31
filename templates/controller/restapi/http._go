@@ -44,7 +44,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		}
 
 		// run the usecase
-		res, err := inputPort.HandleCommand(context.Background(), req)
+		res, err := inputPort.Handle(context.Background(), req)
 		if err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -72,7 +72,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		//		}
 		//
 		//		// run the usecase
-		//		res, err := inputPort.HandleQuery(context.Background(), req)
+		//		res, err := inputPort.Handle(context.Background(), req)
 		//		if err != nil {
 		//			w.Header().Set("Content-Type", "application/json")
 		//			w.WriteHeader(http.StatusBadRequest)

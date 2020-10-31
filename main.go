@@ -99,13 +99,13 @@ func main() {
 			os.Exit(0)
 		}
 
-	// case "outports":
+	case "outports":
 
-	// 	gen := gogen.NewOutport()
-	// 	if err := gen.Generate(os.Args...); err != nil {
-	// 		fmt.Printf("%s\n", err.Error())
-	// 		os.Exit(0)
-	// 	}
+		gen := gogen.NewOutport()
+		if err := gen.Generate(os.Args...); err != nil {
+			fmt.Printf("%s\n", err.Error())
+			os.Exit(0)
+		}
 
 	default:
 		fmt.Printf("command %s is not recognized. %s\n", command, message)
