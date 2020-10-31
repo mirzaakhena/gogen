@@ -1,20 +1,19 @@
-package {{LowerCase .UsecaseName}}
+package {{LowerCase .Name}}
 
 import (
 	"context"
 	"testing"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/mocks"
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/mocks"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
+func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 
-	outputPort := mocks.{{PascalCase .UsecaseName}}Outport{}
-	{{range .Outports}}
+	outputPort := mocks.{{PascalCase .Name}}Outport{} {{range .Outport.Methods}}
 	{
 		call := outputPort.On("{{PascalCase .Name}}", ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
 			// {{PascalCase .Name}}: ..., // helper field {{end}}
@@ -24,15 +23,15 @@ func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 		}, nil)
 	} {{end}}
 
-	req := port.{{PascalCase .UsecaseName}}Request{ // {{range .InportRequestFields}}
+	req := port.{{PascalCase .Name}}Request{ // {{range .InportRequestFields}}
 		// {{.Name}}: ..., // helper field {{end}}
 	}
 
-	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).Handle(ctx, req)
+	res, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
 
 	assert.Nil(t, err)
 
-	assert.Equal(t, &port.{{PascalCase .UsecaseName}}Response{ // {{range .InportResponseFields}}
+	assert.Equal(t, &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
 		// {{.Name}}: ..., // helper field {{end}}
 	}, res)
 

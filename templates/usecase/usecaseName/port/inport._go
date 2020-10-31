@@ -11,10 +11,8 @@ type {{PascalCase .Name}}Inport interface {
 
 // {{PascalCase .Name}}Request ...
 type {{PascalCase .Name}}Request struct {
-
 }
 
 // {{PascalCase .Name}}Response ...
 type {{PascalCase .Name}}Response struct { 
-
 }

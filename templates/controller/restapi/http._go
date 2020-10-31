@@ -7,11 +7,11 @@ import (
 
 	"github.com/jinzhu/copier"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"	
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"	
 )
 
-// {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) http.HandlerFunc {
+// {{PascalCase .Name}} ...
+func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) http.HandlerFunc {
 
 	type dtoRequest struct { {{range .InportRequestFields}}
 		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
@@ -34,7 +34,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		}
 
 		// convert to request
-		var req port.{{PascalCase .UsecaseName}}Request
+		var req port.{{PascalCase .Name}}Request
 		if err := copier.Copy(&req, jsonReq); err != nil {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusBadRequest)
@@ -64,7 +64,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		//		query := r.URL.Query()
 		//
 		//		// assign value from query to request object
-		//		var req port.{{PascalCase .UsecaseName}}Request
+		//		var req port.{{PascalCase .Name}}Request
 		//		{ {{range .InportRequestFields}}
 		//			if {{CamelCase .Name}}Value, ok := query["{{CamelCase .Name}}"]; ok && len({{CamelCase .Name}}Value) > 0 {
 		//				// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value[0]

@@ -3,21 +3,21 @@ package {{.DatasourceName}}
 import (
 	"context"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
 )
 
-// New{{PascalCase .UsecaseName}}Datasource ...
-func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}}Outport {
-	return &{{CamelCase .UsecaseName}}{}
+// New{{PascalCase .Name}}Datasource ...
+func New{{PascalCase .Name}}Datasource() port.{{PascalCase .Name}}Outport {
+	return &{{CamelCase .Name}}{}
 }
 
-type {{CamelCase .UsecaseName}} struct {
+type {{CamelCase .Name}} struct {
 
 }
 
-{{range .Outports}}
+{{range .Outport.Methods}}
 // {{PascalCase .Name}} ...
-func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
+func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
 	// _ = req.{{PascalCase .Name}} // helper field {{end}}
 
 	var res port.{{PascalCase .Name}}Response {{range .ResponseFields}}

@@ -13,7 +13,8 @@ const message string = `try execute gogen by
 some command available is
   init .
   model <model name>
-  usecase <usecase name>
+	usecase <usecase name>
+	outport usecase <method1> <method2> <method3> ...
   test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>
@@ -99,7 +100,7 @@ func main() {
 			os.Exit(0)
 		}
 
-	case "outports":
+	case "outport":
 
 		gen := gogen.NewOutport()
 		if err := gen.Generate(os.Args...); err != nil {

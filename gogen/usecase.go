@@ -2,8 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"go/parser"
-	"go/token"
 	"strings"
 )
 
@@ -28,14 +26,12 @@ func (d *usecase) Generate(args ...string) error {
 }
 
 type UsecaseRequest struct {
-	UsecaseName    string
-	OutportMethods []string
-	FolderPath     string
+	UsecaseName string
+	FolderPath  string
+	// OutportMethods []string
 }
 
 func GenerateUsecase(req UsecaseRequest) error {
-
-	packagePath := GetPackagePath()
 
 	var folderImport string
 	if req.FolderPath != "." {
@@ -44,30 +40,11 @@ func GenerateUsecase(req UsecaseRequest) error {
 
 	uc := Usecase{
 		Name:        req.UsecaseName,
-		PackagePath: packagePath,
 		Directory:   folderImport,
-	}
-
-	firstTime := false
-
-	if !IsExist(fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(uc.Name))) {
-		if len(req.OutportMethods) == 0 {
-			req.OutportMethods = []string{"DoSomething"}
-			firstTime = true
-		}
-	}
-
-	// set outport methods
-	{
-		outports := []*Outport{}
-		for _, methodName := range req.OutportMethods {
-			outports = append(outports, &Outport{
-				Name:           methodName,
-				RequestFields:  nil,
-				ResponseFields: nil,
-			})
-		}
-		uc.Outports = outports
+		PackagePath: GetPackagePath(),
+		Outport: &Outport{
+			UsecaseName: req.UsecaseName,
+		},
 	}
 
 	// Create Port Folder
@@ -84,11 +61,14 @@ func GenerateUsecase(req UsecaseRequest) error {
 	_ = WriteFileIfNotExist(
 		"usecase/usecaseName/port/outport._go",
 		fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(uc.Name)),
-		uc,
+		uc.Outport,
 	)
 
-	err := readInportOutport(&uc, req.FolderPath, req.UsecaseName, firstTime)
-	if err != nil {
+	if err := readInport(&uc, req.FolderPath, req.UsecaseName); err != nil {
+		return err
+	}
+
+	if err := readOutport(uc.Outport, req.FolderPath, req.UsecaseName); err != nil {
 		return err
 	}
 
@@ -98,48 +78,6 @@ func GenerateUsecase(req UsecaseRequest) error {
 		fmt.Sprintf("%s/usecase/%s/interactor.go", req.FolderPath, strings.ToLower(uc.Name)),
 		uc,
 	)
-
-	return nil
-}
-
-func readInportOutport(uc *Usecase, folderPath, usecaseName string, firstTime bool) error {
-	{
-		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
-		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
-		if errParse != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
-		}
-
-		uc.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Request"))
-		uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Response"))
-	}
-
-	if !firstTime {
-
-		inportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
-		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
-		if errParse != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
-		}
-
-		interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", usecaseName, "Outport"))
-		if err != nil {
-			return fmt.Errorf("usecase %s is not found 111", usecaseName)
-		}
-
-		for _, methodName := range interfaceNames {
-			uc.Outports = append(uc.Outports, &Outport{
-				Name: methodName,
-			})
-
-			for _, ot := range uc.Outports {
-				ot.RequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Request"))
-				ot.ResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Response"))
-			}
-
-		}
-
-	}
 
 	return nil
 }

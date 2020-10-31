@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"go/ast"
 	"go/build"
+	"go/parser"
 	"go/token"
 	"log"
 	"os"
@@ -16,6 +17,10 @@ import (
 	"text/template"
 	"unicode"
 )
+
+type Generator interface {
+	Generate(args ...string) error
+}
 
 func GetGopath() string {
 	gopath := os.Getenv("GOPATH")
@@ -412,4 +417,49 @@ func processFuncType(param *bytes.Buffer, t *ast.FuncType) string {
 	}
 
 	return param.String()
+}
+
+func readInport(uc *Usecase, folderPath, usecaseName string) error {
+
+	inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
+	node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
+	if errParse != nil {
+		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+	}
+
+	uc.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Request"))
+	uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Response"))
+
+	return nil
+}
+
+func readOutport(ou *Outport, folderPath, usecaseName string) error {
+
+	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
+	node, errParse := parser.ParseFile(token.NewFileSet(), outportFile, nil, parser.ParseComments)
+	if errParse != nil {
+		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
+	}
+
+	interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", usecaseName, "Outport"))
+	if err != nil {
+		return fmt.Errorf("usecase %s is not found 111", usecaseName)
+	}
+
+	outportMethods := []*OutportMethod{}
+	for _, methodName := range interfaceNames {
+		outportMethods = append(outportMethods, &OutportMethod{
+			Name: methodName,
+		})
+
+		for _, ot := range outportMethods {
+			ot.RequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Request"))
+			ot.ResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Response"))
+		}
+
+	}
+
+	ou.Methods = outportMethods
+
+	return nil
 }

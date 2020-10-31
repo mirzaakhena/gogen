@@ -41,10 +41,11 @@ func GenerateController(req ControllerRequest) error {
 		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
-	ct := Controller{}
-	ct.UsecaseName = req.UsecaseName
-	ct.Directory = folderImport
-	ct.PackagePath = GetPackagePath()
+	uc := Usecase{
+		Name:        req.UsecaseName,
+		Directory:   folderImport,
+		PackagePath: GetPackagePath(),
+	}
 
 	inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName))
 	node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
@@ -52,9 +53,9 @@ func GenerateController(req ControllerRequest) error {
 		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
 	}
 
-	ct.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ct.UsecaseName, "Request"))
+	uc.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Request"))
 
-	ct.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ct.UsecaseName, "Response"))
+	uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Response"))
 
 	if req.ControllerType == "restapi.gin" {
 
@@ -63,7 +64,7 @@ func GenerateController(req ControllerRequest) error {
 		_ = WriteFileIfNotExist(
 			"controller/restapi/gin._go",
 			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-			ct,
+			uc,
 		)
 
 	} else //
@@ -75,12 +76,12 @@ func GenerateController(req ControllerRequest) error {
 		_ = WriteFileIfNotExist(
 			"controller/restapi/http._go",
 			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-			ct,
+			uc,
 		)
 
 	}
 
-	GoFormat(ct.PackagePath)
+	GoFormat(uc.PackagePath)
 
 	return nil
 }

@@ -7,11 +7,11 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .UsecaseName}}/port"
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
 )
 
-// {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
+// {{PascalCase .Name}} ...
+func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.HandlerFunc {
 
 	type dtoRequest struct { {{range .InportRequestFields}}
 		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
@@ -31,7 +31,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 		}
 
 		// convert to request
-		var req port.{{PascalCase .UsecaseName}}Request
+		var req port.{{PascalCase .Name}}Request
 		if err := copier.Copy(&req, jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
@@ -49,7 +49,7 @@ func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inpor
 
 
 		//		// assign value from query to request object
-		//		var req port.{{PascalCase .UsecaseName}}Request
+		//		var req port.{{PascalCase .Name}}Request
 		//		{ {{range .InportRequestFields}}
 		//			// req.{{PascalCase .Name}} = c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
 		//		}

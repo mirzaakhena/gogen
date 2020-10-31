@@ -1,21 +1,19 @@
-package port
+package port {{if gt (len .Methods) 0}} 
 
 import (
 	"context"
-)
+) {{end}}
 
-// {{PascalCase .Name}}Outport ...
-type {{PascalCase .Name}}Outport interface { {{range .Outports}}
+// {{PascalCase .UsecaseName}}Outport ...
+type {{PascalCase .UsecaseName}}Outport interface { {{range .Methods}}
 	{{PascalCase .Name}}(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error) {{end}}
 }
-{{range .Outports}}
+{{range .Methods}}
 // {{PascalCase .Name}}Request ...
 type {{PascalCase .Name}}Request struct {
-
 }
 
 // {{PascalCase .Name}}Response ...
 type {{PascalCase .Name}}Response struct {
-
 }
 {{end}}

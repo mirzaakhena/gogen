@@ -2,8 +2,6 @@ package gogen
 
 import (
 	"fmt"
-	"go/parser"
-	"go/token"
 	"strings"
 )
 
@@ -38,58 +36,30 @@ func GenerateTest(req TestRequest) error {
 		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
-	ds := Test{}
-	ds.UsecaseName = req.UsecaseName
-	ds.Directory = folderImport
-	ds.PackagePath = GetPackagePath()
-
-	{
-
-		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", req.FolderPath, strings.ToLower(req.UsecaseName))
-		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
-		if errParse != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-		}
-
-		ds.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Request"))
-
-		ds.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Response"))
+	uc := Usecase{
+		Name:        req.UsecaseName,
+		Directory:   folderImport,
+		PackagePath: GetPackagePath(),
+		Outport: &Outport{
+			UsecaseName: req.UsecaseName,
+		},
 	}
 
-	{
+	if err := readInport(&uc, req.FolderPath, req.UsecaseName); err != nil {
+		return err
+	}
 
-		inportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName))
-		node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
-		if errParse != nil {
-			return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
-		}
-
-		interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", req.UsecaseName, "Outport"))
-		if err != nil {
-			return fmt.Errorf("usecase %s is not found 111", req.UsecaseName)
-		}
-
-		for _, methodName := range interfaceNames {
-			ds.Outports = append(ds.Outports, &Outport{
-				Name: methodName,
-			})
-
-			for _, ot := range ds.Outports {
-				ot.RequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Request"))
-				ot.ResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Response"))
-			}
-
-		}
-
+	if err := readOutport(uc.Outport, req.FolderPath, req.UsecaseName); err != nil {
+		return err
 	}
 
 	_ = WriteFileIfNotExist(
 		"usecase/usecaseName/interactor_test._go",
 		fmt.Sprintf("%s/usecase/%s/interactor_test.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
-		ds,
+		uc,
 	)
 
-	GenerateMock(ds.PackagePath, ds.UsecaseName, req.FolderPath)
+	GenerateMock(uc.PackagePath, uc.Name, req.FolderPath)
 
 	return nil
 }
