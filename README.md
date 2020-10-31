@@ -39,7 +39,6 @@ README.md
 
 `runner.go` is the file for running the apps. This already have gracefully shutdown feature.
 
-
 `schema.go` is the file for define your model to migrate into database.
 
 

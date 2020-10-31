@@ -21,8 +21,12 @@ type {{CamelCase .Name}}Interactor struct {
 
 // Handle ...
 func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
-	{{range .InportRequestFields}}
+	
+	// TODO validate {{PascalCase .Name}} request {{range .InportRequestFields}}
 	_ = req.{{.Name}} // helper field{{end}}
+
+	var res port.{{PascalCase .Name}}Response {{range .InportResponseFields}}
+	// res.{{.Name}} = ... // helper field {{end}}
 	{{range .Outports}}
 	{
 		resOutport, err := _r.datasource.{{PascalCase .Name}}(ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
@@ -32,13 +36,10 @@ func (_r *{{CamelCase .Name}}Interactor) HandleQuery(ctx context.Context, req po
 		if err != nil {
 			return nil, err
 		}
-
-		_ = resOutport // helper field {{range .ResponseFields}}
-		_ = resOutport.{{PascalCase .Name}} // helper field {{end}}
-
+		{{if gt (len .ResponseFields) 0}} {{range .ResponseFields}}
+		_ = resOutport.{{PascalCase .Name}} // helper field {{end}} {{else}}
+		_ = resOutport {{end}}
 	} {{end}}
 
-	return &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
-		// {{.Name}}: ..., {{end}}
-	}, nil
+	return &res, nil
 }

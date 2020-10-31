@@ -20,8 +20,9 @@ type {{CamelCase .UsecaseName}} struct {
 func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
 	// _ = req.{{PascalCase .Name}} {{end}}
 
-	return &port.{{PascalCase .Name}}Response{ // {{range .ResponseFields}}
-		// {{PascalCase .Name}}: ...,{{end}}
-	}, nil
+	var res port.{{PascalCase .Name}}Response {{range .ResponseFields}}
+	// res.{{PascalCase .Name}} = ...{{end}}
+	
+	return &res, nil
 } {{end}}
 

@@ -9,6 +9,12 @@ type Usecase struct {
 	InportResponseFields []NameType
 }
 
+type Outport struct {
+	Name           string
+	RequestFields  []NameType
+	ResponseFields []NameType
+}
+
 type Datasource struct {
 	DatasourceName string
 	UsecaseName    string
@@ -39,24 +45,4 @@ type Controller struct {
 type NameType struct {
 	Name string
 	Type string
-}
-
-type Model struct {
-	Name string
-}
-
-type Outport struct {
-	Name           string
-	RequestFields  []NameType
-	ResponseFields []NameType
-}
-
-type ErrorSet struct {
-	Errors []ErrorItem `yaml:"errors"`
-}
-
-type ErrorItem struct {
-	Code    int    `yaml:"code"`
-	Literal string `yaml:"literal"`
-	Message string `yaml:"message"`
 }

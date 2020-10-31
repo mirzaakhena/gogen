@@ -1,10 +1,8 @@
-package main
+package gogen
 
 import (
 	"fmt"
 	"os"
-
-	"github.com/mirzaakhena/gogen/gogen"
 )
 
 const message string = `try execute gogen by
@@ -45,7 +43,7 @@ func main() {
 
 	case "init":
 
-		gen := gogen.NewApplicationSchema()
+		gen := NewApplicationSchema()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -53,7 +51,7 @@ func main() {
 
 	case "usecase":
 
-		gen := gogen.NewUsecase()
+		gen := NewUsecase()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -61,7 +59,7 @@ func main() {
 
 	case "test":
 
-		gen := gogen.NewTest()
+		gen := NewTest()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -69,7 +67,7 @@ func main() {
 
 	case "datasource":
 
-		gen := gogen.NewDatasource()
+		gen := NewDatasource()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -77,7 +75,7 @@ func main() {
 
 	case "controller":
 
-		gen := gogen.NewController()
+		gen := NewController()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -85,7 +83,7 @@ func main() {
 
 	case "registry":
 
-		gen := gogen.NewRegistry()
+		gen := NewRegistry()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -93,7 +91,7 @@ func main() {
 
 	case "model":
 
-		gen := gogen.NewModel()
+		gen := NewModel()
 		if err := gen.Generate(os.Args...); err != nil {
 			fmt.Printf("%s\n", err.Error())
 			os.Exit(0)
@@ -101,7 +99,7 @@ func main() {
 
 	// case "outports":
 
-	// 	gen := gogen.NewOutport()
+	// 	gen := NewOutport()
 	// 	if err := gen.Generate(os.Args...); err != nil {
 	// 		fmt.Printf("%s\n", err.Error())
 	// 		os.Exit(0)
