@@ -44,12 +44,12 @@ README.md
 
 ## 2. Create your basic usecase structure
 
-Let say you have a usecase named CreateOrder (It is better to have PascalCase for usecase name). This usecase is for (of course) to create an order. Let's use our gogen code generator to create it for us.
+So you want to create your first usecase. The usecase name is `CreateOrder`. We always create our usecase name with `PascalCase`. Let's use our gogen code generator to create it for us.
 ```
 gogen usecase CreateOrder
 ```
 
-When you run this command, you will have those files generated for you
+After you run this command, you will have those files generated for you
 
 ```
 usecase/createorder/port/inport.go
@@ -63,16 +63,14 @@ usecase/createorder/interactor.go
 
 `interactor.go` is the core implementation of the usecase. It implement the method from inport and call the method from outport.
 
-gogen only gives you the basic "template code". If you want to add/change your request response in your inport.go or outport.go, and want to have the "new method and the fields" appear in your interactor.go, then after you add the new field in the request or response struct (inport or outport), you can just simply delete the interactor.go, then call the `gogen usecase CreateOrder` again. It Will generate the new "helper code" for you.
-
 ## 3. Create your custom outport method
 
-After you run the `gogen usecase` you need to delete the `port/outport.go` and `interactor.go` file. Then call this command
+Calling this command will add new method on your `outport`'s interface
 ```
-gogen outports CreateOrder CheckOrderID SaveOrder PublishOrder
+gogen outport CreateOrder CheckOrderID SaveOrder PublishOrder
 ```
 Open the outport file you will found that there are 3 new methods defined.
-After that run again the `gogen usecase command CreateOrder`
+Delete the interactor file and run again the `gogen usecase CreateOrder`
 
 ## 4. Create your usecase test file
 
@@ -92,13 +90,11 @@ $ cd /usecase/createorder
 $ go generate
 ```
 
-or just simply delete the mock/ folder and call the `gogen test CreteOrder` again.
+or just simply delete the mock/ folder and call the `gogen test CreateOrder` again.
 
 ## 5. Create datasource for your usecase
 
-Datasource is the implemetor of your outport. You need to define where is your datasource. You can give any datasource name you like.
-For the example you just want to hardcode any data for your apps. You can simply create the "hardcode" datasource version. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "testing" datasource version. For now, we will try to generate code for "production" datasource version.
-
+Datasource is the the place to implement your outport interface. You need to set a name for your datasource. In this example we will set name : production
 ```
 gogen datasource production CreateOrder
 ```
@@ -106,18 +102,22 @@ This will generate
 ```
 datasource/production/CreateOrder.go
 ```
-You can start define what the data we must provide to run our usecase here.
+
+You can give any datasource name you like. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "testing" or "experimental" datasource version. For the example you just want to hardcode version. The you can run this command
+```
+gogen datasource hardcode CreateOrder
+```
 
 ## 6. Create controller for your usecase
 
-In gogen, i define controller as any technology that will receive input from outside world. It can be rest api, grpc, consumer for event handling, or anything.
+In gogen, we define controller as any technology that will receive input from outside world. It can be rest api, grpc, consumer for event handling, or anything.
 
 For now i only implement the gin framework version.
 
 ```
 gogen controller restapi.gin CreateOrder
 ```
-This will generate
+It will generate
 
 ```
 controller/restapi/CreateOrder.go
