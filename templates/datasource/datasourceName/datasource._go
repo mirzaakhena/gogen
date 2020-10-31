@@ -18,10 +18,10 @@ type {{CamelCase .UsecaseName}} struct {
 {{range .Outports}}
 // {{PascalCase .Name}} ...
 func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
-	// _ = req.{{PascalCase .Name}} {{end}}
+	// _ = req.{{PascalCase .Name}} // helper field {{end}}
 
 	var res port.{{PascalCase .Name}}Response {{range .ResponseFields}}
-	// res.{{PascalCase .Name}} = ...{{end}}
+	// res.{{PascalCase .Name}} = ... // helper field {{end}}
 	
 	return &res, nil
 } {{end}}

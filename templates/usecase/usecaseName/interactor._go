@@ -21,16 +21,16 @@ type {{CamelCase .Name}}Interactor struct {
 
 // Handle ...
 func (_r *{{CamelCase .Name}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) {
-	
+	{{if gt (len .InportRequestFields) 0}} 
 	// TODO validate {{PascalCase .Name}} request {{range .InportRequestFields}}
-	_ = req.{{.Name}} // helper field{{end}}
+	_ = req.{{.Name}} // helper field{{end}} {{end}}
 
 	var res port.{{PascalCase .Name}}Response {{range .InportResponseFields}}
 	// res.{{.Name}} = ... // helper field {{end}}
 	{{range .Outports}}
 	{
 		resOutport, err := _r.datasource.{{PascalCase .Name}}(ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
-			// {{PascalCase .Name}}: ...,{{end}}
+			// {{PascalCase .Name}}: ..., // helper field {{end}}
 		})
 
 		if err != nil {
