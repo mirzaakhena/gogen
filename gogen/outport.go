@@ -61,9 +61,13 @@ func GenerateOutport(req OutportRequest) error {
 	methodNameMap := map[string]int{}
 	for index, name := range interfaceNames {
 		methodNameMap[name] = index
+
 		outportMethods = append(outportMethods, &OutportMethod{
-			Name: name,
+			Name:           name,
+			RequestFields:  ReadFieldInStruct(node, fmt.Sprintf("%s%s", name, "Request")),
+			ResponseFields: ReadFieldInStruct(node, fmt.Sprintf("%s%s", name, "Response")),
 		})
+
 	}
 
 	// checking new method name

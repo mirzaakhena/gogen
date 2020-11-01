@@ -10,10 +10,12 @@ type {{PascalCase .UsecaseName}}Outport interface { {{range .Methods}}
 }
 {{range .Methods}}
 // {{PascalCase .Name}}Request ...
-type {{PascalCase .Name}}Request struct {
+type {{PascalCase .Name}}Request struct { {{range .RequestFields}}
+	{{PascalCase .Name}} {{.Type}} {{end}}
 }
 
 // {{PascalCase .Name}}Response ...
-type {{PascalCase .Name}}Response struct {
+type {{PascalCase .Name}}Response struct { {{range .ResponseFields}}
+	{{PascalCase .Name}} {{.Type}} {{end}}
 }
 {{end}}
