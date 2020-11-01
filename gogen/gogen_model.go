@@ -22,6 +22,8 @@ type OutportMethod struct {
 }
 
 type NameType struct {
-	Name string //
-	Type string //
+	Name    string //
+	Type    string //
+	Tag     string //
+	Comment string //
 }

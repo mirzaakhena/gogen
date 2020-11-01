@@ -280,9 +280,23 @@ func ReadFieldInStruct(node *ast.File, structName string) []NameType {
 						}
 						nameTypes := []NameType{}
 						for _, field := range istruct.Fields.List {
-							for _, fieldName := range field.Names {
-								nameTypes = append(nameTypes, NameType{Name: fieldName.Name, Type: appendType(field.Type)})
+							tag := ""
+							if field.Tag != nil {
+								tag = field.Tag.Value
 							}
+							comment := ""
+							if field.Comment != nil {
+								comment = field.Comment.List[0].Text
+							}
+							for _, fieldName := range field.Names {
+								nameTypes = append(nameTypes, NameType{
+									Name:    fieldName.Name,
+									Type:    appendType(field.Type),
+									Tag:     tag,
+									Comment: comment,
+								})
+							}
+
 							// ast.Print(fset, field)
 						}
 						return nameTypes

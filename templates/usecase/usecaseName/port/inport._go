@@ -11,10 +11,10 @@ type {{PascalCase .Name}}Inport interface {
 
 // {{PascalCase .Name}}Request ...
 type {{PascalCase .Name}}Request struct { {{range .InportRequestFields}}
-	{{PascalCase .Name}} {{.Type}} {{end}}
+	{{PascalCase .Name}} {{.Type}} {{.Tag}} {{.Comment}} {{end}}
 }
 
 // {{PascalCase .Name}}Response ...
 type {{PascalCase .Name}}Response struct { {{range .InportResponseFields}}
-	{{PascalCase .Name}} {{.Type}} {{end}}
+	{{PascalCase .Name}} {{.Type}} {{.Tag}} {{.Comment}} {{end}}
 }
