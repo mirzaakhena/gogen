@@ -61,7 +61,7 @@ func GenerateController(req ControllerRequest) error {
 	CreateFolder("%s/controller/%s", req.FolderPath, LowerCase(req.ControllerPackage))
 
 	_ = WriteFileIfNotExist(
-		"controller/basic/basic._go",
+		"controller/basic._go",
 		fmt.Sprintf("%s/controller/%s/%s.go", req.FolderPath, LowerCase(req.ControllerPackage), req.UsecaseName),
 		uc,
 	)

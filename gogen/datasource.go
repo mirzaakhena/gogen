@@ -56,7 +56,7 @@ func GenerateDatasource(req DatasourceRequest) error {
 	CreateFolder("%s/datasource/%s", req.FolderPath, strings.ToLower(req.DatasourceName))
 
 	_ = WriteFileIfNotExist(
-		"datasource/datasourceName/datasource._go",
+		"datasource/datasource._go",
 		fmt.Sprintf("%s/datasource/%s/%s.go", req.FolderPath, req.DatasourceName, req.UsecaseName),
 		uc,
 	)
