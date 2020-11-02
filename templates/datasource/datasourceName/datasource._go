@@ -22,6 +22,8 @@ func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req po
 
 	var res port.{{PascalCase .Name}}Response {{range .ResponseFields}}
 	// res.{{PascalCase .Name}} = ... // helper field {{end}}
+
+	{{.CodeSlot}}
 	
 	return &res, nil
 } {{end}}

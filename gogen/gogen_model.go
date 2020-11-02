@@ -8,6 +8,7 @@ type Usecase struct {
 	InportRequestFields  []NameType //
 	InportResponseFields []NameType //
 	DatasourceName       string     //
+	CodeSlot             string     //
 }
 
 type Outport struct {

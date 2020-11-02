@@ -26,9 +26,9 @@ func (d *usecase) Generate(args ...string) error {
 }
 
 type UsecaseRequest struct {
-	UsecaseName string
-	FolderPath  string
-	// OutportMethods []string
+	UsecaseName    string
+	FolderPath     string
+	OutportMethods []string
 }
 
 func GenerateUsecase(req UsecaseRequest) error {
@@ -38,12 +38,21 @@ func GenerateUsecase(req UsecaseRequest) error {
 		folderImport = fmt.Sprintf("/%s", req.FolderPath)
 	}
 
+	outportMethods := []*OutportMethod{}
+
+	for _, m := range req.OutportMethods {
+		outportMethods = append(outportMethods, &OutportMethod{
+			Name: m,
+		})
+	}
+
 	uc := Usecase{
 		Name:        req.UsecaseName,
 		Directory:   folderImport,
 		PackagePath: GetPackagePath(),
 		Outport: &Outport{
 			UsecaseName: req.UsecaseName,
+			Methods:     outportMethods,
 		},
 	}
 

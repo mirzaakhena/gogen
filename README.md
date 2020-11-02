@@ -175,5 +175,12 @@ This will simply create Order struct. That's it.
 gogen model Order
 ```
 
+Another improvement is:
+- create outport request response in separate file. We can create the filename like:
+	outport-Save.go
+
+- listing the existing usecases by just call `gogen usecase`
+
+- define the technology in the begining when call `gogen init`
 
 Any other interesting idea?
