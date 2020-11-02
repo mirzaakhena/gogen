@@ -8,7 +8,6 @@ type Usecase struct {
 	InportRequestFields  []NameType //
 	InportResponseFields []NameType //
 	DatasourceName       string     //
-	CodeSlot             string     //
 }
 
 type Outport struct {
@@ -20,6 +19,7 @@ type OutportMethod struct {
 	Name           string     // outport interface function's name
 	RequestFields  []NameType //
 	ResponseFields []NameType //
+	CodeSlot       string     //
 }
 
 type NameType struct {
