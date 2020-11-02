@@ -1,4 +1,4 @@
-package {{.DatasourceName}}
+package {{.PackageName}}
 
 import (
 	"context"
