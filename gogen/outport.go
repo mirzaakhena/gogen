@@ -45,6 +45,31 @@ type OutportStruct struct {
 func GenerateOutport(req OutportRequest) error {
 
 	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName))
+	if !IsExist(outportFile) {
+
+		outportMethods := []*OutportMethod{}
+
+		for _, m := range req.Outports {
+			outportMethods = append(outportMethods, &OutportMethod{
+				Name: m.Name,
+			})
+		}
+
+		outport := Outport{
+			UsecaseName: req.UsecaseName,
+			Methods:     outportMethods,
+		}
+
+		// Create outport file
+		_ = WriteFile(
+			"usecase/usecaseName/port/outport._go",
+			fmt.Sprintf("%s/usecase/%s/port/outport.go", req.FolderPath, strings.ToLower(req.UsecaseName)),
+			outport,
+		)
+
+		return nil
+	}
+
 	node, errParse := parser.ParseFile(token.NewFileSet(), outportFile, nil, parser.ParseComments)
 	if errParse != nil {
 		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", req.UsecaseName, req.UsecaseName)
