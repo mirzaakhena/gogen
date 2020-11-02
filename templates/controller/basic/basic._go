@@ -1,0 +1,27 @@
+package basic
+
+import (
+	"context"
+
+	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
+)
+
+// {{PascalCase .Name}} ...
+func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) func() interface{} {
+
+	return func() interface{} {
+
+		// convert to request
+		var req port.{{PascalCase .Name}}Request
+
+		// run the usecase
+		ctx := context.Background()
+		res, err := inputPort.Handle(ctx, req)
+		if err != nil {
+			return nil
+		}
+
+		return res
+
+	}
+}

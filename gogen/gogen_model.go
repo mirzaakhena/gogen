@@ -7,7 +7,7 @@ type Usecase struct {
 	Outport              *Outport   //
 	InportRequestFields  []NameType //
 	InportResponseFields []NameType //
-	DatasourceName       string     //
+	PackageName          string     //
 }
 
 type Outport struct {

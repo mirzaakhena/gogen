@@ -15,7 +15,7 @@ func NewDatasource() Generator {
 func (d *datasource) Generate(args ...string) error {
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen datasource production CreateOrder`")
+		return fmt.Errorf("please define package_name and usecase_name. ex: `gogen datasource production CreateOrder`")
 	}
 
 	return GenerateDatasource(DatasourceRequest{
@@ -40,10 +40,10 @@ func GenerateDatasource(req DatasourceRequest) error {
 	}
 
 	uc := Usecase{
-		DatasourceName: req.DatasourceName,
-		Name:           req.UsecaseName,
-		Directory:      folderImport,
-		PackagePath:    GetPackagePath(),
+		PackageName: req.DatasourceName,
+		Name:        req.UsecaseName,
+		Directory:   folderImport,
+		PackagePath: GetPackagePath(),
 		Outport: &Outport{
 			UsecaseName: req.UsecaseName,
 		},

@@ -17,21 +17,21 @@ func NewController() Generator {
 func (d *controller) Generate(args ...string) error {
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen controller restapi.gin CreateOrder`")
+		return fmt.Errorf("please define package_name and usecase_name. ex: `gogen controller restapi CreateOrder`")
 	}
 
 	return GenerateController(ControllerRequest{
-		ControllerType: args[2],
-		UsecaseName:    args[3],
-		FolderPath:     ".",
+		ControllerPackage: args[2],
+		UsecaseName:       args[3],
+		FolderPath:        ".",
 	})
 
 }
 
 type ControllerRequest struct {
-	ControllerType string
-	UsecaseName    string
-	FolderPath     string
+	ControllerPackage string
+	UsecaseName       string
+	FolderPath        string
 }
 
 func GenerateController(req ControllerRequest) error {
@@ -42,6 +42,7 @@ func GenerateController(req ControllerRequest) error {
 	}
 
 	uc := Usecase{
+		PackageName: req.ControllerPackage,
 		Name:        req.UsecaseName,
 		Directory:   folderImport,
 		PackagePath: GetPackagePath(),
@@ -57,29 +58,37 @@ func GenerateController(req ControllerRequest) error {
 
 	uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Response"))
 
-	if req.ControllerType == "restapi.gin" {
+	CreateFolder("%s/controller/%s", req.FolderPath, LowerCase(req.ControllerPackage))
 
-		CreateFolder("%s/controller/restapi", req.FolderPath)
+	_ = WriteFileIfNotExist(
+		"controller/basic/basic._go",
+		fmt.Sprintf("%s/controller/%s/%s.go", req.FolderPath, LowerCase(req.ControllerPackage), req.UsecaseName),
+		uc,
+	)
 
-		_ = WriteFileIfNotExist(
-			"controller/restapi/gin._go",
-			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-			uc,
-		)
+	// if req.ControllerPackage == "restapi.gin" {
 
-	} else //
+	// 	CreateFolder("%s/controller/restapi", req.FolderPath)
 
-	if req.ControllerType == "restapi.http" {
+	// 	_ = WriteFileIfNotExist(
+	// 		"controller/restapi/gin._go",
+	// 		fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+	// 		uc,
+	// 	)
 
-		CreateFolder("%s/controller/restapi", req.FolderPath)
+	// } else //
 
-		_ = WriteFileIfNotExist(
-			"controller/restapi/http._go",
-			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-			uc,
-		)
+	// if req.ControllerPackage == "restapi.http" {
 
-	}
+	// 	CreateFolder("%s/controller/restapi", req.FolderPath)
+
+	// 	_ = WriteFileIfNotExist(
+	// 		"controller/restapi/http._go",
+	// 		fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+	// 		uc,
+	// 	)
+
+	// }
 
 	GoFormat(uc.PackagePath)
 
