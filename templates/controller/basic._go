@@ -9,7 +9,7 @@ import (
 // {{PascalCase .Name}} ...
 func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) func(interface{}) interface{} {
 
-	return func(req interface{}) interface{} {
+	return func(x interface{}) interface{} {
 
 		// convert to request
 		var req port.{{PascalCase .Name}}Request
