@@ -17,9 +17,9 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.Handler
 		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
 	}
 
-	//	type dtoResponse struct { {{range .InportResponseFields}}
-	//		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
-	//	}
+	type dtoResponse struct { {{range .InportResponseFields}}
+		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	}
 
 	return func(c *gin.Context) {
 
@@ -45,8 +45,14 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.Handler
 			return
 		}
 
+		var jsonRes dtoResponse
+		if err := copier.Copy(&jsonRes, res); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
 		// return the response
-		c.JSON(http.StatusOK, res)
+		c.JSON(http.StatusOK, jsonRes)
 
 
 		//		// assign value from query to request object
@@ -63,11 +69,7 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.Handler
 		//			return
 		//		}
 		//
-		//		var jsonRes dtoResponse
-		//		if err := copier.Copy(&jsonRes, res); err != nil {
-		//			c.JSON(http.StatusBadRequest, err.Error())
-		//			return
-		//		}
+
 		//
 		//		// return the response
 		//		c.JSON(http.StatusOK, jsonRes)

@@ -184,3 +184,8 @@ Another improvement is:
 - define the technology in the begining when call `gogen init`
 
 Any other interesting idea?
+
+
+gogen framework restapi gin
+kita akan bikin folder restapi
+

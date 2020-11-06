@@ -17,29 +17,23 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) http.Handle
 		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
 	}
 
-	//	type dtoResponse struct { {{range .InportResponseFields}}
-	//		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
-	//	}
+	type dtoResponse struct { {{range .InportResponseFields}}
+		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		// receive json
+		// receive request
 		var jsonReq dtoRequest
 		if err := json.NewDecoder(r.Body).Decode(&jsonReq); err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			bytes, _ := json.Marshal(err.Error())
-			_, _ = w.Write([]byte(bytes))
+			_ = responseBody(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		// convert to request
-		var req port.{{PascalCase .Name}}Request
+		// convert to request for usecase
+		var req port.CreateOrderRequest
 		if err := copier.Copy(&req, jsonReq); err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			bytes, _ := json.Marshal(err.Error())
-			_, _ = w.Write([]byte(bytes))
+			_ = responseBody(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
@@ -47,58 +41,33 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) http.Handle
 		ctx := context.Background()
 		res, err := inputPort.Handle(ctx, req)
 		if err != nil {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusBadRequest)
-			bytes, _ := json.Marshal(err.Error())
-			_, _ = w.Write([]byte(bytes))
+			_ = responseBody(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		// convert back to response object
+		var jsonRes dtoResponse
+		if err := copier.Copy(&jsonRes, res); err != nil {
+			_ = responseBody(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		// return the response
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusOK)
-		bytes, _ := json.Marshal(res)
-		_, _ = w.Write([]byte(bytes))
-
-
-
-		//		query := r.URL.Query()
-		//
-		//		// assign value from query to request object
-		//		var req port.{{PascalCase .Name}}Request
-		//		{ {{range .InportRequestFields}}
-		//			if {{CamelCase .Name}}Value, ok := query["{{CamelCase .Name}}"]; ok && len({{CamelCase .Name}}Value) > 0 {
-		//				// req.{{PascalCase .Name}} = {{CamelCase .Name}}Value[0]
-		//			} {{end}}
-		//		}
-		//
-		//		// run the usecase
-		//    ctx := context.Background()
-		//    res, err := inputPort.Handle(ctx, req)
-		//		if err != nil {
-		//			w.Header().Set("Content-Type", "application/json")
-		//			w.WriteHeader(http.StatusBadRequest)
-		//			bytes, _ := json.Marshal(err.Error())
-		//			_, _ = w.Write([]byte(bytes))
-		//			return
-		//		}
-		//
-		//		var jsonRes dtoResponse
-		//		if err := copier.Copy(&jsonRes, res); err != nil {
-		//			w.Header().Set("Content-Type", "application/json")
-		//			w.WriteHeader(http.StatusBadRequest)
-		//			bytes, _ := json.Marshal(err.Error())
-		//			_, _ = w.Write([]byte(bytes))
-		//			return
-		//		}		
-		//
-		//		// return the response
-		//		w.Header().Set("Content-Type", "application/json")
-		//		w.WriteHeader(http.StatusOK)
-		//		bytes, _ := json.Marshal(res)
-		//		_, _ = w.Write([]byte(bytes))
-
-
+		_ = responseBody(w, jsonRes, http.StatusOK)
 
 	}
 }
+
+func responseBody(w http.ResponseWriter, body interface{}, statusCode int) error {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+	bytes, errJSON := json.Marshal(body)
+	if errJSON != nil {
+		return errJSON
+	}
+	if _, errWrite := w.Write(bytes); errWrite != nil {
+		return errWrite
+	}
+	return nil
+}
+

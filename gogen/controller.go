@@ -17,7 +17,11 @@ func NewController() Generator {
 func (d *controller) Generate(args ...string) error {
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define package_name and usecase_name. ex: `gogen controller restapi CreateOrder`")
+
+		message := "Please define controller_type_and_framework and usecase_name. ex: `gogen controller restapi.gin CreateOrder`\n"
+		message += "Currently for framework we support :\n - basic\n - restapi.gin\n - restapi.http\n - consumer.nsq\n"
+
+		return fmt.Errorf(message)
 	}
 
 	return GenerateController(ControllerRequest{
@@ -66,29 +70,41 @@ func GenerateController(req ControllerRequest) error {
 		uc,
 	)
 
-	// if req.ControllerPackage == "restapi.gin" {
+	if req.ControllerPackage == "basic" {
 
-	// 	CreateFolder("%s/controller/restapi", req.FolderPath)
+		CreateFolder("%s/controller/basic", req.FolderPath)
 
-	// 	_ = WriteFileIfNotExist(
-	// 		"controller/restapi/gin._go",
-	// 		fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-	// 		uc,
-	// 	)
+		_ = WriteFileIfNotExist(
+			"controller/basic/basic._go",
+			fmt.Sprintf("%s/controller/basic/%s.go", req.FolderPath, req.UsecaseName),
+			uc,
+		)
 
-	// } else //
+	} else //
 
-	// if req.ControllerPackage == "restapi.http" {
+	if req.ControllerPackage == "restapi.gin" {
 
-	// 	CreateFolder("%s/controller/restapi", req.FolderPath)
+		CreateFolder("%s/controller/restapi", req.FolderPath)
 
-	// 	_ = WriteFileIfNotExist(
-	// 		"controller/restapi/http._go",
-	// 		fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
-	// 		uc,
-	// 	)
+		_ = WriteFileIfNotExist(
+			"controller/restapi/gin._go",
+			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+			uc,
+		)
 
-	// }
+	} else //
+
+	if req.ControllerPackage == "restapi.http" {
+
+		CreateFolder("%s/controller/restapi", req.FolderPath)
+
+		_ = WriteFileIfNotExist(
+			"controller/restapi/http._go",
+			fmt.Sprintf("%s/controller/restapi/%s.go", req.FolderPath, req.UsecaseName),
+			uc,
+		)
+
+	}
 
 	GoFormat(uc.PackagePath)
 
