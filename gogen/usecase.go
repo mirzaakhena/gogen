@@ -2,6 +2,10 @@ package gogen
 
 import (
 	"fmt"
+	"go/parser"
+	"go/token"
+	"io/ioutil"
+	"log"
 	"strings"
 )
 
@@ -14,8 +18,10 @@ func NewUsecase() Generator {
 
 func (d *usecase) Generate(args ...string) error {
 
-	if len(args) < 3 {
-		return fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
+	if len(args) == 2 {
+		DisplayUsecase(".")
+		return nil
+		//fmt.Errorf("please define usecase name. ex: `gogen usecase CreateOrder`")
 	}
 
 	return GenerateUsecase(UsecaseRequest{
@@ -89,4 +95,45 @@ func GenerateUsecase(req UsecaseRequest) error {
 	)
 
 	return nil
+}
+
+func DisplayUsecase(folderPath string) {
+
+	files, errReadDir := ioutil.ReadDir(fmt.Sprintf("%s/usecase/", folderPath))
+	if errReadDir != nil {
+		log.Fatal(errReadDir)
+	}
+
+	interfaceNames := []string{}
+	for _, file := range files {
+
+		if IsExist(fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, file.Name())) {
+
+			inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, file.Name())
+			node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
+			if errParse != nil {
+				continue
+			}
+
+			names := ReadInterfaceName(node)
+			for _, intfName := range names {
+				if strings.ToLower(intfName) == fmt.Sprintf("%sinport", file.Name()) {
+					interfaceNames = append(interfaceNames, string([]rune(intfName))[0:len(intfName)-6])
+				}
+			}
+
+		}
+
+	}
+
+	if len(interfaceNames) > 0 {
+		fmt.Printf("You have %d usecase\n", len(interfaceNames))
+		for _, name := range interfaceNames {
+			fmt.Printf(" - %s\n", name)
+		}
+	} else {
+		fmt.Printf("You don't have any usecase yet\n")
+	}
+	fmt.Printf("\nCreate new usecase by this command : `gogen usecase your_usecase_name_in_pascal_cases`\n")
+
 }

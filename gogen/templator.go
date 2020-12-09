@@ -236,6 +236,27 @@ func GoFormat(path string) {
 // 	return lineOfCodes
 // }
 
+func ReadInterfaceName(node *ast.File) []string {
+
+	interfaceNames := []string{}
+	for _, dec := range node.Decls {
+		if gen, ok := dec.(*ast.GenDecl); ok {
+			if gen.Tok != token.TYPE {
+				continue
+			}
+
+			for _, specs := range gen.Specs {
+				if ts, ok := specs.(*ast.TypeSpec); ok {
+					if _, ok := ts.Type.(*ast.InterfaceType); ok {
+						interfaceNames = append(interfaceNames, ts.Name.String())
+					}
+				}
+			}
+		}
+	}
+	return interfaceNames
+}
+
 func ReadInterfaceMethodName(node *ast.File, interfaceName string) ([]string, error) {
 
 	for _, dec := range node.Decls {

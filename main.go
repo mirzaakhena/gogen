@@ -13,8 +13,8 @@ const message string = `try execute gogen by
 some command available is
   init .
   model <model name>
-	usecase <usecase name>
-	outport usecase <method1> <method2> <method3> ...
+  usecase <usecase name>
+  outport <usecase name> <method1> <method2> <method3> ...
   test <usecase name>
   datasource <datasource name> <usecase name>
   controller <controller type and framework> <usecase name>

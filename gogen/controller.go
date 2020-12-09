@@ -17,21 +17,25 @@ func NewController() Generator {
 func (d *controller) Generate(args ...string) error {
 
 	if len(args) < 4 {
-		return fmt.Errorf("please define datasource and usecase_name. ex: `gogen controller restapi.gin CreateOrder`")
+
+		message := "Please define controller_type_and_framework and usecase_name. ex: `gogen controller restapi.gin CreateOrder`\n"
+		message += "Currently for framework we support :\n - basic\n - restapi.gin\n - restapi.http\n - consumer.nsq\n"
+
+		return fmt.Errorf(message)
 	}
 
 	return GenerateController(ControllerRequest{
-		ControllerType: args[2],
-		UsecaseName:    args[3],
-		FolderPath:     ".",
+		ControllerPackage: args[2],
+		UsecaseName:       args[3],
+		FolderPath:        ".",
 	})
 
 }
 
 type ControllerRequest struct {
-	ControllerType string
-	UsecaseName    string
-	FolderPath     string
+	ControllerPackage string
+	UsecaseName       string
+	FolderPath        string
 }
 
 func GenerateController(req ControllerRequest) error {
@@ -42,6 +46,7 @@ func GenerateController(req ControllerRequest) error {
 	}
 
 	uc := Usecase{
+		PackageName: req.ControllerPackage,
 		Name:        req.UsecaseName,
 		Directory:   folderImport,
 		PackagePath: GetPackagePath(),
@@ -57,7 +62,27 @@ func GenerateController(req ControllerRequest) error {
 
 	uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", req.UsecaseName, "Response"))
 
-	if req.ControllerType == "restapi.gin" {
+	CreateFolder("%s/controller/%s", req.FolderPath, LowerCase(req.ControllerPackage))
+
+	_ = WriteFileIfNotExist(
+		"controller/basic._go",
+		fmt.Sprintf("%s/controller/%s/%s.go", req.FolderPath, LowerCase(req.ControllerPackage), req.UsecaseName),
+		uc,
+	)
+
+	if req.ControllerPackage == "basic" {
+
+		CreateFolder("%s/controller/basic", req.FolderPath)
+
+		_ = WriteFileIfNotExist(
+			"controller/basic/basic._go",
+			fmt.Sprintf("%s/controller/basic/%s.go", req.FolderPath, req.UsecaseName),
+			uc,
+		)
+
+	} else //
+
+	if req.ControllerPackage == "restapi.gin" {
 
 		CreateFolder("%s/controller/restapi", req.FolderPath)
 
@@ -69,7 +94,7 @@ func GenerateController(req ControllerRequest) error {
 
 	} else //
 
-	if req.ControllerType == "restapi.http" {
+	if req.ControllerPackage == "restapi.http" {
 
 		CreateFolder("%s/controller/restapi", req.FolderPath)
 
