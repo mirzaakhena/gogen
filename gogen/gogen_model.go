@@ -1,30 +1,59 @@
 package gogen
 
-type Usecase struct {
-	Name                 string     // name of usecase
-	PackagePath          string     // root of your apps
-	Directory            string     // apps directory after package path
-	Outport              *Outport   //
-	InportRequestFields  []NameType //
-	InportResponseFields []NameType //
-	DatasourceName       string     //
+type StructureInport struct {
+	UsecaseName string //
 }
 
-type Outport struct {
-	UsecaseName string           //
-	Methods     []*OutportMethod //
+type StructureOutport struct {
+	UsecaseName    string            //
+	Methods        []InterfaceMethod //
+	ParamsRequired bool              //
 }
 
-type OutportMethod struct {
-	Name           string     // outport interface function's name
-	RequestFields  []NameType //
-	ResponseFields []NameType //
-	CodeSlot       string     //
+type InterfaceMethod struct {
+	MethodName     string      //
+	ParamType      string      //
+	ResultType     string      //
+	RequestFields  []FieldType //
+	ResponseFields []FieldType //
 }
 
-type NameType struct {
-	Name    string //
-	Type    string //
-	Tag     string //
-	Comment string //
+type FieldType struct {
+	FieldName string //
+	Type      string //
+	Tag       string //
+	Comment   string //
+}
+
+type StructureUsecase struct {
+	UsecaseName string            //
+	PackagePath string            //
+	Inport      InterfaceMethod   //
+	Outport     []InterfaceMethod //
+}
+
+type StructureDatasource struct {
+	UsecaseName    string            //
+	DatasourceName string            //
+	PackagePath    string            //
+	Outport        []InterfaceMethod //
+}
+
+type StructureController struct {
+	UsecaseName    string          //
+	ControllerName string          //
+	PackagePath    string          //
+	Inport         InterfaceMethod //
+}
+
+type StructureRegistry struct {
+	RegistryName string     //
+	PackagePath  string     //
+	Registries   []Registry //
+}
+
+type Registry struct {
+	ControllerName string //
+	UsecaseName    string //
+	DatasourceName string //
 }

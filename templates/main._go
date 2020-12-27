@@ -1,20 +1,10 @@
 package main
 
 import (
-	"{{.PackagePath}}{{.Directory}}/application"
+	"{{.PackagePath}}/application"
+	"{{.PackagePath}}/application/registry"
 )
 
 func main() {
-
-	app, err := application.NewApplication()
-	if err != nil {
-		panic(err)
-	}
-
-	app.SetupSchema()
-
-	app.RegisterUsecase()
-
-	app.Run()
-
+	application.Run(registry.New{{PascalCase .RegistryName}}Registry())
 }

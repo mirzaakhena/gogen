@@ -3,11 +3,10 @@ package gogen
 import (
 	"bufio"
 	"bytes"
+	"encoding/json"
 	"fmt"
-	"go/ast"
 	"go/build"
-	"go/parser"
-	"go/token"
+	"io/ioutil"
 	"log"
 	"os"
 	"os/exec"
@@ -19,7 +18,7 @@ import (
 )
 
 type Generator interface {
-	Generate(args ...string) error
+	Generate() error
 }
 
 func GetGopath() string {
@@ -52,6 +51,24 @@ var FuncMap = template.FuncMap{
 	"SnakeCase":  SnakeCase,
 	"UpperCase":  UpperCase,
 	"LowerCase":  LowerCase,
+}
+
+func PrintTemplate(templateFile string, x interface{}) (string, error) {
+
+	file := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/%s", GetGopath(), templateFile)
+	ts := strings.Split(templateFile, "/")
+	tpl, errTemplate := template.New(ts[len(ts)-1]).Funcs(FuncMap).ParseFiles(file)
+	if errTemplate != nil {
+		return "", errTemplate
+	}
+
+	var buffer bytes.Buffer
+	if err := tpl.Execute(&buffer, x); err != nil {
+		return "", err
+	}
+
+	return buffer.String(), nil
+
 }
 
 func WriteFile(templateFile, outputFile string, data interface{}) error {
@@ -141,9 +158,11 @@ func SnakeCase(str string) string {
 
 func CreateFolder(format string, a ...interface{}) {
 	folderName := fmt.Sprintf(format, a...)
+
 	if err := os.MkdirAll(folderName, 0755); err != nil {
 		panic(err)
 	}
+	fmt.Printf("%v\n", folderName)
 }
 
 func GenerateMock(packagePath, usecaseName, folderPath string) {
@@ -193,287 +212,21 @@ func GoFormat(path string) {
 	}
 }
 
-// func ReadYAML(usecaseName string) (*Usecase, error) {
-
-// 	content, err := ioutil.ReadFile(fmt.Sprintf(".application_schema/usecases/%s.yml", usecaseName))
-// 	if err != nil {
-// 		log.Fatal(err)
-// 		return nil, fmt.Errorf("cannot read %s.yml", usecaseName)
-// 	}
-
-// 	tp := Usecase{}
-
-// 	if err = yaml.Unmarshal(content, &tp); err != nil {
-// 		log.Fatalf("error: %+v", err)
-// 		return nil, fmt.Errorf("%s.yml is unrecognized usecase file", usecaseName)
-// 	}
-
-// 	tp.Name = usecaseName
-// 	tp.PackagePath = GetPackagePath()
-
-// 	return &tp, nil
-
-// }
-
-// func ReadLineByLine(filepath string) []string {
-// 	var lineOfCodes []string
-// 	{
-// 		file, err := os.Open(filepath)
-// 		if err != nil {
-// 			log.Fatal(err)
-// 		}
-// 		defer file.Close()
-
-// 		scanner := bufio.NewScanner(file)
-
-// 		scanner.Split(bufio.ScanLines)
-
-// 		for scanner.Scan() {
-// 			lineOfCodes = append(lineOfCodes, scanner.Text())
-// 		}
-// 	}
-
-// 	return lineOfCodes
-// }
-
-func ReadInterfaceMethodName(node *ast.File, interfaceName string) ([]string, error) {
-
-	for _, dec := range node.Decls {
-		if gen, ok := dec.(*ast.GenDecl); ok {
-			if gen.Tok != token.TYPE {
-				continue
-			}
-			for _, specs := range gen.Specs {
-				if ts, ok := specs.(*ast.TypeSpec); ok {
-					if iface, ok := ts.Type.(*ast.InterfaceType); ok {
-						if ts.Name.String() != interfaceName {
-							continue
-						}
-						methods := []string{}
-						for _, meths := range iface.Methods.List {
-							for _, name := range meths.Names {
-								methods = append(methods, name.String())
-							}
-						}
-						return methods, nil
-
-					}
-				}
-			}
-		}
-	}
-	return nil, fmt.Errorf("interface %s not found", interfaceName)
-}
-
-func ReadFieldInStruct(node *ast.File, structName string) []NameType {
-
-	for _, dec := range node.Decls {
-		if gen, ok := dec.(*ast.GenDecl); ok {
-			if gen.Tok != token.TYPE {
-				continue
-			}
-			for _, specs := range gen.Specs {
-				if ts, ok := specs.(*ast.TypeSpec); ok {
-					if istruct, ok := ts.Type.(*ast.StructType); ok {
-						if !strings.HasSuffix(ts.Name.String(), structName) {
-							continue
-						}
-						nameTypes := []NameType{}
-						for _, field := range istruct.Fields.List {
-							tag := ""
-							if field.Tag != nil {
-								tag = field.Tag.Value
-							}
-							comment := ""
-							if field.Comment != nil {
-								comment = field.Comment.List[0].Text
-							}
-							for _, fieldName := range field.Names {
-								nameTypes = append(nameTypes, NameType{
-									Name:    fieldName.Name,
-									Type:    appendType(field.Type),
-									Tag:     tag,
-									Comment: comment,
-								})
-							}
-
-							// ast.Print(fset, field)
-						}
-						return nameTypes
-					}
-				}
-			}
-		}
-	}
-	return nil
-}
-
-func appendType(expr ast.Expr) string {
-	var param bytes.Buffer
-
-	for {
-		switch t := expr.(type) {
-		case *ast.Ident:
-			return processIdent(&param, t)
-
-		case *ast.ArrayType:
-			return processArrayType(&param, t)
-
-		case *ast.StarExpr:
-			return processStarExpr(&param, t)
-
-		case *ast.SelectorExpr:
-			return processSelectorExpr(&param, t)
-
-		case *ast.InterfaceType:
-			return processInterfaceType(&param, t)
-
-		case *ast.ChanType:
-			return processChanType(&param, t)
-
-		case *ast.MapType:
-			return processMapType(&param, t)
-
-		case *ast.FuncType:
-			return processFuncType(&param, t)
-
-		default:
-			return param.String()
-		}
-
-	}
-}
-
-func processIdent(param *bytes.Buffer, t *ast.Ident) string {
-	param.WriteString(t.Name)
-	return param.String()
-}
-
-func processArrayType(param *bytes.Buffer, t *ast.ArrayType) string {
-	if t.Len != nil {
-		arrayCapacity := t.Len.(*ast.BasicLit).Value
-		param.WriteString(fmt.Sprintf("[%s]", arrayCapacity))
-	} else {
-		param.WriteString("[]")
-	}
-	param.WriteString(appendType(t.Elt))
-
-	return param.String()
-}
-
-func processStarExpr(param *bytes.Buffer, t *ast.StarExpr) string {
-	param.WriteString("*")
-	param.WriteString(appendType(t.X))
-	return param.String()
-}
-
-func processInterfaceType(param *bytes.Buffer, t *ast.InterfaceType) string {
-	param.WriteString("interface{}")
-	return param.String()
-}
-
-func processSelectorExpr(param *bytes.Buffer, t *ast.SelectorExpr) string {
-	param.WriteString(appendType(t.X))
-	param.WriteString(".")
-	param.WriteString(t.Sel.Name)
-	return param.String()
-}
-
-func processChanType(param *bytes.Buffer, t *ast.ChanType) string {
-	if t.Dir == 1 {
-		param.WriteString("chan<- ")
-	} else if t.Dir == 2 {
-		param.WriteString("<-chan ")
-	} else {
-		param.WriteString("chan ")
-	}
-
-	param.WriteString(appendType(t.Value))
-	return param.String()
-}
-
-func processMapType(param *bytes.Buffer, t *ast.MapType) string {
-	param.WriteString("map[")
-	param.WriteString(appendType(t.Key))
-	param.WriteString("]")
-	param.WriteString(appendType(t.Value))
-	return param.String()
-}
-
-func processFuncType(param *bytes.Buffer, t *ast.FuncType) string {
-	param.WriteString("func(")
-
-	nParam := t.Params.NumFields()
-	for i, field := range t.Params.List {
-		param.WriteString(appendType(field.Type))
-		if i+1 < nParam {
-			param.WriteString(", ")
-		} else {
-			param.WriteString(") ")
-		}
-	}
-
-	nResult := t.Results.NumFields()
-
-	if nResult > 1 {
-		param.WriteString("(")
-	}
-
-	for i, field := range t.Results.List {
-		param.WriteString(appendType(field.Type))
-		if i+1 < nResult {
-			param.WriteString(", ")
-		}
-	}
-
-	if nResult > 1 {
-		param.WriteString(")")
-	}
-
-	return param.String()
-}
-
-func readInport(uc *Usecase, folderPath, usecaseName string) error {
-
-	inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
-	node, errParse := parser.ParseFile(token.NewFileSet(), inportFile, nil, parser.ParseComments)
-	if errParse != nil {
-		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
-	}
-
-	uc.InportRequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Request"))
-	uc.InportResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", usecaseName, "Response"))
-
-	return nil
-}
-
-func readOutport(ou *Outport, folderPath, usecaseName string) error {
-
-	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
-	node, errParse := parser.ParseFile(token.NewFileSet(), outportFile, nil, parser.ParseComments)
-	if errParse != nil {
-		return fmt.Errorf("not found usecase %s. You need to create it first by call 'gogen usecase %s' ", usecaseName, usecaseName)
-	}
-
-	interfaceNames, err := ReadInterfaceMethodName(node, fmt.Sprintf("%s%s", usecaseName, "Outport"))
+func ReadAllFileUnderFolder(folderPath string) ([]string, error) {
+	var files []string
+	fileInfo, err := ioutil.ReadDir(folderPath)
 	if err != nil {
-		return fmt.Errorf("usecase %s is not found 111", usecaseName)
+		return nil, err
 	}
 
-	outportMethods := []*OutportMethod{}
-	for _, methodName := range interfaceNames {
-		outportMethods = append(outportMethods, &OutportMethod{
-			Name: methodName,
-		})
-
-		for _, ot := range outportMethods {
-			ot.RequestFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Request"))
-			ot.ResponseFields = ReadFieldInStruct(node, fmt.Sprintf("%s%s", ot.Name, "Response"))
-		}
-
+	for _, file := range fileInfo {
+		files = append(files, file.Name())
 	}
 
-	ou.Methods = outportMethods
+	return files, nil
+}
 
-	return nil
+func PrintJSON(x interface{}) string {
+	bytes, _ := json.Marshal(x)
+	return string(bytes)
 }

@@ -1,6 +1,0 @@
-package model
-
-// {{PascalCase .Name}} ...
-type {{PascalCase .Name}} struct { 
-
-}

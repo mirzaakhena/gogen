@@ -1,0 +1,48 @@
+package gogen
+
+import (
+	"fmt"
+	"strings"
+)
+
+type TestBuilderRequest struct {
+	UsecaseName string
+	FolderPath  string
+}
+
+type testBuilder struct {
+	TestBuilderRequest TestBuilderRequest
+}
+
+func NewTest(req TestBuilderRequest) Generator {
+	return &testBuilder{TestBuilderRequest: req}
+}
+
+func (d *testBuilder) Generate() error {
+
+	usecaseName := d.TestBuilderRequest.UsecaseName
+	folderPath := d.TestBuilderRequest.FolderPath
+
+	// create a interactor_test.go file
+	{
+		mapStruct, errCollect := CollectPortStructs(folderPath, usecaseName)
+		if errCollect != nil {
+			return errCollect
+		}
+
+		uc, errConstruct := ConstructStructureUsecase(folderPath, usecaseName, mapStruct)
+		if errConstruct != nil {
+			return errConstruct
+		}
+
+		_ = WriteFileIfNotExist(
+			"usecase/usecaseName/interactor_test._go",
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
+			uc,
+		)
+	}
+
+	GenerateMock(GetPackagePath(), usecaseName, folderPath)
+
+	return nil
+}

@@ -1,30 +1,27 @@
-package {{.DatasourceName}}
+package {{LowerCase .DatasourceName}}
 
 import (
 	"context"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
-// New{{PascalCase .Name}}Datasource ...
-func New{{PascalCase .Name}}Datasource() port.{{PascalCase .Name}}Outport {
-	return &{{CamelCase .Name}}{}
+// New{{PascalCase .UsecaseName}}Datasource ...
+func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}}Outport {
+	return &{{CamelCase .UsecaseName}}{}
 }
 
-type {{CamelCase .Name}} struct {
-
+type {{CamelCase .UsecaseName}} struct {
 }
+{{range .Outport}}
+// {{PascalCase .MethodName}} ...
+func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .MethodName}}(ctx context.Context, req port.{{PascalCase .ParamType}}) (*port.{{PascalCase .ResultType}}, error) { // {{range .RequestFields}}
+	// _ = req.{{PascalCase .FieldName}} {{end}}
 
-{{range .Outport.Methods}}
-// {{PascalCase .Name}} ...
-func (_r *{{CamelCase $.Name}}) {{PascalCase .Name}}(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { // {{range .RequestFields}}
-	// _ = req.{{PascalCase .Name}} // helper field {{end}}
-
-	var res port.{{PascalCase .Name}}Response {{range .ResponseFields}}
-	// res.{{PascalCase .Name}} = ... // helper field {{end}}
-
-	{{.CodeSlot}}
+	var res port.{{PascalCase .ResultType}} {{range .ResponseFields}}
+	// res.{{PascalCase .FieldName}} = ... {{end}}
 	
 	return &res, nil
-} {{end}}
+} 
+{{end}}
 

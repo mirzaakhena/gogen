@@ -1,38 +1,36 @@
-package {{LowerCase .Name}}
+package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
 	"testing"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/mocks"
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/mocks"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 	"github.com/stretchr/testify/assert"
 )
 
-func Test_{{PascalCase .Name}}_Normal(t *testing.T) {
+func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 
 	ctx := context.Background()
 
-	outputPort := mocks.{{PascalCase .Name}}Outport{} {{range .Outport.Methods}}
+	outputPort := mocks.{{PascalCase .UsecaseName}}Outport{} {{range .Outport}}
 	{
-		call := outputPort.On("{{PascalCase .Name}}", ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
-			// {{PascalCase .Name}}: ..., // helper field {{end}}
+		call := outputPort.On("{{PascalCase .MethodName}}", ctx, port.{{PascalCase .ParamType}}{ // {{range .RequestFields}}
+			// {{PascalCase .FieldName}}: ..., {{end}}
 		})
-		call.Return(&port.{{PascalCase .Name}}Response{ // {{range .ResponseFields}}
-			// {{PascalCase .Name}}: ..., // helper field {{end}}
+		call.Return(&port.{{PascalCase .ResultType}}{ // {{range .ResponseFields}}
+			// {{PascalCase .FieldName}}: ..., {{end}}
 		}, nil)
 	} {{end}}
 
-	req := port.{{PascalCase .Name}}Request{ // {{range .InportRequestFields}}
-		// {{.Name}}: ..., // helper field {{end}}
-	}
-
-	res, err := New{{PascalCase .Name}}Usecase(&outputPort).Handle(ctx, req)
+	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).Handle(ctx, port.{{PascalCase .Inport.ParamType}}{ // {{range .Inport.RequestFields}}
+		// {{.FieldName}}: ..., {{end}}
+	})
 
 	assert.Nil(t, err)
 
-	assert.Equal(t, &port.{{PascalCase .Name}}Response{ // {{range .InportResponseFields}}
-		// {{.Name}}: ..., // helper field {{end}}
+	assert.Equal(t, &port.{{PascalCase .Inport.ResultType}}{ // {{range .Inport.ResponseFields}}
+		// {{.FieldName}}: ..., {{end}}
 	}, res)
 
 }

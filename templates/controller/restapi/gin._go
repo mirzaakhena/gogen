@@ -1,4 +1,4 @@
-package restapi
+package {{LowerCase .ControllerName}}
 
 import (
 	"context"
@@ -7,18 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/copier"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
-// {{PascalCase .Name}} ...
-func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.HandlerFunc {
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
 
-	type dtoRequest struct { {{range .InportRequestFields}}
-		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	type dtoRequest struct { {{range .Inport.RequestFields}}
+		{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
 	}
 
-	//	type dtoResponse struct { {{range .InportResponseFields}}
-	//		{{.Name}} {{.Type}} `json:"{{CamelCase .Name}}"` // {{end}}
+	//	type dtoResponse struct { {{range .Inport.ResponseFields}}
+	//		{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
 	//	}
 
 	return func(c *gin.Context) {
@@ -31,7 +31,7 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.Handler
 		}
 
 		// convert to request
-		var req port.{{PascalCase .Name}}Request
+		var req port.{{PascalCase .UsecaseName}}Request
 		if err := copier.Copy(&req, jsonReq); err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
@@ -47,30 +47,6 @@ func {{PascalCase .Name}}(inputPort port.{{PascalCase .Name}}Inport) gin.Handler
 
 		// return the response
 		c.JSON(http.StatusOK, res)
-
-
-		//		// assign value from query to request object
-		//		var req port.{{PascalCase .Name}}Request
-		//		{ {{range .InportRequestFields}}
-		//			// req.{{PascalCase .Name}} = c.DefaultQuery("{{CamelCase .Name}}", "") {{end}}
-		//		}
-		//
-		//		// run the usecase
-		//    ctx := context.Background()
-		//    res, err := inputPort.Handle(ctx, req)
-		//		if err != nil {
-		//			c.JSON(http.StatusBadRequest, err.Error())
-		//			return
-		//		}
-		//
-		//		var jsonRes dtoResponse
-		//		if err := copier.Copy(&jsonRes, res); err != nil {
-		//			c.JSON(http.StatusBadRequest, err.Error())
-		//			return
-		//		}
-		//
-		//		// return the response
-		//		c.JSON(http.StatusOK, jsonRes)
 
 	}
 }

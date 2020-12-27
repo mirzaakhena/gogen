@@ -1,42 +1,42 @@
-package {{LowerCase .Name}}
+package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
 
-	"{{.PackagePath}}{{.Directory}}/usecase/{{LowerCase .Name}}/port"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
-//go:generate mockery --dir port/ --name {{PascalCase .Name}}Outport -output mocks/
+//go:generate mockery --dir port/ --name {{PascalCase .UsecaseName}}Outport -output mocks/
 
-// New{{PascalCase .Name}}Usecase ...
-func New{{PascalCase .Name}}Usecase(outputPort port.{{PascalCase .Name}}Outport) port.{{PascalCase .Name}}Inport {
-	return &{{CamelCase .Name}}Interactor{
+// New{{PascalCase .UsecaseName}}Usecase ...
+func New{{PascalCase .UsecaseName}}Usecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
+	return &{{CamelCase .UsecaseName}}Interactor{
 		datasource: outputPort,
 	}
 }
 
-type {{CamelCase .Name}}Interactor struct {
-	datasource port.{{PascalCase .Name}}Outport
+type {{CamelCase .UsecaseName}}Interactor struct {
+	datasource port.{{PascalCase .UsecaseName}}Outport
 }
 
 // Handle ...
-func (_r *{{CamelCase .Name}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .Name}}Request) (*port.{{PascalCase .Name}}Response, error) { {{if gt (len .InportRequestFields) 0}} 
-	// TODO validate {{PascalCase .Name}} request {{range .InportRequestFields}}
-	_ = req.{{.Name}} // helper field{{end}} {{end}}
+func (_r *{{CamelCase .UsecaseName}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
+	{{range .Inport.RequestFields}}
+	_ = req.{{.FieldName}} {{end}} {{end}}
 
-	var res port.{{PascalCase .Name}}Response {{range .InportResponseFields}}
-	// res.{{.Name}} = ... // helper field {{end}} {{range .Outport.Methods}}
+	var res port.{{PascalCase .UsecaseName}}Response {{range .Inport.ResponseFields}}
+	// res.{{.FieldName}} = ...  {{end}} {{range .Outport}}
 	
 	{
-		resOutport, err := _r.datasource.{{PascalCase .Name}}(ctx, port.{{PascalCase .Name}}Request{ // {{range .RequestFields}}
-			// {{PascalCase .Name}}: ..., // helper field {{end}}
+		resOutport, err := _r.datasource.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
+			// {{PascalCase .FieldName}}: ...,  {{end}}
 		})
 
 		if err != nil {
 			return nil, err
 		}
 		{{if gt (len .ResponseFields) 0}} {{range .ResponseFields}}
-		_ = resOutport.{{PascalCase .Name}} // helper field {{end}} {{else}}
+		_ = resOutport.{{PascalCase .FieldName}}  {{end}} {{else}}
 		_ = resOutport {{end}}
 	} {{end}}
 

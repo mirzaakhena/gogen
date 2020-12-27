@@ -4,17 +4,15 @@ import (
 	"context"
 )
 
-// {{PascalCase .Name}}Inport ...
-type {{PascalCase .Name}}Inport interface {
-	Handle(ctx context.Context, req {{PascalCase .Name}}Request) (*{{PascalCase .Name}}Response, error)
+// {{PascalCase .UsecaseName}}Inport ...
+type {{PascalCase .UsecaseName}}Inport interface {
+	Handle(ctx context.Context, req {{PascalCase .UsecaseName}}Request) (*{{PascalCase .UsecaseName}}Response, error)
 }
 
-// {{PascalCase .Name}}Request ...
-type {{PascalCase .Name}}Request struct { {{range .InportRequestFields}}
-	{{PascalCase .Name}} {{.Type}} {{.Tag}} {{.Comment}} {{end}}
+// {{PascalCase .UsecaseName}}Request ...
+type {{PascalCase .UsecaseName}}Request struct { 
 }
 
-// {{PascalCase .Name}}Response ...
-type {{PascalCase .Name}}Response struct { {{range .InportResponseFields}}
-	{{PascalCase .Name}} {{.Type}} {{.Tag}} {{.Comment}} {{end}}
+// {{PascalCase .UsecaseName}}Response ...
+type {{PascalCase .UsecaseName}}Response struct { 
 }
