@@ -27,6 +27,14 @@ func (d *controllerBuilder) Generate() error {
 	controllerName := d.ControllerBuilderRequest.ControllerName
 	folderPath := d.ControllerBuilderRequest.FolderPath
 
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
+
+	if len(controllerName) == 0 {
+		return fmt.Errorf("Controller name must not empty")
+	}
+
 	// create a controller folder with controller name
 	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 

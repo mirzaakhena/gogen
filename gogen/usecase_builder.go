@@ -23,9 +23,13 @@ func NewUsecase(req UsecaseBuilderRequest) Generator {
 
 func (d *usecaseBuilder) Generate() error {
 
-	usecaseName := d.UsecaseBuilderRequest.UsecaseName
+	usecaseName := strings.TrimSpace(d.UsecaseBuilderRequest.UsecaseName)
 	folderPath := d.UsecaseBuilderRequest.FolderPath
 	outportMethodNames := d.UsecaseBuilderRequest.OutportMethodNames
+
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
 
 	// create a folder with usecase name
 	CreateFolder("%s/usecase/%s/port", folderPath, strings.ToLower(usecaseName))

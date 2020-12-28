@@ -20,8 +20,12 @@ func NewTest(req TestBuilderRequest) Generator {
 
 func (d *testBuilder) Generate() error {
 
-	usecaseName := d.TestBuilderRequest.UsecaseName
+	usecaseName := strings.TrimSpace(d.TestBuilderRequest.UsecaseName)
 	folderPath := d.TestBuilderRequest.FolderPath
+
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
 
 	// create a interactor_test.go file
 	{

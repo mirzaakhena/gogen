@@ -143,6 +143,27 @@ func ReadInterfaceMethodAndField(node *ast.File, interfaceName string, mapStruct
 	return nil, fmt.Errorf("interface %s not found", interfaceName)
 }
 
+func ReadInterfaceName(node *ast.File) ([]string, error) {
+
+	iNames := []string{}
+
+	for _, dec := range node.Decls {
+		if gen, ok := dec.(*ast.GenDecl); ok {
+			if gen.Tok != token.TYPE {
+				continue
+			}
+			for _, specs := range gen.Specs {
+				if ts, ok := specs.(*ast.TypeSpec); ok {
+					if _, ok := ts.Type.(*ast.InterfaceType); ok {
+						iNames = append(iNames, ts.Name.String())
+					}
+				}
+			}
+		}
+	}
+	return iNames, nil
+}
+
 func appendType(expr ast.Expr) string {
 	var param bytes.Buffer
 

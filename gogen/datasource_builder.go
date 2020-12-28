@@ -27,6 +27,14 @@ func (d *datasourceBuilder) Generate() error {
 	datasourceName := d.DatasourceBuilderRequest.DatasourceName
 	folderPath := d.DatasourceBuilderRequest.FolderPath
 
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
+
+	if len(datasourceName) == 0 {
+		return fmt.Errorf("Datasource name must not empty")
+	}
+
 	// create a datasource folder with datasource name
 	CreateFolder("%s/datasource/%s", folderPath, strings.ToLower(datasourceName))
 

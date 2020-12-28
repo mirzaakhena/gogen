@@ -27,11 +27,27 @@ func NewRegistry(req RegistryBuilderRequest) Generator {
 
 func (d *registryBuilder) Generate() error {
 
-	registryName := d.RegistryBuilderRequest.RegistryName
-	usecaseName := d.RegistryBuilderRequest.UsecaseName
-	datasourceName := d.RegistryBuilderRequest.DatasourceName
-	controllerName := d.RegistryBuilderRequest.ControllerName
+	registryName := strings.TrimSpace(d.RegistryBuilderRequest.RegistryName)
+	usecaseName := strings.TrimSpace(d.RegistryBuilderRequest.UsecaseName)
+	datasourceName := strings.TrimSpace(d.RegistryBuilderRequest.DatasourceName)
+	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
+
+	if len(registryName) == 0 {
+		return fmt.Errorf("Registry name must not empty")
+	}
+
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
+
+	if len(datasourceName) == 0 {
+		return fmt.Errorf("Datasource name must not empty")
+	}
+
+	if len(controllerName) == 0 {
+		return fmt.Errorf("Controller name must not empty")
+	}
 
 	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName)) {
 		return fmt.Errorf("controller %s/%s is not found", controllerName, usecaseName)

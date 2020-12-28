@@ -27,6 +27,14 @@ func (d *outportBuilder) Generate() error {
 	folderPath := d.OutportBuilderRequest.FolderPath
 	newOutportMethodNames := d.OutportBuilderRequest.OutportMethodNames
 
+	if len(usecaseName) == 0 {
+		return fmt.Errorf("Usecase name must not empty")
+	}
+
+	if len(newOutportMethodNames) == 0 {
+		return fmt.Errorf("Outport name is not defined. At least have one outport name")
+	}
+
 	// check the file outport.go exist or not
 	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
 	if !IsExist(outportFile) {
