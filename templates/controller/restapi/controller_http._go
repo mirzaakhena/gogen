@@ -1,0 +1,35 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
+	"log"
+	"net/http"
+
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+)
+
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName}}Inport) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := port.{{PascalCase .UsecaseName}}Request{ {{range .Inport.RequestFields}}
+			{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
+		}
+
+		res, err := inputPort.Handle(context.Background(), req)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
+
+		jsonRes, _ := json.Marshal(res)
+		fmt.Fprint(w, string(jsonRes))
+
+		log.Printf("Response %v", string(jsonRes))
+
+	}
+}

@@ -231,3 +231,19 @@ feature:
 
   http://blog.opus.ch/2019/01/ddd-concepts-and-patterns-service-and-repository/
 
+Domain Service
+Application Service
+Infrastructure Service
+
+
+Tactical Pattern
+  Entity
+  ValueObject
+  Service
+  Repository
+  Factory
+  Event
+  Aggregate
+
+Strategic design
+  BoundedContext

@@ -1,0 +1,27 @@
+package application
+
+import (
+	"net/http"
+)
+
+// HTTPHandler will define basic HTTP configuration with gracefully shutdown
+type HTTPHandler struct {
+	GracefullyShutdown
+	ServerMux *http.ServeMux
+}
+
+func NewHTTPHandler(address string) HTTPHandler {
+
+	serverMux := http.NewServeMux()
+
+	return HTTPHandler{
+		GracefullyShutdown: NewGracefullyShutdown(serverMux, address),
+		ServerMux:          serverMux,
+	}
+
+}
+
+// RunApplication is implementation of RegistryVersion.RunApplication()
+func (r *HTTPHandler) RunApplication() {
+	r.RunWithGracefullyShutdown()
+}

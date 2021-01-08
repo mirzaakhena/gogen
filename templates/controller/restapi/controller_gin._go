@@ -11,7 +11,7 @@ import (
 )
 
 // {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
+func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
 
 	type dtoRequest struct { {{range .Inport.RequestFields}}
 		{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
