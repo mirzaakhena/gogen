@@ -30,7 +30,7 @@ usecase/createorder/interactor.go
 
 Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
 
-`port/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Handle`.
+`port/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
 
 `port/outport.go` is an interface which has many method that will be used by your usecase. It must not shared to another usecase.
 

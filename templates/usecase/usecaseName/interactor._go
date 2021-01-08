@@ -19,8 +19,8 @@ type {{CamelCase .UsecaseName}}Interactor struct {
 	datasource port.{{PascalCase .UsecaseName}}Outport
 }
 
-// Handle ...
-func (_r *{{CamelCase .UsecaseName}}Interactor) Handle(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
+// Execute ...
+func (_r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
 	{{range .Inport.RequestFields}}
 	_ = req.{{.FieldName}} {{end}} {{end}}
 

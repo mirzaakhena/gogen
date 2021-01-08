@@ -21,7 +21,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 			{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
 		}		
 
-		res, err := inputPort.Handle(context.Background(), req)
+		res, err := inputPort.Execute(context.Background(), req)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

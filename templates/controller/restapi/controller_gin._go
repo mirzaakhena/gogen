@@ -42,7 +42,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 		// run the usecase
 		ctx := context.Background()
-		res, err := inputPort.Handle(ctx, req)
+		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
 			c.JSON(http.StatusBadRequest, err.Error())
 			return
