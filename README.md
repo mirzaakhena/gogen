@@ -135,7 +135,7 @@ Default is the registry name. You cann name it wahtever you want. After you call
 application/registry/Default.go
 application/application.go
 application/gracefully_shutdown.go
-application/http_handler.go
+application/handler_http.go
 ```
 
 Then open file `application/registry/Default.go` then you will find this
@@ -150,13 +150,13 @@ import (
 )
 
 type defaultRegistry struct {
-	application.GinHTTPFramework
+	application.HTTPHandler
 }
 
 func NewDefaultRegistry() application.RegistryVersion {
 
 	app := defaultRegistry{ //
-		GinHTTPFramework: application.NewGinHTTPFramework(":8080"),
+		HTTPHandler: application.NewHTTPHandler(":8080"),
 	}
 
 	return &app
@@ -172,7 +172,7 @@ func (r *defaultRegistry) RegisterUsecase() {
 func (r *defaultRegistry) createOrderHandler() {
 	outport := production.NewCreateOrderDatasource()
 	inport := createorder.NewCreateOrderUsecase(outport)
-	r.Router.POST("/createorder", restapi.CreateOrder(inport))
+  r.ServerMux.HandleFunc("/createorder", controller.Authorized(restapi.CreateOrderHandler(inport)))
 }
 
 //code_injection function declaration
@@ -187,7 +187,7 @@ and
 //code_injection function declaration
 ```
 gogen will look at that comment to do the code injection.
-if you remove that comment line, gogen registry will no longer work anymore.
+if you remove that comment line, gogen registry command no longer work anymore.
 
 
 Another improvement is:
