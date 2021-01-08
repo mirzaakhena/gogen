@@ -11,6 +11,7 @@ type ControllerBuilderRequest struct {
 	UsecaseName    string
 	ControllerName string
 	FolderPath     string
+	Framework      string
 }
 
 type controllerBuilder struct {
@@ -26,6 +27,7 @@ func (d *controllerBuilder) Generate() error {
 	usecaseName := d.ControllerBuilderRequest.UsecaseName
 	controllerName := d.ControllerBuilderRequest.ControllerName
 	folderPath := d.ControllerBuilderRequest.FolderPath
+	framework := d.ControllerBuilderRequest.Framework
 
 	if len(usecaseName) == 0 {
 		return fmt.Errorf("Usecase name must not empty")
@@ -34,9 +36,6 @@ func (d *controllerBuilder) Generate() error {
 	if len(controllerName) == 0 {
 		return fmt.Errorf("Controller name must not empty")
 	}
-
-	// create a controller folder with controller name
-	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 
 	outportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
 	fSet := token.NewFileSet()
@@ -67,17 +66,41 @@ func (d *controllerBuilder) Generate() error {
 		Inport:         inportMethod,
 	}
 
-	_ = WriteFileIfNotExist(
-		"controller/restapi/gin._go",
-		fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName),
-		ct,
-	)
+	// create a controller folder with controller name
+	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 
-	_ = WriteFileIfNotExist(
-		"controller/interceptor._go",
-		fmt.Sprintf("%s/controller/interceptor.go", folderPath),
-		ct,
-	)
+	if framework == "nethttp" {
+		_ = WriteFileIfNotExist(
+			"controller/restapi/controller_http._go",
+			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName),
+			ct,
+		)
+
+		_ = WriteFileIfNotExist(
+			"controller/interceptor_http._go",
+			fmt.Sprintf("%s/controller/interceptor.go", folderPath),
+			ct,
+		)
+	} else //
+
+	if framework == "gin" {
+		_ = WriteFileIfNotExist(
+			"controller/restapi/controller_gin._go",
+			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName),
+			ct,
+		)
+
+		_ = WriteFileIfNotExist(
+			"controller/interceptor_gin._go",
+			fmt.Sprintf("%s/controller/interceptor.go", folderPath),
+			ct,
+		)
+
+	} else //
+
+	{
+		return fmt.Errorf("not recognize framework")
+	}
 
 	return nil
 }

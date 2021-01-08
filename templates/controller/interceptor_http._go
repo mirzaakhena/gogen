@@ -1,0 +1,22 @@
+package controller
+
+import (
+	"net/http"
+)
+
+func Authorized(next http.Handler) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		authorized := true
+
+		if !authorized {
+			http.Error(w, "Not Authorized", http.StatusForbidden)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+
+	}
+
+}

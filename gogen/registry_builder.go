@@ -15,6 +15,7 @@ type RegistryBuilderRequest struct {
 	DatasourceName string
 	ControllerName string
 	FolderPath     string
+	Framework      string
 }
 
 type registryBuilder struct {
@@ -32,6 +33,7 @@ func (d *registryBuilder) Generate() error {
 	datasourceName := strings.TrimSpace(d.RegistryBuilderRequest.DatasourceName)
 	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
+	framework := d.RegistryBuilderRequest.Framework
 
 	if len(registryName) == 0 {
 		return fmt.Errorf("Registry name must not empty")
@@ -70,6 +72,12 @@ func (d *registryBuilder) Generate() error {
 	}
 
 	_ = WriteFileIfNotExist(
+		"main._go",
+		fmt.Sprintf("%s/main.go", folderPath),
+		rg,
+	)
+
+	_ = WriteFileIfNotExist(
 		"application/application._go",
 		fmt.Sprintf("%s/application/application.go", folderPath),
 		struct{}{},
@@ -81,29 +89,47 @@ func (d *registryBuilder) Generate() error {
 		struct{}{},
 	)
 
-	_ = WriteFileIfNotExist(
-		"application/http_handler._go",
-		fmt.Sprintf("%s/application/http_handler.go", folderPath),
-		struct{}{},
-	)
+	var funcDeclareInjectedCode string
 
-	_ = WriteFileIfNotExist(
-		"application/registry/registry._go",
-		fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
-		rg,
-	)
+	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
 
-	_ = WriteFileIfNotExist(
-		"application/registry/registry._go",
-		fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
-		rg,
-	)
+	if framework == "nethttp" {
+		_ = WriteFileIfNotExist(
+			"application/handler_http._go",
+			fmt.Sprintf("%s/application/handler_http.go", folderPath),
+			struct{}{},
+		)
 
-	_ = WriteFileIfNotExist(
-		"main._go",
-		fmt.Sprintf("%s/main.go", folderPath),
-		rg,
-	)
+		_ = WriteFileIfNotExist(
+			"application/registry/registry_http._go",
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			rg,
+		)
+
+		funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_http_declaration._go", d.RegistryBuilderRequest)
+
+	} else //
+
+	if framework == "gin" {
+		_ = WriteFileIfNotExist(
+			"application/handler_gin._go",
+			fmt.Sprintf("%s/application/handler_gin.go", folderPath),
+			struct{}{},
+		)
+
+		_ = WriteFileIfNotExist(
+			"application/registry/registry_gin._go",
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			rg,
+		)
+
+		funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_gin_declaration._go", d.RegistryBuilderRequest)
+
+	} else //
+
+	{
+		return fmt.Errorf("not recognize framework")
+	}
 
 	// open registry file
 	file, err := os.Open(fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName))
@@ -111,9 +137,6 @@ func (d *registryBuilder) Generate() error {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
 	}
 	defer file.Close()
-
-	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
-	funcDeclareInjectedCode, _ := PrintTemplate("application/registry/func_declaration._go", d.RegistryBuilderRequest)
 
 	scanner := bufio.NewScanner(file)
 
