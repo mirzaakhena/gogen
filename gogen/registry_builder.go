@@ -102,7 +102,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_http._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
 			rg,
 		)
 
@@ -119,7 +119,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_gin._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
 			rg,
 		)
 
@@ -132,7 +132,7 @@ func (d *registryBuilder) Generate() error {
 	}
 
 	// open registry file
-	file, err := os.Open(fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName))
+	file, err := os.Open(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)))
 	if err != nil {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
 	}
@@ -158,7 +158,7 @@ func (d *registryBuilder) Generate() error {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 

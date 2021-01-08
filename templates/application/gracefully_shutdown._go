@@ -33,6 +33,8 @@ func (r *GracefullyShutdown) RunWithGracefullyShutdown() {
 		}
 	}()
 
+	log.Printf("server is running ...\n")
+
 	quit := make(chan os.Signal, 1)
 
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)

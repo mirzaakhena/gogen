@@ -114,8 +114,8 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 // CamelCase is
 func CamelCase(name string) string {
 
-	// force it!
-	// this is bad. But we can figure out later
+	// hardcoded is bad
+	// But we can figure out later
 	{
 		if name == "IPAddress" {
 			return "ipAddress"
@@ -143,7 +143,8 @@ func LowerCase(name string) string {
 
 // PascalCase is
 func PascalCase(name string) string {
-	return name
+	rs := []rune(name)
+	return strings.ToUpper(string(rs[0])) + string(rs[1:])
 }
 
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
