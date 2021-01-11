@@ -129,7 +129,7 @@ func CollectPortStructs(folderPath, usecaseName string) (map[string][]FieldType,
 func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[string][]FieldType) (*StructureUsecase, error) {
 
 	inportMethod := InterfaceMethod{}
-	outportMethods := []InterfaceMethod{}
+	var outportMethods []InterfaceMethod
 	{
 		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
 		fSet := token.NewFileSet()
