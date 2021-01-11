@@ -29,12 +29,8 @@ func (d *controllerBuilder) Generate() error {
 	folderPath := d.ControllerBuilderRequest.FolderPath
 	framework := d.ControllerBuilderRequest.Framework
 
-	if len(usecaseName) == 0 {
-		return fmt.Errorf("Usecase name must not empty")
-	}
-
-	if len(controllerName) == 0 {
-		return fmt.Errorf("Controller name must not empty")
+	if len(usecaseName) == 0 || len(controllerName) == 0 {
+		return fmt.Errorf("gogen controller has 4 parameter. Try `gogen controller restapi yourUsecaseName`")
 	}
 
 	outportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
@@ -44,12 +40,12 @@ func (d *controllerBuilder) Generate() error {
 		return errParse
 	}
 
-	mapStruct, errCollect := CollectPortStructs(folderPath, usecaseName)
+	mapStruct, errCollect := CollectPortStructs(folderPath, PascalCase(usecaseName))
 	if errCollect != nil {
 		return errCollect
 	}
 
-	inportMethods, errRead := ReadInterfaceMethodAndField(node, fmt.Sprintf("%sInport", usecaseName), mapStruct)
+	inportMethods, errRead := ReadInterfaceMethodAndField(node, fmt.Sprintf("%sInport", PascalCase(usecaseName)), mapStruct)
 	if errRead != nil {
 		return errRead
 	}
@@ -72,7 +68,7 @@ func (d *controllerBuilder) Generate() error {
 	if framework == "nethttp" {
 		_ = WriteFileIfNotExist(
 			"controller/restapi/controller_http._go",
-			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName),
+			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
 			ct,
 		)
 
@@ -86,7 +82,7 @@ func (d *controllerBuilder) Generate() error {
 	if framework == "gin" {
 		_ = WriteFileIfNotExist(
 			"controller/restapi/controller_gin._go",
-			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName),
+			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
 			ct,
 		)
 

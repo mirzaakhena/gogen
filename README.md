@@ -85,25 +85,25 @@ $ go generate
 
 or just simply delete the mock/ folder and call the `gogen test CreateOrder` again.
 
-## 5. Create datasource for your usecase
+## 5. Create gateway for your usecase
 
-Datasource is the struct to implement your outport interface. You need to set a name for your datasource. In this example we will set name : Production
+Gateway is the struct to implement your outport interface. You need to set a name for your gateway. In this example we will set name : Production
 ```
-$ gogen datasource Production CreateOrder
+$ gogen gateway Production CreateOrder
 ```
 This command will generate
 ```
-datasource/production/CreateOrder.go
+gateway/production/CreateOrder.go
 ```
 
-You can give any datasource name you like. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "experimental" datasource version. 
+You can give any gateway name you like. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "experimental" gateway version. 
 ```
-$ gogen datasource Experimental CreateOrder
+$ gogen gateway Experimental CreateOrder
 ```
 
 Or you want to have hardcode version, the you can run this command
 ```
-$ gogen datasource Hardcode CreateOrder
+$ gogen gateway Hardcode CreateOrder
 ```
 
 ## 6. Create controller for your usecase
@@ -124,9 +124,9 @@ controller/interceptor.go
 You also will get the global interceptor for all of controller
 
 
-## 7. Glue your controller, usecase, and datasource together
+## 7. Glue your controller, usecase, and gateway together
 
-After generate the usecase, datasource and controller, we need to bind them all by calling this command.
+After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
 $ gogen registry Default Restapi Production CreateOrder
 ```
@@ -145,7 +145,7 @@ package registry
 import (
 	"your/apps/path/application"
 	"your/apps/path/controller/restapi"
-	"your/apps/path/datasource/production"
+	"your/apps/path/gateway/production"
 	"your/apps/path/usecase/createorder"
 )
 
@@ -170,7 +170,7 @@ func (r *defaultRegistry) RegisterUsecase() {
 }
 
 func (r *defaultRegistry) createOrderHandler() {
-	outport := production.NewCreateOrderDatasource()
+	outport := production.NewCreateOrderGateway()
 	inport := createorder.NewCreateOrderUsecase(outport)
   r.ServerMux.HandleFunc("/createorder", controller.Authorized(restapi.CreateOrderHandler(inport)))
 }

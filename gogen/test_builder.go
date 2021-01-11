@@ -29,12 +29,12 @@ func (d *testBuilder) Generate() error {
 
 	// create a interactor_test.go file
 	{
-		mapStruct, errCollect := CollectPortStructs(folderPath, usecaseName)
+		mapStruct, errCollect := CollectPortStructs(folderPath, PascalCase(usecaseName))
 		if errCollect != nil {
 			return errCollect
 		}
 
-		uc, errConstruct := ConstructStructureUsecase(folderPath, usecaseName, mapStruct)
+		uc, errConstruct := ConstructStructureUsecase(folderPath, PascalCase(usecaseName), mapStruct)
 		if errConstruct != nil {
 			return errConstruct
 		}
@@ -46,7 +46,7 @@ func (d *testBuilder) Generate() error {
 		)
 	}
 
-	GenerateMock(GetPackagePath(), usecaseName, folderPath)
+	GenerateMock(GetPackagePath(), PascalCase(usecaseName), folderPath)
 
 	return nil
 }

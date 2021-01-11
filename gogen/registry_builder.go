@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -12,7 +14,7 @@ import (
 type RegistryBuilderRequest struct {
 	RegistryName   string
 	UsecaseName    string
-	DatasourceName string
+	GatewayName    string
 	ControllerName string
 	FolderPath     string
 	Framework      string
@@ -30,10 +32,12 @@ func (d *registryBuilder) Generate() error {
 
 	registryName := strings.TrimSpace(d.RegistryBuilderRequest.RegistryName)
 	usecaseName := strings.TrimSpace(d.RegistryBuilderRequest.UsecaseName)
-	datasourceName := strings.TrimSpace(d.RegistryBuilderRequest.DatasourceName)
+	gatewayName := strings.TrimSpace(d.RegistryBuilderRequest.GatewayName)
 	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
 	framework := d.RegistryBuilderRequest.Framework
+
+	packagePath := GetPackagePath()
 
 	if len(registryName) == 0 {
 		return fmt.Errorf("Registry name must not empty")
@@ -43,24 +47,24 @@ func (d *registryBuilder) Generate() error {
 		return fmt.Errorf("Usecase name must not empty")
 	}
 
-	if len(datasourceName) == 0 {
-		return fmt.Errorf("Datasource name must not empty")
+	if len(gatewayName) == 0 {
+		return fmt.Errorf("Gateway name must not empty")
 	}
 
 	if len(controllerName) == 0 {
 		return fmt.Errorf("Controller name must not empty")
 	}
 
-	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), usecaseName)) {
-		return fmt.Errorf("controller %s/%s is not found", controllerName, usecaseName)
+	if !IsExist(fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName))) {
+		return fmt.Errorf("controller %s/%s is not found", controllerName, PascalCase(usecaseName))
 	}
 
-	if !IsExist(fmt.Sprintf("%s/datasource/%s/%s.go", folderPath, strings.ToLower(datasourceName), usecaseName)) {
-		return fmt.Errorf("datasource %s/%s is not found", datasourceName, usecaseName)
+	if !IsExist(fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, strings.ToLower(gatewayName), PascalCase(usecaseName))) {
+		return fmt.Errorf("gateway %s/%s is not found", gatewayName, PascalCase(usecaseName))
 	}
 
 	if !IsExist(fmt.Sprintf("%s/usecase/%s", folderPath, strings.ToLower(usecaseName))) {
-		return fmt.Errorf("usecase %s is not found", usecaseName)
+		return fmt.Errorf("usecase %s is not found", PascalCase(usecaseName))
 	}
 
 	// create a folder with usecase name
@@ -68,7 +72,7 @@ func (d *registryBuilder) Generate() error {
 
 	rg := StructureRegistry{
 		RegistryName: registryName,
-		PackagePath:  GetPackagePath(),
+		PackagePath:  packagePath,
 	}
 
 	_ = WriteFileIfNotExist(
@@ -102,7 +106,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_http._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
 			rg,
 		)
 
@@ -119,7 +123,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_gin._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
 			rg,
 		)
 
@@ -132,17 +136,53 @@ func (d *registryBuilder) Generate() error {
 	}
 
 	// open registry file
-	file, err := os.Open(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)))
+
+	registryFile := fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName)
+	file, err := os.Open(registryFile)
 	if err != nil {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
 	}
 	defer file.Close()
 
+	fSet := token.NewFileSet()
+	node, errParse := parser.ParseFile(fSet, registryFile, nil, parser.ParseComments)
+	if errParse != nil {
+		return errParse
+	}
+
+	existingImportMap := ReadImports(node)
+
 	scanner := bufio.NewScanner(file)
 
+	importMode := false
 	var buffer bytes.Buffer
 	for scanner.Scan() {
 		row := scanner.Text()
+
+		if importMode && strings.HasPrefix(row, ")") {
+			importMode = false
+
+			if _, exist := existingImportMap[fmt.Sprintf("\"%s/controller/%s\"", packagePath, controllerName)]; !exist {
+				buffer.WriteString(fmt.Sprintf("	\"%s/controller/%s\"", packagePath, controllerName))
+				buffer.WriteString("\n")
+			}
+
+			if _, exist := existingImportMap[fmt.Sprintf("\"%s/gateway/%s\"", packagePath, gatewayName)]; !exist {
+				buffer.WriteString(fmt.Sprintf("	\"%s/gateway/%s\"", packagePath, gatewayName))
+				buffer.WriteString("\n")
+			}
+
+			if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, strings.ToLower(usecaseName))]; !exist {
+				buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, strings.ToLower(usecaseName)))
+				buffer.WriteString("\n")
+			}
+
+		} else //
+
+		if strings.HasPrefix(row, "import (") {
+			importMode = true
+
+		} else //
 
 		if strings.HasPrefix(strings.TrimSpace(row), "//code_injection function declaration") {
 			buffer.WriteString(funcDeclareInjectedCode)
@@ -158,7 +198,7 @@ func (d *registryBuilder) Generate() error {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 

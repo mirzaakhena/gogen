@@ -11,12 +11,12 @@ import (
 // New{{PascalCase .UsecaseName}}Usecase ...
 func New{{PascalCase .UsecaseName}}Usecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
-		datasource: outputPort,
+		gateway: outputPort,
 	}
 }
 
 type {{CamelCase .UsecaseName}}Interactor struct {
-	datasource port.{{PascalCase .UsecaseName}}Outport
+	gateway port.{{PascalCase .UsecaseName}}Outport
 }
 
 // Execute ...
@@ -28,7 +28,7 @@ func (_r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req
 	// res.{{.FieldName}} = ...  {{end}} {{range .Outport}}
 	
 	{
-		resOutport, err := _r.datasource.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
+		resOutport, err := _r.gateway.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
 			// {{PascalCase .FieldName}}: ...,  {{end}}
 		})
 

@@ -32,11 +32,11 @@ type StructureUsecase struct {
 	Outport     []InterfaceMethod //
 }
 
-type StructureDatasource struct {
-	UsecaseName    string            //
-	DatasourceName string            //
-	PackagePath    string            //
-	Outport        []InterfaceMethod //
+type StructureGateway struct {
+	UsecaseName string            //
+	GatewayName string            //
+	PackagePath string            //
+	Outport     []InterfaceMethod //
 }
 
 type StructureController struct {
@@ -55,5 +55,5 @@ type StructureRegistry struct {
 type Registry struct {
 	ControllerName string //
 	UsecaseName    string //
-	DatasourceName string //
+	GatewayName    string //
 }

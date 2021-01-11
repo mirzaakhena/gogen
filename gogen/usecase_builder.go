@@ -138,7 +138,7 @@ func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[str
 			return nil, errParse
 		}
 
-		inportMethods, err := ReadInterfaceMethodAndField(node, fmt.Sprintf("%sInport", usecaseName), mapStruct)
+		inportMethods, err := ReadInterfaceMethodAndField(node, fmt.Sprintf("%sInport", PascalCase(usecaseName)), mapStruct)
 		if err != nil {
 			return nil, err
 		}
@@ -157,7 +157,7 @@ func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[str
 		}
 
 		var errRead error
-		outportMethods, errRead = ReadInterfaceMethodAndField(node, fmt.Sprintf("%sOutport", usecaseName), mapStruct)
+		outportMethods, errRead = ReadInterfaceMethodAndField(node, fmt.Sprintf("%sOutport", PascalCase(usecaseName)), mapStruct)
 		if errRead != nil {
 			return nil, errRead
 		}

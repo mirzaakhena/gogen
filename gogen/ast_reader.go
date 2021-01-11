@@ -5,8 +5,25 @@ import (
 	"fmt"
 	"go/ast"
 	"go/token"
+	"sort"
 	"strings"
 )
+
+func ReadImports(node *ast.File) map[string]int {
+	importSpecs := map[string]int{}
+	for index, importSpec := range node.Imports {
+		importSpecs[importSpec.Path.Value] = index
+	}
+	return importSpecs
+}
+
+func appendWithOrder(ss []string, s string) []string {
+	i := sort.SearchStrings(ss, s)
+	ss = append(ss, "")
+	copy(ss[i+1:], ss[i:])
+	ss[i] = s
+	return ss
+}
 
 func ReadAllStructInFile(node *ast.File, structureStructs map[string][]FieldType) (map[string][]FieldType, error) {
 

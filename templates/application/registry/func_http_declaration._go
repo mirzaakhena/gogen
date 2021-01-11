@@ -1,5 +1,5 @@
 func (r *{{LowerCase .RegistryName}}Registry) {{CamelCase .UsecaseName}}Handler() {
-  outport := {{LowerCase .DatasourceName}}.New{{PascalCase .UsecaseName}}Datasource()
+  outport := {{LowerCase .GatewayName}}.New{{PascalCase .UsecaseName}}Gateway()
   inport := {{LowerCase .UsecaseName}}.New{{PascalCase .UsecaseName}}Usecase(outport)
   r.ServerMux.HandleFunc("/{{LowerCase .UsecaseName}}", controller.Authorized({{LowerCase .ControllerName}}.{{PascalCase .UsecaseName}}Handler(inport)))
 }

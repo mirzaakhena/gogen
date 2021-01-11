@@ -56,14 +56,14 @@ CreateOrder is a usecase name with PascalCase
 
 
 4.
-gogen datasource <datasource name> <usecase name>
+gogen gateway <gateway name> <usecase name>
 
-This command is for create datasource
+This command is for create gateway
 sample:
 	
-	gogen datasource Production CreateOrder
+	gogen gateway Production CreateOrder
 
-Production is a datasource name
+Production is a gateway name
 CreateOrder is a usecase name with PascalCase		
 
 
@@ -82,9 +82,9 @@ CreateOrder is a usecase name with PascalCase
 
 
 6.
-gogen registry <registry name> <controller name> <usecase name> <datasource name>
+gogen registry <registry name> <controller name> <usecase name> <gateway name>
 
-This command is for bind controller usecase and datasource
+This command is for bind controller usecase and gateway
 sample:
 
 	gogen registry Default Restapi CreateOrder Production
@@ -92,7 +92,7 @@ sample:
 Default is a registry name
 Restapi is a controller name
 CreateOrder is a usecase name with PascalCase
-Production is a datasource name
+Production is a gateway name
 
 
 `
@@ -136,12 +136,12 @@ func main() {
 			OutportMethodNames: flag.Args()[2:],
 		})
 
-	case "datasource":
-		// gogen datasource Production CreateOrder
-		gen = gogen.NewDatasource(gogen.DatasourceBuilderRequest{
-			FolderPath:     ".",
-			DatasourceName: flag.Arg(1),
-			UsecaseName:    flag.Arg(2),
+	case "gateway":
+		// gogen gateway Production CreateOrder
+		gen = gogen.NewGateway(gogen.GatewayBuilderRequest{
+			FolderPath:  ".",
+			GatewayName: flag.Arg(1),
+			UsecaseName: flag.Arg(2),
 		})
 
 	case "controller":
@@ -160,7 +160,7 @@ func main() {
 			RegistryName:   flag.Arg(1),
 			ControllerName: flag.Arg(2),
 			UsecaseName:    flag.Arg(3),
-			DatasourceName: flag.Arg(4),
+			GatewayName:    flag.Arg(4),
 			Framework:      "nethttp",
 		})
 

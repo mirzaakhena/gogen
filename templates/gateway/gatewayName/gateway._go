@@ -1,4 +1,4 @@
-package {{LowerCase .DatasourceName}}
+package {{LowerCase .GatewayName}}
 
 import (
 	"context"
@@ -6,8 +6,8 @@ import (
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
-// New{{PascalCase .UsecaseName}}Datasource ...
-func New{{PascalCase .UsecaseName}}Datasource() port.{{PascalCase .UsecaseName}}Outport {
+// New{{PascalCase .UsecaseName}}Gateway ...
+func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
 	return &{{CamelCase .UsecaseName}}{}
 }
 
