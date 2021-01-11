@@ -31,7 +31,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 			return
 		}
 
-		log.Printf("Request  {{PascalCase .UsecaseName}}Handler")
+		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler")
 
 		// convert to request
 		var req port.{{PascalCase .UsecaseName}}Request
@@ -52,7 +52,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 		c.JSON(http.StatusOK, res)
 
 		jsonRes, _ := json.Marshal(res)
-		log.Printf("Response {{PascalCase .UsecaseName}}Handler %v", string(jsonRes))
+		log.Printf("Controller Handler Response {{PascalCase .UsecaseName}}Handler %v", string(jsonRes))
 
 	}
 }

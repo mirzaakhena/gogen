@@ -15,7 +15,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		log.Printf("Request  {{PascalCase .UsecaseName}}Handler")
+		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler")
 
 		req := port.{{PascalCase .UsecaseName}}Request{ // {{range .Inport.RequestFields}}
 			{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
@@ -30,7 +30,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 		jsonRes, _ := json.Marshal(res)
 		fmt.Fprint(w, string(jsonRes))
 
-		log.Printf("Response {{PascalCase .UsecaseName}}Handler %v", string(jsonRes))
+		log.Printf("Controller Handler Response {{PascalCase .UsecaseName}}Handler %v", string(jsonRes))
 
 	}
 }
