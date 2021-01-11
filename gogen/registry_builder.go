@@ -106,7 +106,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_http._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
 			rg,
 		)
 
@@ -123,7 +123,7 @@ func (d *registryBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"application/registry/registry_gin._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName),
+			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
 			rg,
 		)
 
@@ -137,7 +137,7 @@ func (d *registryBuilder) Generate() error {
 
 	// open registry file
 
-	registryFile := fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName)
+	registryFile := fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName))
 	file, err := os.Open(registryFile)
 	if err != nil {
 		return fmt.Errorf("not found registry file. You need to call 'gogen init .' first")
@@ -172,8 +172,8 @@ func (d *registryBuilder) Generate() error {
 				buffer.WriteString("\n")
 			}
 
-			if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, strings.ToLower(usecaseName))]; !exist {
-				buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, strings.ToLower(usecaseName)))
+			if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName))]; !exist {
+				buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName)))
 				buffer.WriteString("\n")
 			}
 
@@ -198,7 +198,7 @@ func (d *registryBuilder) Generate() error {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, registryName), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 
