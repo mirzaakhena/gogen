@@ -23,6 +23,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 		res, err := inputPort.Execute(context.Background(), req)
 		if err != nil {
+			log.Printf("Controller Handler Response CreateOrderHandler %v", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
