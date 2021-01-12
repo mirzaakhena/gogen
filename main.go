@@ -164,6 +164,12 @@ func main() {
 			Framework:      "nethttp",
 		})
 
+	case "init":
+		// gogen init
+		gen = gogen.NewInit(gogen.InitBuilderRequest{
+			FolderPath: ".",
+		})
+
 	default:
 		usage()
 
