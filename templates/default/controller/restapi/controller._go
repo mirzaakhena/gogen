@@ -18,7 +18,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Printf("Controller {{PascalCase .UsecaseName}}Handler Request   %v", string(jsonReq))
+		log.Printf("Controller {{PascalCase .UsecaseName}}Handler Request  %v", string(jsonReq))
 
 		var req port.{{PascalCase .UsecaseName}}Request
 

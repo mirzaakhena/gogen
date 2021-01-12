@@ -17,5 +17,4 @@ type {{PascalCase .MethodName}}Request struct { {{range .RequestFields}}
 // {{PascalCase .MethodName}}Response ...
 type {{PascalCase .MethodName}}Response struct { {{range .ResponseFields}}
 	{{PascalCase .FieldName}} {{.Type}} {{.Tag}} {{.Comment}} {{end}}
-} 
-{{end}} {{end}}
+} {{end}} {{end}}
