@@ -23,11 +23,15 @@ func NewInit(req InitBuilderRequest) Generator {
 func (d *initBuilder) Generate() error {
 	folderPath := d.InitBuilderRequest.FolderPath
 
-	source := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates", GetGopath())
+	source := DefaultTemplatePath("")
 	destination := fmt.Sprintf("%s/.gogen/templates/default", folderPath)
 	if err := copyDir(source, destination); err != nil {
 		return err
 	}
+
+	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/config._json", GetGopath()))
+
+	_ = ioutil.WriteFile(fmt.Sprintf("%s/.gogen/templates/config.json", folderPath), data, 0644)
 
 	return nil
 }

@@ -55,9 +55,8 @@ var FuncMap = template.FuncMap{
 
 func PrintTemplate(templateFile string, x interface{}) (string, error) {
 
-	file := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/%s", GetGopath(), templateFile)
 	ts := strings.Split(templateFile, "/")
-	tpl, errTemplate := template.New(ts[len(ts)-1]).Funcs(FuncMap).ParseFiles(file)
+	tpl, errTemplate := template.New(ts[len(ts)-1]).Funcs(FuncMap).ParseFiles(DefaultTemplatePath(templateFile))
 	if errTemplate != nil {
 		return "", errTemplate
 	}
@@ -71,6 +70,10 @@ func PrintTemplate(templateFile string, x interface{}) (string, error) {
 
 }
 
+func DefaultTemplatePath(templateFile string) string {
+	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/default/%s", GetGopath(), templateFile)
+}
+
 func WriteFile(templateFile, outputFile string, data interface{}) error {
 
 	var buffer bytes.Buffer
@@ -78,7 +81,7 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 	// this process can be refactor later
 	{
 		// open template file
-		file, err := os.Open(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/%s", GetGopath(), templateFile))
+		file, err := os.Open(DefaultTemplatePath(templateFile))
 		if err != nil {
 			return err
 		}
@@ -100,11 +103,8 @@ func WriteFile(templateFile, outputFile string, data interface{}) error {
 		return err
 	}
 
-	{
-		err := tpl.Execute(fileOut, data)
-		if err != nil {
-			return err
-		}
+	if err := tpl.Execute(fileOut, data); err != nil {
+		return err
 	}
 
 	return nil
