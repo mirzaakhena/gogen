@@ -130,6 +130,8 @@ func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[str
 
 	inportMethod := InterfaceMethod{}
 	var outportMethods []InterfaceMethod
+
+	// INPORT
 	{
 		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
 		fSet := token.NewFileSet()
@@ -148,6 +150,7 @@ func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[str
 		}
 	}
 
+	// OUTPORT
 	{
 		outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
 		fSet := token.NewFileSet()

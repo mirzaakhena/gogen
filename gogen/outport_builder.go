@@ -1,9 +1,13 @@
 package gogen
 
 import (
+	"bufio"
+	"bytes"
 	"fmt"
 	"go/parser"
 	"go/token"
+	"io/ioutil"
+	"os"
 	"strings"
 )
 
@@ -36,7 +40,7 @@ func (d *outportBuilder) Generate() error {
 	}
 
 	// check the file outport.go exist or not
-	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
+	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName))
 	if !IsExist(outportFile) {
 		return fmt.Errorf("outport file is not found")
 	}
@@ -48,54 +52,62 @@ func (d *outportBuilder) Generate() error {
 		return errParse
 	}
 
-	// read all struct under outport.go only
-	mapStruct := map[string][]FieldType{}
-	var errExist error
-	mapStruct, errExist = ReadAllStructInFile(node, mapStruct)
-	if errExist != nil {
-		return errExist
+	outportInterfaceName := fmt.Sprintf("%sOutport", PascalCase(usecaseName))
+	outportInterfaceLine := fmt.Sprintf("type %s interface {", outportInterfaceName)
+
+	oldMethodNames, _ := ReadInterfaceMethod(node, outportInterfaceName)
+
+	file, err := os.Open(outportFile)
+	if err != nil {
+		return fmt.Errorf("not found outport file. You need to call 'gogen usecase %s' first", PascalCase(usecaseName))
 	}
+	defer file.Close()
 
-	// read all method in Outport interface
-	oldOutportMethods, errRead := ReadInterfaceMethodAndField(node, fmt.Sprintf("%sOutport", usecaseName), mapStruct)
-	if errRead != nil {
-		return errRead
-	}
+	scanner := bufio.NewScanner(file)
 
-	// map all method name
-	methodNameMap := map[string]int{}
-	for _, ms := range oldOutportMethods {
-		methodNameMap[ms.MethodName] = 1
-	}
+	modeOutportInterface := false
+	var buffer bytes.Buffer
+	for scanner.Scan() {
+		row := scanner.Text()
 
-	// checking new method name
-	for _, newOutportMethodName := range newOutportMethodNames {
+		if modeOutportInterface {
 
-		// if found old method then ignore and continue
-		if _, exist := methodNameMap[newOutportMethodName]; exist {
-			continue
+			if strings.HasPrefix(row, "}") {
+				modeOutportInterface = false
+
+				for _, methodName := range newOutportMethodNames {
+
+					if _, exist := oldMethodNames[methodName]; exist {
+						return fmt.Errorf("method with name %s already exist in interface %s", PascalCase(methodName), outportInterfaceName)
+					}
+
+					newMethodInterface, _ := PrintTemplate("usecase/usecaseName/port/outport_method._go", struct{ MethodName string }{MethodName: PascalCase(methodName)})
+					buffer.WriteString(newMethodInterface)
+					buffer.WriteString("\n")
+				}
+
+			}
+
+		} else //
+
+		if strings.HasPrefix(row, outportInterfaceLine) {
+			modeOutportInterface = true
 		}
 
-		// add new method
-		oldOutportMethods = append(oldOutportMethods, InterfaceMethod{
-			MethodName: newOutportMethodName,
-			ParamType:  fmt.Sprintf("%sRequest", newOutportMethodName),
-			ResultType: fmt.Sprintf("%sResponse", newOutportMethodName),
-		})
-		methodNameMap[newOutportMethodName] = 1
+		buffer.WriteString(row)
+		buffer.WriteString("\n")
+
 	}
 
-	// collect non existing
-	so := StructureOutport{
-		UsecaseName:    usecaseName,
-		Methods:        oldOutportMethods,
-		ParamsRequired: true,
+	for _, methodName := range newOutportMethodNames {
+		newStruct, _ := PrintTemplate("usecase/usecaseName/port/outport_struct._go", struct{ MethodName string }{MethodName: PascalCase(methodName)})
+		buffer.WriteString(newStruct)
+		buffer.WriteString("\n")
 	}
-	_ = WriteFile(
-		"usecase/usecaseName/port/outport._go",
-		fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)),
-		so,
-	)
+
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName)), buffer.Bytes(), 0644); err != nil {
+		return err
+	}
 
 	return nil
 }

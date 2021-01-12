@@ -104,6 +104,44 @@ func ReadFieldInStruct(node *ast.File, structName string) []FieldType {
 	return nil
 }
 
+func ReadInterfaceMethod(node *ast.File, interfaceName string) (map[string]int, error) {
+
+	for _, dec := range node.Decls {
+		if gen, ok := dec.(*ast.GenDecl); ok {
+			if gen.Tok != token.TYPE {
+				continue
+			}
+			for _, specs := range gen.Specs {
+				if ts, ok := specs.(*ast.TypeSpec); ok {
+					if iface, ok := ts.Type.(*ast.InterfaceType); ok {
+						if ts.Name.String() != interfaceName {
+							continue
+						}
+						methods := map[string]int{}
+						for i, meths := range iface.Methods.List {
+
+							fType := meths.Type.(*ast.FuncType)
+							if len(fType.Params.List) < 2 {
+								return nil, fmt.Errorf("Need second params")
+							}
+
+							if fType.Results.NumFields() < 1 {
+								return nil, fmt.Errorf("Need result params")
+							}
+
+							methods[meths.Names[0].String()] = i
+
+						}
+						return methods, nil
+
+					}
+				}
+			}
+		}
+	}
+	return nil, fmt.Errorf("interface %s not found", interfaceName)
+}
+
 func ReadInterfaceMethodAndField(node *ast.File, interfaceName string, mapStruct map[string][]FieldType) ([]InterfaceMethod, error) {
 
 	for _, dec := range node.Decls {

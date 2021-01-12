@@ -1,0 +1,8 @@
+
+// {{PascalCase .MethodName}}Request ...
+type {{PascalCase .MethodName}}Request struct { 
+} 
+
+// {{PascalCase .MethodName}}Response ...
+type {{PascalCase .MethodName}}Response struct {
+} 
