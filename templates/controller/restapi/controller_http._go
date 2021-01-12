@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -15,11 +16,17 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler")
+		bytes, _ := ioutil.ReadAll(r.Body)
 
-		req := port.{{PascalCase .UsecaseName}}Request{ // {{range .Inport.RequestFields}}
-			// {{.FieldName}}: ..., {{end}}
-		}		
+		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler  %v", string(bytes))
+
+		var req port.{{PascalCase .UsecaseName}}Request
+
+		if err := json.Unmarshal(bytes, &req); err != nil {
+			log.Printf("Controller Handler Response {{PascalCase .UsecaseName}}Handler %v", err.Error())
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
+		}
 
 		res, err := inputPort.Execute(context.Background(), req)
 		if err != nil {
