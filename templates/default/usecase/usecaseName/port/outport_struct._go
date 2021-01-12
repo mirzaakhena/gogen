@@ -1,4 +1,3 @@
-
 // {{PascalCase .MethodName}}Request ...
 type {{PascalCase .MethodName}}Request struct { 
 } 
