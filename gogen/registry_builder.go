@@ -17,7 +17,6 @@ type RegistryBuilderRequest struct {
 	GatewayName    string
 	ControllerName string
 	FolderPath     string
-	Framework      string
 }
 
 type registryBuilder struct {
@@ -35,7 +34,6 @@ func (d *registryBuilder) Generate() error {
 	gatewayName := strings.TrimSpace(d.RegistryBuilderRequest.GatewayName)
 	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
-	framework := d.RegistryBuilderRequest.Framework
 
 	packagePath := GetPackagePath()
 
@@ -97,43 +95,19 @@ func (d *registryBuilder) Generate() error {
 
 	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
 
-	if framework == "nethttp" {
-		_ = WriteFileIfNotExist(
-			"application/handler_http._go",
-			fmt.Sprintf("%s/application/handler_http.go", folderPath),
-			struct{}{},
-		)
+	_ = WriteFileIfNotExist(
+		"application/http_handler._go",
+		fmt.Sprintf("%s/application/http_handler.go", folderPath),
+		struct{}{},
+	)
 
-		_ = WriteFileIfNotExist(
-			"application/registry/registry_http._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
-			rg,
-		)
+	_ = WriteFileIfNotExist(
+		"application/registry/registry._go",
+		fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
+		rg,
+	)
 
-		funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_http_declaration._go", d.RegistryBuilderRequest)
-
-	} else //
-
-	if framework == "gin" {
-		_ = WriteFileIfNotExist(
-			"application/handler_gin._go",
-			fmt.Sprintf("%s/application/handler_gin.go", folderPath),
-			struct{}{},
-		)
-
-		_ = WriteFileIfNotExist(
-			"application/registry/registry_gin._go",
-			fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)),
-			rg,
-		)
-
-		funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_gin_declaration._go", d.RegistryBuilderRequest)
-
-	} else //
-
-	{
-		return fmt.Errorf("not recognize framework")
-	}
+	funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_declaration._go", d.RegistryBuilderRequest)
 
 	// open registry file
 

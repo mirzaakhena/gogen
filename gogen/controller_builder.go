@@ -27,7 +27,6 @@ func (d *controllerBuilder) Generate() error {
 	usecaseName := d.ControllerBuilderRequest.UsecaseName
 	controllerName := d.ControllerBuilderRequest.ControllerName
 	folderPath := d.ControllerBuilderRequest.FolderPath
-	framework := d.ControllerBuilderRequest.Framework
 
 	if len(usecaseName) == 0 || len(controllerName) == 0 {
 		return fmt.Errorf("gogen controller has 4 parameter. Try `gogen controller restapi yourUsecaseName`")
@@ -65,38 +64,17 @@ func (d *controllerBuilder) Generate() error {
 	// create a controller folder with controller name
 	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 
-	if framework == "nethttp" {
-		_ = WriteFileIfNotExist(
-			"controller/restapi/controller_http._go",
-			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
-			ct,
-		)
+	_ = WriteFileIfNotExist(
+		"controller/restapi/controller._go",
+		fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
+		ct,
+	)
 
-		_ = WriteFileIfNotExist(
-			"controller/interceptor_http._go",
-			fmt.Sprintf("%s/controller/interceptor.go", folderPath),
-			ct,
-		)
-	} else //
-
-	if framework == "gin" {
-		_ = WriteFileIfNotExist(
-			"controller/restapi/controller_gin._go",
-			fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
-			ct,
-		)
-
-		_ = WriteFileIfNotExist(
-			"controller/interceptor_gin._go",
-			fmt.Sprintf("%s/controller/interceptor.go", folderPath),
-			ct,
-		)
-
-	} else //
-
-	{
-		return fmt.Errorf("not recognize framework")
-	}
+	_ = WriteFileIfNotExist(
+		"controller/interceptor._go",
+		fmt.Sprintf("%s/controller/interceptor.go", folderPath),
+		ct,
+	)
 
 	return nil
 }

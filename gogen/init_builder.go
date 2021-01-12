@@ -23,9 +23,9 @@ func NewInit(req InitBuilderRequest) Generator {
 func (d *initBuilder) Generate() error {
 	folderPath := d.InitBuilderRequest.FolderPath
 
-	// CreateFolder("%s/.gogen/templates/default", folderPath)
-
-	if err := copyDir(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates", GetGopath()), fmt.Sprintf("%s/.gogen/templates/default", folderPath)); err != nil {
+	source := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates", GetGopath())
+	destination := fmt.Sprintf("%s/.gogen/templates/default", folderPath)
+	if err := copyDir(source, destination); err != nil {
 		return err
 	}
 
@@ -125,3 +125,6 @@ func copyFile(src, dst string) (err error) {
 
 	return
 }
+
+// copyDir and copyFile is based on
+// https://gist.github.com/r0l1/92462b38df26839a3ca324697c8cba04

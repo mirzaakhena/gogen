@@ -150,7 +150,6 @@ func main() {
 			FolderPath:     ".",
 			ControllerName: flag.Arg(1),
 			UsecaseName:    flag.Arg(2),
-			Framework:      "nethttp",
 		})
 
 	case "registry":
@@ -161,7 +160,6 @@ func main() {
 			ControllerName: flag.Arg(2),
 			UsecaseName:    flag.Arg(3),
 			GatewayName:    flag.Arg(4),
-			Framework:      "nethttp",
 		})
 
 	case "init":
