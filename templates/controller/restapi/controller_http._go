@@ -18,7 +18,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler")
 
 		req := port.{{PascalCase .UsecaseName}}Request{ // {{range .Inport.RequestFields}}
-			{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
+			// {{.FieldName}}: ..., {{end}}
 		}		
 
 		res, err := inputPort.Execute(context.Background(), req)

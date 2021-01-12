@@ -7,12 +7,12 @@ import (
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
+type {{CamelCase .UsecaseName}} struct {
+}
+
 // New{{PascalCase .UsecaseName}}Gateway ...
 func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
 	return &{{CamelCase .UsecaseName}}{}
-}
-
-type {{CamelCase .UsecaseName}} struct {
 }
 {{range .Outport}}
 // {{PascalCase .MethodName}} ...
