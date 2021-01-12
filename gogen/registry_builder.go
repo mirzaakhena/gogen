@@ -128,10 +128,29 @@ func (d *registryBuilder) Generate() error {
 
 	scanner := bufio.NewScanner(file)
 
+	methodCallMode := false
 	importMode := false
 	var buffer bytes.Buffer
 	for scanner.Scan() {
 		row := scanner.Text()
+
+		if methodCallMode {
+
+			if strings.HasPrefix(row, "}") {
+				methodCallMode = false
+				buffer.WriteString(funcCallInjectedCode)
+				buffer.WriteString("\n")
+			}
+			//else {
+			// TODO detecting if any method has been called
+			// }
+
+		}
+
+		if strings.HasPrefix(row, fmt.Sprintf("func (r *%sRegistry) RegisterUsecase() {", CamelCase(registryName))) {
+			methodCallMode = true
+
+		} else //
 
 		if importMode && strings.HasPrefix(row, ")") {
 			importMode = false
@@ -156,21 +175,14 @@ func (d *registryBuilder) Generate() error {
 		if strings.HasPrefix(row, "import (") {
 			importMode = true
 
-		} else //
-
-		if strings.HasPrefix(strings.TrimSpace(row), "//code_injection function declaration") {
-			buffer.WriteString(funcDeclareInjectedCode)
-			buffer.WriteString("\n")
-		} else //
-
-		if strings.HasPrefix(strings.TrimSpace(row), "//code_injection function call") {
-			buffer.WriteString(funcCallInjectedCode)
-			buffer.WriteString("\n")
 		}
 
 		buffer.WriteString(row)
 		buffer.WriteString("\n")
 	}
+
+	buffer.WriteString(funcDeclareInjectedCode)
+	buffer.WriteString("\n")
 
 	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)), buffer.Bytes(), 0644); err != nil {
 		return err

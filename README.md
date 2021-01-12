@@ -130,12 +130,12 @@ After generate the usecase, gateway and controller, we need to bind them all by 
 ```
 $ gogen registry Default Restapi Production CreateOrder
 ```
-Default is the registry name. You cann name it wahtever you want. After you call the command, you will get some of those file generated
+Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
 ```
 application/registry/Default.go
 application/application.go
 application/gracefully_shutdown.go
-application/handler_http.go
+application/http_handler.go
 ```
 
 Then open file `application/registry/Default.go` then you will find this

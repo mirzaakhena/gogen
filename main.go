@@ -33,11 +33,6 @@ func main() {
 	switch flag.Arg(0) {
 
 	case "usecase":
-
-		if flag.NArg() == 1 {
-			gogen.ShowAllUsecase()
-			return
-		}
 		// gogen usecase CreateOrder Save Publish
 		gen = gogen.NewUsecase(gogen.UsecaseBuilderRequest{
 			FolderPath:         ".",

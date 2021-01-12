@@ -21,7 +21,4 @@ func New{{PascalCase .RegistryName}}Registry() application.RegistryVersion {
 
 // RegisterUsecase is implementation of RegistryVersion.RegisterUsecase()
 func (r *{{LowerCase .RegistryName}}Registry) RegisterUsecase() {
-	//code_injection function call
 }
-
-//code_injection function declaration
