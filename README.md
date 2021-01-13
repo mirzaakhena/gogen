@@ -1,6 +1,77 @@
-# Gogen
-
+# Gogen (Clean Architecture Code Generator)
 Helping generate your boiler plate and code structure based on clean architecure.
+
+## Introduction
+Have you wondering how to apply the clean architecture properly and how to manage your go project folder structure layout? This tools will help you to generate it.
+
+This generator have basic structure like this
+```
+application/
+controller/
+gateway/
+usecase/
+main.go
+```
+
+The complete folder layout will be like this
+
+```
+application/
+  registry
+    reg1.go
+    reg2.go
+    reg3.go
+  application.go
+  gracefully_shutdown.go
+  http_handler.go
+controller/
+  version1/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go
+  version2/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go
+  interceptor.go    
+gateway/
+  hardcode/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go    
+  inmemory/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go  
+  persistence/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go  
+  younameit/
+    Usecase1.go
+    Usecase2.go
+    Usecase3.go  
+usecase/
+  usecase1/
+    port
+      inport.go
+      outport.go
+    interactor.go
+  usecase2/
+    port
+      inport.go
+      outport.go
+    interactor.go  
+  usecase3/    
+    port
+      inport.go
+      outport.go
+    interactor.go  
+main.go
+```
+
+## Clean Architecture Concept
+The main goal of this architecture is separation between infrastructure part and logic part
 
 ## Download it
 ```
