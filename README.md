@@ -2,7 +2,7 @@
 Helping generate your boiler plate and code structure based on clean architecure.
 
 ## Introduction
-Have you wondering how to apply the clean architecture properly and how to manage your go project folder structure layout? This tools will help you to generate it.
+Have you ever wondered how to apply the clean architecture properly and how to manage the layout of your go project's folder structure? This tools will help you to make it.
 
 This generator have basic structure like this
 ```
@@ -71,7 +71,39 @@ main.go
 ```
 
 ## Clean Architecture Concept
-The main goal of this architecture is separation between infrastructure part and logic part
+The main purpose of this architecture is separation between infrastructure part and logic part.
+It must decoupling from any framework or library. 
+
+## How to use the gogen?
+You need to start by creating an usecase, then you can create the gateway, and then the controller. 
+After that bind those three (usecase + gateway + controller) in registry part.
+That's all.
+
+To create the usecase, you need to understand the concept of usecase according to Uncle Bob's article, Usecase has 3 main part.
+* Input Port (Inport)
+* Interactor
+* Output Port (Outport)
+
+```
+Controller -----use-----> Inport<I> ----implement_by---> Interactor -----use-----> Outport<I> ----implement_by---> Gateway
+                             
+```
+
+Input Port (Inport) is an interface that called by controller to execute your usecase. This interface will implemented by Interactor.
+In this Interactor you will define your logic part. Those logic will require a data to calculated or send data to other service.
+The data will fetched or send from/to external part like database, file, or any other external service.
+But usecase don't need to know how to fetch/send the data. In this case, Output port (Outport) as an interface will define an some method to
+do this task. In Gateway we will implement the Output port interface.
+
+By organize in such way, we can easily change the controller or the gateway in very flexible way.
+
+Maybe you will say that it is as same as the regular Controller -> Service -> Repository layer architecture (Let us name it as CSR architecture). No, it is totally different with Clean Architecture (we will call it CA). 
+
+The main different is 
+* In CSR, Service allowed to have many Repository. But in CA, Interactor only have one Outport.
+* In CSR, Service have many method grouped by the domain. In CA, we only focus on usecase. One usecase one class.
+
+
 
 ## Download it
 ```
