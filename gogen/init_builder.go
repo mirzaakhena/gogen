@@ -28,10 +28,12 @@ func (d *initBuilder) Generate() error {
 	if err := copyDir(source, destination); err != nil {
 		return err
 	}
+	data, err := ioutil.ReadFile(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/config.json", GetGopath()))
+	if err != nil {
+		return err
+	}
 
-	data, _ := ioutil.ReadFile(fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/config._json", GetGopath()))
-
-	_ = ioutil.WriteFile(fmt.Sprintf("%s/.gogen/templates/config.json", folderPath), data, 0644)
+	_ = ioutil.WriteFile(fmt.Sprintf("%s/.gogen/config.json", folderPath), data, 0644)
 
 	return nil
 }

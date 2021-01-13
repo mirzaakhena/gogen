@@ -70,7 +70,25 @@ func PrintTemplate(templateFile string, x interface{}) (string, error) {
 
 }
 
+type configStruct struct {
+	SelectedTemplate string `json:"template"`
+}
+
 func DefaultTemplatePath(templateFile string) string {
+
+	// read local template
+	configData, err := ioutil.ReadFile("./.gogen/config.json")
+	if err == nil {
+		var cs configStruct
+		if err := json.Unmarshal(configData, &cs); err != nil {
+			panic(err)
+		}
+		if IsExist(fmt.Sprintf("./.gogen/templates/%s", cs.SelectedTemplate)) {
+			return fmt.Sprintf("./.gogen/templates/%s/%s", cs.SelectedTemplate, templateFile)
+		}
+	}
+
+	// use global default template
 	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/default/%s", GetGopath(), templateFile)
 }
 
