@@ -32,6 +32,9 @@ func GetGopath() string {
 func GetPackagePath() string {
 	currentPath, _ := filepath.Abs("./")
 	pathAfterGopath := strings.Split(currentPath, GetGopath()+"/src/")
+	if len(pathAfterGopath) < 2 {
+		return ""
+	}
 	return pathAfterGopath[1]
 }
 
