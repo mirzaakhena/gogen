@@ -181,12 +181,10 @@ You can customize your own template by call this command in your local path
 ```
 $ gogen init
 ```
-You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture
-you may update or change the template localy.
+You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture. You may update or change the template localy and run the previous command using your template.
 
-
-
-another feature will coming:
+another feature will coming
+```
   gracefully shutdown
   interceptor
   config
@@ -226,3 +224,4 @@ another feature will coming:
       Aggregate
     Strategic design
       BoundedContext
+```
