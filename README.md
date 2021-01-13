@@ -211,7 +211,7 @@ $ gogen gateway Hardcode CreateOrder
 
 ## 6. Create controller for your usecase
 
-In gogen, we define controller as input gateway from outside world. It can be rest api, grpc, consumer for event handling, or anything. For now i only implement the gin framework version for restapi.
+In gogen, we define controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default it only use net/http restapi. 
 
 Call this command for create a controller. Restapi is your controller name. You can name it whatever you want.
 ```
