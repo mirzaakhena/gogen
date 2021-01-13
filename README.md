@@ -166,84 +166,63 @@ func NewDefaultRegistry() application.RegistryVersion {
 // RegisterUsecase is implementation of RegistryVersion.RegisterUsecase()
 func (r *defaultRegistry) RegisterUsecase() {
 	r.createOrderHandler()
-	//code_injection function call
 }
 
 func (r *defaultRegistry) createOrderHandler() {
-	outport := production.NewCreateOrderGateway()
-	inport := createorder.NewCreateOrderUsecase(outport)
+  outport := production.NewCreateOrderGateway()
+  inport := createorder.NewCreateOrderUsecase(outport)
   r.ServerMux.HandleFunc("/createorder", controller.Authorized(restapi.CreateOrderHandler(inport)))
 }
-
-//code_injection function declaration
 ```
-gogen registry will inject some code in `registry.go`. Basically you can also write it by yourself, 
-but you need to notice that we have two comment line. 
+
+## 8. Create your own template
+
+You can customize your own template by call this command in your local path
 ```
-//code_injection function call
-
-and
-
-//code_injection function declaration
+$ gogen init
 ```
-gogen will look at that comment to do the code injection.
-if you remove that comment line, gogen registry command no longer work anymore.
+You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture
+you may update or change the template localy.
 
 
-Another improvement is:
-- create outport request response in separate file. We can create the filename like:
-	outport-Save.go
 
-- listing the existing usecases by just call `gogen usecase`
-
-- define the technology in the begining when call `gogen init`
-
-Any other interesting idea?
-
-feature:
+another feature will coming:
   gracefully shutdown
   interceptor
-  
   config
-  log, rotate log
+  log
+    file
+    rotate
+    session id
+  swagger
+  crud
   database
   message_broker
   http_client
-
-  error
-
-  extractor
-
+  error collection
   token
   bcrypt password
-  
+  user login auth
   controller_query
     paging
     sorting
     filtering
-
   router
   page
     input_dialog, tabel_list
   auth
   login, register, forgot pass
-  
-
-  http://blog.opus.ch/2019/01/ddd-concepts-and-patterns-service-and-repository/
-
-Domain Service
-Application Service
-Infrastructure Service
-
-
-Tactical Pattern
-  Entity
-  ValueObject
-  Service
-  Repository
-  Factory
-  Event
-  Aggregate
-
-Strategic design
-  BoundedContext
+  Domain Driven Design
+    Domain Service
+    Application Service
+    Infrastructure Service
+    Tactical Pattern
+      Entity
+      ValueObject
+      Service
+      Repository
+      Factory
+      Event
+      Aggregate
+    Strategic design
+      BoundedContext
