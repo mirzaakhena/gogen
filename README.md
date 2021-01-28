@@ -17,56 +17,45 @@ The complete folder layout will be like this
 
 ```
 application/
-  registry
+  infrastructure/
+    gracefully_shutdown.go
+    http_handler.go
+  registry/
     reg1.go
     reg2.go
-    reg3.go
   application.go
-  gracefully_shutdown.go
-  http_handler.go
 controller/
   version1/
     Usecase1.go
     Usecase2.go
-    Usecase3.go
   version2/
     Usecase1.go
     Usecase2.go
-    Usecase3.go
   interceptor.go    
 gateway/
   hardcode/
     Usecase1.go
-    Usecase2.go
-    Usecase3.go    
+    Usecase2.go 
   inmemory/
     Usecase1.go
     Usecase2.go
-    Usecase3.go  
   persistence/
     Usecase1.go
     Usecase2.go
-    Usecase3.go  
   younameit/
     Usecase1.go
     Usecase2.go
-    Usecase3.go  
 usecase/
   usecase1/
-    port
+    port/
       inport.go
       outport.go
     interactor.go
   usecase2/
-    port
+    port/
       inport.go
       outport.go
-    interactor.go  
-  usecase3/    
-    port
-      inport.go
-      outport.go
-    interactor.go  
+    interactor.go
 main.go
 ```
 
