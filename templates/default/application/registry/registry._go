@@ -2,17 +2,18 @@ package registry
 
 import (
 	"{{.PackagePath}}/application"
+	"{{.PackagePath}}/application/infrastructure"
 	"{{.PackagePath}}/controller"	
 )
 
 type {{LowerCase .RegistryName}}Registry struct {
-	application.HTTPHandler
+	infrastructure.HTTPHandler
 }
 
 func New{{PascalCase .RegistryName}}Registry() application.RegistryVersion {
 
 	app := {{LowerCase .RegistryName}}Registry{ //
-		HTTPHandler: application.NewHTTPHandler(":8080"),
+		HTTPHandler: infrastructure.NewHTTPHandler(":8080"),
 	}
 
 	return &app

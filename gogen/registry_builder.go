@@ -68,6 +68,8 @@ func (d *registryBuilder) Generate() error {
 	// create a folder with usecase name
 	CreateFolder("%s/application/registry", folderPath)
 
+	CreateFolder("%s/application/infrastructure", folderPath)
+
 	rg := StructureRegistry{
 		RegistryName: registryName,
 		PackagePath:  packagePath,
@@ -86,8 +88,8 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
-		"application/gracefully_shutdown._go",
-		fmt.Sprintf("%s/application/gracefully_shutdown.go", folderPath),
+		"application/infrastructure/gracefully_shutdown._go",
+		fmt.Sprintf("%s/application/infrastructure/gracefully_shutdown.go", folderPath),
 		struct{}{},
 	)
 
@@ -96,8 +98,8 @@ func (d *registryBuilder) Generate() error {
 	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
 
 	_ = WriteFileIfNotExist(
-		"application/http_handler._go",
-		fmt.Sprintf("%s/application/http_handler.go", folderPath),
+		"application/infrastructure/http_handler._go",
+		fmt.Sprintf("%s/application/infrastructure/http_handler.go", folderPath),
 		struct{}{},
 	)
 
