@@ -71,10 +71,12 @@ To create the usecase, you need to understand the concept of usecase according t
 * Interactor
 * Output Port (Outport)
 
-*Controller* is using an *Inport*
-*Inport* is implemented by *Interactor*
-*Interactor* is using an *Outport*
-*Outport* is implemented by *Gateway*
+```
+Controller is using an Inport.
+Inport is implemented by Interactor
+Interactor is using an Outport
+Outport is implemented by Gateway
+```
 
 *Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. Request and response struct is allowed to share to *Outport* under the same usecase, but must not shared to other *Inport* or *Outport* usecase.
 
@@ -86,7 +88,7 @@ By organize this usecase in a such structure, we can easily change the *Controll
 
 How it is different with common three layer architecture (Controller -> Service -> Repository) pattern?
 The main different is 
-* *Service* allowed to have many Repository. But in Clean Arhistecture, *Interactor* only have one *Outport*.
+* *Service* allowed to have many Repository. But in Clean Architecture, *Interactor* only have one *Outport*.
 * *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
 * In *Repository* you often see CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase. 
 
@@ -301,7 +303,7 @@ func (_r *createOrderInteractor) Execute(ctx context.Context, req port.CreateOrd
 Now you will find outport has 2 new methods: Check and Save. Each of the method has it own Request Response struct in *Outport*. 
 
 
-## 3. Add new outport method
+## 2. Add new outport method
 
 Calling this command will add new method on your *Outport*'s interface
 ```
@@ -310,7 +312,7 @@ $ gogen outports CreateOrder ValidateLastOrder Publish
 Open the *Outport* file you will found that there are 2 new methods defined. Now you have 4 methods : Check, Save, ValidateLastOrder and Publish
 
 
-## 4. Create your usecase test file
+## 3. Create your usecase test file
 
 For test mock struct, we use mockery. So you need to install it first. See the guideline how to install it in https://github.com/vektra/mockery
 
@@ -382,7 +384,7 @@ $ go generate
 
 or just simply delete the mock/ folder and call the `gogen test CreateOrder` again.
 
-## 5. Create gateway for your usecase
+## 4. Create gateway for your usecase
 
 Gateway is the struct to implement your outport interface. You need to set a name for your gateway. In this example we will set name : Production
 ```
@@ -453,7 +455,7 @@ Or you want to have hardcode version, the you can run this command
 $ gogen gateway Hardcode CreateOrder
 ```
 
-## 6. Create controller for your usecase
+## 5. Create controller for your usecase
 
 In gogen, we define controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default it only use net/http restapi. 
 
@@ -519,7 +521,7 @@ func CreateOrderHandler(inputPort port.CreateOrderInport) http.HandlerFunc {
 You also will get the global interceptor for all of controller.
 
 
-## 7. Glue your controller, usecase, and gateway together
+## 6. Glue your controller, usecase, and gateway together
 
 After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
@@ -574,7 +576,7 @@ func (r *defaultRegistry) createOrderHandler() {
 
 ```
 
-## 8. Create your own template
+## 7. Create your own template
 
 You can customize your own template by call this command in your local path
 ```
@@ -591,6 +593,7 @@ another feature will coming
     file
     rotate
     session id
+
   swagger
   crud
   database
@@ -599,6 +602,7 @@ another feature will coming
   error collection
   token
   bcrypt password
+  
   user login auth
   controller_query
     paging
@@ -609,6 +613,7 @@ another feature will coming
     input_dialog, tabel_list
   auth
   login, register, forgot pass
+
   Domain Driven Design
     Domain Service
     Application Service
