@@ -8,10 +8,10 @@ import (
 )
 
 type ControllerBuilderRequest struct {
+	FolderPath     string
+	GomodPath      string
 	UsecaseName    string
 	ControllerName string
-	FolderPath     string
-	Framework      string
 }
 
 type controllerBuilder struct {
@@ -27,6 +27,7 @@ func (d *controllerBuilder) Generate() error {
 	usecaseName := d.ControllerBuilderRequest.UsecaseName
 	controllerName := d.ControllerBuilderRequest.ControllerName
 	folderPath := d.ControllerBuilderRequest.FolderPath
+	gomodPath := d.ControllerBuilderRequest.GomodPath
 
 	if len(usecaseName) == 0 || len(controllerName) == 0 {
 		return fmt.Errorf("gogen controller has 4 parameter. Try `gogen controller restapi yourUsecaseName`")
@@ -54,9 +55,15 @@ func (d *controllerBuilder) Generate() error {
 		inportMethod = inportMethods[0]
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	ct := StructureController{
 		ControllerName: controllerName,
-		PackagePath:    GetPackagePath(),
+		PackagePath:    packagePath,
 		UsecaseName:    usecaseName,
 		Inport:         inportMethod,
 	}

@@ -8,9 +8,10 @@ import (
 )
 
 type GatewayBuilderRequest struct {
+	FolderPath  string
+	GomodPath   string
 	UsecaseName string
 	GatewayName string
-	FolderPath  string
 }
 
 type gatewayBuilder struct {
@@ -26,6 +27,7 @@ func (d *gatewayBuilder) Generate() error {
 	usecaseName := d.GatewayBuilderRequest.UsecaseName
 	gatewayName := d.GatewayBuilderRequest.GatewayName
 	folderPath := d.GatewayBuilderRequest.FolderPath
+	gomodPath := d.GatewayBuilderRequest.GomodPath
 
 	if len(usecaseName) == 0 || len(gatewayName) == 0 {
 		return fmt.Errorf("gogen gateway has 4 parameter. Try `gogen gateway prod yourUsecaseName`")
@@ -54,9 +56,15 @@ func (d *gatewayBuilder) Generate() error {
 		return errRead
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	ds := StructureGateway{
 		GatewayName: gatewayName,
-		PackagePath: GetPackagePath(),
+		PackagePath: packagePath,
 		UsecaseName: usecaseName,
 		Outport:     outportMethods,
 	}

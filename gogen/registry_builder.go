@@ -12,11 +12,12 @@ import (
 )
 
 type RegistryBuilderRequest struct {
+	FolderPath     string
+	GomodPath      string
 	RegistryName   string
 	UsecaseName    string
 	GatewayName    string
 	ControllerName string
-	FolderPath     string
 }
 
 type registryBuilder struct {
@@ -34,8 +35,13 @@ func (d *registryBuilder) Generate() error {
 	gatewayName := strings.TrimSpace(d.RegistryBuilderRequest.GatewayName)
 	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
+	gomodPath := d.RegistryBuilderRequest.GomodPath
 
 	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
 
 	if len(registryName) == 0 {
 		return fmt.Errorf("Registry name must not empty")

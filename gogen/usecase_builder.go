@@ -10,6 +10,7 @@ import (
 type UsecaseBuilderRequest struct {
 	UsecaseName        string
 	FolderPath         string
+	GomodPath          string
 	OutportMethodNames []string
 }
 
@@ -26,6 +27,7 @@ func (d *usecaseBuilder) Generate() error {
 	usecaseName := strings.TrimSpace(d.UsecaseBuilderRequest.UsecaseName)
 	folderPath := d.UsecaseBuilderRequest.FolderPath
 	outportMethodNames := d.UsecaseBuilderRequest.OutportMethodNames
+	gomodPath := d.UsecaseBuilderRequest.GomodPath
 
 	if len(usecaseName) == 0 {
 		return fmt.Errorf("Usecase name must not empty")
@@ -81,7 +83,7 @@ func (d *usecaseBuilder) Generate() error {
 			return errCollect
 		}
 
-		uc, errConstruct := ConstructStructureUsecase(folderPath, usecaseName, mapStruct)
+		uc, errConstruct := ConstructStructureUsecase(gomodPath, folderPath, usecaseName, mapStruct)
 		if errConstruct != nil {
 			return errConstruct
 		}
@@ -126,7 +128,7 @@ func CollectPortStructs(folderPath, usecaseName string) (map[string][]FieldType,
 
 }
 
-func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[string][]FieldType) (*StructureUsecase, error) {
+func ConstructStructureUsecase(gomodPath, folderPath, usecaseName string, mapStruct map[string][]FieldType) (*StructureUsecase, error) {
 
 	inportMethod := InterfaceMethod{}
 	var outportMethods []InterfaceMethod
@@ -167,9 +169,15 @@ func ConstructStructureUsecase(folderPath, usecaseName string, mapStruct map[str
 
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	uc := StructureUsecase{
 		UsecaseName: usecaseName,
-		PackagePath: GetPackagePath(),
+		PackagePath: packagePath,
 		Inport:      inportMethod,
 		Outport:     outportMethods,
 	}

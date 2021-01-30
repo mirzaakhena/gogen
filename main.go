@@ -1,9 +1,13 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
+	"log"
 	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/mirzaakhena/gogen/gogen"
 )
@@ -30,12 +34,50 @@ func main() {
 
 	var gen gogen.Generator
 
+	currentGopath := gogen.GetGopath()
+	currentPath, _ := filepath.Abs("./")
+	isUnderGopath := strings.HasPrefix(currentPath, currentGopath)
+
+	folderPath := "."
+
+	gomodPath := ""
+
+	if !isUnderGopath {
+		if !gogen.IsExist("go.mod") {
+			fmt.Printf("%s\n", "go.mod file is not found. Please run 'go mod init your/go/project/' first")
+			return
+		}
+
+		file, err := os.Open("go.mod")
+		if err != nil {
+			log.Fatal(err)
+		}
+		defer file.Close()
+
+		scanner := bufio.NewScanner(file)
+		for scanner.Scan() {
+			row := scanner.Text()
+			if strings.HasPrefix(row, "module") {
+				moduleRow := strings.Split(row, " ")
+				if len(moduleRow) > 1 {
+					gomodPath = moduleRow[1]
+				}
+			}
+		}
+
+		if err := scanner.Err(); err != nil {
+			log.Fatal(err)
+		}
+
+	}
+
 	switch flag.Arg(0) {
 
 	case "usecase":
 		// gogen usecase CreateOrder Save Publish
 		gen = gogen.NewUsecase(gogen.UsecaseBuilderRequest{
-			FolderPath:         ".",
+			FolderPath:         folderPath,
+			GomodPath:          gomodPath,
 			UsecaseName:        flag.Arg(1),
 			OutportMethodNames: flag.Args()[2:],
 		})
@@ -43,14 +85,16 @@ func main() {
 	case "test":
 		// gogen test CreateOrder
 		gen = gogen.NewTest(gogen.TestBuilderRequest{
-			FolderPath:  ".",
+			FolderPath:  folderPath,
+			GomodPath:   gomodPath,
 			UsecaseName: flag.Arg(1),
 		})
 
 	case "outports":
 		// gogen outports CreateOrder Validate
 		gen = gogen.NewOutport(gogen.OutportBuilderRequest{
-			FolderPath:         ".",
+			FolderPath:         folderPath,
+			GomodPath:          gomodPath,
 			UsecaseName:        flag.Arg(1),
 			OutportMethodNames: flag.Args()[2:],
 		})
@@ -58,7 +102,8 @@ func main() {
 	case "gateway":
 		// gogen gateway Production CreateOrder
 		gen = gogen.NewGateway(gogen.GatewayBuilderRequest{
-			FolderPath:  ".",
+			FolderPath:  folderPath,
+			GomodPath:   gomodPath,
 			GatewayName: flag.Arg(1),
 			UsecaseName: flag.Arg(2),
 		})
@@ -66,7 +111,8 @@ func main() {
 	case "controller":
 		// gogen controller RestApi CreateOrder
 		gen = gogen.NewController(gogen.ControllerBuilderRequest{
-			FolderPath:     ".",
+			FolderPath:     folderPath,
+			GomodPath:      gomodPath,
 			ControllerName: flag.Arg(1),
 			UsecaseName:    flag.Arg(2),
 		})
@@ -74,7 +120,8 @@ func main() {
 	case "registry":
 		// gogen registry Default RestApi CreateOrder Production
 		gen = gogen.NewRegistry(gogen.RegistryBuilderRequest{
-			FolderPath:     ".",
+			FolderPath:     folderPath,
+			GomodPath:      gomodPath,
 			RegistryName:   flag.Arg(1),
 			ControllerName: flag.Arg(2),
 			UsecaseName:    flag.Arg(3),
@@ -84,7 +131,8 @@ func main() {
 	case "init":
 		// gogen init
 		gen = gogen.NewInit(gogen.InitBuilderRequest{
-			FolderPath: ".",
+			FolderPath: folderPath,
+			GomodPath:  gomodPath,
 		})
 
 	default:
