@@ -21,7 +21,7 @@ func NewHTTPHandler(address string) HTTPHandler {
 
 }
 
-// RunApplication is implementation of RegistryVersion.RunApplication()
+// RunApplication is implementation of RegistryContract.RunApplication()
 func (r *HTTPHandler) RunApplication() {
 	r.RunWithGracefullyShutdown()
 }

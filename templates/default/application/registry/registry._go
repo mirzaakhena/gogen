@@ -10,7 +10,7 @@ type {{LowerCase .RegistryName}}Registry struct {
 	infrastructure.HTTPHandler
 }
 
-func New{{PascalCase .RegistryName}}Registry() application.RegistryVersion {
+func New{{PascalCase .RegistryName}}Registry() application.RegistryContract {
 
 	app := {{LowerCase .RegistryName}}Registry{ //
 		HTTPHandler: infrastructure.NewHTTPHandler(":8080"),
@@ -20,6 +20,6 @@ func New{{PascalCase .RegistryName}}Registry() application.RegistryVersion {
 
 }
 
-// RegisterUsecase is implementation of RegistryVersion.RegisterUsecase()
+// RegisterUsecase is implementation of RegistryContract.RegisterUsecase()
 func (r *{{LowerCase .RegistryName}}Registry) RegisterUsecase() {
 }
