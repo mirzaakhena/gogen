@@ -553,7 +553,7 @@ type defaultRegistry struct {
 	infrastructure.HTTPHandler
 }
 
-func NewDefaultRegistry() application.RegistryVersion {
+func NewDefaultRegistry() application.RegistryContract {
 
 	app := defaultRegistry{ //
 		HTTPHandler: infrastructure.NewHTTPHandler(":8080"),
@@ -563,7 +563,7 @@ func NewDefaultRegistry() application.RegistryVersion {
 
 }
 
-// RegisterUsecase is implementation of RegistryVersion.RegisterUsecase()
+// RegisterUsecase is implementation of RegistryContract.RegisterUsecase()
 func (r *defaultRegistry) RegisterUsecase() {
 	r.createOrderHandler()
 }

@@ -1,25 +1,25 @@
 package registry
 
 import (
-	"{{.PackagePath}}/application"
-	"{{.PackagePath}}/application/infrastructure"
+	"{{.PackagePath}}/application"	
 	"{{.PackagePath}}/controller"	
+	"{{.PackagePath}}/infrastructure/httpserver"	
 )
 
 type {{LowerCase .RegistryName}}Registry struct {
-	infrastructure.HTTPHandler
+	httpserver.HTTPHandler
 }
 
-func New{{PascalCase .RegistryName}}Registry() application.RegistryVersion {
+func New{{PascalCase .RegistryName}}Registry() application.RegistryContract {
 
 	app := {{LowerCase .RegistryName}}Registry{ //
-		HTTPHandler: infrastructure.NewHTTPHandler(":8080"),
+		HTTPHandler: httpserver.NewHTTPHandler(":8080"),
 	}
 
 	return &app
 
 }
 
-// RegisterUsecase is implementation of RegistryVersion.RegisterUsecase()
+// RegisterUsecase is implementation of RegistryContract.RegisterUsecase()
 func (r *{{LowerCase .RegistryName}}Registry) RegisterUsecase() {
 }

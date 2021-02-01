@@ -10,6 +10,7 @@ import (
 
 type InitBuilderRequest struct {
 	FolderPath string
+	GomodPath  string
 }
 
 type initBuilder struct {

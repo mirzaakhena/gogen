@@ -8,6 +8,7 @@ import (
 type TestBuilderRequest struct {
 	UsecaseName string
 	FolderPath  string
+	GomodPath   string
 }
 
 type testBuilder struct {
@@ -22,6 +23,7 @@ func (d *testBuilder) Generate() error {
 
 	usecaseName := strings.TrimSpace(d.TestBuilderRequest.UsecaseName)
 	folderPath := d.TestBuilderRequest.FolderPath
+	gomodPath := d.TestBuilderRequest.GomodPath
 
 	if len(usecaseName) == 0 {
 		return fmt.Errorf("Usecase name must not empty")
@@ -34,7 +36,7 @@ func (d *testBuilder) Generate() error {
 			return errCollect
 		}
 
-		uc, errConstruct := ConstructStructureUsecase(folderPath, PascalCase(usecaseName), mapStruct)
+		uc, errConstruct := ConstructStructureUsecase(gomodPath, folderPath, PascalCase(usecaseName), mapStruct)
 		if errConstruct != nil {
 			return errConstruct
 		}

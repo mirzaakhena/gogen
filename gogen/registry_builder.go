@@ -12,11 +12,12 @@ import (
 )
 
 type RegistryBuilderRequest struct {
+	FolderPath     string
+	GomodPath      string
 	RegistryName   string
 	UsecaseName    string
 	GatewayName    string
 	ControllerName string
-	FolderPath     string
 }
 
 type registryBuilder struct {
@@ -34,8 +35,13 @@ func (d *registryBuilder) Generate() error {
 	gatewayName := strings.TrimSpace(d.RegistryBuilderRequest.GatewayName)
 	controllerName := strings.TrimSpace(d.RegistryBuilderRequest.ControllerName)
 	folderPath := d.RegistryBuilderRequest.FolderPath
+	gomodPath := d.RegistryBuilderRequest.GomodPath
 
 	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
 
 	if len(registryName) == 0 {
 		return fmt.Errorf("Registry name must not empty")
@@ -68,7 +74,10 @@ func (d *registryBuilder) Generate() error {
 	// create a folder with usecase name
 	CreateFolder("%s/application/registry", folderPath)
 
-	CreateFolder("%s/application/infrastructure", folderPath)
+	CreateFolder("%s/infrastructure/httpserver", folderPath)
+	CreateFolder("%s/infrastructure/database", folderPath)
+	CreateFolder("%s/infrastructure/log", folderPath)
+	CreateFolder("%s/infrastructure/config", folderPath)
 
 	rg := StructureRegistry{
 		RegistryName: registryName,
@@ -88,18 +97,14 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
-		"application/infrastructure/gracefully_shutdown._go",
-		fmt.Sprintf("%s/application/infrastructure/gracefully_shutdown.go", folderPath),
+		"infrastructure/httpserver/gracefully_shutdown._go",
+		fmt.Sprintf("%s/infrastructure/httpserver/gracefully_shutdown.go", folderPath),
 		struct{}{},
 	)
 
-	var funcDeclareInjectedCode string
-
-	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
-
 	_ = WriteFileIfNotExist(
-		"application/infrastructure/http_handler._go",
-		fmt.Sprintf("%s/application/infrastructure/http_handler.go", folderPath),
+		"infrastructure/httpserver/http_handler._go",
+		fmt.Sprintf("%s/infrastructure/httpserver/http_handler.go", folderPath),
 		struct{}{},
 	)
 
@@ -109,7 +114,8 @@ func (d *registryBuilder) Generate() error {
 		rg,
 	)
 
-	funcDeclareInjectedCode, _ = PrintTemplate("application/registry/func_declaration._go", d.RegistryBuilderRequest)
+	funcCallInjectedCode, _ := PrintTemplate("application/registry/func_call._go", d.RegistryBuilderRequest)
+	funcDeclareInjectedCode, _ := PrintTemplate("application/registry/func_declaration._go", d.RegistryBuilderRequest)
 
 	// open registry file
 

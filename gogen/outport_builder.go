@@ -14,6 +14,7 @@ import (
 type OutportBuilderRequest struct {
 	UsecaseName        string
 	FolderPath         string
+	GomodPath          string
 	OutportMethodNames []string
 }
 
