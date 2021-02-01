@@ -36,6 +36,12 @@ func (d *usecaseBuilder) Generate() error {
 	// create a folder with usecase name
 	CreateFolder("%s/usecase/%s/port", folderPath, strings.ToLower(usecaseName))
 
+	_ = WriteFileIfNotExist(
+		"usecase/error._go",
+		fmt.Sprintf("%s/usecase/error.go", folderPath),
+		struct{}{},
+	)
+
 	// create a port/inport.go file
 	{
 		si := StructureInport{

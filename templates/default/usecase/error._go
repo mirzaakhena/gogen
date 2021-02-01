@@ -1,7 +1,6 @@
 package usecase
 
 import (
-	"context"
 	"strings"
 )
 
@@ -23,10 +22,6 @@ func (r ErrorType) Message() string {
 func (r ErrorType) Code() string {
 	index := strings.Index(string(r), " ")
 	return string(r[:index])
-}
-
-func (r ErrorType) Context(source context.Context) context.Context {
-	return context.WithValue(source, ErrorContextValue, r)
 }
 
 const (
