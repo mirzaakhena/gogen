@@ -9,6 +9,7 @@ This generator have basic structure like this
 application/
 controller/
 gateway/
+infrastructure/
 usecase/
 main.go
 ```
@@ -17,9 +18,6 @@ The complete folder layout will be like this
 
 ```
 application/
-  infrastructure/
-    gracefully_shutdown.go
-    http_handler.go
   registry/
     reg1.go
     reg2.go
@@ -45,6 +43,10 @@ gateway/
   younameit/
     Usecase1.go
     Usecase2.go
+infrastructure/
+	httpserver/
+		gracefully_shutdown.go
+		http_handler.go		
 usecase/
   usecase1/
     port/
@@ -117,6 +119,7 @@ After you run this command, you will have those files generated for you
 usecase/createorder/port/inport.go
 usecase/createorder/port/outport.go
 usecase/createorder/interactor.go
+usecase/error.go
 ```
 
 `usecase/createorder/port/inport.go`
@@ -529,10 +532,10 @@ $ gogen registry Default Restapi Production CreateOrder
 ```
 Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
 ```
-application/innfrastructure/gracefully_shutdown.go
-application/innfrastructure/http_handler.go
 application/registry/Default.go
 application/application.go
+infrastructure/httpserver/gracefully_shutdown.go
+infrastructure/httpserver/http_handler.go
 ```
 
 
@@ -542,7 +545,7 @@ package registry
 
 import (
 	"your/go/path/project/application"
-	"your/go/path/project/application/infrastructure"
+	"your/go/path/project/infrastructure/httpserver"
 	"your/go/path/project/controller"	
 	"your/go/path/project/controller/restapi"
 	"your/go/path/project/gateway/production"
@@ -550,13 +553,13 @@ import (
 )
 
 type defaultRegistry struct {
-	infrastructure.HTTPHandler
+	httpserver.HTTPHandler
 }
 
 func NewDefaultRegistry() application.RegistryContract {
 
 	app := defaultRegistry{ //
-		HTTPHandler: infrastructure.NewHTTPHandler(":8080"),
+		HTTPHandler: httpserver.NewHTTPHandler(":8080"),
 	}
 
 	return &app
