@@ -404,8 +404,8 @@ package production
 
 import (
 	"context"
-	"log"
 
+	"your/go/path/project/infrastructure/log"
 	"your/go/path/project/usecase/createorder/port"
 )
 
@@ -419,31 +419,31 @@ func NewCreateOrderGateway() port.CreateOrderOutport {
 
 // Check ...
 func (_r *createOrder) Check(ctx context.Context, req port.CheckRequest) (*port.CheckResponse, error) {
-	log.Printf("Gateway Check Request  %v", req) 
+	log.Info(ctx, "Gateway Check Request  %v", req) 
 
 	var res port.CheckResponse 
 	
-	log.Printf("Gateway Check Response %v", res)
+	log.Info(ctx, "Gateway Check Response %v", res)
 	return &res, nil
 } 
 
 // Save ...
 func (_r *createOrder) Save(ctx context.Context, req port.SaveRequest) (*port.SaveResponse, error) {
-	log.Printf("Gateway Save Request  %v", req) 
+	log.Info(ctx, "Gateway Save Request  %v", req) 
 
 	var res port.SaveResponse 
 	
-	log.Printf("Gateway Save Response %v", res)
+	log.Info(ctx, "Gateway Save Response %v", res)
 	return &res, nil
 } 
 
 // Publish ...
 func (_r *createOrder) Publish(ctx context.Context, req port.PublishRequest) (*port.PublishResponse, error) {
-	log.Printf("Gateway Publish Request  %v", req) 
+	log.Info(ctx, "Gateway Publish Request  %v", req) 
 
 	var res port.PublishResponse 
 	
-	log.Printf("Gateway Publish Response %v", res)
+	log.Info(ctx, "Gateway Publish Response %v", res)
 	return &res, nil
 } 
 ```
@@ -484,7 +484,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-
+	
+	"your/go/path/project/infrastructure/log"
 	"your/go/path/project/usecase/createorder/port"
 )
 
@@ -495,19 +496,19 @@ func CreateOrderHandler(inputPort port.CreateOrderInport) http.HandlerFunc {
 
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Printf("Controller CreateOrderHandler Request  %v", string(jsonReq))
+		log.Info(ctx, "Controller CreateOrderHandler Request  %v", string(jsonReq))
 
 		var req port.CreateOrderRequest
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			log.Printf("Controller CreateOrderHandler Response %v", err.Error())
+			log.Info(ctx, "Controller CreateOrderHandler Response %v", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		res, err := inputPort.Execute(context.Background(), req)
 		if err != nil {
-			log.Printf("Controller CreateOrderHandler Response %v", err.Error())
+			log.Info(ctx, "Controller CreateOrderHandler Response %v", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -515,7 +516,7 @@ func CreateOrderHandler(inputPort port.CreateOrderInport) http.HandlerFunc {
 		jsonRes, _ := json.Marshal(res)
 		fmt.Fprint(w, string(jsonRes))
 
-		log.Printf("Controller CreateOrderHandler Response %v", string(jsonRes))
+		log.Info(ctx, "Controller CreateOrderHandler Response %v", string(jsonRes))
 
 	}
 }
