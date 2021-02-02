@@ -69,6 +69,14 @@ func (d *gatewayBuilder) Generate() error {
 		Outport:     outportMethods,
 	}
 
+	CreateFolder("%s/infrastructure/log", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/log._go",
+		fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
+		struct{}{},
+	)
+
 	_ = WriteFileIfNotExist(
 		"gateway/gatewayName/gateway._go",
 		fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)),

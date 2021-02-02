@@ -74,10 +74,11 @@ func (d *registryBuilder) Generate() error {
 	// create a folder with usecase name
 	CreateFolder("%s/application/registry", folderPath)
 
-	CreateFolder("%s/infrastructure/httpserver", folderPath)
-	CreateFolder("%s/infrastructure/database", folderPath)
-	CreateFolder("%s/infrastructure/log", folderPath)
 	CreateFolder("%s/infrastructure/config", folderPath)
+	CreateFolder("%s/infrastructure/database", folderPath)
+
+	CreateFolder("%s/infrastructure/httpserver", folderPath)
+	CreateFolder("%s/infrastructure/log", folderPath)
 
 	rg := StructureRegistry{
 		RegistryName: registryName,
@@ -97,9 +98,15 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
+		"infrastructure/log/log._go",
+		fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
 		"infrastructure/httpserver/gracefully_shutdown._go",
 		fmt.Sprintf("%s/infrastructure/httpserver/gracefully_shutdown.go", folderPath),
-		struct{}{},
+		rg,
 	)
 
 	_ = WriteFileIfNotExist(

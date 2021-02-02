@@ -68,6 +68,14 @@ func (d *controllerBuilder) Generate() error {
 		Inport:         inportMethod,
 	}
 
+	CreateFolder("%s/infrastructure/log", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/log._go",
+		fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
+		struct{}{},
+	)
+
 	// create a controller folder with controller name
 	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 

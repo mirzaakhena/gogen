@@ -5,9 +5,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 
+	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
@@ -16,21 +16,23 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		ctx := context.Background()
+
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Printf("Controller {{PascalCase .UsecaseName}}Handler Request  %v", string(jsonReq))
+		log.Info(ctx, "Controller {{PascalCase .UsecaseName}}Handler Request  %v", string(jsonReq))
 
 		var req port.{{PascalCase .UsecaseName}}Request
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			log.Printf("Controller {{PascalCase .UsecaseName}}Handler Response %v", err.Error())
+			log.Error(ctx, "Response %v", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		res, err := inputPort.Execute(context.Background(), req)
+		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
-			log.Printf("Controller {{PascalCase .UsecaseName}}Handler Response %v", err.Error())
+			log.Error(ctx, "Response %v", err.Error())
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -38,7 +40,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 		jsonRes, _ := json.Marshal(res)
 		fmt.Fprint(w, string(jsonRes))
 
-		log.Printf("Controller {{PascalCase .UsecaseName}}Handler Response %v", string(jsonRes))
+		log.Info(ctx, "Response %v", string(jsonRes))
 
 	}
 }

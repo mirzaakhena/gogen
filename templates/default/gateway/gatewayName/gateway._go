@@ -2,8 +2,8 @@ package {{LowerCase .GatewayName}}
 
 import (
 	"context"
-	"log"
 
+	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
@@ -17,13 +17,13 @@ func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Out
 {{range .Outport}}
 // {{PascalCase .MethodName}} ...
 func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .MethodName}}(ctx context.Context, req port.{{PascalCase .ParamType}}) (*port.{{PascalCase .ResultType}}, error) {
-	log.Printf("Gateway {{PascalCase .MethodName}} Request  %v", req) {{range .RequestFields}}
+	log.Info(ctx, "Request  %v", req) {{range .RequestFields}}
 	// _ = req.{{PascalCase .FieldName}} {{end}}
 
 	var res port.{{PascalCase .ResultType}} {{range .ResponseFields}}
 	// res.{{PascalCase .FieldName}} = ... {{end}}
 	
-	log.Printf("Gateway {{PascalCase .MethodName}} Response %v", res)
+	log.Info(ctx, "Response %v", res)
 	return &res, nil
 } 
 {{end}}

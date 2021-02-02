@@ -179,12 +179,17 @@ func SnakeCase(str string) string {
 }
 
 func CreateFolder(format string, a ...interface{}) {
+
 	folderName := fmt.Sprintf(format, a...)
+
+	if IsExist(folderName) {
+		return
+	}
 
 	if err := os.MkdirAll(folderName, 0755); err != nil {
 		panic(err)
 	}
-	fmt.Printf("%v\n", folderName)
+
 }
 
 func GenerateMock(packagePath, usecaseName, folderPath string) {
