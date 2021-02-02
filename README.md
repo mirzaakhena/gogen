@@ -44,9 +44,9 @@ gateway/
     Usecase1.go
     Usecase2.go
 infrastructure/
-	httpserver/
-		gracefully_shutdown.go
-		http_handler.go		
+  httpserver/
+    gracefully_shutdown.go
+    http_handler.go		
 usecase/
   usecase1/
     port/
@@ -127,12 +127,12 @@ usecase/error.go
 package port
 
 import (
-	"context"
+  "context"
 )
 
 // CreateOrderInport ...
 type CreateOrderInport interface {
-	Execute(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error)
+  Execute(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error)
 }
 
 // CreateOrderRequest ...
@@ -149,12 +149,12 @@ type CreateOrderResponse struct {
 package port  
 
 import (
-	"context"
+  "context"
 ) 
 
 // CreateOrderOutport ...
 type CreateOrderOutport interface { 
-	CreateOrder(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error) 
+  CreateOrder(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error) 
 }
 ```
 
@@ -163,41 +163,41 @@ type CreateOrderOutport interface {
 package createorder
 
 import (
-	"context"
+  "context"
 
-	"your/go/path/project/usecase/createorder/port"
+  "your/go/path/project/usecase/createorder/port"
 )
 
 //go:generate mockery --dir port/ --name CreateOrderOutport -output mocks/
 
 // NewCreateOrderUsecase ...
 func NewCreateOrderUsecase(outputPort port.CreateOrderOutport) port.CreateOrderInport {
-	return &createOrderInteractor{
-		gateway: outputPort,
-	}
+  return &createOrderInteractor{
+    gateway: outputPort,
+  }
 }
 
 type createOrderInteractor struct {
-	gateway port.CreateOrderOutport
+  gateway port.CreateOrderOutport
 }
 
 // Execute ...
 func (_r *createOrderInteractor) Execute(ctx context.Context, req port.CreateOrderRequest) (*port.CreateOrderResponse, error) { 
 
-	var res port.CreateOrderResponse  
+  var res port.CreateOrderResponse  
 	
-	{
-		resOutport, err := _r.gateway.CreateOrder(ctx, port.CreateOrderRequest { // 
-		})
+  {
+    resOutport, err := _r.gateway.CreateOrder(ctx, port.CreateOrderRequest { // 
+    })
 
-		if err != nil {
-			return nil, err
-		}
+    if err != nil {
+      return nil, err
+    }
 		
-		_ = resOutport 
-	} 
+    _ = resOutport 
+  } 
 
-	return &res, nil
+  return &res, nil
 }
 ```
 
