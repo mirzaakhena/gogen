@@ -20,7 +20,7 @@ type {{CamelCase .UsecaseName}}Interactor struct {
 }
 
 // Execute ...
-func (_r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
+func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
 	{{range .Inport.RequestFields}}
 	_ = req.{{.FieldName}} {{end}} {{end}}
 
@@ -28,7 +28,7 @@ func (_r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req
 	// res.{{.FieldName}} = ...  {{end}} {{range .Outport}}
 	
 	{
-		resOutport, err := _r.gateway.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
+		resOutport, err := r.gateway.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
 			// {{PascalCase .FieldName}}: ...,  {{end}}
 		})
 

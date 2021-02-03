@@ -17,7 +17,7 @@ func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Out
 }
 {{range .Outport}}
 // {{PascalCase .MethodName}} ...
-func (_r *{{CamelCase $.UsecaseName}}) {{PascalCase .MethodName}}(ctx context.Context, req port.{{PascalCase .ParamType}}) (*port.{{PascalCase .ResultType}}, error) {
+func (r *{{CamelCase $.UsecaseName}}) {{PascalCase .MethodName}}(ctx context.Context, req port.{{PascalCase .ParamType}}) (*port.{{PascalCase .ResultType}}, error) {
 	log.Info(ctx, "Request  %v", util.ToJSON(req)) {{range .RequestFields}}
 	// _ = req.{{PascalCase .FieldName}} {{end}}
 
