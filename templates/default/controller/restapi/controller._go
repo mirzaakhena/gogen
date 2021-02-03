@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
@@ -37,7 +38,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 			return
 		}
 
-		jsonRes, _ := json.Marshal(res)
+		jsonRes := util.ToJSON(res)
 		fmt.Fprint(w, string(jsonRes))
 
 		log.Info(ctx, "Response %v", string(jsonRes))

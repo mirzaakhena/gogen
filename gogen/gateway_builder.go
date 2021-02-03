@@ -77,6 +77,14 @@ func (d *gatewayBuilder) Generate() error {
 		struct{}{},
 	)
 
+	CreateFolder("%s/infrastructure/util", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/util/json._go",
+		fmt.Sprintf("%s/infrastructure/util/json.go", folderPath),
+		struct{}{},
+	)
+
 	_ = WriteFileIfNotExist(
 		"gateway/gatewayName/gateway._go",
 		fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)),

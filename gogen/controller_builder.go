@@ -76,6 +76,14 @@ func (d *controllerBuilder) Generate() error {
 		struct{}{},
 	)
 
+	CreateFolder("%s/infrastructure/util", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/util/json._go",
+		fmt.Sprintf("%s/infrastructure/util/json.go", folderPath),
+		struct{}{},
+	)
+
 	// create a controller folder with controller name
 	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
 
