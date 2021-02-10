@@ -1,0 +1,36 @@
+package controller
+
+type Response struct {
+	Success      bool
+	ErrorCode    string
+	ErrorMessage string
+	Data         interface{}
+}
+
+type errorType interface {
+	error
+	Code() string
+}
+
+func NewSuccessResponse(data interface{}) Response {
+	var res Response
+	res.Success = true
+	res.Data = data
+	return res
+}
+
+func NewErrorResponse(err error) Response {
+	var res Response
+	res.Success = false
+
+	et, ok := err.(errorType)
+	if !ok {
+		res.ErrorCode = "UNDEFINED"
+		res.ErrorMessage = err.Error()
+		return res
+	}
+
+	res.ErrorCode = et.Code()
+	res.ErrorMessage = et.Error()
+	return res
+}

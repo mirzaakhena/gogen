@@ -1,0 +1,63 @@
+package entity
+
+
+const (
+	Idle{{PascalCase .StateName}}State    = {{PascalCase .StateName}}Enum("IDLE")
+	Running{{PascalCase .StateName}}State = {{PascalCase .StateName}}Enum("RUNNING")
+	Stop{{PascalCase .StateName}}State    = {{PascalCase .StateName}}Enum("STOP")
+)
+
+type {{PascalCase .StateName}}State string
+
+type {{PascalCase .StateName}} struct {
+	State {{PascalCase .StateName}}State
+}
+
+type validateTransitionRequest struct {
+	ToStatus {{PascalCase .StateName}}State
+}
+
+type validateTransition func(toStatus validateTransitionRequest) bool
+
+var stateRule = map[{{PascalCase .StateName}}Enum]validateTransition{
+
+	Idle{{PascalCase .StateName}}: func(req validateTransitionRequest) bool {
+		return req.ToStatus == Runing{{PascalCase .StateName}}State
+	},
+
+	Runing{{PascalCase .StateName}}: func(req validateTransitionRequest) bool {
+		if req.ToStatus == Idle{{PascalCase .StateName}}State {
+			return true
+		}
+		if req.ToStatus == Stop{{PascalCase .StateName}}State {
+			return true
+		}
+		return false
+	},
+
+	Stop{{PascalCase .StateName}}: func(req validateTransitionRequest) bool {
+		return false
+	},
+
+}
+
+
+
+func (r {{PascalCase .StateName}}) ValidateNext{{PascalCase .StateName}}(new{{PascalCase .StateName}} {{PascalCase .StateName}}Request) error {
+
+	validateFunc := stateRule[r.Status]
+
+	isAllowed := validateFunc(validateTransitionRequest{
+		ToStatus: new{{PascalCase .StateName}}.NewStatus,
+	})
+
+	if !isAllowed {
+		return shared.NotAllowed{{PascalCase .StateName}}TransitionError.Var({{PascalCase .StateName}}, r, new{{PascalCase .StateName}}.NewStatus)
+	}
+
+	return nil
+}
+
+type {{PascalCase .StateName}}Request struct {
+	NewStatus {{PascalCase .StateName}}Enum
+}

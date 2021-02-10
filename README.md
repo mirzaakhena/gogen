@@ -588,6 +588,10 @@ $ gogen init
 ```
 You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture. You may update or change the template localy and run the previous command using your template.
 
+
+# Log
+
+
 another feature will coming
 ```
   gracefully shutdown

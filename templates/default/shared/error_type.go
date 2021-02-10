@@ -1,0 +1,51 @@
+package shared
+
+import (
+	"fmt"
+	"strings"
+)
+
+// Error is defined as this sample
+// TransitionError ErrorType = "ER1043 Transition from %s to %s is not allowed"
+//
+// All Error is registered in shared/error_enum.go file
+//
+// TransitionError
+// 		is the Error Enum
+// ER1000
+// 		is the Error Code. You may customize your own code format here
+// Transition from %s to %s is not allowed
+// 		is the message with optional formatted variable
+
+// ErrorType must not modified
+type ErrorType string
+
+// Error return the only message
+func (u ErrorType) Error() string {
+	s := string(u)
+	if strings.HasPrefix(s, "ER") {
+		i := strings.Index(s, " ")
+		return s[i+1:]
+	}
+	return s
+}
+
+// Code return the only code
+func (u ErrorType) Code() string {
+	s := string(u)
+	if strings.HasPrefix(s, "ER") {
+		i := strings.Index(s, " ")
+		return s[i+1:]
+	}
+	return ""
+}
+
+// Var add generic variable value to the error message
+func (u ErrorType) Var(params ...interface{}) error {
+	return fmt.Errorf(u.String(), params...)
+}
+
+// String return the error as it is
+func (u ErrorType) String() string {
+	return string(u)
+}

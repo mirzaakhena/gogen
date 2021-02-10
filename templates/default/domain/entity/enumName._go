@@ -1,0 +1,39 @@
+package entity
+
+import (
+	"fmt"
+	"strings"
+)
+
+const (
+	Red{{PascalCase .EnumName}}  = {{PascalCase .EnumName}}("RED")
+	Blue{{PascalCase .EnumName}} = {{PascalCase .EnumName}}("BLUE")
+	Green{{PascalCase .EnumName}}   = {{PascalCase .EnumName}}("GREEN")
+)
+
+var enum = map[{{PascalCase .EnumName}}]{{PascalCase .EnumName}}Structure{
+	Red{{PascalCase .EnumName}}:  {Code: "R"},
+	Blue{{PascalCase .EnumName}}: {Code: "G"},
+	Green{{PascalCase .EnumName}}:   {Code: "B"},
+}
+
+type {{PascalCase .EnumName}} string
+
+type {{PascalCase .EnumName}}Structure struct {
+	Code string
+}
+
+func New{{PascalCase .EnumName}}(name string) ({{PascalCase .EnumName}}, error) {
+	name = strings.ToUpper(name)
+
+	_, exist := enum[{{PascalCase .EnumName}}(name)]
+	if !exist {
+		return "", fmt.Errorf("Unrecognized Enum. Please register this error to shared/error_enum.go")
+	}
+
+	return {{PascalCase .EnumName}}(name), nil
+}
+
+func (r {{PascalCase .EnumName}}) Code() string {
+	return enum[r].Code
+}

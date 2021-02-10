@@ -1,0 +1,24 @@
+package model
+
+import (
+	"fmt"
+	"strings"
+	"time"
+)
+
+type {{PascalCase .EntityName}} struct {
+
+}
+
+func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}Request) (*{{PascalCase .EntityName}}, error) {
+
+  // validation and construction
+
+	var obj {{PascalCase .EntityName}}
+
+	return &obj, nil
+}
+
+type {{PascalCase .EntityName}}Request struct {
+
+}
