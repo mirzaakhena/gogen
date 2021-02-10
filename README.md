@@ -4,6 +4,13 @@ Helping generate your boiler plate and code structure based on clean architecure
 ## Introduction
 Have you ever wondered how to apply the clean architecture properly and how to manage the layout of your go project's folder structure? This tools will help you to make it.
 
+
+## Sample Apps 
+https://github.com/mirzaakhena/oms 
+(The sample is not finished yet)
+
+
+## Structure
 This generator have basic structure like this
 ```
 application/
