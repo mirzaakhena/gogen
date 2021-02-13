@@ -99,5 +99,11 @@ func (d *controllerBuilder) Generate() error {
 		ct,
 	)
 
+	_ = WriteFileIfNotExist(
+		"controller/response._go",
+		fmt.Sprintf("%s/controller/response.go", folderPath),
+		ct,
+	)
+
 	return nil
 }

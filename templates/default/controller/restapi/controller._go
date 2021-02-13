@@ -7,8 +7,10 @@ import (
 	"io/ioutil"
 	"net/http"
 
+	"{{.PackagePath}}/controller"
 	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/shared/errcat"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
@@ -21,27 +23,26 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Info(ctx, "Controller {{PascalCase .UsecaseName}}Handler Request  %v", string(jsonReq))
+		log.Info(ctx, "Request  %v", string(jsonReq))
 
 		var req port.{{PascalCase .UsecaseName}}Request
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			log.Error(ctx, "Response %v", err.Error())
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			newErr := errcat.FailUnmarshalResponseBodyError
+			log.Error(ctx, "Response %v", newErr.Error())
+			http.Error(w, controller.NewErrorResponse(newErr), http.StatusBadRequest)
 			return
 		}
 
 		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
 			log.Error(ctx, "Response %v", err.Error())
-			http.Error(w, err.Error(), http.StatusBadRequest)
+			http.Error(w, controller.NewErrorResponse(err), http.StatusBadRequest)
 			return
 		}
 
-		jsonRes := util.ToJSON(res)
-		fmt.Fprint(w, string(jsonRes))
-
-		log.Info(ctx, "Response %v", string(jsonRes))
+		log.Info(ctx, "Response %v", util.ToJSON(res))
+		fmt.Fprint(w, controller.NewSuccessResponse(res))
 
 	}
 }

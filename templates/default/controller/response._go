@@ -1,36 +1,36 @@
 package controller
 
+import (
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/shared/errcat"
+)
+
 type Response struct {
-	Success      bool
-	ErrorCode    string
-	ErrorMessage string
-	Data         interface{}
+	Success      bool        `json:"success"`
+	ErrorCode    string      `json:"errorCode"`
+	ErrorMessage string      `json:"errorMessage"`
+	Data         interface{} `json:"data"`
 }
 
-type errorType interface {
-	error
-	Code() string
-}
-
-func NewSuccessResponse(data interface{}) Response {
+func NewSuccessResponse(data interface{}) string {
 	var res Response
 	res.Success = true
 	res.Data = data
-	return res
+	return util.ToJSON(res)
 }
 
-func NewErrorResponse(err error) Response {
+func NewErrorResponse(err error) string {
 	var res Response
 	res.Success = false
 
-	et, ok := err.(errorType)
+	et, ok := err.(errcat.ErrorWithCode)
 	if !ok {
 		res.ErrorCode = "UNDEFINED"
 		res.ErrorMessage = err.Error()
-		return res
+		return util.ToJSON(res)
 	}
 
 	res.ErrorCode = et.Code()
 	res.ErrorMessage = et.Error()
-	return res
+	return util.ToJSON(res)
 }

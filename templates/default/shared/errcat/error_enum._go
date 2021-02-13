@@ -1,6 +1,7 @@
-package shared
+package errcat
 
 const (
+	FailUnmarshalResponseBodyError       ErrorType = "E1000 Fail to unmarshal response body" // used by controller
 	NotAllowedOrderStatusTransitionError ErrorType = "E1021 Order Status Transition from %s to %s is not allowed"
 	OrderlineMustNotEmptyError           ErrorType = "E1022 Orderline must not empty"
 	InvalidPhoneNumberFormatError        ErrorType = "E1023 %s is not valid phone number format"

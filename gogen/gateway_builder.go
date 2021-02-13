@@ -33,9 +33,6 @@ func (d *gatewayBuilder) Generate() error {
 		return fmt.Errorf("gogen gateway has 4 parameter. Try `gogen gateway prod yourUsecaseName`")
 	}
 
-	// create a gateway folder with gateway name
-	CreateFolder("%s/gateway/%s", folderPath, strings.ToLower(gatewayName))
-
 	var outportMethods []InterfaceMethod
 
 	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
@@ -68,6 +65,9 @@ func (d *gatewayBuilder) Generate() error {
 		UsecaseName: usecaseName,
 		Outport:     outportMethods,
 	}
+
+	// create a gateway folder with gateway name
+	CreateFolder("%s/gateway/%s", folderPath, strings.ToLower(gatewayName))
 
 	CreateFolder("%s/infrastructure/log", folderPath)
 

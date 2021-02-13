@@ -1,14 +1,16 @@
-package shared
+package errcat
 
 import (
 	"fmt"
 	"strings"
 )
 
-// Error is defined as this sample
-// TransitionError ErrorType = "ER1043 Transition from %s to %s is not allowed"
+// errcat is acronim of "error catalog"
 //
-// All Error is registered in shared/error_enum.go file
+// Error is defined as this sample
+// TransitionError = ErrorType("ER1043 Transition from %s to %s is not allowed")
+//
+// All Error is registered in shared/errcat/error_enum.go file
 //
 // TransitionError
 // 		is the Error Enum
@@ -20,10 +22,17 @@ import (
 // ErrorType must not modified
 type ErrorType string
 
+type ErrorWithCode interface {
+	error
+	Code() string
+}
+
+const errorCodePrefix = "ER"
+
 // Error return the only message
 func (u ErrorType) Error() string {
 	s := string(u)
-	if strings.HasPrefix(s, "ER") {
+	if strings.HasPrefix(s, errorCodePrefix) {
 		i := strings.Index(s, " ")
 		return s[i+1:]
 	}
@@ -33,7 +42,7 @@ func (u ErrorType) Error() string {
 // Code return the only code
 func (u ErrorType) Code() string {
 	s := string(u)
-	if strings.HasPrefix(s, "ER") {
+	if strings.HasPrefix(s, errorCodePrefix) {
 		i := strings.Index(s, " ")
 		return s[i+1:]
 	}
