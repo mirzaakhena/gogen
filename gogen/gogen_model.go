@@ -57,3 +57,7 @@ type Registry struct {
 	UsecaseName    string //
 	GatewayName    string //
 }
+
+type StructureEntity struct {
+	EntityName string //
+}

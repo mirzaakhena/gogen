@@ -128,6 +128,13 @@ func main() {
 			GatewayName:    flag.Arg(4),
 		})
 
+	case "entity":
+		// gogen entity Order
+		gen = gogen.NewEntity(gogen.EntityBuilderRequest{
+			FolderPath: folderPath,
+			EntityName: flag.Arg(1),
+		})
+
 	case "init":
 		// gogen init
 		gen = gogen.NewInit(gogen.InitBuilderRequest{

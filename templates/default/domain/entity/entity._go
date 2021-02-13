@@ -1,11 +1,5 @@
 package model
 
-import (
-	"fmt"
-	"strings"
-	"time"
-)
-
 type {{PascalCase .EntityName}} struct {
 
 }
@@ -15,8 +9,6 @@ type {{PascalCase .EntityName}}Request struct {
 }
 
 func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}Request) (*{{PascalCase .EntityName}}, error) {
-
-  // validation and construction
 
 	var obj {{PascalCase .EntityName}}
 
