@@ -18,13 +18,13 @@ func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Out
 {{range .Outport}}
 // {{PascalCase .MethodName}} ...
 func (r *{{CamelCase $.UsecaseName}}) {{PascalCase .MethodName}}(ctx context.Context, req port.{{PascalCase .ParamType}}) (*port.{{PascalCase .ResultType}}, error) {
-	log.Info(ctx, "Request  %v", util.ToJSON(req)) {{range .RequestFields}}
+	log.Info(ctx, "Request  %v", util.MustJSON(req)) {{range .RequestFields}}
 	// _ = req.{{PascalCase .FieldName}} {{end}}
 
 	var res port.{{PascalCase .ResultType}} {{range .ResponseFields}}
 	// res.{{PascalCase .FieldName}} = ... {{end}}
 	
-	log.Info(ctx, "Response %v", util.ToJSON(res))
+	log.Info(ctx, "Response %v", util.MustJSON(res))
 	return &res, nil
 } 
 {{end}}

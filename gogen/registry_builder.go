@@ -76,7 +76,6 @@ func (d *registryBuilder) Generate() error {
 
 	CreateFolder("%s/infrastructure/config", folderPath)
 	CreateFolder("%s/infrastructure/database", folderPath)
-
 	CreateFolder("%s/infrastructure/httpserver", folderPath)
 	CreateFolder("%s/infrastructure/log", folderPath)
 

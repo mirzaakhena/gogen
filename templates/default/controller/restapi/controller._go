@@ -41,7 +41,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 			return
 		}
 
-		log.Info(ctx, "Response %v", util.ToJSON(res))
+		log.Info(ctx, "Response %v", util.MustJSON(res))
 		fmt.Fprint(w, controller.NewSuccessResponse(res))
 
 	}

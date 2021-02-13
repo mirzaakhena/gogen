@@ -16,7 +16,7 @@ func NewSuccessResponse(data interface{}) string {
 	var res Response
 	res.Success = true
 	res.Data = data
-	return util.ToJSON(res)
+	return util.MustJSON(res)
 }
 
 func NewErrorResponse(err error) string {
@@ -27,10 +27,10 @@ func NewErrorResponse(err error) string {
 	if !ok {
 		res.ErrorCode = "UNDEFINED"
 		res.ErrorMessage = err.Error()
-		return util.ToJSON(res)
+		return util.MustJSON(res)
 	}
 
 	res.ErrorCode = et.Code()
 	res.ErrorMessage = et.Error()
-	return util.ToJSON(res)
+	return util.MustJSON(res)
 }

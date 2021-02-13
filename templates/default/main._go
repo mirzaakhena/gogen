@@ -1,10 +1,24 @@
 package main
 
 import (
+	"flag"
 	"{{.PackagePath}}/application"
 	"{{.PackagePath}}/application/registry"
 )
 
 func main() {
-	application.Run(registry.New{{PascalCase .RegistryName}}Registry())
+
+	flag.Parse()
+	switch flag.Arg(0) {
+
+	// case "firstService":
+	//   application.Run(registry.NewOrderServiceRegistry())
+
+	// case "secondService":
+	//   application.Run(registry.NewOrderServiceRegistry())
+
+	default:
+		application.Run(registry.New{{PascalCase .RegistryName}}Registry())
+	}
+
 }
