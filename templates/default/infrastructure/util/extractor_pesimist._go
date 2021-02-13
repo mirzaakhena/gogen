@@ -1,0 +1,121 @@
+package util
+
+import (
+	"encoding/json"
+	"fmt"
+)
+
+// GetMSIFromMSI (MSI is Map String Interface) is getting map[string]interface{} from another map[string]interface{} by some key
+func GetMSIFromMSI(input map[string]interface{}, key string) (map[string]interface{}, error) {
+	objIntf, ok := input[key]
+	if !ok {
+		return nil, fmt.Errorf("key %s not found", key)
+	}
+
+	return GetMSIFromInterface(objIntf)
+}
+
+// GetAOIFromMSI (AOI is Array Of Interface and MSI is Map String Interface) is getting []interface{} from map[string]interface by some key
+func GetAOIFromMSI(input map[string]interface{}, key string) ([]interface{}, error) {
+	objIntf, ok := input[key]
+	if !ok {
+		return nil, fmt.Errorf("key %s not found", key)
+	}
+
+	objArrIntf, ok := objIntf.([]interface{})
+	if !ok {
+		return nil, fmt.Errorf("key %s cannot assert to []interface{}", key)
+	}
+
+	return objArrIntf, nil
+}
+
+// GetMSIFromInterface (MSI is Map String Interface) is converter from interface{} to map[string]interface{}
+func GetMSIFromInterface(input interface{}) (map[string]interface{}, error) {
+	obj, ok := input.(map[string]interface{})
+	if !ok {
+		return nil, fmt.Errorf("%T cannot assert to map[string]interface{}", input)
+	}
+	return obj, nil
+}
+
+// GetMSIFromJSONString is (MSI is Map String Interface) is getting map[string]interface{} from json string
+func GetMSIFromJSONString(bytes []byte) (map[string]interface{}, error) {
+	var obj interface{}
+	if err := json.Unmarshal(bytes, &obj); err != nil {
+		return nil, fmt.Errorf("Invalid JSON format")
+	}
+	return GetMSIFromInterface(obj)
+}
+
+// GetString is get string from map string interface
+func GetString(input map[string]interface{}, key string) (string, error) {
+
+	objIntf, ok := input[key]
+	if !ok {
+		return "", fmt.Errorf("key %s not found", key)
+	}
+
+	str, ok := objIntf.(string)
+	if !ok {
+		return "", fmt.Errorf("%T cannot assert to string", input)
+	}
+
+	return str, nil
+}
+
+// GetInt is get int from map string interface
+func GetInt(input map[string]interface{}, key string) (int, error) {
+
+	objIntf, ok := input[key]
+	if !ok {
+		return 0, fmt.Errorf("key %s not found", key)
+	}
+
+	floatValue, ok := objIntf.(float64)
+	if !ok {
+		return 0, fmt.Errorf("%T cannot assert to string", input)
+	}
+
+	return int(floatValue), nil
+
+}
+
+// GetFloat is get float64 from map string interface
+func GetFloat(input map[string]interface{}, key string) (float64, error) {
+
+	objIntf, ok := input[key]
+	if !ok {
+		return 0, fmt.Errorf("key %s not found", key)
+	}
+
+	floatValue, ok := objIntf.(float64)
+	if !ok {
+		return 0, fmt.Errorf("%T cannot assert to float64", input)
+	}
+
+	return floatValue, nil
+}
+
+// GetBool is get bool from map string interface
+func GetBool(input map[string]interface{}, key string) (bool, error) {
+	objIntf, ok := input[key]
+	if !ok {
+		return false, fmt.Errorf("key %s not found", key)
+	}
+
+	boolValue, ok := objIntf.(bool)
+	if !ok {
+		return false, fmt.Errorf("%T cannot assert to bool", input)
+	}
+
+	return boolValue, nil
+}
+
+func ToJSON(obj interface{}) (string, error) {
+	bytes, err := json.Marshal(obj)
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
+}
