@@ -1,6 +1,5 @@
 package entity
 
-
 const (
 	Idle{{PascalCase .StateName}}State    = {{PascalCase .StateName}}Enum("IDLE")
 	Running{{PascalCase .StateName}}State = {{PascalCase .StateName}}Enum("RUNNING")

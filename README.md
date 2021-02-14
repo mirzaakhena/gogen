@@ -15,9 +15,12 @@ This generator have basic structure like this
 ```
 application/
 controller/
+domain/
 gateway/
 infrastructure/
+shared/
 usecase/
+config.toml
 main.go
 ```
 
@@ -36,7 +39,12 @@ controller/
   version2/
     Usecase1.go
     Usecase2.go
-  interceptor.go    
+  interceptor.go  
+domain/
+	entity/
+		YourEntity.go
+	service/
+		YourService.go
 gateway/
   hardcode/
     Usecase1.go
@@ -51,9 +59,15 @@ gateway/
     Usecase1.go
     Usecase2.go
 infrastructure/
-  httpserver/
-    gracefully_shutdown.go
-    http_handler.go		
+	config/
+		config.go
+	log/
+		log.go
+  server/
+    server.go	
+shared/
+	errcat/
+		error.go
 usecase/
   usecase1/
     port/
@@ -65,6 +79,8 @@ usecase/
       inport.go
       outport.go
     interactor.go
+.gitignore
+config.toml
 main.go
 ```
 
@@ -126,7 +142,6 @@ After you run this command, you will have those files generated for you
 usecase/createorder/port/inport.go
 usecase/createorder/port/outport.go
 usecase/createorder/interactor.go
-usecase/error.go
 ```
 
 `usecase/createorder/port/inport.go`
@@ -413,6 +428,7 @@ import (
 	"context"
 
 	"your/go/path/project/infrastructure/log"
+	"your/go/path/project/infrastructure/util"
 	"your/go/path/project/usecase/createorder/port"
 )
 
@@ -426,31 +442,31 @@ func NewCreateOrderGateway() port.CreateOrderOutport {
 
 // Check ...
 func (_r *createOrder) Check(ctx context.Context, req port.CheckRequest) (*port.CheckResponse, error) {
-	log.Info(ctx, "Gateway Check Request  %v", req) 
+	log.InfoRequest(ctx, util.MustJSON(req))
 
 	var res port.CheckResponse 
 	
-	log.Info(ctx, "Gateway Check Response %v", res)
+	log.InfoResponse(ctx, util.MustJSON(res))
 	return &res, nil
 } 
 
 // Save ...
 func (_r *createOrder) Save(ctx context.Context, req port.SaveRequest) (*port.SaveResponse, error) {
-	log.Info(ctx, "Gateway Save Request  %v", req) 
+	log.InfoRequest(ctx, util.MustJSON(req))
 
 	var res port.SaveResponse 
 	
-	log.Info(ctx, "Gateway Save Response %v", res)
+	log.InfoResponse(ctx, util.MustJSON(res))
 	return &res, nil
 } 
 
 // Publish ...
 func (_r *createOrder) Publish(ctx context.Context, req port.PublishRequest) (*port.PublishResponse, error) {
-	log.Info(ctx, "Gateway Publish Request  %v", req) 
+	log.InfoRequest(ctx, util.MustJSON(req))
 
 	var res port.PublishResponse 
 	
-	log.Info(ctx, "Gateway Publish Response %v", res)
+	log.InfoResponse(ctx, util.MustJSON(res))
 	return &res, nil
 } 
 ```
@@ -478,6 +494,7 @@ It will generate
 ```
 controller/restapi/CreateOrder.go
 controller/interceptor.go
+controller/response.go
 ```
 
 `controller/interceptor.go`
@@ -485,14 +502,15 @@ controller/interceptor.go
 package restapi
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	
+	"your/go/path/project/controller"
 	"your/go/path/project/infrastructure/log"
+	"your/go/path/project/infrastructure/util"
+	"your/go/path/project/shared/errcat"
 	"your/go/path/project/usecase/createorder/port"
 )
 
@@ -501,29 +519,30 @@ func CreateOrderHandler(inputPort port.CreateOrderInport) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+		ctx := log.ContextWithOperationID(r.Context())
+
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Info(ctx, "Controller CreateOrderHandler Request  %v", string(jsonReq))
+		log.InfoRequest(ctx, string(jsonReq))
 
 		var req port.CreateOrderRequest
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			log.Info(ctx, "Controller CreateOrderHandler Response %v", err.Error())
+			newErr := errcat.FailUnmarshalResponseBodyError
+			log.ErrorResponse(ctx, newErr)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
 		res, err := inputPort.Execute(context.Background(), req)
 		if err != nil {
-			log.Info(ctx, "Controller CreateOrderHandler Response %v", err.Error())
+			log.ErrorResponse(ctx, err)
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
 
-		jsonRes, _ := json.Marshal(res)
-		fmt.Fprint(w, string(jsonRes))
-
-		log.Info(ctx, "Controller CreateOrderHandler Response %v", string(jsonRes))
+		log.InfoResponse(ctx, util.MustJSON(res))
+		fmt.Fprint(w, controller.NewSuccessResponse(res))
 
 	}
 }
@@ -594,9 +613,6 @@ You can customize your own template by call this command in your local path
 $ gogen init
 ```
 You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture. You may update or change the template localy and run the previous command using your template.
-
-
-# Log
 
 
 another feature will coming
