@@ -103,12 +103,6 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
-		"infrastructure/log/log._go",
-		fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
 		"infrastructure/config/config._go",
 		fmt.Sprintf("%s/infrastructure/config/config.go", folderPath),
 		struct{}{},
