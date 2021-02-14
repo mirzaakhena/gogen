@@ -61,3 +61,7 @@ type Registry struct {
 type StructureEntity struct {
 	EntityName string //
 }
+
+type StructureEnum struct {
+	EnumName string //
+}

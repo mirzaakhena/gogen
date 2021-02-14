@@ -135,6 +135,13 @@ func main() {
 			EntityName: flag.Arg(1),
 		})
 
+	case "enum":
+		// gogen enum OrderStatus
+		gen = gogen.NewEnum(gogen.EnumBuilderRequest{
+			FolderPath: folderPath,
+			EnumName:   flag.Arg(1),
+		})
+
 	case "init":
 		// gogen init
 		gen = gogen.NewInit(gogen.InitBuilderRequest{
