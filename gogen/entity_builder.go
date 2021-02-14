@@ -31,9 +31,13 @@ func (d *entityBuilder) Generate() error {
 		EntityName: entityName,
 	}
 
+	CreateFolder("%s/domain/entity", folderPath)
+
+	CreateFolder("%s/domain/service", folderPath)
+
 	_ = WriteFileIfNotExist(
 		"domain/entity/entity._go",
-		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, strings.ToLower(entityName)),
+		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(entityName)),
 		en,
 	)
 

@@ -43,7 +43,7 @@ func (d *testBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor_test._go",
-			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor_test.go", folderPath, LowerCase(usecaseName)),
 			uc,
 		)
 	}

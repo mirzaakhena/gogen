@@ -48,7 +48,7 @@ func (d *usecaseBuilder) Generate() error {
 	)
 
 	// create a folder with usecase name
-	CreateFolder("%s/usecase/%s/port", folderPath, strings.ToLower(usecaseName))
+	CreateFolder("%s/usecase/%s/port", folderPath, LowerCase(usecaseName))
 
 	// create a port/inport.go file
 	{
@@ -57,7 +57,7 @@ func (d *usecaseBuilder) Generate() error {
 		}
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/inport._go",
-			fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, LowerCase(usecaseName)),
 			si,
 		)
 	}
@@ -85,7 +85,7 @@ func (d *usecaseBuilder) Generate() error {
 		}
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/port/outport._go",
-			fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName)),
 			so,
 		)
 	}
@@ -104,7 +104,7 @@ func (d *usecaseBuilder) Generate() error {
 
 		_ = WriteFileIfNotExist(
 			"usecase/usecaseName/interactor._go",
-			fmt.Sprintf("%s/usecase/%s/interactor.go", folderPath, strings.ToLower(usecaseName)),
+			fmt.Sprintf("%s/usecase/%s/interactor.go", folderPath, LowerCase(usecaseName)),
 			uc,
 		)
 	}
@@ -116,7 +116,7 @@ func CollectPortStructs(folderPath, usecaseName string) (map[string][]FieldType,
 
 	mapStruct := map[string][]FieldType{}
 
-	files, err := ReadAllFileUnderFolder(fmt.Sprintf("%s/usecase/%s/port", folderPath, strings.ToLower(usecaseName)))
+	files, err := ReadAllFileUnderFolder(fmt.Sprintf("%s/usecase/%s/port", folderPath, LowerCase(usecaseName)))
 	if err != nil {
 		return nil, err
 	}
@@ -124,7 +124,7 @@ func CollectPortStructs(folderPath, usecaseName string) (map[string][]FieldType,
 	var errExist error
 	for _, filename := range files {
 
-		portFile := fmt.Sprintf("%s/usecase/%s/port/%s", folderPath, strings.ToLower(usecaseName), filename)
+		portFile := fmt.Sprintf("%s/usecase/%s/port/%s", folderPath, LowerCase(usecaseName), filename)
 		fSet := token.NewFileSet()
 		node, errParse := parser.ParseFile(fSet, portFile, nil, parser.ParseComments)
 		if errParse != nil {
@@ -149,7 +149,7 @@ func ConstructStructureUsecase(gomodPath, folderPath, usecaseName string, mapStr
 
 	// INPORT
 	{
-		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, strings.ToLower(usecaseName))
+		inportFile := fmt.Sprintf("%s/usecase/%s/port/inport.go", folderPath, LowerCase(usecaseName))
 		fSet := token.NewFileSet()
 		node, errParse := parser.ParseFile(fSet, inportFile, nil, parser.ParseComments)
 		if errParse != nil {
@@ -168,7 +168,7 @@ func ConstructStructureUsecase(gomodPath, folderPath, usecaseName string, mapStr
 
 	// OUTPORT
 	{
-		outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
+		outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName))
 		fSet := token.NewFileSet()
 		node, errParse := parser.ParseFile(fSet, outportFile, nil, parser.ParseComments)
 		if errParse != nil {

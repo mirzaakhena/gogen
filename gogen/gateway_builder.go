@@ -35,7 +35,7 @@ func (d *gatewayBuilder) Generate() error {
 
 	var outportMethods []InterfaceMethod
 
-	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, strings.ToLower(usecaseName))
+	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName))
 	fSet := token.NewFileSet()
 	node, errParse := parser.ParseFile(fSet, outportFile, nil, parser.ParseComments)
 	if errParse != nil {
@@ -67,7 +67,7 @@ func (d *gatewayBuilder) Generate() error {
 	}
 
 	// create a gateway folder with gateway name
-	CreateFolder("%s/gateway/%s", folderPath, strings.ToLower(gatewayName))
+	CreateFolder("%s/gateway/%s", folderPath, LowerCase(gatewayName))
 
 	CreateFolder("%s/infrastructure/log", folderPath)
 

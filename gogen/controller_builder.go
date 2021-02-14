@@ -107,7 +107,7 @@ func (d *controllerBuilder) Generate() error {
 
 	_ = WriteFileIfNotExist(
 		"controller/restapi/controller._go",
-		fmt.Sprintf("%s/controller/%s/%s.go", folderPath, strings.ToLower(controllerName), PascalCase(usecaseName)),
+		fmt.Sprintf("%s/controller/%s/%s.go", folderPath, LowerCase(controllerName), PascalCase(usecaseName)),
 		ct,
 	)
 
