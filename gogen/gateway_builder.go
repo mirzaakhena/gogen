@@ -71,9 +71,27 @@ func (d *gatewayBuilder) Generate() error {
 
 	CreateFolder("%s/infrastructure/log", folderPath)
 
+	// _ = WriteFileIfNotExist(
+	// 	"infrastructure/log/log._go",
+	// 	fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
+	// 	struct{}{},
+	// )
+
 	_ = WriteFileIfNotExist(
-		"infrastructure/log/log._go",
-		fmt.Sprintf("%s/infrastructure/log/log.go", folderPath),
+		"infrastructure/log/contract._go",
+		fmt.Sprintf("%s/infrastructure/log/contract.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/implementation._go",
+		fmt.Sprintf("%s/infrastructure/log/implementation.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/public._go",
+		fmt.Sprintf("%s/infrastructure/log/public.go", folderPath),
 		struct{}{},
 	)
 

@@ -1,0 +1,82 @@
+package log
+
+import (
+	"context"
+	"fmt"
+	"runtime"
+	"strings"
+
+	"github.com/segmentio/ksuid"
+)
+
+// Info is
+func Info(ctx context.Context, message string, args ...interface{}) {
+	getLogImpl().Info(ctx, composeAdditionalInfo(ctx, 3)+message, args...)
+}
+
+// Error is
+func Error(ctx context.Context, message string, args ...interface{}) {
+	getLogImpl().Error(ctx, composeAdditionalInfo(ctx, 3)+message, args...)
+}
+
+// Info is
+func InfoRequest(ctx context.Context, data interface{}) {
+	getLogImpl().Info(ctx, composeAdditionalInfo(ctx, 3)+fmt.Sprintf("REQUEST  %s", data))
+}
+
+// Info is
+func InfoResponse(ctx context.Context, data interface{}) {
+	getLogImpl().Info(ctx, composeAdditionalInfo(ctx, 3)+fmt.Sprintf("RESPONSE %s", data))
+}
+
+// Error is
+func ErrorRequest(ctx context.Context, err error) {
+	getLogImpl().Error(ctx, composeAdditionalInfo(ctx, 3)+fmt.Sprintf("REQUEST  %s", err.Error()))
+}
+
+// Error is
+func ErrorResponse(ctx context.Context, err error) {
+	getLogImpl().Error(ctx, composeAdditionalInfo(ctx, 3)+fmt.Sprintf("RESPONSE %s", err.Error()))
+}
+
+// UseRotateFile is
+func UseRotateFile(path, name string, maxAgeInDays int) {
+	setFile(path, name, maxAgeInDays)
+}
+
+func ContextWithOperationID(ctx context.Context) context.Context {
+	opIDInterface := ctx.Value(operationIDField)
+	if opIDInterface == nil {
+		return context.WithValue(ctx, operationIDField, ksuid.New().String())
+	}
+	return ctx
+}
+
+func composeAdditionalInfo(ctx context.Context, skip int) string {
+	return fmt.Sprintf("%s %s ", getOperationID(ctx), getFunctionCall(skip))
+}
+
+func getFunctionCall(skip int) string {
+	pc, _, line, ok := runtime.Caller(skip)
+	if !ok {
+		return ""
+	}
+	funcName := runtime.FuncForPC(pc).Name()
+	x := strings.LastIndex(funcName, "/")
+	return fmt.Sprintf("%s:%d", funcName[x+1:], line)
+}
+
+func getOperationID(ctx context.Context) string {
+
+	operationIDInterface := ctx.Value(operationIDField)
+	if operationIDInterface == nil {
+		return "-"
+	}
+
+	operationID, ok := operationIDInterface.(string)
+	if !ok {
+		return "-"
+	}
+
+	return operationID
+}
