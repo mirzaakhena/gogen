@@ -97,6 +97,12 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
+		".gitignore",
+		fmt.Sprintf("%s/.gitignore", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
 		"application/application._go",
 		fmt.Sprintf("%s/application/application.go", folderPath),
 		struct{}{},

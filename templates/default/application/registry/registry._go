@@ -16,6 +16,12 @@ func New{{PascalCase .RegistryName}}Registry() application.RegistryContract {
 
 	config.InitConfig("config-{{LowerCase .RegistryName}}", ".")
 
+	// log.UseRotateFile(
+	// 	config.GetString("logfile.path", "."),
+	// 	config.GetString("logfile.name", "orderservice"),
+	// 	config.GetInt("logfile.age", 14),
+	// )
+
 	app := {{CamelCase .RegistryName}}Registry{ //
 		HTTPHandler: server.NewHTTPHandler(fmt.Sprintf(":%d", config.GetInt("server.port", 8080))),
 	}
