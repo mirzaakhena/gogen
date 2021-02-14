@@ -239,6 +239,16 @@ func GoFormat(path string) {
 	}
 }
 
+func GoModTidy() {
+	fmt.Println("go mod tidy")
+	cmd := exec.Command("go", "mod", "tidy")
+	cmd.Stdout = os.Stdout
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+}
+
 func ReadAllFileUnderFolder(folderPath string) ([]string, error) {
 	var files []string
 	fileInfo, err := ioutil.ReadDir(folderPath)

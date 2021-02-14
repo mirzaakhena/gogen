@@ -97,5 +97,7 @@ func (d *gatewayBuilder) Generate() error {
 		ds,
 	)
 
+	GoModTidy()
+
 	return nil
 }

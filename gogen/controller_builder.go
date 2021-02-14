@@ -111,5 +111,7 @@ func (d *controllerBuilder) Generate() error {
 		ct,
 	)
 
+	GoModTidy()
+
 	return nil
 }

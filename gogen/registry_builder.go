@@ -214,5 +214,7 @@ func (d *registryBuilder) Generate() error {
 		return err
 	}
 
+	GoFormat(packagePath)
+
 	return nil
 }
