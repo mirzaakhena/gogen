@@ -1,7 +1,6 @@
 package {{LowerCase .ControllerName}}
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
@@ -19,29 +18,29 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		ctx := context.Background()
+		ctx := log.ContextWithOperationID(r.Context())
 
 		jsonReq, _ := ioutil.ReadAll(r.Body)
 
-		log.Info(ctx, "Request  %v", string(jsonReq))
+		log.InfoRequest(ctx, string(jsonReq))
 
 		var req port.{{PascalCase .UsecaseName}}Request
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
 			newErr := errcat.FailUnmarshalResponseBodyError
-			log.Error(ctx, "Response %v", newErr.Error())
+			log.ErrorResponse(ctx, newErr)
 			http.Error(w, controller.NewErrorResponse(newErr), http.StatusBadRequest)
 			return
 		}
 
 		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
-			log.Error(ctx, "Response %v", err.Error())
+			log.ErrorResponse(ctx, err)
 			http.Error(w, controller.NewErrorResponse(err), http.StatusBadRequest)
 			return
 		}
 
-		log.Info(ctx, "Response %v", util.MustJSON(res))
+		log.InfoResponse(ctx, util.MustJSON(res))
 		fmt.Fprint(w, controller.NewSuccessResponse(res))
 
 	}

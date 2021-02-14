@@ -76,7 +76,7 @@ func (d *registryBuilder) Generate() error {
 
 	CreateFolder("%s/infrastructure/config", folderPath)
 	CreateFolder("%s/infrastructure/database", folderPath)
-	CreateFolder("%s/infrastructure/httpserver", folderPath)
+	CreateFolder("%s/infrastructure/server", folderPath)
 	CreateFolder("%s/infrastructure/log", folderPath)
 
 	rg := StructureRegistry{
@@ -87,6 +87,12 @@ func (d *registryBuilder) Generate() error {
 	_ = WriteFileIfNotExist(
 		"main._go",
 		fmt.Sprintf("%s/main.go", folderPath),
+		rg,
+	)
+
+	_ = WriteFileIfNotExist(
+		"config-registryName._toml",
+		fmt.Sprintf("%s/config-%s.toml", folderPath, LowerCase(registryName)),
 		rg,
 	)
 
@@ -103,14 +109,20 @@ func (d *registryBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
-		"infrastructure/httpserver/gracefully_shutdown._go",
-		fmt.Sprintf("%s/infrastructure/httpserver/gracefully_shutdown.go", folderPath),
+		"infrastructure/config/config._go",
+		fmt.Sprintf("%s/infrastructure/config/config.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/server/gracefully_shutdown._go",
+		fmt.Sprintf("%s/infrastructure/server/gracefully_shutdown.go", folderPath),
 		rg,
 	)
 
 	_ = WriteFileIfNotExist(
-		"infrastructure/httpserver/http_handler._go",
-		fmt.Sprintf("%s/infrastructure/httpserver/http_handler.go", folderPath),
+		"infrastructure/server/http_handler._go",
+		fmt.Sprintf("%s/infrastructure/server/http_handler.go", folderPath),
 		struct{}{},
 	)
 

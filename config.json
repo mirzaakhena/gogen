@@ -1,3 +1,7 @@
 {
-  "template": "default"
+  "template": "default",
+  "config": "toml",
+  "httpserver": "net/http",
+  "httpclient": "net/http",
+  "consumer": "nsq"
 }
