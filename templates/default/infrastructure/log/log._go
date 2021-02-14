@@ -42,12 +42,10 @@ func InfoResponse(ctx context.Context, dataResponse interface{}) {
 }
 
 func ErrorRequest(ctx context.Context, err error) {
-	Error(ctx, "Request  %s", err.Error())
 	log.Print(composeAdditionalInfo(ctx, "ERRO") + fmt.Sprintf("REQUEST  %s", err.Error()))
 }
 
 func ErrorResponse(ctx context.Context, err error) {
-	Error(ctx, "Response %s", err.Error())
 	log.Print(composeAdditionalInfo(ctx, "ERRO") + fmt.Sprintf("RESPONSE %s", err.Error()))
 }
 
