@@ -1,0 +1,58 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"encoding/json"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/copier"
+
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
+)
+
+// {{PascalCase .UsecaseName}} ...
+func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName}}Inport) gin.HandlerFunc {
+
+	type dtoRequest struct { {{range .Inport.RequestFields}}
+		{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
+	}
+
+	//	type dtoResponse struct { {{range .Inport.ResponseFields}}
+	//		{{.FieldName}} {{.Type}} `json:"{{CamelCase .FieldName}}"` // {{end}}
+	//	}
+
+	return func(c *gin.Context) {
+
+		// receive json
+		var jsonReq dtoRequest
+		if err := c.BindJSON(&jsonReq); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		log.Printf("Controller Handler Request {{PascalCase .UsecaseName}}Handler")
+
+		// convert to request
+		var req port.{{PascalCase .UsecaseName}}Request
+		if err := copier.Copy(&req, jsonReq); err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// run the usecase
+		ctx := context.Background()
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			c.JSON(http.StatusBadRequest, err.Error())
+			return
+		}
+
+		// return the response
+		c.JSON(http.StatusOK, res)
+
+		jsonRes, _ := json.Marshal(res)
+		log.Printf("Controller Handler Response {{PascalCase .UsecaseName}}Handler %v", string(jsonRes))
+
+	}
+}

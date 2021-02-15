@@ -1,0 +1,56 @@
+package application
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+)
+
+// GinHTTPFramework will define basic GIN configuration with gracefully shutdown
+type GinHTTPFramework struct {
+	GracefullyShutdown
+	Router *gin.Engine
+}
+
+func NewGinHTTPFramework(address string) GinHTTPFramework {
+
+	router := gin.Default()
+
+	// // WEB_CONTENT
+	//	{
+	//		router.LoadHTMLGlob("webcontent/templates/index.html")
+	//		router.Static("/static", "webcontent/static")
+	//		router.GET("/", func(c *gin.Context) {
+	//			c.HTML(http.StatusOK, "index.html", gin.H{
+	//				"title": "Main website",
+	//			})
+	//		})
+	//	}
+
+	// PING API
+	router.GET("/ping", func(c *gin.Context) {
+		c.String(http.StatusOK, "Ready")
+	})
+
+	// CORS
+	router.Use(cors.New(cors.Config{
+		ExposeHeaders:   []string{"Data-Length"},
+		AllowMethods:    []string{"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"},
+		AllowAllOrigins: true,
+		AllowHeaders:    []string{"Content-Type", "Authorization"},
+		MaxAge:          12 * time.Hour,
+	}))
+
+	return GinHTTPFramework{
+		GracefullyShutdown: NewGracefullyShutdown(router, address),
+		Router:             router,
+	}
+
+}
+
+// RunApplication is implementation of RegistryVersion.RunApplication()
+func (r *GinHTTPFramework) RunApplication() {
+	r.RunWithGracefullyShutdown()
+}
