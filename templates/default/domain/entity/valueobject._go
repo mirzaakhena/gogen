@@ -1,0 +1,15 @@
+package entity
+
+type {{PascalCase .ValueObjectName}} string
+
+type {{PascalCase .ValueObjectName}}Request struct {
+
+}
+
+func New{{PascalCase .ValueObjectName}}(req {{PascalCase .ValueObjectName}}Request) ({{PascalCase .ValueObjectName}}, error) {
+
+	var obj {{PascalCase .ValueObjectName}}
+
+	return obj, nil
+}
+

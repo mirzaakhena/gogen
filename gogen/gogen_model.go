@@ -62,6 +62,16 @@ type StructureEntity struct {
 	EntityName string //
 }
 
+type StructureValueObject struct {
+	ValueObjectName string //
+}
+
 type StructureEnum struct {
-	EnumName string //
+	EnumName   string   //
+	EnumValues []string //
+}
+
+type StructureState struct {
+	StateName   string   //
+	StateValues []string //
 }

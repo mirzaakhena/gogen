@@ -6,8 +6,9 @@ import (
 )
 
 type EnumBuilderRequest struct {
-	EnumName   string
 	FolderPath string
+	EnumName   string
+	EnumValues []string
 }
 
 type enumBuilder struct {
@@ -22,13 +23,19 @@ func (d *enumBuilder) Generate() error {
 
 	enumName := strings.TrimSpace(d.EnumBuilderRequest.EnumName)
 	folderPath := d.EnumBuilderRequest.FolderPath
+	enumValues := d.EnumBuilderRequest.EnumValues
 
 	if len(enumName) == 0 {
 		return fmt.Errorf("EnumName name must not empty")
 	}
 
+	if len(enumValues) < 2 {
+		return fmt.Errorf("Enum at least have 2 value")
+	}
+
 	en := StructureEnum{
-		EnumName: enumName,
+		EnumName:   enumName,
+		EnumValues: enumValues,
 	}
 
 	CreateFolder("%s/domain/entity", folderPath)

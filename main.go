@@ -23,7 +23,8 @@ func usage() {
 	gogen controller restapi CreateOrder
 	gogen registry default restapi CreateOrder production
 	gogen entity Order
-	gogen enum Color
+	gogen valueobject OrderID
+	gogen enum PaymentMethod
 	gogen state OrderStatus
 	gogen init
 `
@@ -138,11 +139,27 @@ func main() {
 			EntityName: flag.Arg(1),
 		})
 
+	case "valueobject":
+		// gogen valueobject OrderID
+		gen = gogen.NewValueObject(gogen.ValueObjectBuilderRequest{
+			FolderPath:      folderPath,
+			ValueObjectName: flag.Arg(1),
+		})
+
 	case "enum":
-		// gogen enum OrderStatus
+		// gogen enum PaymentMethod
 		gen = gogen.NewEnum(gogen.EnumBuilderRequest{
 			FolderPath: folderPath,
 			EnumName:   flag.Arg(1),
+			EnumValues: flag.Args()[2:],
+		})
+
+	case "state":
+		// gogen state OrderStatus
+		gen = gogen.NewState(gogen.StateBuilderRequest{
+			FolderPath:  folderPath,
+			StateName:   flag.Arg(1),
+			StateValues: flag.Args()[2:],
 		})
 
 	case "init":
