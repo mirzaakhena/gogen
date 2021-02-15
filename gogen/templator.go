@@ -210,7 +210,7 @@ func GenerateMock(packagePath, usecaseName, folderPath string) {
 		"-output", fmt.Sprintf("%s/usecase/%s/mocks/", folderPath, lowercaseUsecaseName),
 	)
 
-	cmd.Stdout = os.Stdout
+	// cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("mockery failed with %s\n", err)
