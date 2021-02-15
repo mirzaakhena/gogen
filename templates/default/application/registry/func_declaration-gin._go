@@ -1,0 +1,5 @@
+func (r *{{LowerCase .RegistryName}}Registry) {{CamelCase .UsecaseName}}Handler() {
+  outport := {{LowerCase .GatewayName}}.New{{PascalCase .UsecaseName}}Gateway()
+  inport := {{LowerCase .UsecaseName}}.New{{PascalCase .UsecaseName}}Usecase(outport)
+  r.Router.POST("/{{LowerCase .UsecaseName}}", controller.Authorized(), {{LowerCase .ControllerName}}.{{PascalCase .UsecaseName}}Handler(inport))
+}
