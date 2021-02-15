@@ -78,10 +78,10 @@ func getLogImpl() Logger {
 
 func (x *logrusImpl) Info(ctx context.Context, message string, args ...interface{}) {
 	logMessage := fmt.Sprintf(message, args...)
-	x.theLogger.Info(logMessage)
+	x.theLogger.Info(logMessage + "\n")
 }
 
 func (x *logrusImpl) Error(ctx context.Context, message string, args ...interface{}) {
 	logMessage := fmt.Sprintf(message, args...)
-	x.theLogger.Error(logMessage)
+	x.theLogger.Error(logMessage + "\n")
 }
