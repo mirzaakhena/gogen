@@ -22,6 +22,9 @@ func usage() {
 	gogen gateway production CreateOrder
 	gogen controller restapi CreateOrder
 	gogen registry default restapi CreateOrder production
+	gogen entity Order
+	gogen enum Color
+	gogen state OrderStatus
 	gogen init
 `
 	fmt.Fprintf(os.Stdout, "%s\n", message)
