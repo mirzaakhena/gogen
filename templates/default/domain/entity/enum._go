@@ -1,29 +1,29 @@
 package entity
 
 import (
-	"fmt"
 	"strings"
-)
 
-const ( {{range .EnumValues}}
-	{{PascalCase .}}{{PascalCase $.EnumName}}  = {{PascalCase $.EnumName}}("{{UpperCase .}}") {{end}}
+	"{{.PackagePath}}/shared/errcat"
 )
-
-var enum = map[{{PascalCase .EnumName}}]{{PascalCase .EnumName}}Structure{ {{range .EnumValues}}
-	{{PascalCase .}}{{PascalCase $.EnumName}}: {}, {{end}}
-}
 
 type {{PascalCase .EnumName}} string
 
-type {{PascalCase .EnumName}}Structure struct { //
+const ( {{range .EnumValues}}
+	{{PascalCase .}}{{PascalCase $.EnumName}}Enum = {{PascalCase $.EnumName}}("{{UpperCase .}}") {{end}}
+)
+
+var enum = map[{{PascalCase .EnumName}}]{{PascalCase .EnumName}}Detail{ {{range .EnumValues}}
+	{{PascalCase .}}{{PascalCase $.EnumName}}Enum : {}, {{end}}
+}
+
+type {{PascalCase .EnumName}}Detail struct { //
 }
 
 func New{{PascalCase .EnumName}}(name string) ({{PascalCase .EnumName}}, error) {
 	name = strings.ToUpper(name)
 
-	_, exist := enum[{{PascalCase .EnumName}}(name)]
-	if !exist {
-		return "", fmt.Errorf("Unrecognized Enum. Please register this error to shared/error_enum.go")
+	if _, exist := enum[{{PascalCase .EnumName}}(name)]; !exist {
+		return "", errcat.UnrecognizedEnum.Var(name, "{{PascalCase .EnumName}}")
 	}
 
 	return {{PascalCase .EnumName}}(name), nil

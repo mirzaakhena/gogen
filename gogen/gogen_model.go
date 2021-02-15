@@ -59,19 +59,23 @@ type Registry struct {
 }
 
 type StructureEntity struct {
-	EntityName string //
+	PackagePath string //
+	EntityName  string //
 }
 
 type StructureValueObject struct {
+	PackagePath     string //
 	ValueObjectName string //
 }
 
 type StructureEnum struct {
-	EnumName   string   //
-	EnumValues []string //
+	PackagePath string   //
+	EnumName    string   //
+	EnumValues  []string //
 }
 
 type StructureState struct {
+	PackagePath string   //
 	StateName   string   //
 	StateValues []string //
 }

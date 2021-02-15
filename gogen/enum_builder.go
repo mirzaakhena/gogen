@@ -9,6 +9,7 @@ type EnumBuilderRequest struct {
 	FolderPath string
 	EnumName   string
 	EnumValues []string
+	GomodPath  string
 }
 
 type enumBuilder struct {
@@ -24,6 +25,7 @@ func (d *enumBuilder) Generate() error {
 	enumName := strings.TrimSpace(d.EnumBuilderRequest.EnumName)
 	folderPath := d.EnumBuilderRequest.FolderPath
 	enumValues := d.EnumBuilderRequest.EnumValues
+	gomodPath := d.EnumBuilderRequest.GomodPath
 
 	if len(enumName) == 0 {
 		return fmt.Errorf("EnumName name must not empty")
@@ -33,9 +35,16 @@ func (d *enumBuilder) Generate() error {
 		return fmt.Errorf("Enum at least have 2 value")
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	en := StructureEnum{
-		EnumName:   enumName,
-		EnumValues: enumValues,
+		PackagePath: packagePath,
+		EnumName:    enumName,
+		EnumValues:  enumValues,
 	}
 
 	CreateFolder("%s/domain/entity", folderPath)
@@ -47,6 +56,22 @@ func (d *enumBuilder) Generate() error {
 		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(enumName)),
 		en,
 	)
+
+	CreateFolder("%s/shared/errcat", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error_type._go",
+		fmt.Sprintf("%s/shared/errcat/error_type.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error_enum._go",
+		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
+		struct{}{},
+	)
+
+	GoFormat(packagePath)
 
 	return nil
 }

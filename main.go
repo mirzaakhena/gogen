@@ -24,8 +24,8 @@ func usage() {
 	gogen registry default restapi CreateOrder production
 	gogen entity Order
 	gogen valueobject OrderID
-	gogen enum PaymentMethod
-	gogen state OrderStatus
+	gogen enum PaymentMethod DANA Gopay Ovo
+	gogen state OrderStatus WaitingPayment Complete Cancelled Expired 
 	gogen init
 `
 	fmt.Fprintf(os.Stdout, "%s\n", message)
@@ -137,6 +137,7 @@ func main() {
 		gen = gogen.NewEntity(gogen.EntityBuilderRequest{
 			FolderPath: folderPath,
 			EntityName: flag.Arg(1),
+			GomodPath:  gomodPath,
 		})
 
 	case "valueobject":
@@ -144,6 +145,7 @@ func main() {
 		gen = gogen.NewValueObject(gogen.ValueObjectBuilderRequest{
 			FolderPath:      folderPath,
 			ValueObjectName: flag.Arg(1),
+			GomodPath:       gomodPath,
 		})
 
 	case "enum":
@@ -152,6 +154,7 @@ func main() {
 			FolderPath: folderPath,
 			EnumName:   flag.Arg(1),
 			EnumValues: flag.Args()[2:],
+			GomodPath:  gomodPath,
 		})
 
 	case "state":
@@ -160,6 +163,7 @@ func main() {
 			FolderPath:  folderPath,
 			StateName:   flag.Arg(1),
 			StateValues: flag.Args()[2:],
+			GomodPath:   gomodPath,
 		})
 
 	case "init":

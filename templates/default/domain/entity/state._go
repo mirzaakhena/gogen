@@ -1,43 +1,43 @@
 package entity
 
-const ( {{range .StateValues}}
-	{{PascalCase .}}{{PascalCase .StateName}}State = {{PascalCase .StateName}}Enum("UpperCase .") {{end}}
+import (
+	"{{.PackagePath}}/shared/errcat"
 )
 
-type {{PascalCase .StateName}}State string
+type {{PascalCase .StateName}} string
 
-type {{PascalCase .StateName}} struct {
-	State {{PascalCase .StateName}}State
+const ( {{range .StateValues}}
+	{{PascalCase .}}{{PascalCase $.StateName}}State = {{PascalCase $.StateName}}("{{UpperCase .}}") {{end}}
+)
+
+type {{PascalCase .StateName}}Detail struct {
+	State {{PascalCase .StateName}}
 }
 
 type validateTransitionRequest struct {
-	ToStatus {{PascalCase .StateName}}State
+	DestinationState {{PascalCase .StateName}}Detail
 }
 
 type validateTransition func(toStatus validateTransitionRequest) bool
 
-var stateRule = map[{{PascalCase .StateName}}Enum]validateTransition{
+var stateRule = map[{{PascalCase .StateName}}]validateTransition{
 	{{range .StateValues}}
-	{{PascalCase .}}{{PascalCase .StateName}}: func(req validateTransitionRequest) bool {
+	{{PascalCase .}}{{PascalCase $.StateName}}State: func(req validateTransitionRequest) bool {
 		return false
 	}, {{end}}
 }
 
-func (r {{PascalCase .StateName}}) ValidateNext{{PascalCase .StateName}}(new{{PascalCase .StateName}} {{PascalCase .StateName}}Request) error {
+func (r {{PascalCase .StateName}}) ValidateNext{{PascalCase .StateName}}(newState {{PascalCase .StateName}}Detail) error {
 
-	validateFunc := stateRule[r.Status]
+	validateFunc := stateRule[r]
 
 	isAllowed := validateFunc(validateTransitionRequest{
-		ToStatus: new{{PascalCase .StateName}}.NewStatus,
+		DestinationState: newState,
 	})
 
 	if !isAllowed {
-		return shared.NotAllowedStateTransitionError.Var({{PascalCase .StateName}}, r, new{{PascalCase .StateName}}.NewStatus)
+		return errcat.NotAllowedStateTransitionError.Var("{{PascalCase .StateName}}", r, newState.State)
 	}
 
 	return nil
-}
-
-type {{PascalCase .StateName}}Request struct {
-	NewStatus {{PascalCase .StateName}}Enum
 }

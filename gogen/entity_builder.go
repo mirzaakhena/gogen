@@ -8,6 +8,7 @@ import (
 type EntityBuilderRequest struct {
 	EntityName string
 	FolderPath string
+	GomodPath  string
 }
 
 type entityBuilder struct {
@@ -22,13 +23,21 @@ func (d *entityBuilder) Generate() error {
 
 	entityName := strings.TrimSpace(d.EntityBuilderRequest.EntityName)
 	folderPath := d.EntityBuilderRequest.FolderPath
+	gomodPath := d.EntityBuilderRequest.GomodPath
 
 	if len(entityName) == 0 {
 		return fmt.Errorf("EntityName name must not empty")
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	en := StructureEntity{
-		EntityName: entityName,
+		PackagePath: packagePath,
+		EntityName:  entityName,
 	}
 
 	CreateFolder("%s/domain/entity", folderPath)

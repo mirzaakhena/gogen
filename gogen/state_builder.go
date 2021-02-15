@@ -9,6 +9,7 @@ type StateBuilderRequest struct {
 	FolderPath  string
 	StateName   string
 	StateValues []string
+	GomodPath   string
 }
 
 type stateBuilder struct {
@@ -24,6 +25,7 @@ func (d *stateBuilder) Generate() error {
 	stateName := strings.TrimSpace(d.StateBuilderRequest.StateName)
 	folderPath := d.StateBuilderRequest.FolderPath
 	stateValues := d.StateBuilderRequest.StateValues
+	gomodPath := d.StateBuilderRequest.GomodPath
 
 	if len(stateName) == 0 {
 		return fmt.Errorf("StateName name must not empty")
@@ -33,19 +35,40 @@ func (d *stateBuilder) Generate() error {
 		return fmt.Errorf("State at least have 2 values")
 	}
 
+	packagePath := GetPackagePath()
+
+	if len(strings.TrimSpace(packagePath)) == 0 {
+		packagePath = gomodPath
+	}
+
 	en := StructureState{
 		StateName:   stateName,
 		StateValues: stateValues,
+		PackagePath: packagePath,
 	}
 
-	CreateFolder("%s/domain/state", folderPath)
+	CreateFolder("%s/domain/entity", folderPath)
 
 	CreateFolder("%s/domain/service", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"domain/state/state._go",
-		fmt.Sprintf("%s/domain/state/%s.go", folderPath, PascalCase(stateName)),
+		"domain/entity/state._go",
+		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(stateName)),
 		en,
+	)
+
+	CreateFolder("%s/shared/errcat", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error_type._go",
+		fmt.Sprintf("%s/shared/errcat/error_type.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error_enum._go",
+		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
+		struct{}{},
 	)
 
 	return nil
