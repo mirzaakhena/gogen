@@ -64,8 +64,14 @@ type StructureEntity struct {
 }
 
 type StructureValueObject struct {
+	PackagePath     string   //
+	ValueObjectName string   //
+	FieldNames      []string //
+}
+
+type StructureValueString struct {
 	PackagePath     string //
-	ValueObjectName string //
+	ValueStringName string //
 }
 
 type StructureEnum struct {

@@ -23,7 +23,7 @@ func usage() {
 	gogen controller restapi CreateOrder
 	gogen registry default restapi CreateOrder production
 	gogen entity Order
-	gogen valueobject OrderID
+	gogen valuestring OrderID
 	gogen enum PaymentMethod DANA Gopay Ovo
 	gogen state OrderStatus WaitingPayment Complete Cancelled Expired 
 	gogen init
@@ -140,11 +140,11 @@ func main() {
 			GomodPath:  gomodPath,
 		})
 
-	case "valueobject":
-		// gogen valueobject OrderID
-		gen = gogen.NewValueObject(gogen.ValueObjectBuilderRequest{
+	case "valuestring":
+		// gogen valuestring OrderID
+		gen = gogen.NewValueString(gogen.ValueStringBuilderRequest{
 			FolderPath:      folderPath,
-			ValueObjectName: flag.Arg(1),
+			ValueStringName: flag.Arg(1),
 			GomodPath:       gomodPath,
 		})
 

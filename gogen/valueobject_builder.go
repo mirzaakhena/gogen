@@ -9,6 +9,7 @@ type ValueObjectBuilderRequest struct {
 	ValueObjectName string
 	FolderPath      string
 	GomodPath       string
+	FieldNames      []string
 }
 
 type valueObjectBuilder struct {
@@ -24,9 +25,14 @@ func (d *valueObjectBuilder) Generate() error {
 	valueObjectName := strings.TrimSpace(d.ValueObjectBuilderRequest.ValueObjectName)
 	folderPath := d.ValueObjectBuilderRequest.FolderPath
 	gomodPath := d.ValueObjectBuilderRequest.GomodPath
+	fieldNames := d.ValueObjectBuilderRequest.FieldNames
 
 	if len(valueObjectName) == 0 {
-		return fmt.Errorf("ValueObjectName name must not empty")
+		return fmt.Errorf("ValueObject name name must not empty")
+	}
+
+	if len(fieldNames) < 1 {
+		return fmt.Errorf("ValueObject at least have one field")
 	}
 
 	packagePath := GetPackagePath()
@@ -36,8 +42,9 @@ func (d *valueObjectBuilder) Generate() error {
 	}
 
 	en := StructureValueObject{
-		ValueObjectName: valueObjectName,
 		PackagePath:     packagePath,
+		ValueObjectName: valueObjectName,
+		FieldNames:      fieldNames,
 	}
 
 	CreateFolder("%s/domain/entity", folderPath)
