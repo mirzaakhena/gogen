@@ -30,12 +30,12 @@ func (r *GracefullyShutdown) RunWithGracefullyShutdown() {
 
 	go func() {
 		if err := r.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Error(context.Background(), "listen: %s\n", err)
+			log.Error(context.Background(), "listen: %s", err)
 			os.Exit(1)
 		}
 	}()
 
-	log.Info(context.Background(), "server is running ...\n")
+	log.Info(context.Background(), "server is running ...")
 
 	quit := make(chan os.Signal, 1)
 
