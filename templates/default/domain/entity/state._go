@@ -7,7 +7,7 @@ import (
 type {{PascalCase .StateName}} string
 
 const ( {{range .StateValues}}
-	{{PascalCase .}}{{PascalCase $.StateName}}State = {{PascalCase $.StateName}}("{{UpperCase .}}") {{end}}
+	{{PascalCase .}}{{PascalCase $.StateName}}State = {{PascalCase $.StateName}}("{{UpperCase (SnakeCase .)}}") {{end}}
 )
 
 type {{PascalCase .StateName}}Detail struct {
@@ -24,7 +24,8 @@ var stateRule = map[{{PascalCase .StateName}}]validateTransition{
 	{{range .StateValues}}
 	{{PascalCase .}}{{PascalCase $.StateName}}State: func(req validateTransitionRequest) bool {
 		return false
-	}, {{end}}
+	},
+	{{end}}
 }
 
 func (r {{PascalCase .StateName}}) ValidateNext{{PascalCase .StateName}}(newState {{PascalCase .StateName}}Detail) error {

@@ -16,6 +16,7 @@ func New{{PascalCase .ValueObjectName}}(req {{PascalCase .ValueObjectName}}Reque
 	return &obj, nil
 }
 {{range .FieldNames}}
-func (r {{PascalCase .ValueObjectName}}) {{PascalCase .}}() string {
-	returnn r.{{CamelCase .}}
-} {{end}}
+func (r {{PascalCase $.ValueObjectName}}) {{PascalCase .}}() string {
+	return r.{{CamelCase .}}
+}
+{{end}}

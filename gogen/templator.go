@@ -232,7 +232,7 @@ func IsExist(fileOrDir string) bool {
 func GoFormat(path string) {
 	// fmt.Println("go fmt")
 	cmd := exec.Command("go", "fmt", fmt.Sprintf("%s/...", path))
-	cmd.Stdout = os.Stdout
+	// cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
@@ -242,7 +242,7 @@ func GoFormat(path string) {
 func GoModTidy() {
 	// fmt.Println("go mod tidy")
 	cmd := exec.Command("go", "mod", "tidy")
-	cmd.Stdout = os.Stdout
+	// cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	if err := cmd.Run(); err != nil {
 		log.Fatalf("cmd.Run() failed with %s\n", err)
