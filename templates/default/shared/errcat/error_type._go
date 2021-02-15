@@ -44,7 +44,7 @@ func (u ErrorType) Code() string {
 	s := string(u)
 	if strings.HasPrefix(s, errorCodePrefix) {
 		i := strings.Index(s, " ")
-		return s[i+1:]
+		return s[:i]
 	}
 	return ""
 }
