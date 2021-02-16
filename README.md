@@ -24,72 +24,18 @@ config.toml
 main.go
 ```
 
-The complete folder layout will be like this
-
-```
-application/
-  registry/
-    reg1.go
-    reg2.go
-  application.go
-controller/
-  version1/
-    Usecase1.go
-    Usecase2.go
-  version2/
-    Usecase1.go
-    Usecase2.go
-  interceptor.go  
-domain/
-	entity/
-		YourEntity.go
-	service/
-		YourService.go
-gateway/
-  hardcode/
-    Usecase1.go
-    Usecase2.go 
-  inmemory/
-    Usecase1.go
-    Usecase2.go
-  persistence/
-    Usecase1.go
-    Usecase2.go
-  younameit/
-    Usecase1.go
-    Usecase2.go
-infrastructure/
-	config/
-		config.go
-	log/
-		log.go
-  server/
-    server.go	
-shared/
-	errcat/
-		error.go
-usecase/
-  usecase1/
-    port/
-      inport.go
-      outport.go
-    interactor.go
-  usecase2/
-    port/
-      inport.go
-      outport.go
-    interactor.go
-.gitignore
-config.toml
-main.go
-```
-
 ## Clean Architecture Concept
-The main purpose of this architecture is separation between infrastructure part and logic part.
-It must decoupling from any framework or library. 
+The main purpose of this architecture is :
+* Separation concern between INFRASTRUCTURE part and LOGIC Part
+* Independent of Framework. Free to swap to any framework
+* Independent of UI. Free to swap UI. For ex: from Web UI to Console UI
+* Independent of Database. Free to swap to any database (data storage)
+* Independent of any external agency. Business rule doesn’t know anything about outside world
+* Testable. The business rules can be tested without the UI, Database, Web Server, or any other external element
+
 
 ## How to use the gogen?
-You need to start by creating an usecase, then you continue create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in registry part. That's it. 
+You always start from creating an usecase, then you continue create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in registry part. That's it. 
 
 To create the usecase, you need to understand the concept of usecase according to Uncle Bob's Clean Architecture article. Usecase has 3 main part.
 * Input Port (Inport)
@@ -109,7 +55,7 @@ Outport is implemented by Gateway
 
 *Outport* is a data and action provider for *Interactor*. *Outport* never know how it is implemented. The implementor (in this case a *Gateway*) will decide how to provide a data or do an action. This *Outport* is very exclusive for specific usecase (in this case *Interactor*) and must not shared to other usecase. By having exclusive *Outport* it will isolate the testing for usecase. 
 
-By organize this usecase in a such structure, we can easily change the *Controller* or the *Gateway* in very flexible way. without worry to change the logic part. This is how the logic and infrastructure separation is working.
+By organize this usecase in a such structure, we can easily change the *Controller* or the *Gateway* in very flexible way without worry to change the logic part. This is how the logic and infrastructure separation is working.
 
 How it is different with common three layer architecture (Controller -> Service -> Repository) pattern?
 The main different is 
@@ -131,96 +77,9 @@ $ go install $GOPATH/src/github.com/mirzaakhena/gogen/
 
 ## 1. Create your basic usecase structure
 
-So you want to create your first usecase. Let say the usecase name is  a `CreateOrder`. We always create our usecase name with `PascalCase`. This is a `gogen convention`. Now let's try our gogen code generator to create this usecase for us.
+So you will create your first usecase. Let say the usecase name is  a `CreateOrder`. We will always create our usecase name with `PascalCase`. Now let's try our gogen code generator to create this usecase for us.
 ```
 $ gogen usecase CreateOrder
-```
-
-After you run this command, you will have those files generated for you
-
-```
-usecase/createorder/port/inport.go
-usecase/createorder/port/outport.go
-usecase/createorder/interactor.go
-```
-
-`usecase/createorder/port/inport.go`
-```
-package port
-
-import (
-  "context"
-)
-
-// CreateOrderInport ...
-type CreateOrderInport interface {
-  Execute(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error)
-}
-
-// CreateOrderRequest ...
-type CreateOrderRequest struct { 
-}
-
-// CreateOrderResponse ...
-type CreateOrderResponse struct { 
-}
-```
-
-`usecase/createorder/port/outport.go`
-```
-package port  
-
-import (
-  "context"
-) 
-
-// CreateOrderOutport ...
-type CreateOrderOutport interface { 
-  CreateOrder(ctx context.Context, req CreateOrderRequest) (*CreateOrderResponse, error) 
-}
-```
-
-`usecase/createorder/interactor.go`
-```
-package createorder
-
-import (
-  "context"
-
-  "your/go/path/project/usecase/createorder/port"
-)
-
-//go:generate mockery --dir port/ --name CreateOrderOutport -output mocks/
-
-// NewCreateOrderUsecase ...
-func NewCreateOrderUsecase(outputPort port.CreateOrderOutport) port.CreateOrderInport {
-  return &createOrderInteractor{
-    gateway: outputPort,
-  }
-}
-
-type createOrderInteractor struct {
-  gateway port.CreateOrderOutport
-}
-
-// Execute ...
-func (_r *createOrderInteractor) Execute(ctx context.Context, req port.CreateOrderRequest) (*port.CreateOrderResponse, error) { 
-
-  var res port.CreateOrderResponse  
-	
-  {
-    resOutport, err := _r.gateway.CreateOrder(ctx, port.CreateOrderRequest { // 
-    })
-
-    if err != nil {
-      return nil, err
-    }
-		
-    _ = resOutport 
-  } 
-
-  return &res, nil
-}
 ```
 
 Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
@@ -238,91 +97,6 @@ You may create different Request Response struct for outport by using this comma
 ```
 $ rm -rf usecase/
 $ gogen usecase CreateOrder Check Save
-```
-
-`usecase/createorder/port/outport.go`
-```
-package port  
-
-import (
-	"context"
-) 
-
-// CreateOrderOutport ...
-type CreateOrderOutport interface { 
-	Check(ctx context.Context, req CheckRequest) (*CheckResponse, error) 
-	Save(ctx context.Context, req SaveRequest) (*SaveResponse, error) 
-}
- 
-// CheckRequest ...
-type CheckRequest struct { 
-} 
-
-// CheckResponse ...
-type CheckResponse struct { 
-} 
-
-// SaveRequest ...
-type SaveRequest struct { 
-} 
-
-// SaveResponse ...
-type SaveResponse struct { 
-} 
-```
-
-`usecase/createorder/interactor.go`
-```
-package createorder
-
-import (
-	"context"
-
-	"your/go/path/project/usecase/createorder/port"
-)
-
-//go:generate mockery --dir port/ --name CreateOrderOutport -output mocks/
-
-// NewCreateOrderUsecase ...
-func NewCreateOrderUsecase(outputPort port.CreateOrderOutport) port.CreateOrderInport {
-	return &createOrderInteractor{
-		gateway: outputPort,
-	}
-}
-
-type createOrderInteractor struct {
-	gateway port.CreateOrderOutport
-}
-
-// Execute ...
-func (_r *createOrderInteractor) Execute(ctx context.Context, req port.CreateOrderRequest) (*port.CreateOrderResponse, error) { 
-
-	var res port.CreateOrderResponse  
-	
-	{
-		resOutport, err := _r.gateway.Check(ctx, port.CheckRequest { // 
-		})
-
-		if err != nil {
-			return nil, err
-		}
-		
-		_ = resOutport 
-	} 
-	
-	{
-		resOutport, err := _r.gateway.Save(ctx, port.SaveRequest { // 
-		})
-
-		if err != nil {
-			return nil, err
-		}
-		
-		_ = resOutport 
-	} 
-
-	return &res, nil
-}
 ```
 
 Now you will find outport has 2 new methods: Check and Save. Each of the method has it own Request Response struct in *Outport*. 
@@ -343,62 +117,7 @@ For test mock struct, we use mockery. So you need to install it first. See the g
 
 If you already have the mockery, call this command will create the test file for the respective usecase
 ```
-gogen test CreateOrder
-```
-This command will add new files
-```
-usecase/createorder/mocks/CreateOrderOutport.go
-usecase/createorder/interactor_test.go
-```
-
-`usecase/createorder/interactor_test.go`
-```
-package createorder
-
-import (
-	"context"
-	"testing"
-
-	"your/go/path/project/usecase/createorder/mocks"
-	"your/go/path/project/usecase/createorder/port"
-	"github.com/stretchr/testify/assert"
-)
-
-func Test_CreateOrder_Normal(t *testing.T) {
-
-	ctx := context.Background()
-
-	outputPort := mocks.CreateOrderOutport{} 
-	{
-		call := outputPort.On("Check", ctx, port.CheckRequest{ // 
-		})
-		call.Return(&port.CheckResponse{ // 
-		}, nil)
-	} 
-	{
-		call := outputPort.On("Save", ctx, port.SaveRequest{ // 
-		})
-		call.Return(&port.SaveResponse{ // 
-		}, nil)
-	} 
-	{
-		call := outputPort.On("Publish", ctx, port.PublishRequest{ // 
-		})
-		call.Return(&port.PublishResponse{ // 
-		}, nil)
-	} 
-
-	res, err := NewCreateOrderUsecase(&outputPort).Execute(ctx, port.CreateOrderRequest{ // 
-	})
-
-	assert.Nil(t, err)
-
-	assert.Equal(t, &port.CreateOrderResponse{ // 
-	}, res)
-
-}
-
-
+$ gogen test CreateOrder
 ```
 
 If you want to update your mock file you can use
@@ -414,61 +133,6 @@ or just simply delete the mock/ folder and call the `gogen test CreateOrder` aga
 Gateway is the struct to implement your outport interface. You need to set a name for your gateway. In this example we will set name : Production
 ```
 $ gogen gateway Production CreateOrder
-```
-This command will generate
-```
-gateway/production/CreateOrder.go
-```
-
-`gateway/production/CreateOrder.go`
-```
-package production
-
-import (
-	"context"
-
-	"your/go/path/project/infrastructure/log"
-	"your/go/path/project/infrastructure/util"
-	"your/go/path/project/usecase/createorder/port"
-)
-
-type createOrder struct {
-}
-
-// NewCreateOrderGateway ...
-func NewCreateOrderGateway() port.CreateOrderOutport {
-	return &createOrder{}
-}
-
-// Check ...
-func (_r *createOrder) Check(ctx context.Context, req port.CheckRequest) (*port.CheckResponse, error) {
-	log.InfoRequest(ctx, util.MustJSON(req))
-
-	var res port.CheckResponse 
-	
-	log.InfoResponse(ctx, util.MustJSON(res))
-	return &res, nil
-} 
-
-// Save ...
-func (_r *createOrder) Save(ctx context.Context, req port.SaveRequest) (*port.SaveResponse, error) {
-	log.InfoRequest(ctx, util.MustJSON(req))
-
-	var res port.SaveResponse 
-	
-	log.InfoResponse(ctx, util.MustJSON(res))
-	return &res, nil
-} 
-
-// Publish ...
-func (_r *createOrder) Publish(ctx context.Context, req port.PublishRequest) (*port.PublishResponse, error) {
-	log.InfoRequest(ctx, util.MustJSON(req))
-
-	var res port.PublishResponse 
-	
-	log.InfoResponse(ctx, util.MustJSON(res))
-	return &res, nil
-} 
 ```
 
 You can give any gateway name you like. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "experimental" gateway version. 
@@ -490,66 +154,7 @@ Call this command for create a controller. Restapi is your controller name. You 
 $ gogen controller restapi CreateOrder
 ```
 
-It will generate
-```
-controller/restapi/CreateOrder.go
-controller/interceptor.go
-controller/response.go
-```
-
-`controller/interceptor.go`
-```
-package restapi
-
-import (
-	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"net/http"
-	
-	"your/go/path/project/controller"
-	"your/go/path/project/infrastructure/log"
-	"your/go/path/project/infrastructure/util"
-	"your/go/path/project/shared/errcat"
-	"your/go/path/project/usecase/createorder/port"
-)
-
-// CreateOrder ...
-func CreateOrderHandler(inputPort port.CreateOrderInport) http.HandlerFunc {
-
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		ctx := log.ContextWithOperationID(r.Context())
-
-		jsonReq, _ := ioutil.ReadAll(r.Body)
-
-		log.InfoRequest(ctx, string(jsonReq))
-
-		var req port.CreateOrderRequest
-
-		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			newErr := errcat.FailUnmarshalResponseBodyError
-			log.ErrorResponse(ctx, newErr)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		res, err := inputPort.Execute(context.Background(), req)
-		if err != nil {
-			log.ErrorResponse(ctx, err)
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
-
-		log.InfoResponse(ctx, util.MustJSON(res))
-		fmt.Fprint(w, controller.NewSuccessResponse(res))
-
-	}
-}
-```
-
 You also will get the global interceptor for all of controller.
-
 
 ## 6. Glue your controller, usecase, and gateway together
 
@@ -558,61 +163,7 @@ After generate the usecase, gateway and controller, we need to bind them all by 
 $ gogen registry Default Restapi Production CreateOrder
 ```
 Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
-```
-application/registry/Default.go
-application/application.go
-infrastructure/httpserver/gracefully_shutdown.go
-infrastructure/httpserver/http_handler.go
-```
 
-
-`application/registry/Default.go`
-```
-package registry
-
-import (
-	"your/go/path/project/application"
-	"your/go/path/project/infrastructure/httpserver"
-	"your/go/path/project/controller"	
-	"your/go/path/project/controller/restapi"
-	"your/go/path/project/gateway/production"
-	"your/go/path/project/usecase/createorder"
-)
-
-type defaultRegistry struct {
-	httpserver.HTTPHandler
-}
-
-func NewDefaultRegistry() application.RegistryContract {
-
-	app := defaultRegistry{ //
-		HTTPHandler: httpserver.NewHTTPHandler(":8080"),
-	}
-
-	return &app
-
-}
-
-// RegisterUsecase is implementation of RegistryContract.RegisterUsecase()
-func (r *defaultRegistry) RegisterUsecase() {
-	r.createOrderHandler()
-}
-
-func (r *defaultRegistry) createOrderHandler() {
-  outport := production.NewCreateOrderGateway()
-  inport := createorder.NewCreateOrderUsecase(outport)
-  r.ServerMux.HandleFunc("/createorder", controller.Authorized(restapi.CreateOrderHandler(inport)))
-}
-
-```
-
-## 7. Create your own template
-
-You can customize your own template by call this command in your local path
-```
-$ gogen init
-```
-You will have '.gogen/templates/default' folder which have all the template needed base on default gogen cleann architecture. You may update or change the template localy and run the previous command using your template.
 
 
 another feature will coming
