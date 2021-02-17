@@ -3,18 +3,20 @@ package log
 import (
 	"context"
 	"fmt"
+	"runtime"
+	"strings"
 	"sync"
 	"time"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
+	"github.com/segmentio/ksuid"
 	"github.com/sirupsen/logrus"
 )
 
 type contextType string
 
-const funcConst = "func"
 const operationIDConst = "opid"
 const operationIDField = contextType(operationIDConst)
 
@@ -76,7 +78,6 @@ func getLogImpl() Logger {
 	return &defaultLogger
 }
 
-
 func getFunctionCall(skip int) string {
 	pc, _, line, ok := runtime.Caller(skip)
 	if !ok {
@@ -100,6 +101,14 @@ func getOperationID(ctx context.Context) string {
 	}
 
 	return operationID
+}
+
+func initOperationID() string {
+	return ksuid.New().String()
+}
+
+func composeAdditionalInfo(ctx context.Context, skip int) string {
+	return fmt.Sprintf("%s %s ", getOperationID(ctx), getFunctionCall(skip))
 }
 
 func (x *logrusImpl) Info(ctx context.Context, message string, args ...interface{}) {

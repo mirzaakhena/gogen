@@ -3,10 +3,6 @@ package log
 import (
 	"context"
 	"fmt"
-	"runtime"
-	"strings"
-
-	"github.com/segmentio/ksuid"
 )
 
 // Info is
@@ -47,11 +43,7 @@ func UseRotateFile(path, name string, maxAgeInDays int) {
 func ContextWithOperationID(ctx context.Context) context.Context {
 	opIDInterface := ctx.Value(operationIDField)
 	if opIDInterface == nil {
-		return context.WithValue(ctx, operationIDField, ksuid.New().String())
+		return context.WithValue(ctx, operationIDField, initOperationID())
 	}
 	return ctx
-}
-
-func composeAdditionalInfo(ctx context.Context, skip int) string {
-	return fmt.Sprintf("%s %s ", getOperationID(ctx), getFunctionCall(skip))
 }
