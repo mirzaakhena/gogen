@@ -47,21 +47,19 @@ func (d *enumBuilder) Generate() error {
 		EnumValues:  enumValues,
 	}
 
-	CreateFolder("%s/domain/entity", folderPath)
-
-	CreateFolder("%s/domain/service", folderPath)
+	CreateFolder("%s/entity", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"domain/entity/enum._go",
-		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(enumName)),
+		"entity/enum._go",
+		fmt.Sprintf("%s/entity/%s.go", folderPath, PascalCase(enumName)),
 		en,
 	)
 
 	CreateFolder("%s/shared/errcat", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"shared/errcat/error_type._go",
-		fmt.Sprintf("%s/shared/errcat/error_type.go", folderPath),
+		"shared/errcat/error._go",
+		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
 		struct{}{},
 	)
 

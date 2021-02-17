@@ -47,21 +47,21 @@ func (d *stateBuilder) Generate() error {
 		PackagePath: packagePath,
 	}
 
-	CreateFolder("%s/domain/entity", folderPath)
+	CreateFolder("%s/entity", folderPath)
 
-	CreateFolder("%s/domain/service", folderPath)
+	CreateFolder("%s/service", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"domain/entity/state._go",
-		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(stateName)),
+		"entity/state._go",
+		fmt.Sprintf("%s/entity/%s.go", folderPath, PascalCase(stateName)),
 		en,
 	)
 
 	CreateFolder("%s/shared/errcat", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"shared/errcat/error_type._go",
-		fmt.Sprintf("%s/shared/errcat/error_type.go", folderPath),
+		"shared/errcat/error._go",
+		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
 		struct{}{},
 	)
 

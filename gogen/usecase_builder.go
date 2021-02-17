@@ -36,8 +36,8 @@ func (d *usecaseBuilder) Generate() error {
 	CreateFolder("%s/shared/errcat", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"shared/errcat/error_type._go",
-		fmt.Sprintf("%s/shared/errcat/error_type.go", folderPath),
+		"shared/errcat/error._go",
+		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
 		struct{}{},
 	)
 

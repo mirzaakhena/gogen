@@ -8,15 +8,15 @@ import (
 
 //go:generate mockery --dir port/ --name {{PascalCase .UsecaseName}}Outport -output mocks/
 
+type {{CamelCase .UsecaseName}}Interactor struct {
+	outport port.{{PascalCase .UsecaseName}}Outport
+}
+
 // New{{PascalCase .UsecaseName}}Usecase ...
 func New{{PascalCase .UsecaseName}}Usecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
-		gateway: outputPort,
+		outport: outputPort,
 	}
-}
-
-type {{CamelCase .UsecaseName}}Interactor struct {
-	gateway port.{{PascalCase .UsecaseName}}Outport
 }
 
 // Execute ...
@@ -28,7 +28,7 @@ func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req 
 	// res.{{.FieldName}} = ...  {{end}} {{range .Outport}}
 	
 	{
-		resOutport, err := r.gateway.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
+		resOutport, err := r.outport.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
 			// {{PascalCase .FieldName}}: ...,  {{end}}
 		})
 

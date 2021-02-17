@@ -4,7 +4,4 @@ const (
 	FailUnmarshalResponseBodyError ErrorType = "ER1000 Fail to unmarshal response body"            // used by controller
 	NotAllowedStateTransitionError ErrorType = "ER1001 %s Transition from %s to %s is not allowed" // used by state
 	UnrecognizedEnum               ErrorType = "ER1003 %s is not recognized %s enum"               // used by enum
-	OrderlineMustNotEmptyError     ErrorType = "ER1022 Orderline must not empty"
-	InvalidPhoneNumberFormatError  ErrorType = "ER1023 %s is not valid phone number format"
-	BalanceIsNotEnoughError        ErrorType = "ER1024 User balance is not enough to continue the payment"
 )

@@ -15,7 +15,7 @@ This generator have basic structure like this
 ```
 application/
 controller/
-domain/
+entity/
 gateway/
 infrastructure/
 shared/
