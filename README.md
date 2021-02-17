@@ -163,3 +163,29 @@ After generate the usecase, gateway and controller, we need to bind them all by 
 $ gogen registry Default Restapi Production CreateOrder
 ```
 Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
+
+## 7. Create entity
+```
+$ gogen entity Order
+```
+
+## 8. Create valueobject
+```
+$ gogen valueobject Price
+```
+
+## 9. Create valuestring
+```
+$ gogen valuestring OrderID
+```
+
+## 10. Create enum
+```
+$ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
+```
+
+## 10. Create state
+```
+$ gogen enum OrderStatus Confirmed Success Fail
+```
+
