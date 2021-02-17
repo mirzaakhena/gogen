@@ -85,3 +85,9 @@ type StructureState struct {
 	StateName   string   //
 	StateValues []string //
 }
+
+type StructureError struct {
+	PackagePath string //
+	ErrorName   string //
+	ErrorPrefix string //
+}

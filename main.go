@@ -176,6 +176,14 @@ func main() {
 			GomodPath:   gomodPath,
 		})
 
+	case "error":
+		// gogen error SomethingGoesWrongError
+		gen = gogen.NewError(gogen.ErrorBuilderRequest{
+			FolderPath: folderPath,
+			ErrorName:  flag.Arg(1),
+			GomodPath:  gomodPath,
+		})
+
 	case "init":
 		// gogen init
 		gen = gogen.NewInit(gogen.InitBuilderRequest{

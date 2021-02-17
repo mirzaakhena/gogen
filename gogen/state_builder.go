@@ -71,5 +71,7 @@ func (d *stateBuilder) Generate() error {
 		struct{}{},
 	)
 
+	GoFormat(packagePath)
+
 	return nil
 }

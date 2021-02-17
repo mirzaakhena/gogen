@@ -54,6 +54,7 @@ var FuncMap = template.FuncMap{
 	"SnakeCase":  SnakeCase,
 	"UpperCase":  UpperCase,
 	"LowerCase":  LowerCase,
+	"SpaceCase":  SpaceCase,
 }
 
 func PrintTemplate(templateFile string, x interface{}) (string, error) {
@@ -75,6 +76,7 @@ func PrintTemplate(templateFile string, x interface{}) (string, error) {
 
 type configStruct struct {
 	SelectedTemplate string `json:"template"`
+	ErrorPrefix      string `json:"errorPrefix"`
 }
 
 func DefaultTemplatePath(templateFile string) string {
@@ -93,6 +95,36 @@ func DefaultTemplatePath(templateFile string) string {
 
 	// use global default template
 	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/default/%s", GetGopath(), templateFile)
+}
+
+func GetDefaultErrorEnumPrefix() string {
+
+	{
+		// read local template
+		configData, err := ioutil.ReadFile("./.gogen/config.json")
+		if err == nil {
+			var cs configStruct
+			if err := json.Unmarshal(configData, &cs); err != nil {
+				panic(err)
+			}
+			return cs.ErrorPrefix
+		}
+
+	}
+
+	// read local template
+	path := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/config.json", GetGopath())
+	configData, err := ioutil.ReadFile(path)
+	if err != nil {
+		panic(err)
+	}
+
+	var cs configStruct
+	if err := json.Unmarshal(configData, &cs); err != nil {
+		panic(err)
+	}
+	return cs.ErrorPrefix
+
 }
 
 func WriteFile(templateFile, outputFile string, data interface{}) error {
@@ -162,19 +194,29 @@ func LowerCase(name string) string {
 	return strings.ToLower(name)
 }
 
+var matchFirstCapSpaceCase = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCapSpaceCase = regexp.MustCompile("([a-z0-9])([A-Z])")
+
+// SpaceCase is
+func SpaceCase(str string) string {
+	snake := matchFirstCapSpaceCase.ReplaceAllString(str, "${1} ${2}")
+	snake = matchAllCapSpaceCase.ReplaceAllString(snake, "${1} ${2}")
+	return strings.ToLower(snake)
+}
+
 // PascalCase is
 func PascalCase(name string) string {
 	rs := []rune(name)
 	return strings.ToUpper(string(rs[0])) + string(rs[1:])
 }
 
-var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
-var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
+var matchFirstCapSnakeCase = regexp.MustCompile("(.)([A-Z][a-z]+)")
+var matchAllCapSnakeCase = regexp.MustCompile("([a-z0-9])([A-Z])")
 
 // SnakeCase is
 func SnakeCase(str string) string {
-	snake := matchFirstCap.ReplaceAllString(str, "${1}_${2}")
-	snake = matchAllCap.ReplaceAllString(snake, "${1}_${2}")
+	snake := matchFirstCapSnakeCase.ReplaceAllString(str, "${1}_${2}")
+	snake = matchAllCapSnakeCase.ReplaceAllString(snake, "${1}_${2}")
 	return strings.ToLower(snake)
 }
 

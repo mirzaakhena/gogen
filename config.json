@@ -1,6 +1,7 @@
 {
   "template": "default",
   "config": "toml",
+  "errorPrefix": "ER",
   "httpserver": "net/http",
   "httpclient": "net/http",
   "consumer": "nsq"
