@@ -194,3 +194,9 @@ state is a enum that has a transition behaviour
 $ gogen enum OrderStatus Confirmed Success Fail
 ```
 
+## 12. Create error enum
+error enum is a shared error collection 
+```
+$ gogen error SomethingGoesWrongError
+```
+
