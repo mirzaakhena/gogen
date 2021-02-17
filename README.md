@@ -165,26 +165,31 @@ $ gogen registry Default Restapi Production CreateOrder
 Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
 
 ## 7. Create entity
+Order is the entity name
 ```
 $ gogen entity Order
 ```
 
 ## 8. Create valueobject
+FullName has FirstName and LastName
 ```
-$ gogen valueobject Price
+$ gogen valueobject FullName FirstName LastName 
 ```
 
 ## 9. Create valuestring
+valuestring is a valueobject that has simple string type
 ```
 $ gogen valuestring OrderID
 ```
 
 ## 10. Create enum
+enum is single immutable value
 ```
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
 ## 10. Create state
+state is a enum that has a transition behaviour
 ```
 $ gogen enum OrderStatus Confirmed Success Fail
 ```
