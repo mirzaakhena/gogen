@@ -165,37 +165,37 @@ $ gogen registry Default Restapi Production CreateOrder
 Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generated for you
 
 ## 7. Create entity
-entity is mutable object that has an identifier
+entity is mutable object that has an identifier. This command will create new entity struct under `entity/` folder
 ```
 $ gogen entity Order
 ```
 
 ## 8. Create valueobject
-valueobject is immutable object that has no identifier
+valueobject is immutable object that has no identifier. This command will create new state valueobject under `entity/` folder
 ```
 $ gogen valueobject FullName FirstName LastName 
 ```
 
 ## 9. Create valuestring
-valuestring is a valueobject that has simple string type
+valuestring is a valueobject simple string type. This command will create new valuestring struct under `entity/` folder
 ```
 $ gogen valuestring OrderID
 ```
 
 ## 10. Create enum
-enum is a single immutable value
+enum is a single immutable value. This command will create new enum struct under `entity/` folder
 ```
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
 ## 11. Create state
-state is a enum that has a transition behaviour
+state is a enum that has a transition behaviour. This command will create new state struct under `entity/` folder
 ```
 $ gogen enum OrderStatus Confirmed Success Fail
 ```
 
 ## 12. Create error enum
-error enum is a shared error collection 
+error enum is a shared error collection. This command will added new error enum line in `shared/errcat/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError
 ```
