@@ -188,7 +188,7 @@ enum is single immutable value
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
-## 10. Create state
+## 11. Create state
 state is a enum that has a transition behaviour
 ```
 $ gogen enum OrderStatus Confirmed Success Fail
