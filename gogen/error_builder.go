@@ -51,7 +51,7 @@ func (d *errorBuilder) Generate() error {
 
 	_ = WriteFileIfNotExist(
 		"shared/errcat/error._go",
-		fmt.Sprintf("%s/error/%s.go", folderPath, PascalCase(errorName)),
+		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
 		en,
 	)
 
