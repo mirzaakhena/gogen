@@ -18,11 +18,11 @@ type validateTransition{{PascalCase .StateName}}Request struct {
 	DestinationState {{PascalCase .StateName}}Detail
 }
 
-type validateTransition{{PascalCase .StateName}} func(toStatus validateTransitionRequest) bool
+type validateTransition{{PascalCase .StateName}} func(toStatus validateTransition{{PascalCase .StateName}}Request) bool
 
-var stateRule{{PascalCase .StateName}} = map[{{PascalCase .StateName}}]validateTransition{
+var stateRule{{PascalCase .StateName}} = map[{{PascalCase .StateName}}]validateTransition{{PascalCase .StateName}}{
 	{{range .StateValues}}
-	{{PascalCase .}}{{PascalCase $.StateName}}State: func(req validateTransitionRequest) bool {
+	{{PascalCase .}}{{PascalCase $.StateName}}State: func(req validateTransition{{PascalCase $.StateName}}Request) bool {
 		return false
 	},
 	{{end}}
@@ -30,9 +30,9 @@ var stateRule{{PascalCase .StateName}} = map[{{PascalCase .StateName}}]validateT
 
 func (r {{PascalCase .StateName}}) ValidateNext{{PascalCase .StateName}}(newState {{PascalCase .StateName}}Detail) error {
 
-	validateFunc := stateRule[r]
+	validateFunc := stateRule{{PascalCase .StateName}}[r]
 
-	isAllowed := validateFunc(validateTransitionRequest{
+	isAllowed := validateFunc(validateTransition{{PascalCase .StateName}}Request{
 		DestinationState: newState,
 	})
 
