@@ -63,6 +63,27 @@ The main different is
 * *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
 * In *Repository* you often see CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase. 
 
+## Gogen Convention
+* As interface, inport has one and only one method which handle one usecase
+* Interactor is a manager for entity and outport
+* Outport is a servant for interactor. It will provide any data from external source
+* As interface, outport at least have one method and can have multiple method
+* All method in outport is guarantee used by interactor
+* Inport and Outport must not shared to other usecase. They are exclusive for specific usecase
+* Request or Response from Inport may shared to Outport in the same Usecase (Interactor)
+* Interactor have one and only one outport. Mutiple outport is prohibited
+* Entity is mandatory to made a validation for any input. Controller optionaly handle the validation
+* Interactor is the one who made a decision mostly based on Entity consideration.
+* Entity must not produce unpredictible value. Unpredictible value is provided by Inport or Outport
+* Since log is technology, log only found in Controller and Gateway not in Interactor or Entity
+* To avoid log polution, Log only printing the coming request, leaving response or error response
+* Error code can be produced by anyone and will printed in log
+* If somehow Gateway produce an error it may log the error, forward back the error, 
+  forward back the error with new error message or all the possibility
+* Error code at least have message and code (imitate the http protocol response code)
+* Error enum must accessed by developer and Error code can read by end user
+* Interactor and Entity is prioritized to be tested first rather than Controller and Gateway
+
 
 ## Download it
 ```
@@ -199,4 +220,3 @@ error enum is a shared error collection. This command will added new error enum 
 ```
 $ gogen error SomethingGoesWrongError
 ```
-
