@@ -89,5 +89,4 @@ type StructureState struct {
 type StructureError struct {
 	PackagePath string //
 	ErrorName   string //
-	ErrorPrefix string //
 }

@@ -97,36 +97,6 @@ func DefaultTemplatePath(templateFile string) string {
 	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/default/%s", GetGopath(), templateFile)
 }
 
-func GetDefaultErrorEnumPrefix() string {
-
-	{
-		// read local template
-		configData, err := ioutil.ReadFile("./.gogen/config.json")
-		if err == nil {
-			var cs configStruct
-			if err := json.Unmarshal(configData, &cs); err != nil {
-				panic(err)
-			}
-			return cs.ErrorPrefix
-		}
-
-	}
-
-	// read local template
-	path := fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/config.json", GetGopath())
-	configData, err := ioutil.ReadFile(path)
-	if err != nil {
-		panic(err)
-	}
-
-	var cs configStruct
-	if err := json.Unmarshal(configData, &cs); err != nil {
-		panic(err)
-	}
-	return cs.ErrorPrefix
-
-}
-
 func WriteFile(templateFile, outputFile string, data interface{}) error {
 
 	var buffer bytes.Buffer

@@ -39,12 +39,9 @@ func (d *errorBuilder) Generate() error {
 		packagePath = gomodPath
 	}
 
-	errorPrefix := GetDefaultErrorEnumPrefix()
-
 	en := StructureError{
 		PackagePath: packagePath,
 		ErrorName:   errorName,
-		ErrorPrefix: errorPrefix,
 	}
 
 	CreateFolder("%s/shared/errcat", folderPath)

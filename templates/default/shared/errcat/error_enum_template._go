@@ -1,1 +1,1 @@
-{{PascalCase .ErrorName}} ErrorType = "{{.ErrorPrefix}}1000 {{SpaceCase .ErrorName}}"
+{{PascalCase .ErrorName}} ErrorType = "ER1000 {{SpaceCase .ErrorName}}"
