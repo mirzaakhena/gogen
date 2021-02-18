@@ -57,11 +57,12 @@ Outport is implemented by Gateway
 
 By organize this usecase in a such structure, we can easily change the *Controller* or the *Gateway* in very flexible way without worry to change the logic part. This is how the logic and infrastructure separation is working.
 
-How it is different with common three layer architecture (Controller -> Service -> Repository) pattern?
-The main different is 
-* *Service* allowed to have many Repository. But in Clean Architecture, *Interactor* only have one *Outport*.
+## Comparison with three layer architecture (Controller -> Service -> Repository) pattern
+* *Controller* is the same controller for both architecture. 
+* *Service* is similar like *Interactor* with additional strict rule. *Service* allowed to have many Repository. But in Clean Architecture, *Interactor* only have one *Outport*.
 * *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
 * In *Repository* you often see CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase. 
+* *Repository* is an *Outport* with *Gateway* as it implementation.
 
 ## Gogen Convention
 * As interface, inport has one and only one method which handle one usecase
