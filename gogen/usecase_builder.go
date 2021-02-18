@@ -33,20 +33,6 @@ func (d *usecaseBuilder) Generate() error {
 		return fmt.Errorf("Usecase name must not empty")
 	}
 
-	CreateFolder("%s/shared/errcat", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error._go",
-		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error_enum._go",
-		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
-		struct{}{},
-	)
-
 	// create a folder with usecase name
 	CreateFolder("%s/usecase/%s/port", folderPath, LowerCase(usecaseName))
 
