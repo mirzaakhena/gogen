@@ -27,6 +27,7 @@ func usage() {
 	gogen valuestring OrderID
 	gogen enum PaymentMethod DANA Gopay Ovo
 	gogen state OrderStatus WaitingPayment Complete Cancelled Expired
+	gogen error SomethingGoesWrongError
 	gogen init
 `
 	fmt.Fprintf(os.Stdout, "%s\n", message)
