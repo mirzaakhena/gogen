@@ -14,13 +14,13 @@ type {{PascalCase .StateName}}Detail struct {
 	State {{PascalCase .StateName}}
 }
 
-type validateTransitionRequest struct {
+type validateTransition{{PascalCase .StateName}}Request struct {
 	DestinationState {{PascalCase .StateName}}Detail
 }
 
-type validateTransition func(toStatus validateTransitionRequest) bool
+type validateTransition{{PascalCase .StateName}} func(toStatus validateTransitionRequest) bool
 
-var stateRule = map[{{PascalCase .StateName}}]validateTransition{
+var stateRule{{PascalCase .StateName}} = map[{{PascalCase .StateName}}]validateTransition{
 	{{range .StateValues}}
 	{{PascalCase .}}{{PascalCase $.StateName}}State: func(req validateTransitionRequest) bool {
 		return false
