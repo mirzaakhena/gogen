@@ -26,7 +26,6 @@ func usage() {
 	gogen valueobject Name FirstName LastName
 	gogen valuestring OrderID
 	gogen enum PaymentMethod DANA Gopay Ovo
-	gogen state OrderStatus WaitingPayment Complete Cancelled Expired
 	gogen error SomethingGoesWrongError
 	gogen init
 `
@@ -166,15 +165,6 @@ func main() {
 			EnumName:   flag.Arg(1),
 			EnumValues: flag.Args()[2:],
 			GomodPath:  gomodPath,
-		})
-
-	case "state":
-		// gogen state OrderStatus
-		gen = gogen.NewState(gogen.StateBuilderRequest{
-			FolderPath:  folderPath,
-			StateName:   flag.Arg(1),
-			StateValues: flag.Args()[2:],
-			GomodPath:   gomodPath,
 		})
 
 	case "error":

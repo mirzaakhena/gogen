@@ -80,12 +80,6 @@ type StructureEnum struct {
 	EnumValues  []string //
 }
 
-type StructureState struct {
-	PackagePath string   //
-	StateName   string   //
-	StateValues []string //
-}
-
 type StructureError struct {
 	PackagePath string //
 	ErrorName   string //

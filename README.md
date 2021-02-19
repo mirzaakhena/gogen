@@ -193,7 +193,7 @@ $ gogen entity Order
 ```
 
 ## 8. Create valueobject
-valueobject is immutable object that has no identifier. This command will create new state valueobject under `entity/` folder
+valueobject is immutable object that has no identifier. This command will create new valueobject under `entity/` folder
 ```
 $ gogen valueobject FullName FirstName LastName 
 ```
@@ -210,13 +210,7 @@ enum is a single immutable value. This command will create new enum struct under
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
-## 11. Create state
-state is a enum that has a transition behaviour. This command will create new state struct under `entity/` folder
-```
-$ gogen enum OrderStatus Confirmed Success Fail
-```
-
-## 12. Create error enum
+## 11. Create error enum
 error enum is a shared error collection. This command will added new error enum line in `shared/errcat/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError

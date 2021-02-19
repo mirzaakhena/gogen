@@ -28,3 +28,7 @@ func New{{PascalCase .EnumName}}(name string) ({{PascalCase .EnumName}}, error) 
 
 	return {{PascalCase .EnumName}}(name), nil
 }
+
+func (r {{PascalCase .EnumName}}) GetDetail() {{PascalCase .EnumName}}Detail {
+	return enum{{PascalCase .EnumName}}[r]
+}

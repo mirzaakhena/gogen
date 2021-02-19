@@ -2,6 +2,5 @@ package errcat
 
 const (
 	FailUnmarshalResponseBodyError ErrorType = "ER1000 Fail to unmarshal response body"            // used by controller
-	NotAllowedStateTransitionError ErrorType = "ER1001 %s Transition from %s to %s is not allowed" // used by state
-	UnrecognizedEnum               ErrorType = "ER1003 %s is not recognized %s enum"               // used by enum
+	UnrecognizedEnum               ErrorType = "ER1001 %s is not recognized %s enum"               // used by enum
 )
