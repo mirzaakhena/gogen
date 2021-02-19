@@ -49,8 +49,6 @@ func (d *stateBuilder) Generate() error {
 
 	CreateFolder("%s/entity", folderPath)
 
-	CreateFolder("%s/service", folderPath)
-
 	_ = WriteFileIfNotExist(
 		"entity/state._go",
 		fmt.Sprintf("%s/entity/%s.go", folderPath, PascalCase(stateName)),
