@@ -18,7 +18,7 @@ func New{{PascalCase .RegistryName}}Registry() application.RegistryContract {
 
 	// log.UseRotateFile(
 	// 	config.GetString("logfile.path", "."),
-	// 	config.GetString("logfile.name", "orderservice"),
+	// 	config.GetString("logfile.name", "{{LowerCase .RegistryName}}service"),
 	// 	config.GetInt("logfile.age", 14),
 	// )
 
