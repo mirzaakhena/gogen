@@ -120,7 +120,10 @@ func ReadInterfaceMethod(node *ast.File, interfaceName string) (map[string]int, 
 						methods := map[string]int{}
 						for i, meths := range iface.Methods.List {
 
-							fType := meths.Type.(*ast.FuncType)
+							fType, ok := meths.Type.(*ast.FuncType)
+							if !ok {
+								continue
+							}
 							if len(fType.Params.List) < 2 {
 								return nil, fmt.Errorf("Need second params")
 							}
@@ -158,7 +161,10 @@ func ReadInterfaceMethodAndField(node *ast.File, interfaceName string, mapStruct
 						methods := []InterfaceMethod{}
 						for _, meths := range iface.Methods.List {
 
-							fType := meths.Type.(*ast.FuncType)
+							fType, ok := meths.Type.(*ast.FuncType)
+							if !ok {
+								continue
+							}
 							if len(fType.Params.List) < 2 {
 								return nil, fmt.Errorf("Need second params")
 							}
