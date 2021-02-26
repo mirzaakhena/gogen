@@ -20,25 +20,25 @@ func New{{PascalCase .UsecaseName}}Usecase(outputPort port.{{PascalCase .Usecase
 }
 
 // Execute ...
-func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) { {{if gt (len .Inport.RequestFields) 0}} 
+func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (res *port.{{PascalCase .UsecaseName}}Response, err error) { {{if gt (len .Inport.RequestFields) 0}}
 	{{range .Inport.RequestFields}}
 	_ = req.{{.FieldName}} {{end}} {{end}}
 
-	var res port.{{PascalCase .UsecaseName}}Response {{range .Inport.ResponseFields}}
+	res = &port.{{PascalCase .UsecaseName}}Response{} {{range .Inport.ResponseFields}}
 	// res.{{.FieldName}} = ...  {{end}} {{range .Outport}}
-	
-	{
-		resOutport, err := r.outport.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
-			// {{PascalCase .FieldName}}: ...,  {{end}}
-		})
 
-		if err != nil {
-			return nil, err
-		}
-		{{if gt (len .ResponseFields) 0}} {{range .ResponseFields}}
-		_ = resOutport.{{PascalCase .FieldName}}  {{end}} {{else}}
-		_ = resOutport {{end}}
-	} {{end}}
+    res{{PascalCase .MethodName}}, err := r.outport.{{PascalCase .MethodName}}(ctx, port.{{PascalCase .ParamType}} { // {{range .RequestFields}}
+        // {{PascalCase .FieldName}}: ...,  {{end}}
+    })
 
-	return &res, nil
+    if err != nil {
+        return nil, err
+    }
+
+    {{if gt (len .ResponseFields) 0}} {{range .ResponseFields}}
+    _ = res{{PascalCase .MethodName}}.{{PascalCase .FieldName}}  {{end}} {{else}}
+    _ = res{{PascalCase .MethodName}} {{end}}
+	{{end}}
+
+	return res, nil
 }
