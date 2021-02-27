@@ -95,6 +95,12 @@ func (d *usecaseBuilder) Generate() error {
 		)
 	}
 
+	_ = WriteFileIfNotExist(
+		"usecase/transaction._go",
+		fmt.Sprintf("%s/usecase/transaction.go", folderPath),
+		struct{}{},
+	)
+
 	return nil
 }
 
