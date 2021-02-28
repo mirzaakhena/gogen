@@ -32,3 +32,11 @@ func New{{PascalCase .EnumName}}(name string) ({{PascalCase .EnumName}}, error) 
 func (r {{PascalCase .EnumName}}) GetDetail() {{PascalCase .EnumName}}Detail {
 	return enum{{PascalCase .EnumName}}[r]
 }
+
+func (r {{PascalCase .EnumName}}) PossibleValues() []{{PascalCase .EnumName}} {
+	res := []{{PascalCase .EnumName}}{}
+	for key, _ := range enum{{PascalCase .EnumName}} {
+		res = append(res, key)
+	}
+	return res
+}
