@@ -175,6 +175,15 @@ func main() {
 			GomodPath:  gomodPath,
 		})
 
+	case "repository":
+		// gogen repository FindOrderByID Order
+		gen = gogen.NewRepository(gogen.RepositoryBuilderRequest{
+			FolderPath:     folderPath,
+			RepositoryName: flag.Arg(1),
+			EntityName:     flag.Arg(2),
+			GomodPath:      gomodPath,
+		})
+
 	case "init":
 		// gogen init
 		gen = gogen.NewInit(gogen.InitBuilderRequest{

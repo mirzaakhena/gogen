@@ -35,22 +35,20 @@ func (d *gatewayBuilder) Generate() error {
 
 	var outportMethods []InterfaceMethod
 
-	outportFile := fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName))
-	fSet := token.NewFileSet()
-	node, errParse := parser.ParseFile(fSet, outportFile, nil, parser.ParseComments)
-	if errParse != nil {
-		return errParse
+	// to create a gateway, first we need to read the Outport
+	node, err := parser.ParseFile(token.NewFileSet(), fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName)), nil, parser.ParseComments)
+	if err != nil {
+		return err
 	}
 
-	mapStruct, errCollect := CollectPortStructs(folderPath, PascalCase(usecaseName))
-	if errCollect != nil {
-		return errCollect
+	mapStruct, err := CollectPortStructs(folderPath, PascalCase(usecaseName))
+	if err != nil {
+		return err
 	}
 
-	var errRead error
-	outportMethods, errRead = ReadInterfaceMethodAndField(node, fmt.Sprintf("%sOutport", PascalCase(usecaseName)), mapStruct)
-	if errRead != nil {
-		return errRead
+	outportMethods, err = ReadInterfaceMethodAndField(node, fmt.Sprintf("%sOutport", PascalCase(usecaseName)), mapStruct)
+	if err != nil {
+		return err
 	}
 
 	packagePath := GetPackagePath()
@@ -67,7 +65,7 @@ func (d *gatewayBuilder) Generate() error {
 	}
 
 	// create a gateway folder with gateway name
-	CreateFolder("%s/gateway/%s", folderPath, LowerCase(gatewayName))
+	CreateFolder("%s/gateway/%s/repoimpl", folderPath, LowerCase(gatewayName))
 
 	CreateFolder("%s/infrastructure/log", folderPath)
 
@@ -92,14 +90,8 @@ func (d *gatewayBuilder) Generate() error {
 	CreateFolder("%s/infrastructure/util", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"infrastructure/util/extractor_optimist._go",
-		fmt.Sprintf("%s/infrastructure/util/extractor_optimist.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/util/extractor_pesimist._go",
-		fmt.Sprintf("%s/infrastructure/util/extractor_pesimist.go", folderPath),
+		"infrastructure/util/utils._go",
+		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
 		struct{}{},
 	)
 
@@ -109,7 +101,26 @@ func (d *gatewayBuilder) Generate() error {
 		ds,
 	)
 
+	_ = WriteFileIfNotExist(
+		"gateway/gatewayName/repoimpl/database._go",
+		fmt.Sprintf("%s/gateway/%s/repoimpl/database.go", folderPath, gatewayName),
+		ds,
+	)
+
+	_ = WriteFileIfNotExist(
+		"gateway/gatewayName/repoimpl/transaction._go",
+		fmt.Sprintf("%s/gateway/%s/repoimpl/transaction.go", folderPath, gatewayName),
+		ds,
+	)
+
+	_ = WriteFileIfNotExist(
+		"gateway/gatewayName/repoimpl/repository._go",
+		fmt.Sprintf("%s/gateway/%s/repoimpl/repository.go", folderPath, gatewayName),
+		ds,
+	)
+
 	GoModTidy()
+	GoImport(fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)))
 
 	return nil
 }

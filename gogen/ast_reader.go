@@ -160,30 +160,33 @@ func ReadInterfaceMethodAndField(node *ast.File, interfaceName string, mapStruct
 						}
 						methods := []InterfaceMethod{}
 						for _, meths := range iface.Methods.List {
+							switch fType := meths.Type.(type) {
+							case *ast.SelectorExpr:
+								fmt.Printf("%v\n", appendType(fType))
+							case *ast.FuncType:
+								{
+									if len(fType.Params.List) < 2 {
+										return nil, fmt.Errorf("Need second params")
+									}
 
-							fType, ok := meths.Type.(*ast.FuncType)
-							if !ok {
+									if fType.Results.NumFields() < 1 {
+										return nil, fmt.Errorf("Need result params")
+									}
+
+									paramType := fType.Params.List[1].Type.(*ast.Ident).Name
+									resultType := fType.Results.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
+
+									methods = append(methods, InterfaceMethod{
+										MethodName:     meths.Names[0].String(),
+										ParamType:      paramType,
+										ResultType:     resultType,
+										RequestFields:  mapStruct[paramType],
+										ResponseFields: mapStruct[resultType],
+									})
+								}
+							default:
 								continue
 							}
-							if len(fType.Params.List) < 2 {
-								return nil, fmt.Errorf("Need second params")
-							}
-
-							if fType.Results.NumFields() < 1 {
-								return nil, fmt.Errorf("Need result params")
-							}
-
-							paramType := fType.Params.List[1].Type.(*ast.Ident).Name
-							resultType := fType.Results.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).Name
-
-							methods = append(methods, InterfaceMethod{
-								MethodName:     meths.Names[0].String(),
-								ParamType:      paramType,
-								ResultType:     resultType,
-								RequestFields:  mapStruct[paramType],
-								ResponseFields: mapStruct[resultType],
-							})
-
 						}
 						return methods, nil
 

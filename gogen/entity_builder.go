@@ -40,12 +40,28 @@ func (d *entityBuilder) Generate() error {
 		EntityName:  entityName,
 	}
 
-	CreateFolder("%s/entity", folderPath)
+	CreateFolder("%s/domain/entity", folderPath)
+
+	CreateFolder("%s/domain/repository", folderPath)
+
+	CreateFolder("%s/domain/service", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"entity/entity._go",
-		fmt.Sprintf("%s/entity/%s.go", folderPath, PascalCase(entityName)),
+		"domain/entity/entity._go",
+		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(entityName)),
 		en,
+	)
+
+	_ = WriteFileIfNotExist(
+		"domain/repository/repository._go",
+		fmt.Sprintf("%s/domain/repository/repository._go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"domain/repository/database._go",
+		fmt.Sprintf("%s/domain/repository/database._go", folderPath),
+		struct{}{},
 	)
 
 	return nil

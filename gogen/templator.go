@@ -261,6 +261,15 @@ func GoModTidy() {
 	}
 }
 
+func GoImport(path string) {
+	//goimports -w
+	cmd := exec.Command("goimports", "-w", path)
+	cmd.Stderr = os.Stderr
+	if err := cmd.Run(); err != nil {
+		log.Fatalf("cmd.Run() failed with %s\n", err)
+	}
+}
+
 func ReadAllFileUnderFolder(folderPath string) ([]string, error) {
 	var files []string
 	fileInfo, err := ioutil.ReadDir(folderPath)

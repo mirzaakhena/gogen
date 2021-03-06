@@ -1,0 +1,68 @@
+package repoimpl
+
+import (
+	"context"
+	"sync"
+
+	"{{.PackagePath}}/infrastructure/log"
+)
+
+type contextDBType string
+
+var ContextDBValue contextDBType = "DB"
+
+var onceTransactionImpl sync.Once
+
+var transactionImplObj TransactionImpl
+
+func SingletonTransactionImpl(db interface{}) *TransactionImpl {
+	onceTransactionImpl.Do(func() {
+		transactionImplObj = TransactionImpl{db: db}
+	})
+	return &transactionImplObj
+}
+
+type TransactionImpl struct{
+    db interface{}
+}
+
+func (r *TransactionImpl) BeginTransaction(ctx context.Context) (context.Context, error) {
+	log.InfoRequest(ctx, "Begin")
+
+    dbTrx := r.db //db.Begin()
+
+	trxCtx := context.WithValue(ctx, ContextDBValue, dbTrx)
+
+	log.InfoResponse(ctx, "Begin")
+	return trxCtx, nil
+}
+
+func (r *TransactionImpl) CommitTransaction(ctx context.Context) error {
+	log.InfoRequest(ctx, "Commit")
+
+	db, err := extractDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	// db.Commit()
+	_ = db
+
+	log.InfoResponse(ctx, "Commit")
+	return nil
+}
+
+func (r *TransactionImpl) RollbackTransaction(ctx context.Context) error {
+	log.InfoRequest(ctx, "Rollback")
+
+	db, err := extractDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	// db.Rollback()
+	_ = db
+
+	log.InfoResponse(ctx, "Rollback")
+	return err
+}

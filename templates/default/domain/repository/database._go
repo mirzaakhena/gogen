@@ -1,0 +1,9 @@
+package repository
+
+import "context"
+
+// DatabaseRepo used to get database object from any database implementation.
+// For consistency reason both TransactionRepo and DatabaseRepo will seek database object under the context params
+type DatabaseRepo interface {
+	GetDatabase(ctx context.Context) context.Context
+}

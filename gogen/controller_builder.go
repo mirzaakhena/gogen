@@ -91,14 +91,8 @@ func (d *controllerBuilder) Generate() error {
 	CreateFolder("%s/infrastructure/util", folderPath)
 
 	_ = WriteFileIfNotExist(
-		"infrastructure/util/extractor_optimist._go",
-		fmt.Sprintf("%s/infrastructure/util/extractor_optimist.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/util/extractor_pesimist._go",
-		fmt.Sprintf("%s/infrastructure/util/extractor_pesimist.go", folderPath),
+		"infrastructure/util/utils._go",
+		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
 		struct{}{},
 	)
 
@@ -121,6 +115,20 @@ func (d *controllerBuilder) Generate() error {
 		"controller/response._go",
 		fmt.Sprintf("%s/controller/response.go", folderPath),
 		ct,
+	)
+
+	CreateFolder("%s/shared/errcat", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error._go",
+		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"shared/errcat/error_enum._go",
+		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
+		struct{}{},
 	)
 
 	GoModTidy()

@@ -3,8 +3,6 @@ package {{LowerCase .GatewayName}}
 import (
 	"context"
 
-	"{{.PackagePath}}/infrastructure/log"
-	"{{.PackagePath}}/infrastructure/util"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 

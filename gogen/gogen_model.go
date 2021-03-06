@@ -84,3 +84,9 @@ type StructureError struct {
 	PackagePath string //
 	ErrorName   string //
 }
+
+type StructureRepository struct {
+	PackagePath    string //
+	RepositoryName string //
+	EntityName     string //
+}

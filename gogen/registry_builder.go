@@ -4,8 +4,6 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"go/parser"
-	"go/token"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -144,18 +142,18 @@ func (d *registryBuilder) Generate() error {
 	}
 	defer file.Close()
 
-	fSet := token.NewFileSet()
-	node, errParse := parser.ParseFile(fSet, registryFile, nil, parser.ParseComments)
-	if errParse != nil {
-		return errParse
-	}
+	//fSet := token.NewFileSet()
+	//node, errParse := parser.ParseFile(fSet, registryFile, nil, parser.ParseComments)
+	//if errParse != nil {
+	//	return errParse
+	//}
 
-	existingImportMap := ReadImports(node)
+	//existingImportMap := ReadImports(node)
 
 	scanner := bufio.NewScanner(file)
 
 	methodCallMode := false
-	importMode := false
+	//importMode := false
 	var buffer bytes.Buffer
 	for scanner.Scan() {
 		row := scanner.Text()
@@ -176,32 +174,33 @@ func (d *registryBuilder) Generate() error {
 		if strings.HasPrefix(row, fmt.Sprintf("func (r *%sRegistry) RegisterUsecase() {", CamelCase(registryName))) {
 			methodCallMode = true
 
-		} else //
-
-		if importMode && strings.HasPrefix(row, ")") {
-			importMode = false
-
-			if _, exist := existingImportMap[fmt.Sprintf("\"%s/controller/%s\"", packagePath, controllerName)]; !exist {
-				buffer.WriteString(fmt.Sprintf("	\"%s/controller/%s\"", packagePath, controllerName))
-				buffer.WriteString("\n")
-			}
-
-			if _, exist := existingImportMap[fmt.Sprintf("\"%s/gateway/%s\"", packagePath, gatewayName)]; !exist {
-				buffer.WriteString(fmt.Sprintf("	\"%s/gateway/%s\"", packagePath, gatewayName))
-				buffer.WriteString("\n")
-			}
-
-			if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName))]; !exist {
-				buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName)))
-				buffer.WriteString("\n")
-			}
-
-		} else //
-
-		if strings.HasPrefix(row, "import (") {
-			importMode = true
-
 		}
+		//else //
+
+		//if importMode && strings.HasPrefix(row, ")") {
+		//	importMode = false
+		//
+		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/controller/%s\"", packagePath, controllerName)]; !exist {
+		//		buffer.WriteString(fmt.Sprintf("	\"%s/controller/%s\"", packagePath, controllerName))
+		//		buffer.WriteString("\n")
+		//	}
+		//
+		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/gateway/%s\"", packagePath, gatewayName)]; !exist {
+		//		buffer.WriteString(fmt.Sprintf("	\"%s/gateway/%s\"", packagePath, gatewayName))
+		//		buffer.WriteString("\n")
+		//	}
+		//
+		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName))]; !exist {
+		//		buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName)))
+		//		buffer.WriteString("\n")
+		//	}
+		//
+		//} else //
+		//
+		//if strings.HasPrefix(row, "import (") {
+		//	importMode = true
+		//
+		//}
 
 		buffer.WriteString(row)
 		buffer.WriteString("\n")
@@ -214,7 +213,7 @@ func (d *registryBuilder) Generate() error {
 		return err
 	}
 
-	GoFormat(packagePath)
+	GoImport(fmt.Sprintf("%s/application/registry/%s.go", folderPath, PascalCase(registryName)))
 
 	return nil
 }

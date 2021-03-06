@@ -49,7 +49,7 @@ func (d *errorBuilder) Generate() error {
 	_ = WriteFileIfNotExist(
 		"shared/errcat/error._go",
 		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
-		en,
+		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(

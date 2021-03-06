@@ -110,5 +110,7 @@ func (d *outportBuilder) Generate() error {
 		return err
 	}
 
+	GoImport(fmt.Sprintf("%s/usecase/%s/port/outport.go", folderPath, LowerCase(usecaseName)))
+
 	return nil
 }

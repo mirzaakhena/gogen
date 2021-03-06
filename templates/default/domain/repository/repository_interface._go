@@ -1,0 +1,4 @@
+
+type {{PascalCase .RepositoryName}}Repo interface {
+  {{PascalCase .RepositoryName}}(ctx context.Context, obj *entity.{{PascalCase .EntityName}}) (*entity.{{PascalCase .EntityName}}, error)
+}
