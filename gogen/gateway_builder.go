@@ -67,34 +67,6 @@ func (d *gatewayBuilder) Generate() error {
 	// create a gateway folder with gateway name
 	CreateFolder("%s/gateway/%s/repoimpl", folderPath, LowerCase(gatewayName))
 
-	CreateFolder("%s/infrastructure/log", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/contract._go",
-		fmt.Sprintf("%s/infrastructure/log/contract.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/implementation._go",
-		fmt.Sprintf("%s/infrastructure/log/implementation.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/public._go",
-		fmt.Sprintf("%s/infrastructure/log/public.go", folderPath),
-		struct{}{},
-	)
-
-	CreateFolder("%s/infrastructure/util", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/util/utils._go",
-		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
-		struct{}{},
-	)
-
 	_ = WriteFileIfNotExist(
 		"gateway/gatewayName/gateway._go",
 		fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)),
@@ -119,8 +91,44 @@ func (d *gatewayBuilder) Generate() error {
 		ds,
 	)
 
+	d.createLog(folderPath)
+
+	d.createUtil(folderPath)
+
 	GoModTidy()
 	GoImport(fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)))
 
 	return nil
+}
+
+func (d *gatewayBuilder) createUtil(folderPath string) {
+	CreateFolder("%s/infrastructure/util", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/util/utils._go",
+		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
+		struct{}{},
+	)
+}
+
+func (d *gatewayBuilder) createLog(folderPath string) {
+	CreateFolder("%s/infrastructure/log", folderPath)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/contract._go",
+		fmt.Sprintf("%s/infrastructure/log/contract.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/implementation._go",
+		fmt.Sprintf("%s/infrastructure/log/implementation.go", folderPath),
+		struct{}{},
+	)
+
+	_ = WriteFileIfNotExist(
+		"infrastructure/log/public._go",
+		fmt.Sprintf("%s/infrastructure/log/public.go", folderPath),
+		struct{}{},
+	)
 }

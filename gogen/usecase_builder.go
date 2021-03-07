@@ -107,19 +107,16 @@ func CollectPortStructs(folderPath, usecaseName string) (map[string][]FieldType,
 		return nil, err
 	}
 
-	var errExist error
 	for _, filename := range files {
 
-		portFile := fmt.Sprintf("%s/usecase/%s/port/%s", folderPath, LowerCase(usecaseName), filename)
-		fSet := token.NewFileSet()
-		node, errParse := parser.ParseFile(fSet, portFile, nil, parser.ParseComments)
-		if errParse != nil {
-			return nil, errParse
+		node, err := parser.ParseFile(token.NewFileSet(), fmt.Sprintf("%s/usecase/%s/port/%s", folderPath, LowerCase(usecaseName), filename), nil, parser.ParseComments)
+		if err != nil {
+			return nil, err
 		}
 
-		mapStruct, errExist = ReadAllStructInFile(node, mapStruct)
-		if errExist != nil {
-			return nil, errExist
+		mapStruct, err = ReadAllStructInFile(node, mapStruct)
+		if err != nil {
+			return nil, err
 		}
 
 	}
