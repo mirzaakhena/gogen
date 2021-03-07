@@ -54,13 +54,13 @@ func (d *entityBuilder) Generate() error {
 
 	_ = WriteFileIfNotExist(
 		"domain/repository/repository._go",
-		fmt.Sprintf("%s/domain/repository/repository._go", folderPath),
+		fmt.Sprintf("%s/domain/repository/repository.go", folderPath),
 		struct{}{},
 	)
 
 	_ = WriteFileIfNotExist(
 		"domain/repository/database._go",
-		fmt.Sprintf("%s/domain/repository/database._go", folderPath),
+		fmt.Sprintf("%s/domain/repository/database.go", folderPath),
 		struct{}{},
 	)
 
