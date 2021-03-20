@@ -3,13 +3,13 @@ package entity
 import (
 	"strings"
 
-	"{{.PackagePath}}/shared/errcat"
+	"{{.PackagePath}}/application/apperror"
 )
 
 type {{PascalCase .EnumName}} string
 
 const ( {{range .EnumValues}}
-	{{PascalCase .}}{{PascalCase $.EnumName}}Enum = {{PascalCase $.EnumName}}("{{UpperCase .}}") {{end}}
+	{{PascalCase .}}{{PascalCase $.EnumName}}Enum {{PascalCase $.EnumName}} = "{{UpperCase .}}" {{end}}
 )
 
 var enum{{PascalCase .EnumName}} = map[{{PascalCase .EnumName}}]{{PascalCase .EnumName}}Detail{ {{range .EnumValues}}
@@ -23,7 +23,7 @@ func New{{PascalCase .EnumName}}(name string) ({{PascalCase .EnumName}}, error) 
 	name = strings.ToUpper(name)
 
 	if _, exist := enum{{PascalCase .EnumName}}[{{PascalCase .EnumName}}(name)]; !exist {
-		return "", errcat.UnrecognizedEnum.Var(name, "{{PascalCase .EnumName}}")
+		return "", apperror.UnrecognizedEnum.Var(name, "{{PascalCase .EnumName}}")
 	}
 
 	return {{PascalCase .EnumName}}(name), nil

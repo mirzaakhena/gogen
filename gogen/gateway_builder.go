@@ -65,7 +65,7 @@ func (d *gatewayBuilder) Generate() error {
 	}
 
 	// create a gateway folder with gateway name
-	CreateFolder("%s/gateway/%s/repoimpl", folderPath, LowerCase(gatewayName))
+	CreateFolder("%s/gateway/%s/repositoryimpl", folderPath, LowerCase(gatewayName))
 
 	_ = WriteFileIfNotExist(
 		"gateway/gatewayName/gateway._go",
@@ -74,61 +74,31 @@ func (d *gatewayBuilder) Generate() error {
 	)
 
 	_ = WriteFileIfNotExist(
-		"gateway/gatewayName/repoimpl/database._go",
-		fmt.Sprintf("%s/gateway/%s/repoimpl/database.go", folderPath, gatewayName),
+		"gateway/gatewayName/repositoryimpl/repository._go",
+		fmt.Sprintf("%s/gateway/%s/repositoryimpl/repository.go", folderPath, gatewayName),
 		ds,
 	)
 
 	_ = WriteFileIfNotExist(
-		"gateway/gatewayName/repoimpl/transaction._go",
-		fmt.Sprintf("%s/gateway/%s/repoimpl/transaction.go", folderPath, gatewayName),
+		"gateway/gatewayName/repositoryimpl/database._go",
+		fmt.Sprintf("%s/gateway/%s/repositoryimpl/database.go", folderPath, gatewayName),
 		ds,
 	)
 
 	_ = WriteFileIfNotExist(
-		"gateway/gatewayName/repoimpl/repository._go",
-		fmt.Sprintf("%s/gateway/%s/repoimpl/repository.go", folderPath, gatewayName),
+		"gateway/gatewayName/repositoryimpl/transaction._go",
+		fmt.Sprintf("%s/gateway/%s/repositoryimpl/transaction.go", folderPath, gatewayName),
 		ds,
 	)
 
-	d.createLog(folderPath)
+	createLog(folderPath)
 
-	d.createUtil(folderPath)
+	createUtil(folderPath)
 
-	GoModTidy()
+	createDatabase(folderPath)
+
+	//GoModTidy()
 	GoImport(fmt.Sprintf("%s/gateway/%s/%s.go", folderPath, gatewayName, PascalCase(usecaseName)))
 
 	return nil
-}
-
-func (d *gatewayBuilder) createUtil(folderPath string) {
-	CreateFolder("%s/infrastructure/util", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/util/utils._go",
-		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
-		struct{}{},
-	)
-}
-
-func (d *gatewayBuilder) createLog(folderPath string) {
-	CreateFolder("%s/infrastructure/log", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/contract._go",
-		fmt.Sprintf("%s/infrastructure/log/contract.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/implementation._go",
-		fmt.Sprintf("%s/infrastructure/log/implementation.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/public._go",
-		fmt.Sprintf("%s/infrastructure/log/public.go", folderPath),
-		struct{}{},
-	)
 }

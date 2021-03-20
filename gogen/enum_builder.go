@@ -47,11 +47,7 @@ func (d *enumBuilder) Generate() error {
 		EnumValues:  enumValues,
 	}
 
-	CreateFolder("%s/domain/entity", folderPath)
-
-	CreateFolder("%s/domain/repository", folderPath)
-
-	CreateFolder("%s/domain/service", folderPath)
+	createDomain(folderPath)
 
 	_ = WriteFileIfNotExist(
 		"domain/entity/enum._go",
@@ -59,31 +55,7 @@ func (d *enumBuilder) Generate() error {
 		en,
 	)
 
-	_ = WriteFileIfNotExist(
-		"domain/repository/repository._go",
-		fmt.Sprintf("%s/domain/repository/repository._go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"domain/repository/database._go",
-		fmt.Sprintf("%s/domain/repository/database._go", folderPath),
-		struct{}{},
-	)
-
-	CreateFolder("%s/shared/errcat", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error._go",
-		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error_enum._go",
-		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
-		struct{}{},
-	)
+	createAppError(folderPath)
 
 	GoFormat(packagePath)
 

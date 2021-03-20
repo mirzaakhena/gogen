@@ -9,7 +9,7 @@ import (
 	"{{.PackagePath}}/controller"
 	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/infrastructure/util"
-	"{{.PackagePath}}/shared/errcat"
+	"{{.PackagePath}}/application/apperror"
 	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}/port"
 )
 
@@ -27,7 +27,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 		var req port.{{PascalCase .UsecaseName}}Request
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
-			newErr := errcat.FailUnmarshalResponseBodyError
+			newErr := apperror.FailUnmarshalResponseBodyError
 			log.ErrorResponse(ctx, newErr)
 			http.Error(w, controller.NewErrorResponse(newErr), http.StatusBadRequest)
 			return

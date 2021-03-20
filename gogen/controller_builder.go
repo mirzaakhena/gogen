@@ -68,33 +68,9 @@ func (d *controllerBuilder) Generate() error {
 		Inport:         inportMethod,
 	}
 
-	CreateFolder("%s/infrastructure/log", folderPath)
+	createLog(folderPath)
 
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/contract._go",
-		fmt.Sprintf("%s/infrastructure/log/contract.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/implementation._go",
-		fmt.Sprintf("%s/infrastructure/log/implementation.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/log/public._go",
-		fmt.Sprintf("%s/infrastructure/log/public.go", folderPath),
-		struct{}{},
-	)
-
-	CreateFolder("%s/infrastructure/util", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/util/utils._go",
-		fmt.Sprintf("%s/infrastructure/util/utils.go", folderPath),
-		struct{}{},
-	)
+	createUtil(folderPath)
 
 	// create a controller folder with controller name
 	CreateFolder("%s/controller/%s", folderPath, strings.ToLower(controllerName))
@@ -117,19 +93,7 @@ func (d *controllerBuilder) Generate() error {
 		ct,
 	)
 
-	CreateFolder("%s/shared/errcat", folderPath)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error._go",
-		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error_enum._go",
-		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
-		struct{}{},
-	)
+	createAppError(folderPath)
 
 	GoModTidy()
 

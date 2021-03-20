@@ -3,8 +3,7 @@ package registry
 import (
 	"fmt"
 	"{{.PackagePath}}/application"	
-	"{{.PackagePath}}/controller"	
-	"{{.PackagePath}}/infrastructure/config"
+	"{{.PackagePath}}/controller"
 	"{{.PackagePath}}/infrastructure/server"	
 )
 
@@ -14,16 +13,18 @@ type {{CamelCase .RegistryName}}Registry struct {
 
 func New{{PascalCase .RegistryName}}Registry() application.RegistryContract {
 
-	config.InitConfig("config-{{LowerCase .RegistryName}}", ".")
+	// config.InitConfig("config-default", ".")
+	// serverPort := config.GetInt("server.port", 8080)
+	serverPort := 8080
 
 	// log.UseRotateFile(
 	// 	config.GetString("logfile.path", "."),
-	// 	config.GetString("logfile.name", "{{LowerCase .RegistryName}}service"),
+	// 	config.GetString("logfile.name", "defaultservice"),
 	// 	config.GetInt("logfile.age", 14),
 	// )
 
-	app := {{CamelCase .RegistryName}}Registry{ //
-		HTTPHandler: server.NewHTTPHandler(fmt.Sprintf(":%d", config.GetInt("server.port", 8080))),
+	app := defaultRegistry{ //
+		HTTPHandler: server.NewHTTPHandler(fmt.Sprintf(":%d", serverPort)),
 	}
 
 	return &app

@@ -2,7 +2,7 @@ package controller
 
 import (
 	"{{.PackagePath}}/infrastructure/util"
-	"{{.PackagePath}}/shared/errcat"
+	"{{.PackagePath}}/application/apperror"
 )
 
 type Response struct {
@@ -23,7 +23,7 @@ func NewErrorResponse(err error) string {
 	var res Response
 	res.Success = false
 
-	et, ok := err.(errcat.ErrorWithCode)
+	et, ok := err.(apperror.ErrorWithCode)
 	if !ok {
 		res.ErrorCode = "UNDEFINED"
 		res.ErrorMessage = err.Error()

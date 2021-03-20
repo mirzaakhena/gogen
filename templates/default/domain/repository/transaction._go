@@ -7,7 +7,7 @@ import "context"
 type TransactionRepo interface {
 
 	// BeginTransaction is wrapping the transaction database object to context and return it
-	BeginTransaction(ctx context.Context) context.Context
+	BeginTransaction(ctx context.Context) (context.Context, error)
 
 	CommitTransaction(ctx context.Context) error
 
@@ -16,7 +16,10 @@ type TransactionRepo interface {
 
 // ExecuteTransaction is helper function that simplify the transaction execution handling
 func ExecuteTransaction(ctx context.Context, trx TransactionRepo, trxFunc func(dbCtx context.Context) error) (err error) {
-	dbCtx := trx.BeginTransaction(ctx)
+	dbCtx, err := trx.BeginTransaction(ctx)
+	if err != nil {
+		return err
+	}
 
 	defer func() {
 		if p := recover(); p != nil {

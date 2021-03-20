@@ -44,28 +44,16 @@ func (d *errorBuilder) Generate() error {
 		ErrorName:   errorName,
 	}
 
-	CreateFolder("%s/shared/errcat", folderPath)
+	createAppError(folderPath)
 
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error._go",
-		fmt.Sprintf("%s/shared/errcat/error.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"shared/errcat/error_enum._go",
-		fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath),
-		struct{}{},
-	)
-
-	errorFile := fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath)
+	errorFile := fmt.Sprintf("%s/application/apperror/error_enum.go", folderPath)
 	file, err := os.Open(errorFile)
 	if err != nil {
 		return fmt.Errorf("not found error file")
 	}
 	defer file.Close()
 
-	constTemplateCode, err := PrintTemplate("shared/errcat/error_enum_template._go", en)
+	constTemplateCode, err := PrintTemplate("application/apperror/error_enum_template._go", en)
 	if err != nil {
 		return err
 	}
@@ -92,7 +80,7 @@ func (d *errorBuilder) Generate() error {
 		buffer.WriteString("\n")
 	}
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/shared/errcat/error_enum.go", folderPath), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/application/apperror/error_enum.go", folderPath), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 

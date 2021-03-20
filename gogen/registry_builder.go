@@ -72,15 +72,15 @@ func (d *registryBuilder) Generate() error {
 	// create a folder with usecase name
 	CreateFolder("%s/application/registry", folderPath)
 
-	CreateFolder("%s/infrastructure/config", folderPath)
 	CreateFolder("%s/infrastructure/database", folderPath)
 	CreateFolder("%s/infrastructure/server", folderPath)
-	CreateFolder("%s/infrastructure/log", folderPath)
 
 	rg := StructureRegistry{
 		RegistryName: registryName,
 		PackagePath:  packagePath,
 	}
+
+	createConfig(folderPath)
 
 	_ = WriteFileIfNotExist(
 		"main._go",
@@ -103,12 +103,6 @@ func (d *registryBuilder) Generate() error {
 	_ = WriteFileIfNotExist(
 		"application/application._go",
 		fmt.Sprintf("%s/application/application.go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"infrastructure/config/config._go",
-		fmt.Sprintf("%s/infrastructure/config/config.go", folderPath),
 		struct{}{},
 	)
 
@@ -142,14 +136,6 @@ func (d *registryBuilder) Generate() error {
 	}
 	defer file.Close()
 
-	//fSet := token.NewFileSet()
-	//node, errParse := parser.ParseFile(fSet, registryFile, nil, parser.ParseComments)
-	//if errParse != nil {
-	//	return errParse
-	//}
-
-	//existingImportMap := ReadImports(node)
-
 	scanner := bufio.NewScanner(file)
 
 	methodCallMode := false
@@ -175,32 +161,6 @@ func (d *registryBuilder) Generate() error {
 			methodCallMode = true
 
 		}
-		//else //
-
-		//if importMode && strings.HasPrefix(row, ")") {
-		//	importMode = false
-		//
-		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/controller/%s\"", packagePath, controllerName)]; !exist {
-		//		buffer.WriteString(fmt.Sprintf("	\"%s/controller/%s\"", packagePath, controllerName))
-		//		buffer.WriteString("\n")
-		//	}
-		//
-		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/gateway/%s\"", packagePath, gatewayName)]; !exist {
-		//		buffer.WriteString(fmt.Sprintf("	\"%s/gateway/%s\"", packagePath, gatewayName))
-		//		buffer.WriteString("\n")
-		//	}
-		//
-		//	if _, exist := existingImportMap[fmt.Sprintf("\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName))]; !exist {
-		//		buffer.WriteString(fmt.Sprintf("	\"%s/usecase/%s\"", packagePath, LowerCase(usecaseName)))
-		//		buffer.WriteString("\n")
-		//	}
-		//
-		//} else //
-		//
-		//if strings.HasPrefix(row, "import (") {
-		//	importMode = true
-		//
-		//}
 
 		buffer.WriteString(row)
 		buffer.WriteString("\n")

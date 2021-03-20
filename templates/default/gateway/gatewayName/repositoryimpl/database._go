@@ -38,7 +38,7 @@ func extractDB(ctx context.Context) (interface{}, error) {
 
     //	db, ok := ctx.Value(ContextDBValue).(*gorm.DB)
     //  if !ok {
-    //	    return nil, errcat.DatabaseNotFoundInContextError
+    //	    return nil, apperror.DatabaseNotFoundInContextError
     //  }
 
 	return nil, nil

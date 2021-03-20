@@ -1,16 +1,14 @@
-package errcat
+package apperror
 
 import (
 	"fmt"
 	"strings"
 )
 
-// errcat is acronim of "error catalog"
-//
 // Error is defined as this sample
-// TransitionError = ErrorType("ER1043 Transition from %s to %s is not allowed")
+// TransitionError ErrorType = "ER1043 Transition from %s to %s is not allowed"
 //
-// All Error is registered in shared/errcat/error_enum.go file
+// All Error is registered in application/apperror/error_enum.go file
 //
 // TransitionError
 // 		is the Error Enum
@@ -51,7 +49,7 @@ func (u ErrorType) Code() string {
 
 // Var add generic variable value to the error message
 // for example you have
-// UserNotFoundError = ErrorType("ER1092 User with name %s is not found")
+// UserNotFoundError ErrorType = "ER1092 User with name %s is not found"
 // Then you can insert the name
 // UserNotFoundError.Var("mirza") --> "User with name mirza is not found"
 func (u ErrorType) Var(params ...interface{}) error {

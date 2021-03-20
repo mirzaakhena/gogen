@@ -13,3 +13,6 @@ func New{{PascalCase .ValueStringName}}(req {{PascalCase .ValueStringName}}Reque
 	return obj, nil
 }
 
+func (r {{PascalCase .ValueStringName}}) String() string {
+	return string(r)
+}

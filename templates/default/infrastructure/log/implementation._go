@@ -3,15 +3,12 @@ package log
 import (
 	"context"
 	"fmt"
-	"runtime"
-	"strings"
 	"sync"
 	"time"
 
 	nested "github.com/antonfisher/nested-logrus-formatter"
 	rotatelogs "github.com/lestrrat-go/file-rotatelogs"
 	"github.com/rifflock/lfshook"
-	"github.com/segmentio/ksuid"
 	"github.com/sirupsen/logrus"
 )
 
@@ -76,39 +73,6 @@ func getLogImpl() Logger {
 	})
 
 	return &defaultLogger
-}
-
-func getFunctionCall(skip int) string {
-	pc, _, line, ok := runtime.Caller(skip)
-	if !ok {
-		return ""
-	}
-	funcName := runtime.FuncForPC(pc).Name()
-	x := strings.LastIndex(funcName, "/")
-	return fmt.Sprintf("%s:%d", funcName[x+1:], line)
-}
-
-func getOperationID(ctx context.Context) string {
-
-	operationIDInterface := ctx.Value(operationIDField)
-	if operationIDInterface == nil {
-		return "-"
-	}
-
-	operationID, ok := operationIDInterface.(string)
-	if !ok {
-		return "-"
-	}
-
-	return operationID
-}
-
-func initOperationID() string {
-	return ksuid.New().String()
-}
-
-func composeAdditionalInfo(ctx context.Context, skip int) string {
-	return fmt.Sprintf("%s %s ", getOperationID(ctx), getFunctionCall(skip))
 }
 
 func (x *logrusImpl) Info(ctx context.Context, message string, args ...interface{}) {

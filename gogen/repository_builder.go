@@ -4,6 +4,8 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
+	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"strings"
@@ -39,6 +41,29 @@ func (d *repositoryBuilder) Generate() error {
 		return fmt.Errorf("EntityName name must not empty")
 	}
 
+	files, err := ReadAllFileUnderFolder(fmt.Sprintf("%s/domain/entity", folderPath))
+	if err != nil {
+		return err
+	}
+
+	mapStruct := map[string][]FieldType{}
+	for _, filename := range files {
+		node, err := parser.ParseFile(token.NewFileSet(), fmt.Sprintf("%s/domain/entity/%s", folderPath, filename), nil, parser.ParseComments)
+		if err != nil {
+			return err
+		}
+
+		mapStruct, err = ReadAllStructInFile(node, mapStruct)
+		if err != nil {
+			return err
+		}
+	}
+
+	_, ok := mapStruct[entityName]
+	if !ok {
+		return fmt.Errorf("entity %s is not found", entityName)
+	}
+
 	packagePath := GetPackagePath()
 
 	if len(strings.TrimSpace(packagePath)) == 0 {
@@ -51,21 +76,9 @@ func (d *repositoryBuilder) Generate() error {
 		EntityName:     entityName,
 	}
 
-	CreateFolder("%s/domain/repository", folderPath)
+	createDomain(folderPath)
 
-	_ = WriteFileIfNotExist(
-		"domain/repository/repository._go",
-		fmt.Sprintf("%s/domain/repository/repository._go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"domain/repository/database._go",
-		fmt.Sprintf("%s/domain/repository/database._go", folderPath),
-		struct{}{},
-	)
-
-	errorFile := fmt.Sprintf("%s/domain/repository/repository._go", folderPath)
+	errorFile := fmt.Sprintf("%s/domain/repository/repository.go", folderPath)
 	file, err := os.Open(errorFile)
 	if err != nil {
 		return fmt.Errorf("not found error file")
@@ -89,11 +102,11 @@ func (d *repositoryBuilder) Generate() error {
 	buffer.WriteString(constTemplateCode)
 	buffer.WriteString("\n")
 
-	if err := ioutil.WriteFile(fmt.Sprintf("%s/domain/repository/repository._go", folderPath), buffer.Bytes(), 0644); err != nil {
+	if err := ioutil.WriteFile(fmt.Sprintf("%s/domain/repository/repository.go", folderPath), buffer.Bytes(), 0644); err != nil {
 		return err
 	}
 
-	GoImport(fmt.Sprintf("%s/domain/repository/repository._go", folderPath))
+	GoImport(fmt.Sprintf("%s/domain/repository/repository.go", folderPath))
 
 	return nil
 }

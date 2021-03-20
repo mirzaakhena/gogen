@@ -1,4 +1,4 @@
-package errcat
+package apperror
 
 const (
 	FailUnmarshalResponseBodyError ErrorType = "ER1000 Fail to unmarshal response body"  // used by controller

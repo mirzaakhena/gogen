@@ -40,28 +40,12 @@ func (d *valueStringBuilder) Generate() error {
 		PackagePath:     packagePath,
 	}
 
-	CreateFolder("%s/domain/entity", folderPath)
-
-	CreateFolder("%s/domain/repository", folderPath)
-
-	CreateFolder("%s/domain/service", folderPath)
+	createDomain(folderPath)
 
 	_ = WriteFileIfNotExist(
 		"domain/entity/valuestring._go",
 		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(valueStringName)),
 		en,
-	)
-
-	_ = WriteFileIfNotExist(
-		"domain/repository/repository._go",
-		fmt.Sprintf("%s/domain/repository/repository._go", folderPath),
-		struct{}{},
-	)
-
-	_ = WriteFileIfNotExist(
-		"domain/repository/database._go",
-		fmt.Sprintf("%s/domain/repository/database._go", folderPath),
-		struct{}{},
 	)
 
 	return nil
