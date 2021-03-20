@@ -23,7 +23,7 @@ func Test_{{PascalCase .UsecaseName}}_Normal(t *testing.T) {
 		}, nil)
 	} {{end}}
 
-	res, err := New{{PascalCase .UsecaseName}}Usecase(&outputPort).Execute(ctx, port.{{PascalCase .Inport.ParamType}}{ // {{range .Inport.RequestFields}}
+	res, err := NewUsecase(&outputPort).Execute(ctx, port.{{PascalCase .Inport.ParamType}}{ // {{range .Inport.RequestFields}}
 		// {{.FieldName}}: ..., {{end}}
 	})
 

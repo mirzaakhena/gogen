@@ -12,8 +12,8 @@ type {{CamelCase .UsecaseName}}Interactor struct {
 	outport port.{{PascalCase .UsecaseName}}Outport
 }
 
-// New{{PascalCase .UsecaseName}}Usecase ...
-func New{{PascalCase .UsecaseName}}Usecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
+// NewUsecase ...
+func NewUsecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
 		outport: outputPort,
 	}

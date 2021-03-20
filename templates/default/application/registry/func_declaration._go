@@ -1,6 +1,6 @@
 
 func (r *{{CamelCase .RegistryName}}Registry) {{CamelCase .UsecaseName}}Handler() {
   outport := {{LowerCase .GatewayName}}.New{{PascalCase .UsecaseName}}Gateway()
-  inport := {{LowerCase .UsecaseName}}.New{{PascalCase .UsecaseName}}Usecase(outport)
+  inport := {{LowerCase .UsecaseName}}.NewUsecase(outport)
   r.ServerMux.HandleFunc("/{{LowerCase .UsecaseName}}", controller.Authorized({{LowerCase .ControllerName}}.{{PascalCase .UsecaseName}}Handler(inport)))
 }
