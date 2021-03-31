@@ -31,6 +31,7 @@ func main() {
 	f, ok := cmds[flag.Arg(0)]
 	if !ok {
 		fmt.Printf("ERROR : %v", "Command is not recognized")
+		return
 	}
 
 	obj, err = f()
@@ -42,6 +43,7 @@ func main() {
 	err = obj.Run()
 	if err != nil {
 		fmt.Printf("ERROR : %v", err.Error())
+		return
 	}
 
 }
