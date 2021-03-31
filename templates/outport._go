@@ -1,0 +1,6 @@
+package port
+
+// {{PascalCase .UsecaseName}}Outport ...
+type {{PascalCase .UsecaseName}}Outport interface {
+
+}

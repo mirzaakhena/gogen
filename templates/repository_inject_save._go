@@ -1,0 +1,5 @@
+
+err = r.outport.{{PascalCase .RepositoryName}}(ctx, {{CamelCase .EntityName}}Obj)
+if err != nil {
+    return nil, err
+}

@@ -1,0 +1,24 @@
+package {{LowerCase .UsecaseName}}
+
+//go:generate mockery --dir port/ --name {{PascalCase .UsecaseName}}Outport -output mocks/
+
+type {{CamelCase .UsecaseName}}Interactor struct {
+	outport port.{{PascalCase .UsecaseName}}Outport
+}
+
+// NewUsecase ...
+func NewUsecase(outputPort port.{{PascalCase .UsecaseName}}Outport) port.{{PascalCase .UsecaseName}}Inport {
+	return &{{CamelCase .UsecaseName}}Interactor{
+		outport: outputPort,
+	}
+}
+
+// Execute ...
+func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req port.{{PascalCase .UsecaseName}}Request) (*port.{{PascalCase .UsecaseName}}Response, error) {
+
+    res := &port.{{PascalCase .UsecaseName}}Response{}
+
+    // code your usecase definition here ...
+
+    return res, nil
+}

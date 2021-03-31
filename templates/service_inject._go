@@ -1,0 +1,4 @@
+err = r.outport.{{PascalCase .ServiceName}}(ctx)
+if err != nil {
+    return nil, err
+}

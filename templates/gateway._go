@@ -1,0 +1,17 @@
+package {{LowerCase .GatewayName}}
+
+type {{CamelCase .UsecaseName}}Gateway struct {
+}
+
+// New{{PascalCase .UsecaseName}}Gateway ...
+func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
+	return &{{CamelCase .UsecaseName}}Gateway{}
+}
+
+{{range .Methods}}
+func (r *{{CamelCase $.UsecaseName}}Gateway) {{.MethodSignature}} {
+    log.InfoRequest(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}
