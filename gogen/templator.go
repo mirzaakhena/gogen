@@ -238,7 +238,6 @@ func IsExist(fileOrDir string) bool {
 		return false
 	}
 	return false
-
 }
 
 func GoFormat(path string) {

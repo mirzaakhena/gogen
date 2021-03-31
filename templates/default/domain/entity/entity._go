@@ -1,7 +1,7 @@
 package entity
 
 type {{PascalCase .EntityName}} struct {
-
+    ID string `` //
 }
 
 type {{PascalCase .EntityName}}Request struct {

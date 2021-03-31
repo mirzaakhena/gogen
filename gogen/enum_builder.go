@@ -47,11 +47,13 @@ func (d *enumBuilder) Generate() error {
 		EnumValues:  enumValues,
 	}
 
+	CreateFolder("%s/vo", folderPath)
+
 	createDomain(folderPath)
 
 	_ = WriteFileIfNotExist(
-		"domain/entity/enum._go",
-		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(enumName)),
+		"domain/vo/enum._go",
+		fmt.Sprintf("%s/domain/vo/%s.go", folderPath, PascalCase(enumName)),
 		en,
 	)
 

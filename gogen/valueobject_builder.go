@@ -47,11 +47,13 @@ func (d *valueObjectBuilder) Generate() error {
 		FieldNames:      fieldNames,
 	}
 
+	CreateFolder("%s/vo", folderPath)
+
 	createDomain(folderPath)
 
 	_ = WriteFileIfNotExist(
-		"domain/entity/valueobject._go",
-		fmt.Sprintf("%s/domain/entity/%s.go", folderPath, PascalCase(valueObjectName)),
+		"domain/vo/valueobject._go",
+		fmt.Sprintf("%s/domain/vo/%s.go", folderPath, PascalCase(valueObjectName)),
 		en,
 	)
 

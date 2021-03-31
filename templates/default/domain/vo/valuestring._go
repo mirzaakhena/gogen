@@ -1,4 +1,4 @@
-package entity
+package vo
 
 type {{PascalCase .ValueStringName}} string
 
