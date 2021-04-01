@@ -3,7 +3,10 @@ package gogencommand
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"strings"
+
+	"golang.org/x/tools/imports"
 
 	"github.com/mirzaakhena/gogen2/templates"
 	"github.com/mirzaakhena/gogen2/util"
@@ -45,9 +48,18 @@ func (obj *EnumModel) Run() error {
 		if err != nil {
 			return err
 		}
-	}
 
-	util.GoFormat()
+		// reformat the import
+		newBytes, err := imports.Process(outputFile, nil, nil)
+		if err != nil {
+			return err
+		}
+
+		// rewrite it
+		if err := ioutil.WriteFile(outputFile, newBytes, 0644); err != nil {
+			return err
+		}
+	}
 
 	return nil
 

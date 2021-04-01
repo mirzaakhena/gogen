@@ -129,6 +129,23 @@ func (obj *ControllerModel) Run() error {
 		}
 	}
 
+	{
+		outputFile := fmt.Sprintf("controller/interceptor.go")
+		err = util.WriteFileIfNotExist(templates.ControllerInterceptorGinFile, outputFile, obj)
+		if err != nil {
+			return err
+		}
+
+		newBytes, err := imports.Process(outputFile, nil, nil)
+		if err != nil {
+			return err
+		}
+
+		if err := ioutil.WriteFile(outputFile, newBytes, 0644); err != nil {
+			return err
+		}
+	}
+
 	return nil
 
 }

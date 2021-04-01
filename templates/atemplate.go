@@ -2,23 +2,29 @@ package templates
 
 import _ "embed"
 
-//go:embed inport._go
+//go:embed usecase_inport._go
 var InportFile string
 
-//go:embed outport._go
+//go:embed usecase_outport._go
 var OutportFile string
 
-//go:embed interactor._go
+//go:embed usecase_interactor._go
 var InteractorFile string
 
-//go:embed entity._go
+//go:embed domain_entity._go
 var EntityFile string
 
-//go:embed method._go
+//go:embed domain_entity_method._go
 var MethodFile string
 
-//go:embed enum._go
+//go:embed domain_vo_enum._go
 var EnumFile string
+
+//go:embed domain_vo_valueobject._go
+var ValueObjectFile string
+
+//go:embed domain_vo_valuestring._go
+var ValueStringFile string
 
 //go:embed error_enum._go
 var ErrorEnumFile string
@@ -28,12 +34,6 @@ var ErrorFuncFile string
 
 //go:embed error_enum_template._go
 var ErrorEnumTemplateFile string
-
-//go:embed valueobject._go
-var ValueObjectFile string
-
-//go:embed valuestring._go
-var ValueStringFile string
 
 //go:embed repository._go
 var RepositoryFile string
@@ -88,6 +88,12 @@ var ControllerGinFile string
 
 //go:embed controller_response._go
 var ControllerResponseFile string
+
+//go:embed controller_interceptor._go
+var ControllerInterceptorFile string
+
+//go:embed controller_interceptor-gin._go
+var ControllerInterceptorGinFile string
 
 //go:embed infra_log_contract._go
 var LogContractFile string

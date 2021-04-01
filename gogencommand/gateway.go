@@ -53,7 +53,7 @@ func (obj *GatewayModel) Run() error {
 	InitiateHelper()
 
 	// create a gateway folder
-	err := util.CreateFolderIfNotExist("gateway/%s", strings.ToLower(obj.GatewayName))
+	err := util.CreateFolderIfNotExist("gateway")
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func (obj *GatewayModel) Run() error {
 	// write the gateway file
 	{
 
-		outputFile := fmt.Sprintf("gateway/%s/%s.go", strings.ToLower(obj.GatewayName), strings.ToLower(obj.UsecaseName))
+		outputFile := fmt.Sprintf("gateway/%s.go", strings.ToLower(obj.GatewayName))
 		err = util.WriteFileIfNotExist(templates.GatewayFile, outputFile, obj)
 		if err != nil {
 			return err
@@ -328,18 +328,30 @@ func (obj *GatewayModel) handleDefaultReturnValues(fType *ast.FuncType, methodSi
 			if t.String() == "error" {
 				v = "nil"
 			} else //
+
 			if strings.HasPrefix(t.String(), "int") {
 				v = "0"
 			} else //
+
 			if t.String() == "string" {
 				v = "\"\""
 			} else //
+
 			if strings.HasPrefix(t.String(), "float") {
 				v = "0.0"
 			} else //
+
 			if t.String() == "bool" {
 				v = "false"
+
+			} else //
+
+			{
+				v = "nil"
 			}
+
+		default:
+			v = "nil"
 
 		}
 

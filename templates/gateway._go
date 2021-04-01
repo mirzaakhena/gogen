@@ -1,15 +1,15 @@
-package {{LowerCase .GatewayName}}
+package gateway
 
-type {{CamelCase .UsecaseName}}Gateway struct {
+type {{CamelCase .GatewayName}}Gateway struct {
 }
 
-// New{{PascalCase .UsecaseName}}Gateway ...
-func New{{PascalCase .UsecaseName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
-	return &{{CamelCase .UsecaseName}}Gateway{}
+// New{{PascalCase .GatewayName}}Gateway ...
+func New{{PascalCase .GatewayName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
+	return &{{CamelCase .GatewayName}}Gateway{}
 }
 
 {{range .Methods}}
-func (r *{{CamelCase $.UsecaseName}}Gateway) {{.MethodSignature}} {
+func (r *{{CamelCase $.GatewayName}}Gateway) {{.MethodSignature}} {
     log.InfoRequest(ctx, "called")
 
     return {{.DefaultReturnVal}}

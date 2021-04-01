@@ -31,14 +31,16 @@ Repository
     create error
 
 Service
-    creating service's method
+    create service interface
+    inject code to outport
+    inject code to interactor
 
 Controller
     read inport
     create controller
 
 Gateway
-    read outport
+    read all method interface in outport
     create gateway with implementation
 
 Registry
@@ -52,13 +54,14 @@ Test
     read outport
     read interactor
 
+Init
+
 Config
 
 Template
 
-handle return value int float trim \t space
-
-every interface method must have context in the firts argument
 
 semua append code harus lewat ast
 
+https://betterprogramming.pub/rpc-in-golang-19661033942
+https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9

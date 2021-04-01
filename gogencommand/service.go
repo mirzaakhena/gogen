@@ -63,7 +63,49 @@ func (obj *ServiceModel) Run() error {
 
 	// service.go is already exist. check existing service interface
 	{
-		// TODO ...
+		fset := token.NewFileSet()
+
+		pkgs, err := parser.ParseDir(fset, "domain/service", nil, parser.ParseComments)
+		if err != nil {
+			if err != nil {
+				return err
+			}
+		}
+
+		for _, pkg := range pkgs {
+			for _, file := range pkg.Files {
+
+				for _, decl := range file.Decls {
+
+					gen, ok := decl.(*ast.GenDecl)
+					if !ok {
+						continue
+					}
+
+					if gen.Tok != token.TYPE {
+						continue
+					}
+
+					for _, specs := range gen.Specs {
+
+						ts, ok := specs.(*ast.TypeSpec)
+						if !ok {
+							continue
+						}
+
+						if _, ok = ts.Type.(*ast.InterfaceType); !ok {
+							continue
+						}
+
+						// repo already exist, abort the command
+						if ts.Name.String() == fmt.Sprintf("%sRepo", obj.ServiceName) {
+							return fmt.Errorf("repo %s already exist", obj.ServiceName)
+						}
+					}
+				}
+
+			}
+		}
 	}
 
 	file, err := os.Open(existingFile)

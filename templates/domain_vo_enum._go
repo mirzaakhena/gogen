@@ -1,11 +1,5 @@
 package vo
 
-import (
-	"strings"
-
-	"{{.PackagePath}}/application/apperror"
-)
-
 type {{PascalCase .EnumName}} string
 
 const ( {{range .EnumValues}}

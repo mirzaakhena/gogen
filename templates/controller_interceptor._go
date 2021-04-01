@@ -1,0 +1,19 @@
+package {{LowerCase .ControllerName}}
+
+func Authorized(next http.Handler) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		authorized := true
+
+		if !authorized {
+			err := errors.New("Not Authorized")
+			http.Error(w, NewErrorResponse(err), http.StatusForbidden)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+
+	}
+
+}
