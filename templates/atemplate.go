@@ -80,6 +80,9 @@ var ServiceTemplateFile string
 //go:embed gateway._go
 var GatewayFile string
 
+//go:embed gateway_inject_method._go
+var GatewayMethodFile string
+
 //go:embed controller._go
 var ControllerFile string
 

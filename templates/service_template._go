@@ -1,5 +1,5 @@
 type {{PascalCase .ServiceName}}Service interface {
-    {{PascalCase .ServiceName}}(ctx context.Context, req {{PascalCase .ServiceName}}ServiceRequest) ({{PascalCase .ServiceName}}ServiceResponse, error)
+    {{PascalCase .ServiceName}}(ctx context.Context, req {{PascalCase .ServiceName}}ServiceRequest) (*{{PascalCase .ServiceName}}ServiceResponse, error)
 }
 
 type {{PascalCase .ServiceName}}ServiceRequest struct {

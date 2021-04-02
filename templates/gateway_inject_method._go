@@ -1,0 +1,8 @@
+
+{{range .Methods}}
+func (r *{{CamelCase $.GatewayName}}Gateway) {{.MethodName}}{{.MethodSignature}} {
+    log.InfoRequest(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}

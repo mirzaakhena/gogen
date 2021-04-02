@@ -65,3 +65,8 @@ semua append code harus lewat ast
 
 https://betterprogramming.pub/rpc-in-golang-19661033942
 https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9
+
+
+
+reconstruct method
+

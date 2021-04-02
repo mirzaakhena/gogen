@@ -94,11 +94,7 @@ func (obj *RepositoryModel) Run() error {
 				for _, decl := range file.Decls {
 
 					gen, ok := decl.(*ast.GenDecl)
-					if !ok {
-						continue
-					}
-
-					if gen.Tok != token.TYPE {
+					if !ok || gen.Tok != token.TYPE {
 						continue
 					}
 

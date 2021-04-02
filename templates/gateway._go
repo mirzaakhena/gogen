@@ -9,7 +9,7 @@ func New{{PascalCase .GatewayName}}Gateway() port.{{PascalCase .UsecaseName}}Out
 }
 
 {{range .Methods}}
-func (r *{{CamelCase $.GatewayName}}Gateway) {{.MethodSignature}} {
+func (r *{{CamelCase $.GatewayName}}Gateway) {{.MethodName}}{{.MethodSignature}} {
     log.InfoRequest(ctx, "called")
 
     return {{.DefaultReturnVal}}
