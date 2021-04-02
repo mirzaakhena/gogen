@@ -195,16 +195,6 @@ func (obj *GatewayModel) readOutport() error {
 	// read the outport.go
 	fileReadPath := fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(obj.UsecaseName))
 
-	//datas, err := ioutil.ReadFile(fileReadPath)
-	//if err != nil {
-	//	return err
-	//}
-
-	//fileStr := string(datas)
-
-	// split all the line of code into []string
-	//lineSplit := strings.Split(fileStr, "\n")
-
 	fset := token.NewFileSet()
 	astOutportFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
 	if err != nil {
@@ -306,7 +296,6 @@ func (obj *GatewayModel) handleInterfaces(port string, gen *ast.GenDecl) error {
 			if fType, ok := meths.Type.(*ast.FuncType); ok {
 
 				// if this is direct method in interface, then handle it
-				//ms := lineSplit[fset.Position(meths.Names[0].NamePos).Line-1]
 				err := obj.handleDefaultReturnValues(port, fType, meths.Names[0].String())
 				if err != nil {
 					return err
@@ -331,16 +320,6 @@ func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error
 
 	for _, pkg := range pkgs {
 		for _, file := range pkg.Files {
-
-			// read the repository.go
-			//datas, err := ioutil.ReadFile(fset.File(file.Package).Name())
-			//if err != nil {
-			//	return err
-			//}
-
-			//fileStr := string(datas)
-
-			//lineSplit := strings.Split(fileStr, "\n")
 
 			port := file.Name.String()
 
@@ -376,7 +355,6 @@ func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error
 						// currently only expect the function
 						if fType, ok := meths.Type.(*ast.FuncType); ok {
 
-							//ms := lineSplit[fset.Position(meths.Names[0].NamePos).Line-1]
 							err = obj.handleDefaultReturnValues(port, fType, meths.Names[0].String())
 							if err != nil {
 								return err
@@ -419,54 +397,58 @@ func (obj *GatewayModel) handleDefaultReturnValues(port string, fType *ast.FuncT
 	}
 
 	defRetVal := ""
-	lenRetList := len(fType.Results.List)
-	for i, retList := range fType.Results.List {
+	if fType.Results != nil {
+		lenRetList := len(fType.Results.List)
+		for i, retList := range fType.Results.List {
 
-		v := ""
-		switch t := retList.Type.(type) {
+			v := ""
+			switch t := retList.Type.(type) {
 
-		case *ast.SelectorExpr:
-			v = fmt.Sprintf("%v.%v{}", t.X, t.Sel)
+			case *ast.SelectorExpr:
+				v = fmt.Sprintf("%v.%v{}", t.X, t.Sel)
 
-		case *ast.StarExpr:
-			v = "nil"
-
-		case *ast.Ident:
-			if t.String() == "error" {
+			case *ast.StarExpr:
 				v = "nil"
-			} else //
 
-			if strings.HasPrefix(t.String(), "int") {
-				v = "0"
-			} else //
+			case *ast.Ident:
 
-			if t.String() == "string" {
-				v = "\"\""
-			} else //
+				if t.Name == "error" {
+					v = "nil"
+				} else //
 
-			if strings.HasPrefix(t.String(), "float") {
-				v = "0.0"
-			} else //
+				if strings.HasPrefix(t.Name, "int") {
+					v = "0"
+				} else //
 
-			if t.String() == "bool" {
-				v = "false"
+				if t.Name == "string" {
+					v = "\"\""
+				} else //
 
-			} else //
+				if strings.HasPrefix(t.Name, "float") {
+					v = "0.0"
+				} else //
 
-			{
+				if t.Name == "bool" {
+					v = "false"
+
+				} else //
+
+				{
+					v = "nil"
+				}
+
+			default:
 				v = "nil"
+
 			}
 
-		default:
-			v = "nil"
+			// append the comma
+			if i < lenRetList-1 {
+				defRetVal += v + ", "
+			} else {
+				defRetVal += v
+			}
 
-		}
-
-		// append the comma
-		if i < lenRetList-1 {
-			defRetVal += v + ", "
-		} else {
-			defRetVal += v
 		}
 
 	}
