@@ -1,3 +1,5 @@
+
+
 Usecase
     create inport
     create outport
@@ -24,7 +26,7 @@ Error
     create error
 
 Repository
-    creating repo
+    creating repo interface
     creating entity
     inject code into outport
     inject code into interactor
@@ -41,7 +43,10 @@ Controller
 
 Gateway
     read all method interface in outport
-    create gateway with implementation
+    read all import
+    if it is extend external interface then read this external interface
+    if gateway never exist, create gateway with implementation
+    if gateway already created before, then just add unimplemented method only
 
 Registry
     read controller

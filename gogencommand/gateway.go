@@ -296,7 +296,7 @@ func (obj *GatewayModel) handleInterfaces(port string, gen *ast.GenDecl) error {
 			if fType, ok := meths.Type.(*ast.FuncType); ok {
 
 				// if this is direct method in interface, then handle it
-				err := obj.handleDefaultReturnValues(port, fType, meths.Names[0].String())
+				err := obj.handleMethodSignature(port, fType, meths.Names[0].String())
 				if err != nil {
 					return err
 				}
@@ -355,7 +355,7 @@ func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error
 						// currently only expect the function
 						if fType, ok := meths.Type.(*ast.FuncType); ok {
 
-							err = obj.handleDefaultReturnValues(port, fType, meths.Names[0].String())
+							err = obj.handleMethodSignature(port, fType, meths.Names[0].String())
 							if err != nil {
 								return err
 							}
@@ -373,7 +373,7 @@ func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error
 
 }
 
-func (obj *GatewayModel) handleDefaultReturnValues(port string, fType *ast.FuncType, methodName string) error {
+func (obj *GatewayModel) handleMethodSignature(port string, fType *ast.FuncType, methodName string) error {
 
 	ms := strings.TrimSpace(methodName)
 
