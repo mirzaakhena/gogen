@@ -37,16 +37,16 @@ Service
     inject code to outport
     inject code to interactor
 
-Controller
-    read inport
-    create controller
-
 Gateway
     read all method interface in outport
     read all import
     if it is extend external interface then read this external interface
     if gateway never exist, create gateway with implementation
     if gateway already created before, then just add unimplemented method only
+
+Controller
+    read inport
+    create controller
 
 Registry
     read controller
