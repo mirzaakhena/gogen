@@ -1,18 +1,18 @@
-package port
+package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
 )
 
-// {{PascalCase .UsecaseName}}Inport ...
-type {{PascalCase .UsecaseName}}Inport interface {
-	Execute(ctx context.Context, req {{PascalCase .UsecaseName}}Request) (*{{PascalCase .UsecaseName}}Response, error)
+// Inport of {{.UsecaseName}}
+type Inport interface {
+	Execute(ctx context.Context, req InportRequest) (*InportResponse, error)
 }
 
-// {{PascalCase .UsecaseName}}Request ...
-type {{PascalCase .UsecaseName}}Request struct {
+// InportRequest is request payload to run the usecase {{.UsecaseName}}
+type InportRequest struct {
 }
 
-// {{PascalCase .UsecaseName}}Response ...
-type {{PascalCase .UsecaseName}}Response struct {
+// InportResponse is response payload after running the usecase {{.UsecaseName}}
+type InportResponse struct {
 }

@@ -67,9 +67,7 @@ func (obj *ServiceModel) Run() error {
 
 		pkgs, err := parser.ParseDir(fset, "domain/service", nil, parser.ParseComments)
 		if err != nil {
-			if err != nil {
-				return err
-			}
+			return err
 		}
 
 		for _, pkg := range pkgs {
@@ -144,7 +142,10 @@ func (obj *ServiceModel) Run() error {
 		return err
 	}
 
-	obj.injectToOutport()
+	err = obj.injectToOutport()
+	if err != nil {
+		return err
+	}
 
 	return nil
 
@@ -158,7 +159,7 @@ func (obj *ServiceModel) injectToOutport() error {
 	}
 
 	// read the current outport.go if it not exist we will create it
-	fileReadPath := fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(obj.UsecaseName))
+	fileReadPath := fmt.Sprintf("usecase/%s/outport.go", strings.ToLower(obj.UsecaseName))
 
 	fset := token.NewFileSet()
 
@@ -193,7 +194,7 @@ func (obj *ServiceModel) injectToOutport() error {
 			}
 
 			// find the specific outport interface
-			if ts.Name.String() != fmt.Sprintf("%sOutport", obj.UsecaseName) {
+			if ts.Name.String() != "Outport" {
 				continue
 			}
 
@@ -236,9 +237,11 @@ func (obj *ServiceModel) injectToOutport() error {
 		if err := printer.Fprint(f, fset, file); err != nil {
 			return err
 		}
-		err = f.Close()
-		if err != nil {
-			return err
+		if f != nil {
+			err = f.Close()
+			if err != nil {
+				return err
+			}
 		}
 
 		// reformat and import
@@ -254,7 +257,10 @@ func (obj *ServiceModel) injectToOutport() error {
 	}
 
 	// try to inject to interactor
-	obj.injectToInteractor()
+	err = obj.injectToInteractor()
+	if err != nil {
+		return err
+	}
 
 	return nil
 
@@ -289,7 +295,10 @@ func (obj *ServiceModel) injectToInteractor() error {
 			needToInject = true
 
 			// we need to provide an error
-			InitiateError()
+			err = InitiateError()
+			if err != nil {
+				return err
+			}
 
 			// inject code
 			buffer.WriteString(constTemplateCode)

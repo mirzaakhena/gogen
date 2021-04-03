@@ -67,6 +67,8 @@ func (obj *MethodModel) Run() error {
 		return err
 	}
 
+	// TODO inject to interactor
+
 	return nil
 
 }

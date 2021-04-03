@@ -174,7 +174,7 @@ func (obj *RepositoryModel) injectToOutport() error {
 	}
 
 	// read the current outport.go if it not exist we will create it
-	fileReadPath := fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(obj.UsecaseName))
+	fileReadPath := fmt.Sprintf("usecase/%s/outport.go", strings.ToLower(obj.UsecaseName))
 
 	fset := token.NewFileSet()
 
@@ -209,7 +209,7 @@ func (obj *RepositoryModel) injectToOutport() error {
 			}
 
 			// find the specific outport interface
-			if ts.Name.String() != fmt.Sprintf("%sOutport", obj.UsecaseName) {
+			if ts.Name.String() != "Outport" {
 				continue
 			}
 

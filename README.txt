@@ -59,6 +59,8 @@ Test
     read outport
     read interactor
 
+Mapper
+
 Init
 
 Config

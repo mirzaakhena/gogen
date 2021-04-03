@@ -34,14 +34,14 @@ func NewUsecaseModel() (Commander, error) {
 func (obj *UsecaseModel) Run() error {
 
 	// create a usecase and port folder
-	err := util.CreateFolderIfNotExist("usecase/%s/port", strings.ToLower(obj.UsecaseName))
+	err := util.CreateFolderIfNotExist("usecase/%s", strings.ToLower(obj.UsecaseName))
 	if err != nil {
 		return err
 	}
 
 	// create inport.go
 	{
-		outputFile := fmt.Sprintf("usecase/%s/port/inport.go", strings.ToLower(obj.UsecaseName))
+		outputFile := fmt.Sprintf("usecase/%s/inport.go", strings.ToLower(obj.UsecaseName))
 		err = util.WriteFileIfNotExist(templates.InportFile, outputFile, obj)
 		if err != nil {
 			return err
@@ -50,7 +50,7 @@ func (obj *UsecaseModel) Run() error {
 
 	// create outport.go
 	{
-		outputFile := fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(obj.UsecaseName))
+		outputFile := fmt.Sprintf("usecase/%s/outport.go", strings.ToLower(obj.UsecaseName))
 		err = util.WriteFileIfNotExist(templates.OutportFile, outputFile, obj)
 		if err != nil {
 			return err

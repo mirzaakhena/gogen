@@ -193,7 +193,7 @@ func (obj *GatewayModel) Run() error {
 func (obj *GatewayModel) readOutport() error {
 
 	// read the outport.go
-	fileReadPath := fmt.Sprintf("usecase/%s/port/outport.go", strings.ToLower(obj.UsecaseName))
+	fileReadPath := fmt.Sprintf("usecase/%s/outport.go", strings.ToLower(obj.UsecaseName))
 
 	fset := token.NewFileSet()
 	astOutportFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
@@ -273,7 +273,7 @@ func (obj *GatewayModel) handleInterfaces(port string, gen *ast.GenDecl) error {
 		}
 
 		// check the specific outport interface
-		if ts.Name.String() != fmt.Sprintf("%sOutport", obj.UsecaseName) {
+		if ts.Name.String() != "Outport" {
 			continue
 		}
 

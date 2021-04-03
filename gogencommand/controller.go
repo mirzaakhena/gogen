@@ -50,7 +50,7 @@ func (obj *ControllerModel) Run() error {
 	}
 
 	{
-		fileReadPath := fmt.Sprintf("usecase/%s/port/inport.go", obj.UsecaseName)
+		fileReadPath := fmt.Sprintf("usecase/%s/inport.go", obj.UsecaseName)
 
 		fset := token.NewFileSet()
 		astFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
@@ -81,7 +81,7 @@ func (obj *ControllerModel) Run() error {
 					continue
 				}
 
-				if ts.Name.String() != fmt.Sprintf("%sInport", obj.UsecaseName) {
+				if ts.Name.String() != "Inport" {
 					continue
 				}
 

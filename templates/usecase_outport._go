@@ -1,6 +1,6 @@
-package port
+package {{LowerCase .UsecaseName}}
 
-// {{PascalCase .UsecaseName}}Outport ...
-type {{PascalCase .UsecaseName}}Outport interface {
+// Outport of {{.UsecaseName}}
+type Outport interface {
 
 }

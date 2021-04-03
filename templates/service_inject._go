@@ -2,5 +2,3 @@
 if err != nil {
     return nil, err
 }
-
-_ = {{CamelCase .ServiceName}}Response
