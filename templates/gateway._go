@@ -4,7 +4,7 @@ type {{CamelCase .GatewayName}}Gateway struct {
 }
 
 // New{{PascalCase .GatewayName}}Gateway ...
-func New{{PascalCase .GatewayName}}Gateway() port.{{PascalCase .UsecaseName}}Outport {
+func New{{PascalCase .GatewayName}}Gateway() {{LowerCase .UsecaseName}}.Outport {
 	return &{{CamelCase .GatewayName}}Gateway{}
 }
 

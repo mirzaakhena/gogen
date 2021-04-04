@@ -1,7 +1,7 @@
 package {{LowerCase .ControllerName}}
 
 // {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName}}Inport) http.HandlerFunc {
+func {{PascalCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -11,7 +11,7 @@ func {{PascalCase .UsecaseName}}Handler(inputPort port.{{PascalCase .UsecaseName
 
 		log.InfoRequest(ctx, string(jsonReq))
 
-		var req port.{{PascalCase .UsecaseName}}Request
+		var req {{LowerCase .UsecaseName}}.InportRequest
 
 		if err := json.Unmarshal(jsonReq, &req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
