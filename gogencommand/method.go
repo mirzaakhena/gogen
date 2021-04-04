@@ -23,7 +23,7 @@ func NewMethodModel() (Commander, error) {
 
 	values := flag.Args()[1:]
 	if len(values) != 2 {
-		return nil, fmt.Errorf("method format must include `gogen entity MethodName EntityName`")
+		return nil, fmt.Errorf("method format must include `gogen method MethodName EntityName`")
 	}
 
 	return &MethodModel{
