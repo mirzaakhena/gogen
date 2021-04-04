@@ -38,7 +38,7 @@ func NewGatewayModel() (Commander, error) {
 	// create a gateway need 2 parameter
 	values := flag.Args()[1:]
 	if len(values) != 2 {
-		return nil, fmt.Errorf("gateway name must not empty. `gogen controller GatewayName UsecaseName`")
+		return nil, fmt.Errorf("gateway name must not empty. `gogen gateway GatewayName UsecaseName`")
 	}
 
 	return &GatewayModel{
