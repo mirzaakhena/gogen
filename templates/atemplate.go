@@ -86,11 +86,17 @@ var GatewayMethodFile string
 //go:embed controller._go
 var ControllerFile string
 
-//go:embed controller-gin._go
-var ControllerGinFile string
+//go:embed controller_interceptor._go
+var ControllerInterceptorFile string
+
+//go:embed controller_response._go
+var ControllerResponseFile string
 
 //go:embed controller_inport._go
 var ControllerInportFile string
+
+//go:embed controller-gin._go
+var ControllerGinFile string
 
 //go:embed controller_bindrouter-gin._go
 var ControllerBindRouterGinFile string
@@ -100,12 +106,6 @@ var ControllerInterceptorGinFile string
 
 //go:embed controller_func-gin._go
 var ControllerFuncGinFile string
-
-//go:embed controller_interceptor._go
-var ControllerInterceptorFile string
-
-//go:embed controller_response._go
-var ControllerResponseFile string
 
 //go:embed infra_log_contract._go
 var LogContractFile string
