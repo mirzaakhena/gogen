@@ -1,30 +1,9 @@
 package {{LowerCase .ControllerName}}
 
-// {{PascalCase .UsecaseName}} ...
-func {{PascalCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) gin.HandlerFunc {
+type Controller struct{
+    Router gin.IRouter
+}
 
-	return func(c *gin.Context) {
-
-		ctx := log.ContextWithLogGroupID(c.Request.Context())
-
-		var req {{LowerCase .UsecaseName}}.InportRequest
-		if err := c.BindJSON(&req); err != nil {
-			log.ErrorResponse(ctx, err)
-			c.JSON(http.StatusBadRequest, err.Error())
-			return
-		}
-
-		log.InfoRequest(ctx, util.MustJSON(req))
-
-		res, err := inputPort.Execute(ctx, req)
-		if err != nil {
-			log.ErrorResponse(ctx, err)
-			c.JSON(http.StatusBadRequest, controller.NewErrorResponse(err))
-			return
-		}
-
-		log.InfoResponse(ctx, util.MustJSON(res))
-		c.JSON(http.StatusOK, controller.NewSuccessResponse(res))
-
-	}
+// RegisterRouter registering all the router
+func (r *Controller)RegisterRouter() {
 }

@@ -201,8 +201,6 @@ func (obj *GatewayModel) readOutport() error {
 		return err
 	}
 
-	port := astOutportFile.Name.String()
-
 	// loop the outport for imports
 	for _, decl := range astOutportFile.Decls {
 
@@ -217,6 +215,8 @@ func (obj *GatewayModel) readOutport() error {
 		}
 
 	}
+
+	port := astOutportFile.Name.String()
 
 	// loop the outport for interfaces
 	for _, decl := range astOutportFile.Decls {

@@ -1,16 +1,12 @@
 package {{LowerCase .ControllerName}}
 
-func Authorized() gin.HandlerFunc {
-
+// Authorized is an interceptor
+func (r *Controller)Authorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
-
 		authorized := true
-
 		if !authorized {
 			c.AbortWithStatus(http.StatusForbidden)
 			return
 		}
-
 	}
-
 }
