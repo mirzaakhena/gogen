@@ -301,6 +301,6 @@ func GetGoMod() string {
 		log.Fatal(err)
 	}
 
-	return gomodPath
+	return strings.Trim(gomodPath, "\"")
 
 }

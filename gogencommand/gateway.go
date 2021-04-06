@@ -285,7 +285,6 @@ func (obj *GatewayModel) handleInterfaces(port string, gen *ast.GenDecl) error {
 				expression := fType.X.(*ast.Ident).String()
 				pathWithGomod := obj.ImportPath[expression]
 				pathOnly := strings.TrimPrefix(pathWithGomod, obj.PackagePath+"/")
-
 				err := obj.readInterface(fType.Sel.String(), pathOnly)
 				if err != nil {
 					return err

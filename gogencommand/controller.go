@@ -49,50 +49,9 @@ func (obj *ControllerModel) Run() error {
 		return err
 	}
 
-	{
-		fileReadPath := fmt.Sprintf("usecase/%s/inport.go", obj.UsecaseName)
-
-		fset := token.NewFileSet()
-		astFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
-		if err != nil {
-			return err
-		}
-
-		for _, decl := range astFile.Decls {
-
-			gen, ok := decl.(*ast.GenDecl)
-			if !ok {
-				continue
-			}
-
-			if gen.Tok != token.TYPE {
-				continue
-			}
-
-			for _, specs := range gen.Specs {
-
-				ts, ok := specs.(*ast.TypeSpec)
-				if !ok {
-					continue
-				}
-
-				iFace, ok := ts.Type.(*ast.InterfaceType)
-				if !ok {
-					continue
-				}
-
-				if ts.Name.String() != "Inport" {
-					continue
-				}
-
-				for _, meths := range iFace.Methods.List {
-
-					obj.InportMethodName = meths.Names[0].String()
-					break
-
-				}
-			}
-		}
+	err2 := obj.GetInportName()
+	if err2 != nil {
+		return err2
 	}
 
 	{
@@ -148,4 +107,53 @@ func (obj *ControllerModel) Run() error {
 
 	return nil
 
+}
+
+func (obj *ControllerModel) GetInportName() error {
+	{
+		fileReadPath := fmt.Sprintf("usecase/%s/inport.go", obj.UsecaseName)
+
+		fset := token.NewFileSet()
+		astFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
+		if err != nil {
+			return err
+		}
+
+		for _, decl := range astFile.Decls {
+
+			gen, ok := decl.(*ast.GenDecl)
+			if !ok {
+				continue
+			}
+
+			if gen.Tok != token.TYPE {
+				continue
+			}
+
+			for _, specs := range gen.Specs {
+
+				ts, ok := specs.(*ast.TypeSpec)
+				if !ok {
+					continue
+				}
+
+				iFace, ok := ts.Type.(*ast.InterfaceType)
+				if !ok {
+					continue
+				}
+
+				if ts.Name.String() != "Inport" {
+					continue
+				}
+
+				for _, meths := range iFace.Methods.List {
+
+					obj.InportMethodName = meths.Names[0].String()
+					break
+
+				}
+			}
+		}
+	}
+	return nil
 }

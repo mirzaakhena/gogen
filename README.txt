@@ -75,5 +75,14 @@ https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe
 
 
 
-reconstruct method
+
+Controller dikategorikan berdasarkan actor yang mengakses usecase
+    user api
+    backoffice api
+    dev api
+    webhook api
+
+<ControllerName>Controller
+    RegisterHandler()
+    handle<UsecaseName>(inport)
 
