@@ -130,3 +130,6 @@ var ApplicationFile string
 
 //go:embed application_registry-gin._go
 var ApplicationRegistryGinFile string
+
+//go:embed main._go
+var MainFile string

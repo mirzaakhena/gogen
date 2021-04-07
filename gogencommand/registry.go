@@ -106,6 +106,23 @@ func (obj *RegistryModel) Run() error {
 		}
 	}
 
+	{
+		outputFile := fmt.Sprintf("main.go")
+		err = util.WriteFileIfNotExist(templates.MainFile, outputFile, obj)
+		if err != nil {
+			return err
+		}
+
+		newBytes, err := imports.Process(outputFile, nil, nil)
+		if err != nil {
+			return err
+		}
+
+		if err := ioutil.WriteFile(outputFile, newBytes, 0644); err != nil {
+			return err
+		}
+	}
+
 	return nil
 
 }

@@ -1,0 +1,13 @@
+package main
+
+import (
+	"flag"
+)
+
+func main() {
+	flag.Parse()
+	switch flag.Arg(0) {
+	case "{{LowerCase .RegistryName}}":
+		application.Run(registry.New{{PascalCase .RegistryName}}())
+	}
+}
