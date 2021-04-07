@@ -91,8 +91,7 @@ func (obj *ControllerModel) Run() error {
 		}
 	}
 
-
-	controllerFile := fmt.Sprintf("controller/%s/controller.go", strings.ToLower(obj.ControllerName))
+	controllerFile := fmt.Sprintf("controller/%s/router.go", strings.ToLower(obj.ControllerName))
 	if !util.IsExist(controllerFile) {
 		err = util.WriteFile(templates.ControllerGinFile, controllerFile, obj)
 		if err != nil {
@@ -125,6 +124,7 @@ func (obj *ControllerModel) Run() error {
 			return err
 		}
 
+		// TODO if inport line already exist then continue
 		{
 
 			inportLine, err := obj.getInportLine(controllerFile)
@@ -173,6 +173,7 @@ func (obj *ControllerModel) Run() error {
 
 		}
 
+		// TODO if bind router line already exist then continue
 		{
 
 			routerLine, err := obj.getBindRouterLine(controllerFile)
@@ -218,7 +219,6 @@ func (obj *ControllerModel) Run() error {
 			if err := ioutil.WriteFile(controllerFile, newBytes, 0644); err != nil {
 				return err
 			}
-
 
 		}
 

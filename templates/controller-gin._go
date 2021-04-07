@@ -4,6 +4,6 @@ type Controller struct{
     Router gin.IRouter
 }
 
-// RegisterRouter registering all the router
+// SetupRouter registering all the router
 func (r *Controller)RegisterRouter() {
 }

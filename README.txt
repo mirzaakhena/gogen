@@ -74,7 +74,7 @@ https://betterprogramming.pub/rpc-in-golang-19661033942
 https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9
 
 
-
+semua http handler di handle di controller
 
 Controller dikategorikan berdasarkan actor yang mengakses usecase
     user api

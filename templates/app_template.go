@@ -118,3 +118,15 @@ var LogPublicFile string
 
 //go:embed infra_helper._go
 var HelperFile string
+
+//go:embed infra_server._go
+var ServerFile string
+
+//go:embed infra_server_shutdown._go
+var ServerShutdownFile string
+
+//go:embed application._go
+var ApplicationFile string
+
+//go:embed application_registry-gin._go
+var ApplicationRegistryGinFile string

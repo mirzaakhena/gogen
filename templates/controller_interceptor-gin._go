@@ -1,7 +1,7 @@
 package {{LowerCase .ControllerName}}
 
-// Authorized is an interceptor
-func (r *Controller)Authorized() gin.HandlerFunc {
+// authorized is an interceptor
+func (r *Controller)authorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authorized := true
 		if !authorized {

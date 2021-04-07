@@ -1,7 +1,7 @@
 package {{LowerCase .ControllerName}}
 
-// Authorized ...
-func (r *Controller)Authorized(next http.Handler) http.HandlerFunc {
+// authorized ...
+func (r *Controller)authorized(next http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		authorized := true
 		if !authorized {

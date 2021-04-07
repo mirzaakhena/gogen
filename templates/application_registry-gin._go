@@ -1,0 +1,28 @@
+package registry
+
+type {{CamelCase .RegistryName}} struct {
+	server.GinHTTPHandler
+	{{CamelCase .ControllerName}}Controller {{LowerCase .ControllerName}}.Controller
+	// TODO Another controller will added here ... <<<<<<
+}
+
+func New{{PascalCase .RegistryName}}() application.RegistryContract {
+
+	httpHandler := server.NewGinHTTPHandler("")
+	datasource := gateway.New{{PascalCase .GatewayName}}Gateway()
+
+	return &{{CamelCase .RegistryName}}{
+		GinHTTPHandler: httpHandler,
+		{{CamelCase .ControllerName}}Controller: {{LowerCase .ControllerName}}.Controller{
+			Router:             httpHandler.Router,
+			{{PascalCase .UsecaseName}}Inport: {{LowerCase .UsecaseName}}.NewUsecase(datasource),
+			// TODO another Inport will added here ... <<<<<<
+		},
+		// TODO another controller will added here ... <<<<<<
+	}
+}
+
+func (r *{{CamelCase .RegistryName}}) SetupController() {
+	r.{{CamelCase .ControllerName}}Controller.RegisterRouter()
+	// TODO another router call will added here ... <<<<<<
+}

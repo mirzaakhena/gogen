@@ -21,8 +21,9 @@ func main() {
 		"valuestring": gogencommand.NewValueStringModel,
 		"repository":  gogencommand.NewRepositoryModel,
 		"service":     gogencommand.NewServiceModel,
-		"controller":  gogencommand.NewControllerModel,
 		"gateway":     gogencommand.NewGatewayModel,
+		"controller":  gogencommand.NewControllerModel,
+		"registry":    gogencommand.NewRegistryModel,
 	}
 
 	var obj gogencommand.Commander
