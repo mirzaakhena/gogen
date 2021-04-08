@@ -13,6 +13,7 @@ func main() {
 
 	cmds := map[string]func() (gogencommand.Commander, error){
 		"usecase":     gogencommand.NewUsecaseModel,
+		"test":        gogencommand.NewTestModel,
 		"entity":      gogencommand.NewEntityModel,
 		"method":      gogencommand.NewMethodModel,
 		"enum":        gogencommand.NewEnumModel,

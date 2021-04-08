@@ -133,3 +133,6 @@ var ApplicationRegistryGinFile string
 
 //go:embed main._go
 var MainFile string
+
+//go:embed usecase_interactor_test._go
+var TestFile string
