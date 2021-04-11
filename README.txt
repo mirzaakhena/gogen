@@ -68,13 +68,10 @@ Config
 Template
 
 
-semua append code harus lewat ast
-
 https://betterprogramming.pub/rpc-in-golang-19661033942
 https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9
 
-
-semua http handler di handle di controller
+kalo implementasi gateway ada di struct lain? kita harus bisa handle dan tidak perlu di extend lagi
 
 Controller dikategorikan berdasarkan actor yang mengakses usecase
     user api
