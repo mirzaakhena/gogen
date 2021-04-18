@@ -83,3 +83,19 @@ Controller dikategorikan berdasarkan actor yang mengakses usecase
     RegisterHandler()
     handle<UsecaseName>(inport)
 
+
+Read Gateway
+    Kita cari outport interface dari usecase yang di inginkan
+    baca seluruh field interface nya
+    ada 4 kemungkinan dari field tsb
+    1. berupa extension interface lain yang berada di package yang berbeda
+    2. berupa extension interface lain yang berada di dalam package dan file yang sama : BELUM DIHANDLE
+    3. berupa extension interface lain yang berada di dalam package namun file yang berbeda : BELUM DIHANDLE
+    4. berupa direct method
+        jika parameter punya type yang berada di packgae yg sama : BELUM DIHANDLE
+
+    tujuannya adalah mengkoleksi semua method yang dibutuhkan
+
+
+
+

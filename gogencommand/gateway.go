@@ -19,11 +19,10 @@ import (
 )
 
 type GatewayModel struct {
-	PackagePath       string            //
-	UsecaseName       string            //
-	GatewayName       string            //
-	Methods           []*method         //
-	ImportOutportPath map[string]string //
+	PackagePath string    //
+	UsecaseName string    //
+	GatewayName string    //
+	Methods     []*method // all the method needed
 }
 
 type method struct {
@@ -42,11 +41,11 @@ func NewGatewayModel() (Commander, error) {
 	}
 
 	return &GatewayModel{
-		PackagePath:       util.GetGoMod(),
-		GatewayName:       values[0],
-		UsecaseName:       values[1],
-		Methods:           []*method{},
-		ImportOutportPath: map[string]string{},
+		PackagePath: util.GetGoMod(),
+		GatewayName: values[0],
+		UsecaseName: values[1],
+		Methods:     []*method{},
+		//ImportOutportPath: map[string]string{},
 	}, nil
 }
 
@@ -67,16 +66,13 @@ func (obj *GatewayModel) Run() error {
 		return err
 	}
 
-	// create a gateway folder
-	err = util.CreateFolderIfNotExist("gateway")
+	err = obj.ReadOutport()
 	if err != nil {
 		return err
 	}
 
-	// read outport and collect all the methods
-	// we want to create gateway
-	// so we start by reading the usecase's outport
-	err = obj.readOutport()
+	// create a gateway folder
+	err = util.CreateFolderIfNotExist("gateway")
 	if err != nil {
 		return err
 	}
@@ -109,71 +105,9 @@ func (obj *GatewayModel) Run() error {
 	// already exist. check existency current function implementation
 	{
 
-		// we will read the existing gateway file
-		fset := token.NewFileSet()
-		astFile, err := parser.ParseFile(fset, gatewayFile, nil, parser.ParseComments)
+		existingFunc, err := obj.readCurrentGateway()
 		if err != nil {
 			return err
-		}
-
-		//ast.Print(fset, astFile)
-
-		// prepare the existing function container
-		existingFunc := map[string]int{}
-		for _, decl := range astFile.Decls {
-
-			// first we want to collect the import only
-			gd, ok := decl.(*ast.GenDecl)
-			if !ok || gd.Tok.String() != "import" {
-				continue
-			}
-
-			importPathGateway := map[string]string{}
-			handleImports(gd, importPathGateway)
-
-			//fmt.Printf("%v\n", importPathGateway)
-
-			for _, spec := range gd.Specs {
-				ts, ok := spec.(*ast.TypeSpec)
-				if !ok {
-					continue
-				}
-
-				if ts.Name.String() != fmt.Sprintf("%sGateway", util.CamelCase(obj.GatewayName)) {
-					continue
-				}
-
-				st, ok := ts.Type.(*ast.StructType)
-				if !ok {
-					continue
-				}
-
-				if st.Fields.List == nil {
-					break
-				}
-
-				for _, fieldList := range st.Fields.List {
-					se, ok := fieldList.Type.(*ast.SelectorExpr)
-					if !ok {
-						continue
-					}
-
-					pathWithGomod := importPathGateway[se.X.(*ast.Ident).String()]
-					pathOnly := strings.TrimPrefix(pathWithGomod, obj.PackagePath+"/")
-					structName := se.Sel.String()
-					err := obj.readStruct(structName, pathOnly)
-
-					if err != nil {
-						return err
-					}
-
-				}
-
-			} //
-
-			if !obj.findAndCollectImplMethod(decl, existingFunc) {
-				continue
-			}
 		}
 
 		// collect the only methods that has not added yet
@@ -234,31 +168,25 @@ func (obj *GatewayModel) Run() error {
 
 }
 
-func (obj *GatewayModel) findAndCollectImplMethod(decl ast.Decl, existingFunc map[string]int) bool {
-	fd, ok := decl.(*ast.FuncDecl)
-	if !ok || fd.Recv == nil {
-		return false
+//===============================
+
+func (obj *GatewayModel) ReadOutport() error {
+	fileReadPath := fmt.Sprintf("usecase/%s", strings.ToLower(obj.UsecaseName))
+
+	err := obj.readInterface("Outport", fileReadPath)
+	if err != nil {
+		return err
 	}
 
-	// read all the function that have receiver with gateway name
-	if fd.Recv.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).String() != fmt.Sprintf("%sGateway", util.CamelCase(obj.GatewayName)) {
-		return false
-	}
-
-	// collect all existing function that have been there in the file
-	existingFunc[fd.Name.String()] = 1
-
-	return true
+	return nil
 }
 
-func (obj *GatewayModel) readOutport() error {
+func (obj *GatewayModel) readInterface(interfaceName, folderPath string) error {
 
-	// the Outport interface is under the specific usecase
-	// the filename is not restricted.
-	// so we will scan all the file under specific usecase folder
-	fileReadPath := fmt.Sprintf("usecase/%s", strings.ToLower(obj.UsecaseName))
+	packagePath := util.GetGoMod()
+
 	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, fileReadPath, nil, parser.ParseComments)
+	pkgs, err := parser.ParseDir(fset, folderPath, nil, parser.ParseComments)
 	if err != nil {
 		return err
 	}
@@ -268,7 +196,7 @@ func (obj *GatewayModel) readOutport() error {
 		// read file by file
 		for _, file := range pkg.Files {
 
-			//ast.Print(fset, file)
+			ip := map[string]string{}
 
 			// for each file, we will read line by line
 			for _, decl := range file.Decls {
@@ -278,17 +206,21 @@ func (obj *GatewayModel) readOutport() error {
 					continue
 				}
 
-				// we (re)initialize import path for the file
-				importPath := map[string]string{}
-				handleImports(gen, importPath)
-
 				for _, spec := range gen.Specs {
 
-					// Outport is a type spec
+					is, ok := spec.(*ast.ImportSpec)
+					if ok {
+						handleImports(is, ip)
+					}
+
+					// Outport is must a type spec
 					ts, ok := spec.(*ast.TypeSpec)
+					if !ok {
+						continue
+					}
 
 					// start by looking the Outport interface with name "Outport"
-					if !ok || ts.Name.String() != "Outport" {
+					if ts.Name.String() != interfaceName {
 						continue
 					}
 
@@ -298,197 +230,33 @@ func (obj *GatewayModel) readOutport() error {
 						continue
 					}
 
-					ast.Print(fset, iFace)
-
-					// start by look up the field
 					for _, field := range iFace.Methods.List {
 
 						// as a field, there are two possibility
 						switch ty := field.Type.(type) {
 
-						case *ast.SelectorExpr: // as interface extension
-							fmt.Print("%v", ty)
-
-
-						case *ast.FuncType: // as direct func (method) interface
-							fmt.Print("as a function %v", ty)
-
-						}
-
-					}
-
-				}
-
-			}
-
-			//// loop the outport for imports
-			//for _, decl := range file.Decls {
-			//
-			//	gen, ok := decl.(*ast.GenDecl)
-			//	if !ok {
-			//		continue
-			//	}
-			//
-			//	if gen.Tok == token.IMPORT {
-			//		handleImports(gen, obj.ImportOutportPath)
-			//
-			//	}
-			//
-			//}
-			//
-			//port := file.Name.String()
-			//
-			//// loop the outport for interfaces
-			//for _, decl := range file.Decls {
-			//
-			//	gen, ok := decl.(*ast.GenDecl)
-			//	if !ok {
-			//		continue
-			//	}
-			//
-			//	if gen.Tok == token.TYPE {
-			//		err = obj.handleInterfaces(port, gen)
-			//		if err != nil {
-			//			return err
-			//		}
-			//
-			//	}
-			//
-			//}
-
-		}
-	}
-
-	// read the outport.go
-
-	//fset := token.NewFileSet()
-	//astOutportFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
-	//if err != nil {
-	//	return err
-	//}
-
-	return nil
-
-}
-
-func handleImports(gen *ast.GenDecl, ImportPath map[string]string) {
-
-	for _, specs := range gen.Specs {
-
-		is, ok := specs.(*ast.ImportSpec)
-		if !ok {
-			continue
-		}
-
-		v := strings.Trim(is.Path.Value, "\"")
-		if is.Name != nil {
-			ImportPath[is.Name.String()] = v
-		} else {
-			ImportPath[v[strings.LastIndex(v, "/")+1:]] = v
-		}
-
-	}
-}
-
-func (obj *GatewayModel) handleInterfaces(port string, gen *ast.GenDecl) error {
-	for _, specs := range gen.Specs {
-
-		ts, ok := specs.(*ast.TypeSpec)
-		if !ok {
-			continue
-		}
-
-		iFace, ok := ts.Type.(*ast.InterfaceType)
-		if !ok {
-			continue
-		}
-
-		// check the specific outport interface
-		if ts.Name.String() != "Outport" {
-			continue
-		}
-
-		for _, meths := range iFace.Methods.List {
-
-			// extend another interface
-			if selectorExp, ok := meths.Type.(*ast.SelectorExpr); ok {
-
-				expression := selectorExp.X.(*ast.Ident).String()
-				pathWithGomod := obj.ImportOutportPath[expression]
-				pathOnly := strings.TrimPrefix(pathWithGomod, obj.PackagePath+"/")
-				err := obj.readInterface(selectorExp.Sel.String(), pathOnly)
-				if err != nil {
-					return err
-				}
-
-			} else
-			// direct function in interface
-			if fType, ok := meths.Type.(*ast.FuncType); ok {
-
-				// if this is direct method in interface, then handle it
-				err := obj.handleMethodSignature(port, fType, meths.Names[0].String())
-				if err != nil {
-					return err
-				}
-
-			}
-
-		}
-
-	}
-
-	return nil
-}
-
-func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error {
-
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, fileReadPath, nil, parser.ParseComments)
-	if err != nil {
-		return err
-	}
-
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-
-			port := file.Name.String()
-
-			for _, decl := range file.Decls {
-
-				gen, ok := decl.(*ast.GenDecl)
-				if !ok {
-					continue
-				}
-
-				if gen.Tok != token.TYPE {
-					continue
-				}
-
-				for _, specs := range gen.Specs {
-
-					ts, ok := specs.(*ast.TypeSpec)
-					if !ok {
-						continue
-					}
-
-					iFace, ok := ts.Type.(*ast.InterfaceType)
-					if !ok {
-						continue
-					}
-
-					if ts.Name.String() != interfaceName {
-						continue
-					}
-
-					for _, meths := range iFace.Methods.List {
-
-						// currently only expect the function
-						if fType, ok := meths.Type.(*ast.FuncType); ok {
-
-							err = obj.handleMethodSignature(port, fType, meths.Names[0].String())
+						case *ast.SelectorExpr: // as extension of another interface
+							expression := ty.X.(*ast.Ident).String()
+							pathWithGomod := ip[expression]
+							pathOnly := strings.TrimPrefix(pathWithGomod, packagePath+"/")
+							interfaceName := ty.Sel.String()
+							err := obj.readInterface(interfaceName, pathOnly)
 							if err != nil {
 								return err
 							}
+
+						case *ast.FuncType: // as direct func (method) interface
+							//TODO cannot handle Something(c context.Context, a Hoho) yet, the Hoho part
+							msObj, err := obj.handleMethodSignature(file.Name.String(), ty, field.Names[0].String())
+							if err != nil {
+								return err
+							}
+							obj.Methods = append(obj.Methods, msObj)
+
+						case *ast.Ident: // as interface extension in same package
+							//ast.Print(fset, ty)
+							//TODO as interface extension in same package in the same or different file
+							fmt.Printf("as extension in same import %v\n", ty)
 						}
 
 					}
@@ -496,100 +264,30 @@ func (obj *GatewayModel) readInterface(interfaceName, fileReadPath string) error
 				}
 
 			}
-		}
-	}
-
-	return nil
-
-}
-
-func (obj *GatewayModel) readStruct(structName, fileReadPath string) error {
-
-	fset := token.NewFileSet()
-	pkgs, err := parser.ParseDir(fset, fileReadPath, nil, parser.ParseComments)
-	if err != nil {
-		return err
-	}
-
-	for _, pkg := range pkgs {
-		for _, file := range pkg.Files {
-
-			ast.Print(fset, file)
-
-			//port := file.Name.String()
-			//
-			//for _, decl := range file.Decls {
-			//
-			//	gen, ok := decl.(*ast.GenDecl)
-			//	if !ok {
-			//		continue
-			//	}
-			//
-			//	if gen.Tok != token.TYPE {
-			//		continue
-			//	}
-			//
-			//	for _, specs := range gen.Specs {
-			//
-			//		ts, ok := specs.(*ast.TypeSpec)
-			//		if !ok {
-			//			continue
-			//		}
-			//
-			//		iFace, ok := ts.Type.(*ast.StructType)
-			//		if !ok {
-			//			continue
-			//		}
-			//
-			//		if ts.Name.String() != structName {
-			//			continue
-			//		}
-			//
-			//		for _, meths := range iFace.Fields.List {
-			//
-			//			// currently only expect the function
-			//			if fType, ok := meths.Type.(*ast.FuncType); ok {
-			//
-			//				err = obj.handleMethodSignature(port, fType, meths.Names[0].String())
-			//				if err != nil {
-			//					return err
-			//				}
-			//			}
-			//
-			//		}
-			//
-			//	}
-			//
-			//}
 
 		}
 	}
 
 	return nil
-
 }
 
-func (obj *GatewayModel) handleMethodSignature(port string, fType *ast.FuncType, methodName string) error {
+func (obj *GatewayModel) handleMethodSignature(prefixExpression string, fType *ast.FuncType, methodName string) (*method, error) {
 
 	ms := strings.TrimSpace(methodName)
 
 	errMsg := fmt.Errorf("function `%s` must have context.Context in its first param argument", ms)
 
-	if fType.Params == nil {
-		return errMsg
-	}
-
-	if len(fType.Params.List) == 0 {
-		return errMsg
+	if fType.Params == nil || len(fType.Params.List) == 0 {
+		return nil, errMsg
 	}
 
 	se, ok := fType.Params.List[0].Type.(*ast.SelectorExpr)
 	if !ok {
-		return errMsg
+		return nil, errMsg
 	}
 
 	if fmt.Sprintf("%s.%s", se.X.(*ast.Ident).String(), se.Sel.String()) != "context.Context" {
-		return errMsg
+		return nil, errMsg
 	}
 
 	defRetVal := ""
@@ -649,20 +347,156 @@ func (obj *GatewayModel) handleMethodSignature(port string, fType *ast.FuncType,
 
 	}
 
-	methodSignature := FuncHandler{Port: port}.processFuncType(&bytes.Buffer{}, fType)
-	obj.Methods = append(obj.Methods, &method{
+	methodSignature := FuncHandler{PrefixExpression: prefixExpression}.processFuncType(&bytes.Buffer{}, fType)
+	msObj := method{
 		MethodName:       methodName,
 		MethodSignature:  methodSignature,
 		DefaultReturnVal: defRetVal,
-	})
+	}
+
+	return &msObj, nil
+}
+
+func handleImports(is *ast.ImportSpec, ip map[string]string) {
+	v := strings.Trim(is.Path.Value, "\"")
+	if is.Name != nil {
+		ip[is.Name.String()] = v
+	} else {
+		ip[v[strings.LastIndex(v, "/")+1:]] = v
+	}
+}
+
+// --------------------------------------
+
+func (obj *GatewayModel) readCurrentGateway() (map[string]int, error) {
+
+	structName := fmt.Sprintf("%sGateway", util.CamelCase(obj.GatewayName))
+	fileReadPath := fmt.Sprintf("gateway/")
+
+	existingFunc := map[string]int{}
+
+	err := obj.readStruct(structName, fileReadPath, existingFunc)
+	if err != nil {
+		return nil, err
+	}
+
+	return existingFunc, nil
+}
+
+func (obj *GatewayModel) readStruct(structName, folderPath string, existingFunc map[string]int) error {
+
+	fset := token.NewFileSet()
+	pkgs, err := parser.ParseDir(fset, folderPath, nil, parser.ParseComments)
+	if err != nil {
+		return err
+	}
+
+	for _, pkg := range pkgs {
+
+		// read file by file
+		for _, file := range pkg.Files {
+
+			importPaths := map[string]string{}
+
+			for _, decl := range file.Decls {
+
+				switch gd := decl.(type) {
+
+				case *ast.GenDecl:
+					err := obj.generalDecl(structName, gd, importPaths, existingFunc)
+					if err != nil {
+						return err
+					}
+
+				case *ast.FuncDecl:
+					//ast.Print(fset, gd)
+					if !obj.findAndCollectImplMethod(gd, structName, existingFunc) {
+						continue
+					}
+				}
+
+			}
+
+		}
+
+	}
 
 	return nil
+}
+
+func (obj *GatewayModel) generalDecl(structName string, gd *ast.GenDecl, importPaths map[string]string, existingFunc map[string]int) error {
+	for _, spec := range gd.Specs {
+
+		// handle import
+		is, ok := spec.(*ast.ImportSpec)
+		if ok {
+			handleImports(is, importPaths)
+		}
+
+		// it is type declaration
+		ts, ok := spec.(*ast.TypeSpec)
+		if !ok {
+			continue
+		}
+
+		// the struct name must have a 'Gateway' suffix
+		if ts.Name.String() != structName {
+			continue
+		}
+
+		// gateway must be a struct type
+		st, ok := ts.Type.(*ast.StructType)
+		if !ok {
+			continue
+		}
+
+		// if struct list empty then nothing to do
+		if st.Fields.List == nil {
+			break
+		}
+
+		for _, fieldList := range st.Fields.List {
+
+			switch ty := fieldList.Type.(type) {
+			case *ast.SelectorExpr: // struct is extend another struct
+
+				expression := ty.X.(*ast.Ident).String()
+				pathWithGomod := importPaths[expression]
+				pathOnly := strings.TrimPrefix(pathWithGomod, obj.PackagePath+"/")
+				structName := ty.Sel.String()
+				err := obj.readStruct(structName, pathOnly, existingFunc)
+				if err != nil {
+					return err
+				}
+
+			}
+
+		}
+
+	}
+	return nil
+}
+
+func (obj *GatewayModel) findAndCollectImplMethod(fd *ast.FuncDecl, structName string, existingFunc map[string]int) bool {
+	if fd.Recv == nil {
+		return false
+	}
+
+	// read all the function that have receiver with gateway name
+	if fd.Recv.List[0].Type.(*ast.StarExpr).X.(*ast.Ident).String() != structName {
+		return false
+	}
+
+	// collect all existing function that have been there in the file
+	existingFunc[fd.Name.String()] = 1
+
+	return true
 }
 
 //===============================
 
 type FuncHandler struct {
-	Port string
+	PrefixExpression string //
 }
 
 func (r FuncHandler) appendType(expr ast.Expr) string {
@@ -707,7 +541,7 @@ func (r FuncHandler) appendType(expr ast.Expr) string {
 
 func (r FuncHandler) processIdent(param *bytes.Buffer, t *ast.Ident) string {
 	if t.Obj != nil {
-		param.WriteString(r.Port)
+		param.WriteString(r.PrefixExpression)
 		param.WriteString(".")
 	}
 	param.WriteString(t.Name)
@@ -797,6 +631,9 @@ func (r FuncHandler) processMapType(param *bytes.Buffer, t *ast.MapType) string 
 
 func (r FuncHandler) processFuncType(param *bytes.Buffer, t *ast.FuncType) string {
 
+	// TODO need to handle method param without variable
+	// TODO need to handle param with struct/interface type
+
 	nParam := t.Params.NumFields()
 	param.WriteString("(")
 	for iList, field := range t.Params.List {
@@ -809,6 +646,8 @@ func (r FuncHandler) processFuncType(param *bytes.Buffer, t *ast.FuncType) strin
 				param.WriteString(" ")
 			}
 		}
+		//param.WriteString(r.PrefixExpression)
+		//param.WriteString(".")
 		param.WriteString(r.appendType(field.Type))
 		if iList+nNames < nParam {
 			param.WriteString(", ")
@@ -849,8 +688,4 @@ func (r FuncHandler) processFuncType(param *bytes.Buffer, t *ast.FuncType) strin
 	}
 
 	return param.String()
-}
-
-func (r *GatewayModel) readFunction() {
-
 }
