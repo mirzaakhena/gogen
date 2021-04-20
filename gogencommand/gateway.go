@@ -308,26 +308,20 @@ func (obj *GatewayModel) handleMethodSignature(prefixExpression string, fType *a
 
 				if t.Name == "error" {
 					v = "nil"
-				} else //
 
-				if strings.HasPrefix(t.Name, "int") {
+				} else if strings.HasPrefix(t.Name, "int") {
 					v = "0"
-				} else //
 
-				if t.Name == "string" {
+				} else if t.Name == "string" {
 					v = "\"\""
-				} else //
 
-				if strings.HasPrefix(t.Name, "float") {
+				} else if strings.HasPrefix(t.Name, "float") {
 					v = "0.0"
-				} else //
 
-				if t.Name == "bool" {
+				} else if t.Name == "bool" {
 					v = "false"
 
-				} else //
-
-				{
+				} else {
 					v = "nil"
 				}
 

@@ -401,7 +401,7 @@ func (obj *RepositoryModel) prepareInteractorTemplate() (constTemplateCode strin
 
 func (obj *RepositoryModel) prepareRepoTemplate() (templateCode string, err error) {
 
-	if obj.hasPrefix("findone") || obj.hasPrefix("getone") {
+	if obj.hasPrefix("findone") || obj.hasPrefix("findfirst") || obj.hasPrefix("findlast") || obj.hasPrefix("getone") {
 		templateCode, err = util.PrintTemplate(templates.RepositoryFindOneFile, obj)
 		if err != nil {
 			return "", err
