@@ -1,8 +1,8 @@
 package gorrilamux
 
 import (
-	"accounting/usecase/createjournal"
 	"github.com/gorilla/mux"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

@@ -1,8 +1,8 @@
 package gingonic
 
 import (
-	"accounting/usecase/createjournal"
 	"github.com/gin-gonic/gin"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

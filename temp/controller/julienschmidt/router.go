@@ -1,8 +1,8 @@
 package julienschmidt
 
 import (
-	"accounting/usecase/createjournal"
 	"github.com/julienschmidt/httprouter"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

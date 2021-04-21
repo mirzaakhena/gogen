@@ -1,11 +1,11 @@
 package labstackecho
 
 import (
-	"accounting/application/apperror"
-	"accounting/infrastructure/log"
-	"accounting/infrastructure/util"
-	"accounting/usecase/createjournal"
 	"github.com/labstack/echo/v4"
+	"github.com/mirzaakhena/gogen2/temp/apperror"
+	"github.com/mirzaakhena/gogen2/temp/infrastructure/log"
+	"github.com/mirzaakhena/gogen2/temp/infrastructure/util"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

@@ -1,8 +1,8 @@
 package labstackecho
 
 import (
-	"accounting/usecase/createjournal"
 	"github.com/labstack/echo/v4"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

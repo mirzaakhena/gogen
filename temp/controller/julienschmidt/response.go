@@ -1,8 +1,6 @@
 package julienschmidt
 
-import (
-	"accounting/application/apperror"
-)
+import "github.com/mirzaakhena/gogen2/temp/apperror"
 
 type Response struct {
 	Success      bool        `json:"success"`

@@ -1,12 +1,12 @@
 package gorrilamux
 
 import (
-	"accounting/application/apperror"
-	"accounting/infrastructure/log"
-	"accounting/infrastructure/util"
-	"accounting/usecase/createjournal"
 	"encoding/json"
 	"fmt"
+	"github.com/mirzaakhena/gogen2/temp/apperror"
+	"github.com/mirzaakhena/gogen2/temp/infrastructure/log"
+	"github.com/mirzaakhena/gogen2/temp/infrastructure/util"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 

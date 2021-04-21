@@ -1,7 +1,7 @@
 package nethttp
 
 import (
-	"accounting/usecase/createjournal"
+	"github.com/mirzaakhena/gogen2/temp/usecase/createjournal"
 	"net/http"
 )
 
