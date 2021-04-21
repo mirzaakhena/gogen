@@ -2,8 +2,8 @@ package main
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen2/temp/log2"
-	"github.com/mirzaakhena/gogen2/temp/loglib"
+	"github.com/mirzaakhena/gogen2/temp/log/log2"
+	"github.com/mirzaakhena/gogen2/temp/log/loglib"
 	"os"
 	"sync"
 )

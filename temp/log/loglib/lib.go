@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/mirzaakhena/gogen2/temp/log2"
 	"io"
 	"math/rand"
 	"os"
@@ -34,7 +33,7 @@ var out io.Writer
 func init() {
 	GenerateLogGroupID = generateLogGroupIDDefault
 	SetOutput(os.Stdout)
-	LogWithPlainFormat()
+	//LogWithPlainFormat()
 }
 
 // SetOutput
@@ -50,31 +49,31 @@ func SetOutput(o io.Writer) {
 	out = o
 }
 
-func LogWithPlainFormat() {
-	log2.LogPrinterInstance = &logPrinterPlain{}
-}
-
-func LogWithJSONFormat() {
-	log2.LogPrinterInstance = &logPrinterJSON{}
-}
+//func LogWithPlainFormat() {
+//	log2.SetLogPrinter(&logPrinterPlain{})
+//}
+//
+//func LogWithJSONFormat() {
+//	log2.SetLogPrinter(&logPrinterJSON{})
+//}
 
 type logPrinterPlain struct{}
 
-func (r *logPrinterPlain) LogPrintFormat(ctx context.Context, flag string, message string) {
+func (r *logPrinterPlain) LogPrint(ctx context.Context, flag string, message string) {
 	fmt.Fprintf(out, "%s %s %s %s %s %s %s\n", extractStartTime(ctx), getCurrentTimeFormatted(), extractAppName(ctx), extractLogGroupID(ctx), flag, getFileLocationInfo(3), message)
 }
 
 type logPrinterJSON struct{}
 
-func (r *logPrinterJSON) LogPrintFormat(ctx context.Context, flag string, message string) {
+func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message string) {
 	info := map[string]interface{}{
-		"flag":       flag,
-		"message":    message,
-		"date":       getCurrentTimeFormatted(),
-		"start":      extractStartTime(ctx),
-		"appName":    extractAppName(ctx),
-		"logGroupID": extractLogGroupID(ctx),
-		"file":       getFileLocationInfo(3),
+		"flag":    flag,
+		"message": message,
+		"date":    getCurrentTimeFormatted(),
+		"start":   extractStartTime(ctx),
+		"app":     extractAppName(ctx),
+		"id":      extractLogGroupID(ctx),
+		"file":    getFileLocationInfo(3),
 	}
 	m, _ := json.Marshal(info)
 	fmt.Fprintf(out, "%v\n", string(m))
