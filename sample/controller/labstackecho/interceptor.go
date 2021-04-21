@@ -1,8 +1,9 @@
 package labstackecho
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // authorized is an interceptor
@@ -16,6 +17,6 @@ func (r *Controller) authorized(next echo.HandlerFunc) echo.HandlerFunc {
 			return echo.NewHTTPError(http.StatusForbidden)
 		}
 
-		return nil
+		return next(c)
 	}
 }

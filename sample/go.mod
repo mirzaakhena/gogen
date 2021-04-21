@@ -4,12 +4,13 @@ go 1.16
 
 require (
 	github.com/antonfisher/nested-logrus-formatter v1.3.1
+	github.com/gin-contrib/cors v1.3.1
 	github.com/gin-gonic/gin v1.7.1
-	github.com/go-chi/chi/v5 v5.0.2 // indirect
-	github.com/gorilla/mux v1.8.0 // indirect
+	github.com/go-chi/chi/v5 v5.0.2
+	github.com/gorilla/mux v1.8.0
 	github.com/jonboulle/clockwork v0.2.2 // indirect
-	github.com/julienschmidt/httprouter v1.3.0 // indirect
-	github.com/labstack/echo/v4 v4.2.2 // indirect
+	github.com/julienschmidt/httprouter v1.3.0
+	github.com/labstack/echo/v4 v4.2.2
 	github.com/lestrrat-go/file-rotatelogs v2.4.0+incompatible
 	github.com/lestrrat-go/strftime v1.0.4 // indirect
 	github.com/pkg/errors v0.9.1 // indirect

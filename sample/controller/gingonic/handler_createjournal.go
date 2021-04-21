@@ -15,21 +15,13 @@ func (r *Controller) createJournalHandler(inputPort createjournal.Inport) gin.Ha
 
 	return func(c *gin.Context) {
 
-		//
-		//
-		//
-		//
-		//
-		//
-		//
-
 		ctx := log.ContextWithLogGroupID(c.Request.Context())
 
 		var req createjournal.InportRequest
 		if err := c.BindJSON(&req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
 			log.ErrorResponse(ctx, err)
-			c.JSON(http.StatusBadRequest, util.MustJSON(NewErrorResponse(newErr)))
+			c.JSON(http.StatusBadRequest, NewErrorResponse(newErr))
 			return
 		}
 

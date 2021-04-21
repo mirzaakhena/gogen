@@ -2,26 +2,26 @@ package registry
 
 import (
 	"accounting/application"
-	"accounting/controller/nethttp"
+	"accounting/controller/gochi"
 	"accounting/gateway"
 	"accounting/infrastructure/server"
 	"accounting/usecase/createjournal"
 )
 
-type appNetHttp struct {
-	server.NetHTTPHandler
-	nethttpController nethttp.Controller
+type appGoChi struct {
+	server.GoChiHandler
+	gochiController gochi.Controller
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppNetHttp() application.RegistryContract {
+func NewAppGoChi() application.RegistryContract {
 
-	httpHandler := server.NewNetHTTPHandler(":8080")
+	httpHandler := server.NewGoChiHandler(":8080")
 	datasource := gateway.NewInmemoryGateway()
 
-	return &appNetHttp{
-		NetHTTPHandler: httpHandler,
-		nethttpController: nethttp.Controller{
+	return &appGoChi{
+		GoChiHandler: httpHandler,
+		gochiController: gochi.Controller{
 			Router:              httpHandler.Router,
 			CreateJournalInport: createjournal.NewUsecase(datasource),
 			// TODO another Inport will added here ... <<<<<<
@@ -30,7 +30,7 @@ func NewAppNetHttp() application.RegistryContract {
 	}
 }
 
-func (r *appNetHttp) SetupController() {
-	r.nethttpController.RegisterRouter()
+func (r *appGoChi) SetupController() {
+	r.gochiController.RegisterRouter()
 	// TODO another router call will added here ... <<<<<<
 }

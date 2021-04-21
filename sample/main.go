@@ -18,6 +18,13 @@ func main() {
 	case "appLabstackEcho":
 		application.Run(registry.NewAppLabstackEcho())
 
+	case "appGorrilaMux":
+		application.Run(registry.NewAppGorrilaMux())
 
+	case "appJulienSchmidt":
+		application.Run(registry.NewAppJulienSchmidt())
+
+	case "appGoChi":
+		application.Run(registry.NewAppGoChi())
 	}
 }

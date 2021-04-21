@@ -2,27 +2,27 @@ package registry
 
 import (
 	"accounting/application"
-	"accounting/controller/nethttp"
+	"accounting/controller/gorrilamux"
 	"accounting/gateway"
 	"accounting/infrastructure/server"
 	"accounting/usecase/createjournal"
 )
 
-type appNetHttp struct {
-	server.NetHTTPHandler
-	nethttpController nethttp.Controller
+type appGorrilaMux struct {
+	server.GorrilaMuxHandler
+	gorrilamuxController gorrilamux.Controller
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppNetHttp() application.RegistryContract {
+func NewAppGorrilaMux() application.RegistryContract {
 
-	httpHandler := server.NewNetHTTPHandler(":8080")
+	httpHandler := server.NewGorrilaMuxHandler(":8080")
 	datasource := gateway.NewInmemoryGateway()
 
-	return &appNetHttp{
-		NetHTTPHandler: httpHandler,
-		nethttpController: nethttp.Controller{
-			Router:              httpHandler.Router,
+	return &appGorrilaMux{
+		GorrilaMuxHandler: httpHandler,
+		gorrilamuxController: gorrilamux.Controller{
+			Router:              httpHandler.Router.NewRoute(),
 			CreateJournalInport: createjournal.NewUsecase(datasource),
 			// TODO another Inport will added here ... <<<<<<
 		},
@@ -30,7 +30,7 @@ func NewAppNetHttp() application.RegistryContract {
 	}
 }
 
-func (r *appNetHttp) SetupController() {
-	r.nethttpController.RegisterRouter()
+func (r *appGorrilaMux) SetupController() {
+	r.gorrilamuxController.RegisterRouter()
 	// TODO another router call will added here ... <<<<<<
 }

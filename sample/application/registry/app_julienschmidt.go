@@ -2,26 +2,26 @@ package registry
 
 import (
 	"accounting/application"
-	"accounting/controller/nethttp"
+	"accounting/controller/julienschmidt"
 	"accounting/gateway"
 	"accounting/infrastructure/server"
 	"accounting/usecase/createjournal"
 )
 
-type appNetHttp struct {
-	server.NetHTTPHandler
-	nethttpController nethttp.Controller
+type appJulienSchmidt struct {
+	server.JulienSchmidtHandler
+	julienschmidtController julienschmidt.Controller
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppNetHttp() application.RegistryContract {
+func NewAppJulienSchmidt() application.RegistryContract {
 
-	httpHandler := server.NewNetHTTPHandler(":8080")
+	httpHandler := server.NewJulienSchmidtHandler(":8080")
 	datasource := gateway.NewInmemoryGateway()
 
-	return &appNetHttp{
-		NetHTTPHandler: httpHandler,
-		nethttpController: nethttp.Controller{
+	return &appJulienSchmidt{
+		JulienSchmidtHandler: httpHandler,
+		julienschmidtController: julienschmidt.Controller{
 			Router:              httpHandler.Router,
 			CreateJournalInport: createjournal.NewUsecase(datasource),
 			// TODO another Inport will added here ... <<<<<<
@@ -30,7 +30,7 @@ func NewAppNetHttp() application.RegistryContract {
 	}
 }
 
-func (r *appNetHttp) SetupController() {
-	r.nethttpController.RegisterRouter()
+func (r *appJulienSchmidt) SetupController() {
+	r.julienschmidtController.RegisterRouter()
 	// TODO another router call will added here ... <<<<<<
 }

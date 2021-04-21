@@ -1,8 +1,9 @@
 package julienschmidt
 
 import (
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 func (r *Controller) authorized(next httprouter.Handle) httprouter.Handle {
@@ -15,6 +16,8 @@ func (r *Controller) authorized(next httprouter.Handle) httprouter.Handle {
 			http.Error(w, "Not Authorized", http.StatusForbidden)
 			return
 		}
+
+		next(w, r, ps)
 
 	}
 }

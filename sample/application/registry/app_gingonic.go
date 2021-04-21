@@ -16,7 +16,7 @@ type appGinGonic struct {
 
 func NewAppGinGonic() application.RegistryContract {
 
-	httpHandler := server.NewGinHTTPHandler("")
+	httpHandler := server.NewGinHTTPHandler(":8080")
 	datasource := gateway.NewInmemoryGateway()
 
 	return &appGinGonic{

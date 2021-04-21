@@ -5,8 +5,9 @@ import (
 	"accounting/infrastructure/log"
 	"accounting/infrastructure/util"
 	"accounting/usecase/createjournal"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 // createJournalHandler ...
@@ -14,17 +15,10 @@ func (r *Controller) createJournalHandler(inputPort createjournal.Inport) echo.H
 
 	return func(c echo.Context) error {
 
-		//
-		//
-		//
-		//
-		//
-		//
-		//
-
 		ctx := log.ContextWithLogGroupID(c.Request().Context())
 
 		var req createjournal.InportRequest
+
 		if err := c.Bind(&req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
 			log.ErrorResponse(ctx, err)

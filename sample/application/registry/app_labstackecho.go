@@ -16,7 +16,7 @@ type appLabstackEcho struct {
 
 func NewAppLabstackEcho() application.RegistryContract {
 
-	httpHandler := server.NewLabstackEchoHandler("")
+	httpHandler := server.NewLabstackEchoHandler(":8080")
 	datasource := gateway.NewInmemoryGateway()
 
 	return &appLabstackEcho{

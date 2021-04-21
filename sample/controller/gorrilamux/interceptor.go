@@ -5,7 +5,7 @@ import (
 )
 
 // authorized is an interceptor
-func (r *Controller) authorized(next http.Handler) http.HandlerFunc {
+func (r *Controller) authorized(next http.HandlerFunc) http.HandlerFunc {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
@@ -16,6 +16,6 @@ func (r *Controller) authorized(next http.Handler) http.HandlerFunc {
 			return
 		}
 
-		next.ServeHTTP(w, r)
+		next(w, r)
 	}
 }

@@ -1,23 +1,23 @@
 package loglib
 
 import (
+	"accounting/infrastructure/log2"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
 	"os"
-	"runtime"
-	"strings"
 	"time"
 )
 
-type contextType string
+type DataContextType string
+type D map[DataContextType]interface{}
 
 const (
-	logGroupIDType contextType = "LOG_GROUP_ID"
-	appNameType    contextType = "APP_NAME"
-	startTimeType  contextType = "START_TIME"
+	logGroupIDType DataContextType = "LOG_GROUP_ID"
+	appNameType    DataContextType = "APP_NAME"
+	startTimeType  DataContextType = "START_TIME"
 )
 
 const (
@@ -28,11 +28,9 @@ const (
 
 var GenerateLogGroupID func() func() string
 
-var out io.Writer
-
 func init() {
 	GenerateLogGroupID = generateLogGroupIDDefault
-	SetOutput(os.Stdout)
+
 	//LogWithPlainFormat()
 }
 
@@ -42,28 +40,54 @@ func init() {
 // if err != nil {
 // 	panic(err)
 // }
-func SetOutput(o io.Writer) {
+func (r *baseWriteContext) SetOutput(o io.Writer) {
 	if o == nil {
 		return
 	}
-	out = o
+	r.out = o
 }
 
-//func LogWithPlainFormat() {
-//	log2.SetLogPrinter(&logPrinterPlain{})
-//}
-//
-//func LogWithJSONFormat() {
-//	log2.SetLogPrinter(&logPrinterJSON{})
-//}
+type baseWriteContext struct {
+	out io.Writer
+}
 
-type logPrinterPlain struct{}
+func GetLogWithPlainFormat() *logPrinterPlain {
+	x := &logPrinterPlain{}
+	x.SetOutput(os.Stdout)
+	return x
+}
+
+func GetLogWithJSONFormat() *logPrinterJSON {
+	x := &logPrinterJSON{}
+	x.SetOutput(os.Stdout)
+	return x
+}
+
+type logPrinterPlain struct {
+	baseWriteContext
+}
+
+func (r *baseWriteContext) WriteContext(ctx context.Context, traceData string) context.Context {
+	ctx = context.WithValue(ctx, appNameType, traceData)
+
+	ctx = context.WithValue(ctx, startTimeType, getStartTimeFormatted())
+
+	logGroupIDValue := ctx.Value(logGroupIDType)
+	if logGroupIDValue == nil && GenerateLogGroupID != nil {
+		f := GenerateLogGroupID()
+		ctx = context.WithValue(ctx, logGroupIDType, f())
+	}
+
+	return ctx
+}
 
 func (r *logPrinterPlain) LogPrint(ctx context.Context, flag string, message string) {
-	fmt.Fprintf(out, "%s %s %s %s %s %s %s\n", extractStartTime(ctx), getCurrentTimeFormatted(), extractAppName(ctx), extractLogGroupID(ctx), flag, getFileLocationInfo(3), message)
+	fmt.Fprintf(r.out, "%s %s %s %s %s %s %s\n", getCurrentTimeFormatted(), extractStartTime(ctx), extractLogGroupID(ctx), flag, extractAppName(ctx), log2.GetFileLocationInfo(3), message)
 }
 
-type logPrinterJSON struct{}
+type logPrinterJSON struct {
+	baseWriteContext
+}
 
 func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message string) {
 	info := map[string]interface{}{
@@ -73,22 +97,10 @@ func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message stri
 		"start":   extractStartTime(ctx),
 		"app":     extractAppName(ctx),
 		"id":      extractLogGroupID(ctx),
-		"file":    getFileLocationInfo(3),
+		"file":    log2.GetFileLocationInfo(3),
 	}
 	m, _ := json.Marshal(info)
-	fmt.Fprintf(out, "%v\n", string(m))
-}
-
-// getFunctionCall get the function information like filename and line number
-// skip is the parameter that need to adjust if we add new method layer
-func getFileLocationInfo(skip int) string {
-	pc, _, line, ok := runtime.Caller(skip)
-	if !ok {
-		return ""
-	}
-	funcName := runtime.FuncForPC(pc).Name()
-	x := strings.LastIndex(funcName, "/")
-	return fmt.Sprintf("%s:%d", funcName[x+1:], line)
+	fmt.Fprintf(r.out, "%v\n", string(m))
 }
 
 // getCurrentTimeFormatted get the time formatted
@@ -98,11 +110,15 @@ func getCurrentTimeFormatted() string {
 
 // getStartTimeFormattedDefault get the time formatted
 func getStartTimeFormatted() string {
-	return fmt.Sprintf("%s", time.Now().Format("150405.000"))
+	return fmt.Sprintf("%s", time.Now().Format("0405.000"))
 }
 
 // extractLogGroupIDDefault extract the log group id from context
 func extractLogGroupID(ctx context.Context) string {
+
+	if ctx == nil {
+		return logGroupIDInitialValue
+	}
 
 	logGroupIDInterface := ctx.Value(logGroupIDType)
 	if logGroupIDInterface == nil {
@@ -117,6 +133,10 @@ func extractLogGroupID(ctx context.Context) string {
 // extractAppName extract the app name from context
 func extractAppName(ctx context.Context) string {
 
+	if ctx == nil {
+		return appNameInitialValue
+	}
+
 	appNameValue := ctx.Value(appNameType)
 	if appNameValue == nil {
 		return appNameInitialValue
@@ -129,6 +149,10 @@ func extractAppName(ctx context.Context) string {
 
 // extractStartTime extract the start time from context
 func extractStartTime(ctx context.Context) string {
+
+	if ctx == nil {
+		return startTimeInitialValue
+	}
 
 	startTimeValue := ctx.Value(startTimeType)
 	if startTimeValue == nil {
@@ -149,21 +173,4 @@ func generateLogGroupIDDefault() func() string {
 	return func() string {
 		return fmt.Sprintf("%s%08d", now.Format("150405"), rand.Intn(max-min+1)+min)
 	}
-}
-
-// Context is always called in the beginning request of inport client
-// This method will generate the log group id that will distributed to the next method call via context
-func Context(ctx context.Context, appName string) context.Context {
-
-	ctx = context.WithValue(ctx, appNameType, appName)
-
-	ctx = context.WithValue(ctx, startTimeType, getStartTimeFormatted())
-
-	logGroupIDValue := ctx.Value(logGroupIDType)
-	if logGroupIDValue == nil && GenerateLogGroupID != nil {
-		f := GenerateLogGroupID()
-		ctx = context.WithValue(ctx, logGroupIDType, f())
-	}
-
-	return ctx
 }

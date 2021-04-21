@@ -2,8 +2,9 @@ package julienschmidt
 
 import (
 	"accounting/usecase/createjournal"
-	"github.com/julienschmidt/httprouter"
 	"net/http"
+
+	"github.com/julienschmidt/httprouter"
 )
 
 type Controller struct {
