@@ -22,7 +22,7 @@ func NewAppLabstackEcho() application.RegistryContract {
 	return &appLabstackEcho{
 		LabstackEchoHandler: httpHandler,
 		labstackechoController: labstackecho.Controller{
-			Router:              httpHandler.Router.Router(),
+			Router:              httpHandler.Router,
 			CreateJournalInport: createjournal.NewUsecase(datasource),
 			// TODO another Inport will added here ... <<<<<<
 		},

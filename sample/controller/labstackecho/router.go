@@ -2,12 +2,13 @@ package labstackecho
 
 import (
 	"accounting/usecase/createjournal"
-	"github.com/labstack/echo/v4"
 	"net/http"
+
+	"github.com/labstack/echo/v4"
 )
 
 type Controller struct {
-	Router              *echo.Router
+	Router              *echo.Echo
 	CreateJournalInport createjournal.Inport
 }
 

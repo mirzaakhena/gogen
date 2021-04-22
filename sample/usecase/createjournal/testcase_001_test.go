@@ -11,7 +11,7 @@ func TestCase001(t *testing.T) {
 
 	ctx := log.ContextWithLogGroupID(context.Background())
 
-	usecase := NewUsecase(gateway.NewMock001Gateway())
+	usecase := NewUsecase(gateway.NewInmemoryGateway())
 	res, err := usecase.Execute(ctx, InportRequest{
 		BusinessID:  "",
 		Date:        "",
