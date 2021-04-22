@@ -1,7 +1,7 @@
 package server
 
 import (
-	"accounting/infrastructure/log"
+	"accounting/infrastructure/log2"
 	"context"
 	"net/http"
 	"os"
@@ -27,28 +27,30 @@ func NewGracefullyShutdown(handler http.Handler, address string) GracefullyShutd
 // RunWithGracefullyShutdown is ...
 func (r *GracefullyShutdown) RunWithGracefullyShutdown() {
 
+	ctx := log2.Context(context.Background(), "RunWithGracefullyShutdown")
+
 	go func() {
 		if err := r.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			log.Error(context.Background(), "listen: %s", err)
+			log2.Error(ctx, "listen: %s", err)
 			os.Exit(1)
 		}
 	}()
 
-	log.Info(context.Background(), "server is running ...")
+	log2.Info(ctx, "server is running ...")
 
 	quit := make(chan os.Signal, 1)
 
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
-	log.Info(context.Background(), "Shutting down server...")
+	log2.Info(ctx, "Shutting down server...")
 
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 5*time.Second)
 	defer cancel()
 	if err := r.httpServer.Shutdown(ctx); err != nil {
-		log.Error(context.Background(), "Server forced to shutdown:", err)
+		log2.Error(ctx, "Server forced to shutdown:", err)
 		os.Exit(1)
 	}
 
-	log.Info(context.Background(), "Server stoped.")
+	log2.Info(ctx, "Server stoped.")
 
 }

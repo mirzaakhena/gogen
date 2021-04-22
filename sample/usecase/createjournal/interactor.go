@@ -5,7 +5,6 @@ import (
 	"accounting/domain/entity"
 	"accounting/domain/service"
 	"context"
-	"fmt"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -25,8 +24,6 @@ func NewUsecase(outputPort Outport) Inport {
 func (r *createJournalInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
-
-	fmt.Println("Hello")
 
 	journalObj, err := entity.NewJournal(entity.JournalRequest{
 		GetOrderID: func() string {

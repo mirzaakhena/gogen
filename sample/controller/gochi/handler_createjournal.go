@@ -2,7 +2,7 @@ package gochi
 
 import (
 	"accounting/application/apperror"
-	"accounting/infrastructure/log"
+	"accounting/infrastructure/log2"
 	"accounting/infrastructure/util"
 	"accounting/usecase/createjournal"
 	"encoding/json"
@@ -24,26 +24,26 @@ func (r *Controller) createJournalHandler(method string, inputPort createjournal
 		// for accessing query params /createjournal?id=123
 		// r.URL.Query().Get("id")
 
-		ctx := log.ContextWithLogGroupID(r.Context())
+		ctx := log2.Context(r.Context(), "createjournal")
 
 		var req createjournal.InportRequest
 		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
-			log.ErrorResponse(ctx, err)
+			log2.Error(ctx, err.Error())
 			http.Error(w, util.MustJSON(NewErrorResponse(newErr)), http.StatusBadRequest)
 			return
 		}
 
-		log.InfoRequest(ctx, util.MustJSON(req))
+		log2.Info(ctx, util.MustJSON(req))
 
 		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
-			log.ErrorResponse(ctx, err)
+			log2.Error(ctx, err.Error())
 			http.Error(w, util.MustJSON(NewErrorResponse(err)), http.StatusBadRequest)
 			return
 		}
 
-		log.InfoResponse(ctx, util.MustJSON(res))
+		log2.Info(ctx, util.MustJSON(res))
 		fmt.Fprint(w, NewSuccessResponse(res))
 
 	}

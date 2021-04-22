@@ -11,18 +11,15 @@ import (
 	"time"
 )
 
-type DataContextType string
-type D map[DataContextType]interface{}
+type dataContextType string
 
 const (
-	logGroupIDType DataContextType = "LOG_GROUP_ID"
-	appNameType    DataContextType = "APP_NAME"
-	startTimeType  DataContextType = "START_TIME"
+	logGroupIDType dataContextType = "LOG_GROUP_ID"
+	startTimeType  dataContextType = "START_TIME"
 )
 
 const (
 	logGroupIDInitialValue = "00000000000000"
-	appNameInitialValue    = ""
 	startTimeInitialValue  = "000000.000"
 )
 
@@ -67,8 +64,7 @@ type logPrinterPlain struct {
 	baseWriteContext
 }
 
-func (r *baseWriteContext) WriteContext(ctx context.Context, traceData string) context.Context {
-	ctx = context.WithValue(ctx, appNameType, traceData)
+func (r *baseWriteContext) WriteContext(ctx context.Context, data ...string) context.Context {
 
 	ctx = context.WithValue(ctx, startTimeType, getStartTimeFormatted())
 
@@ -82,7 +78,7 @@ func (r *baseWriteContext) WriteContext(ctx context.Context, traceData string) c
 }
 
 func (r *logPrinterPlain) LogPrint(ctx context.Context, flag string, message string) {
-	fmt.Fprintf(r.out, "%s %s %s %s %s %s %s\n", getCurrentTimeFormatted(), extractStartTime(ctx), extractLogGroupID(ctx), flag, extractAppName(ctx), log2.GetFileLocationInfo(3), message)
+	fmt.Fprintf(r.out, "%s %s %s %s %s %s\n", getCurrentTimeFormatted(), extractStartTime(ctx), extractLogGroupID(ctx), flag, log2.GetFileLocationInfo(3), message)
 }
 
 type logPrinterJSON struct {
@@ -95,8 +91,7 @@ func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message stri
 		"message": message,
 		"date":    getCurrentTimeFormatted(),
 		"start":   extractStartTime(ctx),
-		"app":     extractAppName(ctx),
-		"id":      extractLogGroupID(ctx),
+		"thisid":  extractLogGroupID(ctx),
 		"file":    log2.GetFileLocationInfo(3),
 	}
 	m, _ := json.Marshal(info)
@@ -128,23 +123,6 @@ func extractLogGroupID(ctx context.Context) string {
 	logGroupID, _ := logGroupIDInterface.(string)
 
 	return logGroupID
-}
-
-// extractAppName extract the app name from context
-func extractAppName(ctx context.Context) string {
-
-	if ctx == nil {
-		return appNameInitialValue
-	}
-
-	appNameValue := ctx.Value(appNameType)
-	if appNameValue == nil {
-		return appNameInitialValue
-	}
-
-	appNameString, _ := appNameValue.(string)
-
-	return appNameString
 }
 
 // extractStartTime extract the start time from context

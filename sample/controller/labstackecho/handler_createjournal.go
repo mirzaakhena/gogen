@@ -2,7 +2,7 @@ package labstackecho
 
 import (
 	"accounting/application/apperror"
-	"accounting/infrastructure/log"
+	"accounting/infrastructure/log2"
 	"accounting/infrastructure/util"
 	"accounting/usecase/createjournal"
 	"net/http"
@@ -15,25 +15,25 @@ func (r *Controller) createJournalHandler(inputPort createjournal.Inport) echo.H
 
 	return func(c echo.Context) error {
 
-		ctx := log.ContextWithLogGroupID(c.Request().Context())
+		ctx := log2.Context(c.Request().Context(), "createjournal")
 
 		var req createjournal.InportRequest
 
 		if err := c.Bind(&req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
-			log.ErrorResponse(ctx, err)
+			log2.Error(ctx, err.Error())
 			return c.JSON(http.StatusBadRequest, util.MustJSON(NewErrorResponse(newErr)))
 		}
 
-		log.InfoRequest(ctx, util.MustJSON(req))
+		log2.Info(ctx, util.MustJSON(req))
 
 		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
-			log.ErrorResponse(ctx, err)
+			log2.Error(ctx, err.Error())
 			return c.JSON(http.StatusBadRequest, NewErrorResponse(err))
 		}
 
-		log.InfoResponse(ctx, util.MustJSON(res))
+		log2.Info(ctx, util.MustJSON(res))
 		return c.JSON(http.StatusOK, NewSuccessResponse(res))
 	}
 }
