@@ -7,9 +7,9 @@ import (
 
 // Outport of CreateJournal
 type Outport interface {
+	repository.TransactionRepo
 	service.GenerateUUIDService
 	repository.SaveJournalRepo
-	repository.FindLastJournalBalanceRepo
-	repository.SaveJournalBalanceRepo
-	repository.FindOneAccountByCodeRepo
+	repository.FindAllLastJournalBalanceRepo
+	repository.FindAllAccountSideByCodesRepo
 }

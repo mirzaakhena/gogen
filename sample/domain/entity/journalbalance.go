@@ -13,34 +13,26 @@ const (
 )
 
 type JournalBalance struct {
-	ID                 vo.JournalBalanceID `` //
-	BusinessID         string              `` //
-	JournalID          string              `` //
-	LastJournalBalance *JournalBalance     `` //
-	AccountCode        string              `` //
-	Amount             float64             `` //
-	Balance            float64             `` //
-	Direction          Direction           `` //
-	Sequence           int                 `` //
+	ID          vo.JournalBalanceID `` //
+	AccountCode string              `` //
+	Amount      float64             `` //
+	Balance     float64             `` //
+	Direction   Direction           `` //
+	Sequence    int                 `` //
 }
 
 type JournalBalanceRequest struct {
-	Journal            *Journal        `` //
-	LastJournalBalance *JournalBalance `` //
-	AccountCode        string          `` //
-	Nominal            float64         `` //
-	Sequence           int             `` //
+	Journal     *Journal `` //
+	LastBalance float64  `` //
+	AccountCode string   `` //
+	Nominal     float64  `` //
+	Sequence    int      `` //
 }
 
 func NewJournalBalance(req JournalBalanceRequest) (*JournalBalance, error) {
 
 	if req.Journal == nil {
 		return nil, apperror.JournalMustNotEmpty
-	}
-
-	lastBalance := 0.0
-	if req.LastJournalBalance != nil {
-		lastBalance = req.LastJournalBalance.Balance
 	}
 
 	direction := Direction("")
@@ -67,15 +59,12 @@ func NewJournalBalance(req JournalBalanceRequest) (*JournalBalance, error) {
 	}
 
 	obj := JournalBalance{
-		ID:                 jbID,
-		BusinessID:         req.Journal.BusinessID,
-		JournalID:          req.Journal.ID,
-		LastJournalBalance: req.LastJournalBalance,
-		AccountCode:        req.AccountCode,
-		Amount:             req.Nominal,
-		Balance:            lastBalance + req.Nominal,
-		Direction:          direction,
-		Sequence:           req.Sequence,
+		ID:          jbID,
+		AccountCode: req.AccountCode,
+		Amount:      req.Nominal,
+		Balance:     req.LastBalance + req.Nominal,
+		Direction:   direction,
+		Sequence:    req.Sequence,
 	}
 
 	return &obj, nil

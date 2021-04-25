@@ -15,4 +15,5 @@ const (
 	SideIsNotDefined               ErrorType = "ER1011 side is not defined"              //
 	GakBisaSaveJournal             ErrorType = "ER1012 gak bisa save journal"            //
 	AssertionFailed                ErrorType = "ER1000 assertion failed"                 //
+	MissingAccountCode             ErrorType = "ER1000 missing account code %v"          //
 )

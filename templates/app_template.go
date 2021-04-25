@@ -2,125 +2,99 @@ package templates
 
 import _ "embed"
 
-//go:embed usecase_inport._go
+//go:embed usecase/usecase_inport._go
 var InportFile string
 
-//go:embed usecase_outport._go
+//go:embed usecase/usecase_outport._go
 var OutportFile string
 
-//go:embed usecase_interactor._go
+//go:embed usecase/usecase_interactor._go
 var InteractorFile string
 
-//go:embed domain_entity._go
-var EntityFile string
+// Entity
+var (
+	//go:embed entity/domain_entity._go
+	EntityFile string
 
-//go:embed domain_entity_method._go
-var MethodFile string
+	//go:embed entity/domain_entity_method._go
+	MethodFile string
 
-//go:embed domain_vo_enum._go
-var EnumFile string
+	//go:embed entity/domain_vo_enum._go
+	EnumFile string
+)
 
-//go:embed domain_vo_valueobject._go
-var ValueObjectFile string
+// VO
+var (
+	//go:embed vo/domain_vo_valueobject._go
+	ValueObjectFile string
 
-//go:embed domain_vo_valuestring._go
-var ValueStringFile string
+	//go:embed vo/domain_vo_valuestring._go
+	ValueStringFile string
+)
 
-//go:embed error_enum._go
+//go:embed error/error_enum._go
 var ErrorEnumFile string
 
-//go:embed error_func._go
+//go:embed error/error_func._go
 var ErrorFuncFile string
 
-//go:embed error_enum_template._go
+//go:embed error/error_enum_template._go
 var ErrorEnumTemplateFile string
 
-//go:embed repository._go
-var RepositoryFile string
+// Repository
+var (
 
-//go:embed repository_interface._go
-var RepositoryInterfaceFile string
+	//go:embed repository/repository._go
+	RepositoryFile string
 
-//go:embed repository_interface_remove._go
-var RepositoryRemoveFile string
+	//go:embed repository/repository_interface._go
+	RepositoryInterfaceFile string
 
-//go:embed repository_interface_save._go
-var RepositorySaveFile string
+	//go:embed repository/repository_interface_remove._go
+	RepositoryRemoveFile string
 
-//go:embed repository_interface_find._go
-var RepositoryFindFile string
+	//go:embed repository/repository_interface_save._go
+	RepositorySaveFile string
 
-//go:embed repository_interface_findone._go
-var RepositoryFindOneFile string
+	//go:embed repository/repository_interface_find._go
+	RepositoryFindFile string
 
-//go:embed repository_inject_find._go
-var RepositoryInjectFindFile string
+	//go:embed repository/repository_interface_findone._go
+	RepositoryFindOneFile string
 
-//go:embed repository_inject_findone._go
-var RepositoryInjectFindOneFile string
+	//go:embed repository/repository_inject_find._go
+	RepositoryInjectFindFile string
 
-//go:embed repository_inject_remove._go
-var RepositoryInjectRemoveFile string
+	//go:embed repository/repository_inject_findone._go
+	RepositoryInjectFindOneFile string
 
-//go:embed repository_inject_save._go
-var RepositoryInjectSaveFile string
+	//go:embed repository/repository_inject_remove._go
+	RepositoryInjectRemoveFile string
 
-//go:embed repository_inject._go
-var RepositoryInjectInterfaceFile string
+	//go:embed repository/repository_inject_save._go
+	RepositoryInjectSaveFile string
 
-//go:embed service._go
+	//go:embed repository/repository_inject._go
+	RepositoryInjectInterfaceFile string
+)
+
+//go:embed service/service._go
 var ServiceFile string
 
-//go:embed service_inject._go
+//go:embed service/service_inject._go
 var ServiceInjectFile string
 
-//go:embed service_template._go
+//go:embed service/service_template._go
 var ServiceTemplateFile string
 
-//go:embed gateway._go
-var GatewayFile string
-
-//go:embed gateway_inject_method._go
-var GatewayMethodFile string
-
-//go:embed controller._go
-var ControllerFile string
-
-//go:embed controller_interceptor._go
-var ControllerInterceptorFile string
-
-//go:embed controller_response._go
-var ControllerResponseFile string
-
-//go:embed controller_inport._go
-var ControllerInportFile string
-
-//go:embed controller-gin._go
-var ControllerGinFile string
-
-//go:embed controller_bindrouter-gin._go
-var ControllerBindRouterGinFile string
-
-//go:embed controller_interceptor-gin._go
-var ControllerInterceptorGinFile string
-
-//go:embed controller_func-gin._go
-var ControllerFuncGinFile string
-
-//go:embed infra_log_contract._go
+//go:embed log/infra_log._go
 var LogContractFile string
 
-//go:embed infra_log_impl._go
+//go:embed log/infra_log_default._go
 var LogImplFile string
-
-//go:embed infra_log_public._go
-var LogPublicFile string
 
 //go:embed infra_helper._go
 var HelperFile string
-
-//go:embed infra_server._go
-var ServerFile string
 
 //go:embed infra_server_shutdown._go
 var ServerShutdownFile string
@@ -128,11 +102,17 @@ var ServerShutdownFile string
 //go:embed application._go
 var ApplicationFile string
 
-//go:embed application_registry-gin._go
-var ApplicationRegistryGinFile string
-
 //go:embed main._go
 var MainFile string
 
-//go:embed usecase_interactor_test._go
+//go:embed usecase/usecase_interactor_test._go
 var TestFile string
+
+// Gateway
+var (
+	//go:embed gateway/gateway._go
+	GatewayFile string
+
+	//go:embed gateway/gateway_inject_method._go
+	GatewayMethodFile string
+)

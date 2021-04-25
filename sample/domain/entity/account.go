@@ -4,6 +4,7 @@ import "accounting/domain/vo"
 
 type Account struct {
 	ID   string         `` //
+	Code string         `` //
 	Side vo.AccountSide `` //
 }
 

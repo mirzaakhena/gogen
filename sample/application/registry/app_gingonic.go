@@ -4,6 +4,8 @@ import (
 	"accounting/application"
 	"accounting/controller/gingonic"
 	"accounting/gateway"
+	"accounting/infrastructure/log"
+	"accounting/infrastructure/loglib"
 	"accounting/infrastructure/server"
 	"accounting/usecase/createjournal"
 )
@@ -14,19 +16,24 @@ type appGinGonic struct {
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppGinGonic() application.RegistryContract {
+func NewAppGinGonic() func() application.RegistryContract {
+	return func() application.RegistryContract {
 
-	httpHandler := server.NewGinHTTPHandler(":8080")
-	datasource := gateway.NewInmemoryGateway()
+		log.SetLogPrinter(loglib.GetLogWithJSONFormat())
 
-	return &appGinGonic{
-		GinHTTPHandler: httpHandler,
-		gingonicController: gingonic.Controller{
-			Router:              httpHandler.Router,
-			CreateJournalInport: createjournal.NewUsecase(datasource),
-			// TODO another Inport will added here ... <<<<<<
-		},
-		// TODO another controller will added here ... <<<<<<
+		httpHandler := server.NewGinHTTPHandler(":8080")
+		datasource := gateway.NewInmemoryGateway()
+
+		return &appGinGonic{
+			GinHTTPHandler: httpHandler,
+			gingonicController: gingonic.Controller{
+				Router:              httpHandler.Router,
+				CreateJournalInport: createjournal.NewUsecase(datasource),
+				// TODO another Inport will added here ... <<<<<<
+			},
+			// TODO another controller will added here ... <<<<<<
+		}
+
 	}
 }
 

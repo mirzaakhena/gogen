@@ -3,14 +3,16 @@ package gogencommand
 import (
 	"flag"
 	"fmt"
+	"strings"
+
 	"github.com/mirzaakhena/gogen2/templates"
 	"github.com/mirzaakhena/gogen2/util"
-	"strings"
 )
 
 type TestModel struct {
 	UsecaseName string
 	PackagePath string
+	Methods     []*method
 }
 
 func NewTestModel() (Commander, error) {

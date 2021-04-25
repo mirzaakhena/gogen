@@ -15,7 +15,7 @@ func InitiateLog() error {
 	}
 
 	{
-		outputFile := fmt.Sprintf("infrastructure/log/contract.go")
+		outputFile := fmt.Sprintf("infrastructure/log/log.go")
 		err = util.WriteFileIfNotExist(templates.LogContractFile, outputFile, struct{}{})
 		if err != nil {
 			return err
@@ -23,16 +23,8 @@ func InitiateLog() error {
 	}
 
 	{
-		outputFile := fmt.Sprintf("infrastructure/log/implementation.go")
+		outputFile := fmt.Sprintf("infrastructure/log/log_default.go")
 		err = util.WriteFileIfNotExist(templates.LogImplFile, outputFile, struct{}{})
-		if err != nil {
-			return err
-		}
-	}
-
-	{
-		outputFile := fmt.Sprintf("infrastructure/log/public.go")
-		err = util.WriteFileIfNotExist(templates.LogPublicFile, outputFile, struct{}{})
 		if err != nil {
 			return err
 		}

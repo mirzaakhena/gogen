@@ -16,14 +16,7 @@ type JournalBalanceIDRequest struct {
 
 func NewJournalBalanceID(req JournalBalanceIDRequest) (JournalBalanceID, error) {
 
-	d := ""
-	d += req.Date.Format("06")
-	d += req.Date.Format("01")
-	d += req.Date.Format("02")
-	d += req.Date.Format("15")
-	d += req.Date.Format("04")
-	d += req.Date.Format("05")
-
+	d := req.Date.Format("060102150405")
 	format := fmt.Sprintf("%v-%v-%v-%d", req.BusinessID, req.AccountCode, d, req.Sequence)
 	obj := JournalBalanceID(format)
 

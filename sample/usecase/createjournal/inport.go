@@ -2,6 +2,7 @@ package createjournal
 
 import (
 	"context"
+	"time"
 )
 
 // Inport of CreateJournal
@@ -12,7 +13,7 @@ type Inport interface {
 // InportRequest is request payload to run the usecase CreateJournal
 type InportRequest struct {
 	BusinessID      string                  `` //
-	Date            string                  `` //
+	Date            time.Time               `` //
 	Description     string                  `` //
 	JournalType     string                  `` //
 	UserID          string                  `` //

@@ -2,7 +2,7 @@ package gingonic
 
 import (
 	"accounting/application/apperror"
-	"accounting/infrastructure/log2"
+	"accounting/infrastructure/log"
 	"accounting/infrastructure/util"
 	"accounting/usecase/createjournal"
 	"net/http"
@@ -15,26 +15,26 @@ func (r *Controller) createJournalHandler(inputPort createjournal.Inport) gin.Ha
 
 	return func(c *gin.Context) {
 
-		ctx := log2.Context(c.Request.Context())
+		ctx := log.Context(c.Request.Context())
 
 		var req createjournal.InportRequest
 		if err := c.BindJSON(&req); err != nil {
 			newErr := apperror.FailUnmarshalResponseBodyError
-			log2.Error(ctx, err.Error())
+			log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, NewErrorResponse(newErr))
 			return
 		}
 
-		log2.Info(ctx, util.MustJSON(req))
+		log.Info(ctx, util.MustJSON(req))
 
 		res, err := inputPort.Execute(ctx, req)
 		if err != nil {
-			log2.Error(ctx, err.Error())
+			log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, NewErrorResponse(err))
 			return
 		}
 
-		log2.Info(ctx, util.MustJSON(res))
+		log.Info(ctx, util.MustJSON(res))
 		c.JSON(http.StatusOK, NewSuccessResponse(res))
 
 	}

@@ -1,4 +1,0 @@
-
-type {{PascalCase .RepositoryName}}Repo interface {
-  {{PascalCase .RepositoryName}}(ctx context.Context, {{CamelCase .EntityName}}ID string) (*entity.{{PascalCase .EntityName}}, error)
-}

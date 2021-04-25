@@ -1,21 +1,21 @@
-package log2
+package log
 
 import (
 	"context"
 	"fmt"
 )
 
-// LogPrinter general interface for printing the log
-type LogPrinter interface {
+// Printer is general interface for printing the log
+type Printer interface {
 	LogPrint(ctx context.Context, flag string, data interface{})
 	WriteContext(ctx context.Context, data ...interface{}) context.Context
 }
 
 // private variable to store the implementation
-var logPrinterInstance LogPrinter = &logPrinterDefault{}
+var logPrinterInstance Printer = &logPrinterDefault{}
 
 // SetLogPrinter changing the log implementation. lg must not nil
-func SetLogPrinter(lg LogPrinter) {
+func SetLogPrinter(lg Printer) {
 	if lg != nil {
 		logPrinterInstance = lg
 	}

@@ -35,7 +35,7 @@ func (r AccountSide) GetDetail() AccountSideDetail {
 }
 
 func (r AccountSide) PossibleValues() []AccountSide {
-	res := []AccountSide{}
+	res := make([]AccountSide, len(enumAccountSide))
 	for key, _ := range enumAccountSide {
 		res = append(res, key)
 	}

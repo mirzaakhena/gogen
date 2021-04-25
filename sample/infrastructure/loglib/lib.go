@@ -1,7 +1,7 @@
 package loglib
 
 import (
-	"accounting/infrastructure/log2"
+	"accounting/infrastructure/log"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -64,7 +64,7 @@ type logPrinterPlain struct {
 	baseWriteContext
 }
 
-func (r *baseWriteContext) WriteContext(ctx context.Context, data ...string) context.Context {
+func (r *baseWriteContext) WriteContext(ctx context.Context, data ...interface{}) context.Context {
 
 	ctx = context.WithValue(ctx, startTimeType, getStartTimeFormatted())
 
@@ -77,22 +77,22 @@ func (r *baseWriteContext) WriteContext(ctx context.Context, data ...string) con
 	return ctx
 }
 
-func (r *logPrinterPlain) LogPrint(ctx context.Context, flag string, message string) {
-	fmt.Fprintf(r.out, "%s %s %s %s %s %s\n", getCurrentTimeFormatted(), extractStartTime(ctx), extractLogGroupID(ctx), flag, log2.GetFileLocationInfo(3), message)
+func (r *logPrinterPlain) LogPrint(ctx context.Context, flag string, message interface{}) {
+	fmt.Fprintf(r.out, "%s %s %s %s %s %s\n", getCurrentTimeFormatted(), extractStartTime(ctx), extractLogGroupID(ctx), flag, log.GetFileLocationInfo(3), message)
 }
 
 type logPrinterJSON struct {
 	baseWriteContext
 }
 
-func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message string) {
+func (r *logPrinterJSON) LogPrint(ctx context.Context, flag string, message interface{}) {
 	info := map[string]interface{}{
 		"flag":    flag,
 		"message": message,
 		"date":    getCurrentTimeFormatted(),
 		"start":   extractStartTime(ctx),
 		"thisid":  extractLogGroupID(ctx),
-		"file":    log2.GetFileLocationInfo(3),
+		"file":    log.GetFileLocationInfo(3),
 	}
 	m, _ := json.Marshal(info)
 	fmt.Fprintf(r.out, "%v\n", string(m))

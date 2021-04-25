@@ -2,6 +2,7 @@ package repository
 
 import (
 	"accounting/domain/entity"
+	"accounting/domain/vo"
 	"context"
 )
 
@@ -9,14 +10,17 @@ type SaveJournalRepo interface {
 	SaveJournal(ctx context.Context, obj *entity.Journal) error
 }
 
-type FindLastJournalBalanceRepo interface {
-	FindLastJournalBalance(ctx context.Context, bussinessID, accountCode string) (*entity.JournalBalance, error)
+type FindAllLastJournalBalanceRepo interface {
+
+	// FindAllLastJournalBalance will return codes map of JournalBalance.
+	// if the journal balance is not found then the value is 0.0
+	// Error is happen when something goes wrong
+	FindAllLastJournalBalance(ctx context.Context, businessID string, accountCodes []string) (map[string]float64, error)
 }
 
-type SaveJournalBalanceRepo interface {
-	SaveJournalBalance(ctx context.Context, obj *entity.JournalBalance) error
-}
+type FindAllAccountSideByCodesRepo interface {
 
-type FindOneAccountByCodeRepo interface {
-	FindOneAccountByCode(ctx context.Context, accountID string) (*entity.Account, error)
+	// FindAllAccountSideByCodes will return all account side for respective account codes.
+	// If account code not found then will return error
+	FindAllAccountSideByCodes(ctx context.Context, businessID string, accountCode []string) (map[string]vo.AccountSide, error)
 }
