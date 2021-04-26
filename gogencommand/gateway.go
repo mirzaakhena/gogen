@@ -77,18 +77,13 @@ func (obj *GatewayModel) Run() error {
 			return err
 		}
 
-		// write the gateway file
-		{
+		newBytes, err := imports.Process(gatewayFile, nil, nil)
+		if err != nil {
+			return err
+		}
 
-			newBytes, err := imports.Process(gatewayFile, nil, nil)
-			if err != nil {
-				return err
-			}
-
-			if err := ioutil.WriteFile(gatewayFile, newBytes, 0644); err != nil {
-				return err
-			}
-
+		if err := ioutil.WriteFile(gatewayFile, newBytes, 0644); err != nil {
+			return err
 		}
 
 	} else //

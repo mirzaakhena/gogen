@@ -24,3 +24,11 @@ type FindAllAccountSideByCodesRepo interface {
 	// If account code not found then will return error
 	FindAllAccountSideByCodes(ctx context.Context, businessID string, accountCode []string) (map[string]vo.AccountSide, error)
 }
+
+type SaveInventoryStockRepo interface {
+	SaveInventoryStock(ctx context.Context, obj *entity.InventoryStock) error
+}
+
+type FindLastQuantityAndPriceRepo interface {
+	FindLastQuantityAndPrice(ctx context.Context, inventoryCode string) (entity.InventoryStock, error)
+}

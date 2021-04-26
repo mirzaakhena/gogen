@@ -21,7 +21,6 @@ type InportRequest struct {
 }
 
 type JournalBalanceRequest struct {
-	Side        string  `` //
 	AccountCode string  `` //
 	Nominal     float64 `` //
 }

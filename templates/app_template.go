@@ -105,7 +105,7 @@ var ApplicationFile string
 //go:embed main._go
 var MainFile string
 
-//go:embed usecase/usecase_interactor_test._go
+//go:embed usecase/usecase_test._go
 var TestFile string
 
 // Gateway

@@ -16,6 +16,7 @@ type OutportMethods []*method
 type method struct {
 	MethodName       string //
 	MethodSignature  string //
+	DefaultParamVal  string //
 	DefaultReturnVal string //
 }
 
@@ -95,17 +96,16 @@ func (obj *OutportMethods) readInterface(interfaceName, folderPath string) error
 							}
 
 						case *ast.FuncType: // as direct func (method) interface
-							//TODO cannot handle Something(c context.Context, a Hoho) yet, the Hoho part
-							msObj, err := obj.handleMethodSignature(file.Name.String(), ty, field.Names[0].String())
+							//TODO cannot handle Something(c context.Context, a Hoho) yet, where the Hoho part is a struct
+							err := obj.handleMethodSignature(file.Name.String(), ty, field.Names[0].String())
 							if err != nil {
 								return err
 							}
-							*obj = append(*obj, msObj)
 
 						case *ast.Ident: // as interface extension in same package
 							//ast.Print(fset, ty)
 							//TODO as interface extension in same package in the same or different file
-							fmt.Printf("as extension in same import %v\n", ty)
+							fmt.Printf("as interface extension in same package in the same or different file not supported yet\n")
 						}
 
 					}
@@ -120,84 +120,101 @@ func (obj *OutportMethods) readInterface(interfaceName, folderPath string) error
 	return nil
 }
 
-func (obj *OutportMethods) handleMethodSignature(prefixExpression string, fType *ast.FuncType, methodName string) (*method, error) {
+func (obj *OutportMethods) handleMethodSignature(prefixExpression string, fType *ast.FuncType, methodName string) error {
 
-	ms := strings.TrimSpace(methodName)
-
-	errMsg := fmt.Errorf("function `%s` must have context.Context in its first param argument", ms)
-
-	if fType.Params == nil || len(fType.Params.List) == 0 {
-		return nil, errMsg
+	// checking first params as context.Context
+	if !obj.validateFirstParamIsContext(fType) {
+		return fmt.Errorf("function `%s` must have context.Context in its first param argument", methodName)
 	}
 
-	se, ok := fType.Params.List[0].Type.(*ast.SelectorExpr)
-	if !ok {
-		return nil, errMsg
+	if fType.Results == nil {
+		return fmt.Errorf("function `%s` result at least have error return value", methodName)
 	}
 
-	if fmt.Sprintf("%s.%s", se.X.(*ast.Ident).String(), se.Sel.String()) != "context.Context" {
-		return nil, errMsg
-	}
-
-	defRetVal := ""
-	if fType.Results != nil {
-		lenRetList := len(fType.Results.List)
-		for i, retList := range fType.Results.List {
-
-			v := ""
-			switch t := retList.Type.(type) {
-
-			case *ast.SelectorExpr:
-				v = fmt.Sprintf("%v.%v{}", t.X, t.Sel)
-
-			case *ast.StarExpr:
-				v = "nil"
-
-			case *ast.Ident:
-
-				if t.Name == "error" {
-					v = "nil"
-
-				} else if strings.HasPrefix(t.Name, "int") {
-					v = "0"
-
-				} else if t.Name == "string" {
-					v = "\"\""
-
-				} else if strings.HasPrefix(t.Name, "float") {
-					v = "0.0"
-
-				} else if t.Name == "bool" {
-					v = "false"
-
-				} else {
-					v = "nil"
-				}
-
-			default:
-				v = "nil"
-
-			}
-
-			// append the comma
-			if i < lenRetList-1 {
-				defRetVal += v + ", "
-			} else {
-				defRetVal += v
-			}
-
-		}
-
-	}
+	defParVal := obj.composeDefaultValue(fType.Params.List)
+	defRetVal := obj.composeDefaultValue(fType.Results.List)
 
 	methodSignature := FuncHandler{PrefixExpression: prefixExpression}.processFuncType(&bytes.Buffer{}, fType)
 	msObj := method{
 		MethodName:       methodName,
 		MethodSignature:  methodSignature,
+		DefaultParamVal:  defParVal,
 		DefaultReturnVal: defRetVal,
 	}
 
-	return &msObj, nil
+	*obj = append(*obj, &msObj)
+
+	return nil
+}
+
+func (obj *OutportMethods) composeDefaultValue(list []*ast.Field) string {
+	defRetVal := ""
+	for i, retList := range list {
+
+		var v string
+
+		switch t := retList.Type.(type) {
+
+		case *ast.SelectorExpr:
+			v = fmt.Sprintf("%v.%v{}", t.X, t.Sel)
+
+		case *ast.StarExpr:
+			v = "nil"
+
+		case *ast.Ident:
+
+			if t.Name == "error" {
+				v = "nil"
+
+			} else if strings.HasPrefix(t.Name, "int") {
+				v = "0"
+
+			} else if strings.HasPrefix(t.Name, "float") {
+				v = "0.0"
+
+			} else if t.Name == "string" {
+				v = "\"\""
+
+			} else if t.Name == "bool" {
+				v = "false"
+
+			} else {
+				v = "nil"
+			}
+
+		default:
+			v = "nil"
+
+		}
+
+		// append the comma
+		if i < len(list)-1 {
+			defRetVal += v + ", "
+		} else {
+			defRetVal += v
+		}
+
+	}
+	return defRetVal
+}
+
+func (obj *OutportMethods) validateFirstParamIsContext(fType *ast.FuncType) bool {
+
+	if fType.Params == nil || len(fType.Params.List) == 0 {
+		return false
+	}
+
+	se, ok := fType.Params.List[0].Type.(*ast.SelectorExpr)
+	if !ok {
+		return false
+	}
+
+	firstParamArgs := fmt.Sprintf("%s.%s", se.X.(*ast.Ident).String(), se.Sel.String())
+	if firstParamArgs != "context.Context" {
+		return false
+	}
+
+	return true
 }
 
 func handleImports(is *ast.ImportSpec, ip map[string]string) {

@@ -27,6 +27,10 @@ func (r *createJournalInteractor) Execute(ctx context.Context, req InportRequest
 
 	err := repository.ExecuteTransaction(ctx, r.outport, func(ctx context.Context) (err error) {
 
+		if len(req.JournalBalances) == 0 {
+			return apperror.JournalBalanceMustNotEmpty
+		}
+
 		journalObj, err := entity.NewJournal(entity.JournalRequest{
 			GetOrderID: func() string {
 				return r.outport.GenerateUUID(ctx)
@@ -42,10 +46,7 @@ func (r *createJournalInteractor) Execute(ctx context.Context, req InportRequest
 			return err
 		}
 
-		if len(req.JournalBalances) == 0 {
-			return apperror.JournalBalanceMustNotEmpty
-		}
-
+		// prepare last account balance
 		accountCodes := make([]string, 0)
 
 		for _, jb := range req.JournalBalances {
@@ -81,20 +82,23 @@ func (r *createJournalInteractor) Execute(ctx context.Context, req InportRequest
 
 		}
 
-		accountObjMap, err := r.outport.FindAllAccountSideByCodes(ctx, req.BusinessID, accountCodes)
-		if err != nil {
-			return err
-		}
-
-		for _, code := range accountCodes {
-			if _, exist := accountObjMap[code]; !exist {
-				return apperror.MissingAccountCode.Var(code)
+		// Check journal balance
+		{
+			accountObjMap, err := r.outport.FindAllAccountSideByCodes(ctx, req.BusinessID, accountCodes)
+			if err != nil {
+				return err
 			}
-		}
 
-		err = journalObj.ValidateJournalBalance(accountObjMap)
-		if err != nil {
-			return err
+			for _, code := range accountCodes {
+				if _, exist := accountObjMap[code]; !exist {
+					return apperror.MissingAccountCode.Var(code)
+				}
+			}
+
+			err = journalObj.ValidateJournalBalance(accountObjMap)
+			if err != nil {
+				return err
+			}
 		}
 
 		err = r.outport.SaveJournal(ctx, journalObj)

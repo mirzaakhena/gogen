@@ -16,4 +16,7 @@ const (
 	GakBisaSaveJournal             ErrorType = "ER1012 gak bisa save journal"            //
 	AssertionFailed                ErrorType = "ER1000 assertion failed"                 //
 	MissingAccountCode             ErrorType = "ER1000 missing account code %v"          //
+	StockQuantityIsZero            ErrorType = "ER1000 stock quantity is zero"           //
+	NotEnoughSufficientQuantity    ErrorType = "ER1000 not enough sufficient quantity"   //
+	PriceMustNotBelowZero          ErrorType = "ER1000 price must not below zero"        //
 )
