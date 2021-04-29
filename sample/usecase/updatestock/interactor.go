@@ -1,6 +1,7 @@
 package updatestock
 
 import (
+	"accounting/application/apperror"
 	"accounting/domain/entity"
 	"context"
 )
@@ -23,31 +24,34 @@ func (r *updateStockInteractor) Execute(ctx context.Context, req InportRequest) 
 
 	res := &InportResponse{}
 
-	inventoryStockObjs, err := r.outport.FindLastQuantityAndPrice(ctx, req.InventoryCode)
+	inventoryObj, err := r.outport.FindOneInventory(ctx, req.InventoryCode)
+	if err != nil {
+		return nil, err
+	}
+	if inventoryObj == nil {
+		return nil, apperror.ObjectNotFound.Var(inventoryObj)
+	}
+
+	stockPriceObjs, err := r.outport.FindLastStockPrice(ctx, req.InventoryCode)
 	if err != nil {
 		return nil, err
 	}
 
-	lastBalancePrice, err := inventoryStockObjs.BalancePrice()
-	if err != nil {
-		return nil, err
-	}
-
-	inventoryStockObj, err := entity.NewInventoryStock(entity.InventoryStockRequest{
-		Date:                req.Date,
-		ReferenceID:         req.ReferenceID,
-		Description:         req.Description,
-		InventoryCode:       req.InventoryCode,
-		Price:               req.Price,
-		Quantity:            req.Quantity,
-		LastBalanceQuantity: inventoryStockObjs.BalanceQuantity,
-		LastBalancePrice:    lastBalancePrice,
+	inventoryDataObj, err := entity.NewInventoryBalance(entity.InventoryBalanceRequest{
+		Date:              req.Date,
+		ReferenceID:       req.ReferenceID,
+		Description:       req.Description,
+		InventoryCode:     req.InventoryCode,
+		CalculationMethod: inventoryObj.CalculationMethod,
+		TotalPrice:        req.TotalPrice,
+		Quantity:          req.Quantity,
+		LastStockPrices:   stockPriceObjs,
 	})
 	if err != nil {
 		return nil, err
 	}
 
-	err = r.outport.SaveInventoryStock(ctx, inventoryStockObj)
+	err = r.outport.SaveInventoryStock(ctx, inventoryDataObj)
 	if err != nil {
 		return nil, err
 	}

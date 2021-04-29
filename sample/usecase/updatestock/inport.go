@@ -16,7 +16,7 @@ type InportRequest struct {
 	ReferenceID   string    `` //
 	Description   string    `` //
 	InventoryCode string    `` //
-	Price         float64   `` //
+	TotalPrice    float64   `` //
 	Quantity      int       `` //
 }
 

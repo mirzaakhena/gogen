@@ -26,9 +26,13 @@ type FindAllAccountSideByCodesRepo interface {
 }
 
 type SaveInventoryStockRepo interface {
-	SaveInventoryStock(ctx context.Context, obj *entity.InventoryStock) error
+	SaveInventoryStock(ctx context.Context, obj *entity.InventoryBalance) error
 }
 
-type FindLastQuantityAndPriceRepo interface {
-	FindLastQuantityAndPrice(ctx context.Context, inventoryCode string) (entity.InventoryStock, error)
+type FindLastStockPriceRepo interface {
+	FindLastStockPrice(ctx context.Context, stockPriceID string) ([]*entity.StockPrice, error)
+}
+
+type FindOneInventoryRepo interface {
+	FindOneInventory(ctx context.Context, inventoryID string) (*entity.Inventory, error)
 }

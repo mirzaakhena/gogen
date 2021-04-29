@@ -16,6 +16,7 @@ import (
 
 type TestModel struct {
 	UsecaseName string
+	TestName    string
 	PackagePath string
 	Methods     OutportMethods
 }
@@ -23,14 +24,19 @@ type TestModel struct {
 func NewTestModel() (Commander, error) {
 	flag.Parse()
 
-	// create a test only need one params
-	usecaseName := flag.Arg(1)
-	if len(usecaseName) == 0 {
-		return nil, fmt.Errorf("test format must include `gogen test UsecaseName`")
+	errMsg := fmt.Errorf("test format must include `gogen test testName UsecaseName`")
+
+	// create a test need two params
+	if flag.NArg() < 3 {
+		return nil, errMsg
 	}
+
+	testName := flag.Arg(1)
+	usecaseName := flag.Arg(2)
 
 	return &TestModel{
 		UsecaseName: usecaseName,
+		TestName:    testName,
 		PackagePath: util.GetGoMod(),
 	}, nil
 }
@@ -42,9 +48,21 @@ func (obj *TestModel) Run() error {
 		return err
 	}
 
+	// Little hacky for replace the context.Context{} with ctx variable
+	for _, m := range obj.Methods {
+		if strings.HasPrefix(strings.TrimSpace(m.DefaultParamVal), `context.Context{}`) {
+			m.DefaultParamVal = strings.ReplaceAll(m.DefaultParamVal, `context.Context{}`, "ctx")
+		}
+	}
+
+	err = obj.generateMock()
+	if err != nil {
+		return err
+	}
+
 	// create interactor_test.go
 	{
-		outputFile := fmt.Sprintf("usecase/%s/interactor_test.go", strings.ToLower(obj.UsecaseName))
+		outputFile := fmt.Sprintf("usecase/%s/testcase_%s_test.go", strings.ToLower(obj.UsecaseName), strings.ToLower(obj.TestName))
 		if !util.IsExist(outputFile) {
 
 			err = util.WriteFile(templates.TestFile, outputFile, obj)
@@ -62,11 +80,6 @@ func (obj *TestModel) Run() error {
 			}
 
 		}
-	}
-
-	err = obj.generateMock()
-	if err != nil {
-		return err
 	}
 
 	return nil
