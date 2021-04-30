@@ -1,0 +1,15 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+
+	"github.com/go-chi/chi/v5"
+)
+
+type Controller struct {
+	Router *chi.Mux
+}
+
+// RegisterRouter registering all the router
+func (r *Controller) RegisterRouter() {
+}

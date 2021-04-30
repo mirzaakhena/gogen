@@ -1,0 +1,30 @@
+package {{LowerCase .UsecaseName}}
+
+import (
+	"context"
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+)
+
+// TestCase{{PascalCase .TestName}} is for the case where ...
+// explain the purpose of this test here with human readable naration...
+func TestCase{{PascalCase .TestName}}(t *testing.T) {
+
+	ctx := context.Background()
+
+	mockOutport := mocks.Outport{}
+    {{range .Methods}}
+	mockOutport.
+		On("{{.MethodName}}", {{.DefaultParamVal}}).
+		Return({{.DefaultReturnVal}})
+    {{end}}
+	usecase := NewUsecase(&mockOutport)
+	res, err := usecase.Execute(ctx, InportRequest{
+	})
+
+	assert.Nil(t, err)
+
+    assert.Equal(t, nil, res)
+
+}

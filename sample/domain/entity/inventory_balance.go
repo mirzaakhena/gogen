@@ -141,14 +141,13 @@ func NewInventoryBalance(req InventoryBalanceRequest) (*InventoryBalance, error)
 
 			// put in
 			{
-				sp := req.LastStockPrices[0]
+				sp := req.LastStockPrices[len(req.LastStockPrices)-1]
 
 				pricePerQty := req.TotalPrice / float64(req.Quantity)
 				if sp.Price == pricePerQty {
 					sp.Quantity += req.Quantity
 
 					newStockPrices = req.LastStockPrices
-
 				} else //
 
 				{
@@ -157,7 +156,7 @@ func NewInventoryBalance(req InventoryBalanceRequest) (*InventoryBalance, error)
 
 					newStockPrices = append(newStockPrices, &StockPrice{
 						Quantity: req.Quantity,
-						Price:    sp.Price,
+						Price:    pricePerQty,
 					})
 
 				}

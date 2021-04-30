@@ -1,0 +1,15 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+
+	"github.com/julienschmidt/httprouter"
+)
+
+type Controller struct {
+	Router              *httprouter.Router
+}
+
+// RegisterRouter registering all the router
+func (r *Controller) RegisterRouter() {
+}

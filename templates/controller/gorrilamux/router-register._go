@@ -1,0 +1,2 @@
+r.Router.Methods(http.MethodPost).Path("/{{LowerCase .UsecaseName}}").HandlerFunc(r.authorized(r.{{CamelCase .UsecaseName}}Handler(r.{{PascalCase .UsecaseName}}Inport)))
+

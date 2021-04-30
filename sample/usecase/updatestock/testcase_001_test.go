@@ -91,19 +91,110 @@ func TestCase007(t *testing.T) {
 
 	{
 		err := testedBody(t,
-			"WAVG",
-			-2,
-			0,
-			-2,
+			"FIFO",
+			2,
+			1000,
+			2,
+			500,
+			nil,
+			[]*entity.StockPrice{
+				{Quantity: 2, Price: 500},
+			})
+
+		assert.Nil(t, err)
+	}
+
+	{
+		err := testedBody(t,
+			"FIFO",
+			2,
+			1000,
+			2,
 			500,
 			[]*entity.StockPrice{
 				{Quantity: 3, Price: 500},
 			},
 			[]*entity.StockPrice{
-				{Quantity: 1, Price: 500},
+				{Quantity: 5, Price: 500},
 			})
 
-		assert.Error(t, err)
+		assert.Nil(t, err)
+	}
+
+	{
+		err := testedBody(t,
+			"FIFO",
+			2,
+			1200,
+			2,
+			600,
+			[]*entity.StockPrice{
+				{Quantity: 3, Price: 500},
+			},
+			[]*entity.StockPrice{
+				{Quantity: 3, Price: 500},
+				{Quantity: 2, Price: 600},
+			})
+
+		assert.Nil(t, err)
+	}
+
+	{
+		err := testedBody(t,
+			"FIFO",
+			2,
+			1000,
+			2,
+			500,
+			[]*entity.StockPrice{
+				{Quantity: 3, Price: 500},
+				{Quantity: 1, Price: 600},
+			},
+			[]*entity.StockPrice{
+				{Quantity: 3, Price: 500},
+				{Quantity: 1, Price: 600},
+				{Quantity: 2, Price: 500},
+			})
+
+		assert.Nil(t, err)
+	}
+
+	{
+		err := testedBody(t,
+			"FIFO",
+			2,
+			1000,
+			2,
+			500,
+			[]*entity.StockPrice{
+				{Quantity: 1, Price: 600},
+				{Quantity: 3, Price: 500},
+			},
+			[]*entity.StockPrice{
+				{Quantity: 1, Price: 600},
+				{Quantity: 5, Price: 500},
+			})
+
+		assert.Nil(t, err)
+	}
+
+	{
+		err := testedBody(t,
+			"FIFO",
+			-2,
+			0,
+			-2,
+			600,
+			[]*entity.StockPrice{
+				{Quantity: 5, Price: 600},
+				{Quantity: 3, Price: 500},
+			},
+			[]*entity.StockPrice{
+				{Quantity: 3, Price: 600},
+				{Quantity: 3, Price: 500},
+			})
+
+		assert.Nil(t, err)
 	}
 
 }
