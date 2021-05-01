@@ -14,19 +14,22 @@ type appLabstackEcho struct {
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppLabstackEcho() application.RegistryContract {
+func NewAppLabstackEcho() func() application.RegistryContract {
 
-	httpHandler := server.NewLabstackEchoHandler(":8080")
-	datasource := gateway.NewInmemoryGateway()
+	return func() application.RegistryContract {
 
-	return &appLabstackEcho{
-		LabstackEchoHandler: httpHandler,
-		labstackechoController: labstackecho.Controller{
-			Router:              httpHandler.Router,
-			CreateJournalInport: createjournal.NewUsecase(datasource),
-			// TODO another Inport will added here ... <<<<<<
-		},
-		// TODO another controller will added here ... <<<<<<
+		httpHandler := server.NewLabstackEchoHandler(":8080")
+		datasource := gateway.NewInmemoryGateway()
+
+		return &appLabstackEcho{
+			LabstackEchoHandler: httpHandler,
+			labstackechoController: labstackecho.Controller{
+				Router:              httpHandler.Router,
+				CreateJournalInport: createjournal.NewUsecase(datasource),
+				// TODO another Inport will added here ... <<<<<<
+			},
+			// TODO another controller will added here ... <<<<<<
+		}
 	}
 }
 

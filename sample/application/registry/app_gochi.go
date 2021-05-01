@@ -14,19 +14,22 @@ type appGoChi struct {
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppGoChi() application.RegistryContract {
+func NewAppGoChi() func() application.RegistryContract {
 
-	httpHandler := server.NewGoChiHandler(":8080")
-	datasource := gateway.NewInmemoryGateway()
+	return func() application.RegistryContract {
 
-	return &appGoChi{
-		GoChiHandler: httpHandler,
-		gochiController: gochi.Controller{
-			Router:              httpHandler.Router,
-			CreateJournalInport: createjournal.NewUsecase(datasource),
-			// TODO another Inport will added here ... <<<<<<
-		},
-		// TODO another controller will added here ... <<<<<<
+		httpHandler := server.NewGoChiHandler(":8080")
+		datasource := gateway.NewInmemoryGateway()
+
+		return &appGoChi{
+			GoChiHandler: httpHandler,
+			gochiController: gochi.Controller{
+				Router:              httpHandler.Router,
+				CreateJournalInport: createjournal.NewUsecase(datasource),
+				// TODO another Inport will added here ... <<<<<<
+			},
+			// TODO another controller will added here ... <<<<<<
+		}
 	}
 }
 

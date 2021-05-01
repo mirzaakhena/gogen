@@ -14,19 +14,22 @@ type appJulienSchmidt struct {
 	// TODO Another controller will added here ... <<<<<<
 }
 
-func NewAppJulienSchmidt() application.RegistryContract {
+func NewAppJulienSchmidt() func() application.RegistryContract {
 
-	httpHandler := server.NewJulienSchmidtHandler(":8080")
-	datasource := gateway.NewInmemoryGateway()
+	return func() application.RegistryContract {
 
-	return &appJulienSchmidt{
-		JulienSchmidtHandler: httpHandler,
-		julienschmidtController: julienschmidt.Controller{
-			Router:              httpHandler.Router,
-			CreateJournalInport: createjournal.NewUsecase(datasource),
-			// TODO another Inport will added here ... <<<<<<
-		},
-		// TODO another controller will added here ... <<<<<<
+		httpHandler := server.NewJulienSchmidtHandler(":8080")
+		datasource := gateway.NewInmemoryGateway()
+
+		return &appJulienSchmidt{
+			JulienSchmidtHandler: httpHandler,
+			julienschmidtController: julienschmidt.Controller{
+				Router:              httpHandler.Router,
+				CreateJournalInport: createjournal.NewUsecase(datasource),
+				// TODO another Inport will added here ... <<<<<<
+			},
+			// TODO another controller will added here ... <<<<<<
+		}
 	}
 }
 
