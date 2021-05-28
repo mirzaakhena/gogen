@@ -19,4 +19,8 @@ const (
 	StockQuantityIsZero            ErrorType = "ER1000 stock quantity is zero"           //
 	NotEnoughSufficientQuantity    ErrorType = "ER1000 not enough sufficient quantity"   //
 	PriceMustNotBelowZero          ErrorType = "ER1000 price must not below zero"        //
+	StockIsEmpty                   ErrorType = "ER1000 stock is empty"                   //
+	StockIsNotEnough               ErrorType = "ER1000 stock is not enough"              //
+	InventoryCodeMustNotEmpty      ErrorType = "ER1000 inventory code must not empty"    //
+	QuantityMustNotZero            ErrorType = "ER1000 quantity must not zero"           //
 )

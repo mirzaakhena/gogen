@@ -357,89 +357,53 @@ func (obj *RepositoryModel) injectToInteractor() error {
 
 func (obj *RepositoryModel) prepareInteractorTemplate() (constTemplateCode string, err error) {
 
-	if obj.hasPrefix("findone") || obj.hasPrefix("getone") {
-		constTemplateCode, err = util.PrintTemplate(templates.RepositoryInjectFindOneFile, obj)
-		if err != nil {
-			return "", err
-		}
+	if obj.hasPrefix("findone") || obj.hasPrefix("findfirst") || obj.hasPrefix("findlast") || obj.hasPrefix("getone") {
+		return util.PrintTemplate(templates.RepositoryInjectFindOneFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("find") || obj.hasPrefix("get") {
-		constTemplateCode, err = util.PrintTemplate(templates.RepositoryInjectFindFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryInjectFindFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("remove") || obj.hasPrefix("delete") {
-		constTemplateCode, err = util.PrintTemplate(templates.RepositoryInjectRemoveFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryInjectRemoveFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("save") || obj.hasPrefix("create") || obj.hasPrefix("add") || obj.hasPrefix("update") {
-		constTemplateCode, err = util.PrintTemplate(templates.RepositoryInjectSaveFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryInjectSaveFile, obj)
 
-	} else //
-
-	{
-		constTemplateCode, err = util.PrintTemplate(templates.RepositoryInjectInterfaceFile, obj)
-		if err != nil {
-			return "", err
-		}
 	}
 
-	return constTemplateCode, nil
+	return util.PrintTemplate(templates.RepositoryInjectInterfaceFile, obj)
+
 }
 
 func (obj *RepositoryModel) prepareRepoTemplate() (templateCode string, err error) {
 
 	if obj.hasPrefix("findone") || obj.hasPrefix("findfirst") || obj.hasPrefix("findlast") || obj.hasPrefix("getone") {
-		templateCode, err = util.PrintTemplate(templates.RepositoryFindOneFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryFindOneFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("find") || obj.hasPrefix("get") {
-		templateCode, err = util.PrintTemplate(templates.RepositoryFindFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryFindFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("remove") || obj.hasPrefix("delete") {
-		templateCode, err = util.PrintTemplate(templates.RepositoryRemoveFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositoryRemoveFile, obj)
 
 	} else //
 
 	if obj.hasPrefix("save") || obj.hasPrefix("create") || obj.hasPrefix("add") || obj.hasPrefix("update") {
-		templateCode, err = util.PrintTemplate(templates.RepositorySaveFile, obj)
-		if err != nil {
-			return "", err
-		}
+		return util.PrintTemplate(templates.RepositorySaveFile, obj)
 
-	} else //
-
-	{
-		templateCode, err = util.PrintTemplate(templates.RepositoryInterfaceFile, obj)
-		if err != nil {
-			return "", err
-		}
 	}
-	return templateCode, nil
+
+	return util.PrintTemplate(templates.RepositoryInterfaceFile, obj)
 }
 
 func (obj *RepositoryModel) hasPrefix(str string) bool {

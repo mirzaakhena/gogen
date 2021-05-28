@@ -3,9 +3,20 @@ package {{LowerCase .UsecaseName}}
 import (
 	"context"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
+
+type mockOutport{{PascalCase .TestName}} struct {
+    t *testing.T
+}
+
+{{range .Methods}}
+func (r *mockOutport{{PascalCase $.TestName}}) {{.MethodName}}{{.MethodSignature}} {
+    log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}
+
 
 // TestCase{{PascalCase .TestName}} is for the case where ...
 // explain the purpose of this test here with human readable naration...
@@ -13,18 +24,18 @@ func TestCase{{PascalCase .TestName}}(t *testing.T) {
 
 	ctx := context.Background()
 
-	mockOutport := mocks.Outport{}
-    {{range .Methods}}
-	mockOutport.
-		On("{{.MethodName}}", {{.DefaultParamVal}}).
-		Return({{.DefaultReturnVal}})
-    {{end}}
-	usecase := NewUsecase(&mockOutport)
-	res, err := usecase.Execute(ctx, InportRequest{
+	mockOutport := mockOutport{{PascalCase .TestName}}{
+	    t: t,
+	}
+
+	res, err := NewUsecase(&mockOutport).Execute(ctx, InportRequest{
 	})
 
-	assert.Nil(t, err)
+	if err != nil {
+		t.Errorf("%v", err.Error())
+		t.FailNow()
+	}
 
-    assert.Equal(t, nil, res)
+	t.Logf("%v", res)
 
 }

@@ -55,10 +55,15 @@ func (obj *TestModel) Run() error {
 		}
 	}
 
-	err = obj.generateMock()
+	err = InitiateLog()
 	if err != nil {
 		return err
 	}
+
+	//err = obj.generateMock()
+	//if err != nil {
+	//	return err
+	//}
 
 	// create interactor_test.go
 	{

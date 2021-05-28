@@ -12,6 +12,7 @@ func main() {
 	flag.Parse()
 
 	cmds := map[string]func() (gogencommand.Commander, error){
+		"init":        gogencommand.NewInitializeModel,
 		"usecase":     gogencommand.NewUsecaseModel,
 		"test":        gogencommand.NewTestModel,
 		"entity":      gogencommand.NewEntityModel,
