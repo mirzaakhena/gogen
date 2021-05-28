@@ -66,5 +66,11 @@ func (i InitializeModel) Run() error {
 		return err
 	}
 
+	InitiateLog()
+
+	InitiateError()
+
+	InitiateHelper()
+
 	return nil
 }
