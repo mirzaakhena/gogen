@@ -118,7 +118,7 @@ func DefaultTemplatePath(templateFile string) string {
 	}
 
 	// use global default template
-	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen2/templates/default/%s", GetGopath(), templateFile)
+	return fmt.Sprintf("%s/src/github.com/mirzaakhena/gogen/templates/default/%s", GetGopath(), templateFile)
 }
 
 // CamelCase is

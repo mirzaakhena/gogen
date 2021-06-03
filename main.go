@@ -4,7 +4,7 @@ import (
 	"flag"
 	"fmt"
 
-	"github.com/mirzaakhena/gogen2/gogencommand"
+	"github.com/mirzaakhena/gogen/gogencommand"
 )
 
 func main() {

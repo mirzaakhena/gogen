@@ -3,8 +3,8 @@ package gogencommand
 import (
 	"flag"
 	"fmt"
-	"github.com/mirzaakhena/gogen2/templates"
-	"github.com/mirzaakhena/gogen2/util"
+	"github.com/mirzaakhena/gogen/templates"
+	"github.com/mirzaakhena/gogen/util"
 	"golang.org/x/tools/imports"
 	"io/ioutil"
 	"strings"

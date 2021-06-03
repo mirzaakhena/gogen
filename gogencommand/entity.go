@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/mirzaakhena/gogen2/templates"
-	"github.com/mirzaakhena/gogen2/util"
+	"github.com/mirzaakhena/gogen/templates"
+	"github.com/mirzaakhena/gogen/util"
 )
 
 type EntityModel struct {

@@ -7,7 +7,7 @@ import (
 	"go/token"
 	"strings"
 
-	"github.com/mirzaakhena/gogen2/util"
+	"github.com/mirzaakhena/gogen/util"
 )
 
 type GatewayReader struct {

@@ -1,6 +1,6 @@
 package gogencommand
 
-import "github.com/mirzaakhena/gogen2/util"
+import "github.com/mirzaakhena/gogen/util"
 
 type InitializeModel struct {
 }
