@@ -1,0 +1,31 @@
+package registry
+
+type {{CamelCase .RegistryName}} struct {
+	server.NetHTTPHandler
+	{{CamelCase .ControllerName}}Controller {{LowerCase .ControllerName}}.Controller
+	// TODO Another controller will added here ... <<<<<<
+}
+
+func New{{PascalCase .RegistryName}}() func() application.RegistryContract {
+	return func() application.RegistryContract {
+
+        httpHandler := server.NewNetHTTPHandler(":8080")
+        datasource := gateway.New{{PascalCase .GatewayName}}Gateway()
+
+        return &{{CamelCase .RegistryName}}{
+            NetHTTPHandler: httpHandler,
+            {{CamelCase .ControllerName}}Controller: {{LowerCase .ControllerName}}.Controller{
+                Router:              httpHandler.Router,
+                {{PascalCase .UsecaseName}}Inport: {{LowerCase .UsecaseName}}.NewUsecase(datasource),
+                // TODO another Inport will added here ... <<<<<<
+            },
+            // TODO another controller will added here ... <<<<<<
+        }
+	}
+}
+
+func (r *{{CamelCase .RegistryName}}) SetupController() {
+	r.{{CamelCase .ControllerName}}Controller.RegisterRouter()
+	// TODO another router call will added here ... <<<<<<
+}
+

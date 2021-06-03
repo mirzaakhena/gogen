@@ -1,0 +1,28 @@
+package main
+
+import (
+    "flag"
+    "fmt"
+)
+
+func main() {
+
+    appMap := map[string]func () application.RegistryContract{
+        "{{LowerCase .RegistryName}}": registry.New{{PascalCase .RegistryName}}(),
+    }
+
+    flag.Parse()
+
+    app, exist := appMap[flag.Arg(0)]
+    if exist {
+        application.Run(app())
+    } else {
+        fmt.Println("You may try this app name:")
+        for appName, _ := range appMap {
+            fmt.Printf("%s\n", appName)
+        }
+    }
+
+
+
+}

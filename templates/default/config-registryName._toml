@@ -1,7 +1,0 @@
-[server]
-port = "8080"
-
-[logfile]
-path = "."
-name = "{{LowerCase .RegistryName}}"
-age = 14

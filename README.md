@@ -1,26 +1,34 @@
 # Gogen (Clean Architecture Code Generator)
-Helping generate your boiler plate and code structure based on clean architecure.
+Provide code structure based on clean architecure and domain driven design
 
 ## Introduction
-Have you ever wondered how to apply the clean architecture properly and how to manage the layout of your go project's folder structure? This tools will help you to make it.
+Gogen is a tools for generate code structure and boiler plate code. There are many commands for generate an usecase, repository, service, entity and etc.
 
 
-## Sample Apps 
-https://github.com/mirzaakhena/oms 
+## Sample Apps
+https://github.com/mirzaakhena/oms
 (The sample is not finished yet)
 
 
 ## Structure
 This generator has basic structure like this
 ```
-application/
+application/apperror
+application/registry
+
 controller/
-entity/
+
+domain/entity
+domain/repository
+domain/service
+domain/vo
+
 gateway/
-infrastructure/
-shared/
+
+infrastructure/log
+
 usecase/
-config.toml
+
 main.go
 ```
 
@@ -35,7 +43,7 @@ The main purpose of this architecture is :
 
 
 ## How to use the gogen?
-You always start from creating an usecase, then you continue to create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in registry part. That's it. 
+You always start from creating an usecase, then you continue to create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in registry part. That's it.
 
 To create the usecase, you need to understand the concept of usecase according to Uncle Bob's Clean Architecture article. Usecase has 3 main part.
 * Input Port (Inport)
@@ -51,17 +59,17 @@ Outport is implemented by Gateway
 
 *Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in a interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. Request and response struct is allowed to share to *Outport* under the same usecase, but must not shared to other *Inport* or *Outport* usecase.
 
-*Interactor* is the place that you can define your logic flow. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency. 
+*Interactor* is the place that you can define your logic flow. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency.
 
-*Outport* is a data and action provider for *Interactor*. *Outport* never know how it is implemented. The implementor (in this case a *Gateway*) will decide how to provide a data or do an action. This *Outport* is very exclusive for specific usecase (in this case *Interactor*) and must not shared to other usecase. By having exclusive *Outport* it will isolate the testing for usecase. 
+*Outport* is a data and action provider for *Interactor*. *Outport* never know how it is implemented. The implementor (in this case a *Gateway*) will decide how to provide a data or do an action. This *Outport* is very exclusive for specific usecase (in this case *Interactor*) and must not shared to other usecase. By having exclusive *Outport* it will isolate the testing for usecase.
 
 By organize this usecase in a such structure, we can easily change the *Controller*, or the *Gateway* in very flexible way without worry to change the logic part. This is how the logic and infrastructure separation is working.
 
 ## Comparison with three layer architecture (Controller -> Service -> Repository) pattern
-* *Controller* is the same controller for both architecture. 
+* *Controller* is the same controller for both architecture.
 * *Service* is similar like *Interactor* with additional strict rule. *Service* allowed to have many repositories. In Clean Architecture, *Interactor* only have one *Outport*.
 * *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
-* In *Repository* you often see the CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase. 
+* In *Repository* you often see the CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase.
 * *Repository* is an *Outport* with *Gateway* as its implementation.
 
 ## Gogen Convention
@@ -80,11 +88,13 @@ By organize this usecase in a such structure, we can easily change the *Controll
 * Since a log is technology, log only found in Controller and Gateway not in Interactor or Entity
 * To avoid a log polution, Log only printing the coming request, leaving response or error response
 * Error code can be produced by anyone and will printed in log
-* If somehow Gateway produce an error it may log the error, forward back the error, 
+* If somehow Gateway produce an error it may log the error, forward back the error,
   forward back the error with new error message or all the possibility
 * Error code at least have messaged and code (imitate the http protocol response code)
 * Error enum must accessed by the developer and Error code can read by end user
 * Interactor and Entity is prioritized to be tested first rather than Controller and Gateway
+* Controller name can be an actor name who is using the system
+* Registry name can be an application name. You can utilize it if you want to develop microservice with mono repo
 
 
 ## Download it
@@ -98,7 +108,7 @@ $ go install $GOPATH/src/github.com/mirzaakhena/gogen/
 
 ## Step by step to working with gogen
 
-## 1. Create your basic usecase structure
+## Create your basic usecase structure
 
 So you will create your first usecase. Let say the usecase name is  a `CreateOrder`. We will always create our usecase name with `PascalCase`. Now let's try our gogen code generator to create this usecase for us.
 ```
@@ -107,71 +117,39 @@ $ gogen usecase CreateOrder
 
 Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
 
-`port/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
+`usecase/createorder/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
 
-`port/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
+`usecase/createorder/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
 
-`interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
+`usecase/createorder/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
 
-You also will find that both inport and outport share the same Request and Response struct from the inport.
-The Request struct name is `CreateOrderRequest` and Response struct name is `CreateOrderResponse`.
-You may create different Request Response struct for outport by using this command. We will start over the usecase creation by removing it
-
+## Create your usecase test file
 ```
-$ rm -rf usecase/
-$ gogen usecase CreateOrder Check Save
+$ gogen test normal CreateOrder
 ```
+normal is the test name and CreateOrder is the usecase name
 
-Now you will find outport has 2 new methods: Check and Save. Each of the method has it own Request Response struct in *Outport*. 
-
-
-## 2. Add new outport method
-
-Calling this command will add new method on your *Outport*'s interface
+## Create a repository 
 ```
-$ gogen outports CreateOrder ValidateLastOrder Publish
-```
-Open the *Outport* file you will find that there are 2 new methods defined. Now you have 4 methods : Check, Save, ValidateLastOrder and Publish
-
-
-## 3. Create your usecase test file
-
-For test mock struct, we use mockery. So you need to install it first. See the guideline how to install it in https://github.com/vektra/mockery
-
-If you already have the mockery, call this command will create the test file for the respective usecase
-```
-$ gogen test CreateOrder
+$ gogen repository SaveOrder Order CreateOrder
 ```
 
-To update your mock file you can use
+## Create a service
 ```
-$ cd /usecase/createorder
-$ go generate
-```
-
-or just simply delete the mock/ folder and call the `gogen test CreateOrder` again.
-
-## 4. Create a gateway for your usecase
-
-Gateway is the struct to implement your outport interface. You need to set a name for your gateway. In this example we will set name : Production
-```
-$ gogen gateway Production CreateOrder
+$ gogen service PublishMessage CreateOrder
 ```
 
-You can give any gateway name you like. Maybe you want to experiment with just simple database with SQLite for testing purpose, you can create the "experimental" gateway version. 
+## Create a gateway for your usecase
+
+Gateway is the struct to implement your outport interface. You need to set a name for your gateway. 
+In this example we will set name : inmemory
 ```
-$ gogen gateway Experimental CreateOrder
+$ gogen gateway inmemory CreateOrder
 ```
 
-Or you want to have hardcode version, then you can run this command
-```
-$ gogen gateway Hardcode CreateOrder
-```
-
-## 5. Create a controller for your usecase
+## Create a controller for your usecase
 
 In gogen, we define a controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default, it only uses net/http restapi. 
-
 Call this command for create a controller. Restapi is your controller name. You can name it whatever you want.
 ```
 $ gogen controller restapi CreateOrder
@@ -179,40 +157,40 @@ $ gogen controller restapi CreateOrder
 
 You also will get the global interceptor for all controllers.
 
-## 6. Glue your controller, usecase, and gateway together
+## Glue your controller, usecase, and gateway together
 
 After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
-$ gogen registry Default Restapi Production CreateOrder
+$ gogen registry appone restapi inmemory CreateOrder
 ```
-Default is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generate for you
+appone is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generate for you in `application/registry`
 
-## 7. Create entity
-entity is a mutable object that has an identifier. This command will create new entity struct under `entity/` folder
+## Create entity
+entity is a mutable object that has an identifier. This command will create new entity struct under `domain/entity/` folder
 ```
 $ gogen entity Order
 ```
 
-## 8. Create valueobject
-valueobject is an immutable object that has no identifier. This command will create new valueobject under `entity/` folder
+## Create valueobject
+valueobject is an immutable object that has no identifier. This command will create new valueobject under `domain/vo/` folder
 ```
 $ gogen valueobject FullName FirstName LastName 
 ```
 
-## 9. Create valuestring
-valuestring is a valueobject simple string type. This command will create new valuestring struct under `entity/` folder
+## Create valuestring
+valuestring is a valueobject simple string type. This command will create new valuestring struct under `domain/vo/` folder
 ```
 $ gogen valuestring OrderID
 ```
 
-## 10. Create enum
-enum is a single immutable value. This command will create new enum struct under `entity/` folder
+## Create enum
+enum is a single immutable value. This command will create new enum struct under `domain/vo/` folder
 ```
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
-## 11. Create error enum
-error enum is a shared error collection. This command will add new error enum line in `shared/errcat/error_enum.go` file
+## Create error enum
+error enum is a shared error collection. This command will add new error enum line in `application/apperror/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError
 ```

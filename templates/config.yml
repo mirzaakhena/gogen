@@ -1,0 +1,25 @@
+Version: 1
+
+FileName:
+  Controller:
+    Interceptor: interceptor
+    Response: response
+  Domain:
+    Repository: repository
+    Service: service
+
+Controller:
+  - Name: restapi
+    Framework: net/http
+  - Name: remote
+    Framework: net/rpc
+  - Name: consumer
+    Framework: nsqio/nsq
+
+Gateway:
+  HTTPClient: net/http
+  Repository: database/sql
+  MessageBroker: nsqio/nsq
+  RemoteProcedureCall: net/rpc
+
+
