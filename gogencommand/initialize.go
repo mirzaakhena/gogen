@@ -77,7 +77,7 @@ func (i InitializeModel) Run() error {
 	InitiateHelper()
 
 	{
-		outputFile := fmt.Sprintf("README._md")
+		outputFile := fmt.Sprintf("README.md")
 		err = util.WriteFileIfNotExist(templates.ReadmeFile, outputFile, struct{}{})
 		if err != nil {
 			return err
