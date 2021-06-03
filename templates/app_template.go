@@ -116,3 +116,6 @@ var (
 	//go:embed gateway/gateway_inject_method._go
 	GatewayMethodFile string
 )
+
+//go:embed README._md
+var ReadmeFile string

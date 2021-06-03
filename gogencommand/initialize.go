@@ -1,6 +1,10 @@
 package gogencommand
 
-import "github.com/mirzaakhena/gogen/util"
+import (
+	"fmt"
+	"github.com/mirzaakhena/gogen/templates"
+	"github.com/mirzaakhena/gogen/util"
+)
 
 type InitializeModel struct {
 }
@@ -71,6 +75,14 @@ func (i InitializeModel) Run() error {
 	InitiateError()
 
 	InitiateHelper()
+
+	{
+		outputFile := fmt.Sprintf("README._md")
+		err = util.WriteFileIfNotExist(templates.ReadmeFile, outputFile, struct{}{})
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
