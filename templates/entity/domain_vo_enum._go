@@ -29,7 +29,7 @@ func (r {{PascalCase .EnumName}}) GetDetail() {{PascalCase .EnumName}}Detail {
 
 func (r {{PascalCase .EnumName}}) PossibleValues() []{{PascalCase .EnumName}} {
 	res := make([]{{PascalCase .EnumName}}, len(enum{{PascalCase .EnumName}}))
-	for key, _ := range enum{{PascalCase .EnumName}} {
+	for key := range enum{{PascalCase .EnumName}} {
 		res = append(res, key)
 	}
 	return res
