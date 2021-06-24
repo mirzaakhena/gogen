@@ -7,7 +7,6 @@ Gogen is a tools for generate code structure and boiler plate code. There are ma
 
 ## Sample Apps
 https://github.com/mirzaakhena/userprofile
-(The sample is not finished yet)
 
 ## Structure
 This generator has basic structure like this
