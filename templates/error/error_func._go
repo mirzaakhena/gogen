@@ -52,8 +52,8 @@ func (u ErrorType) Code() string {
 // UserNotFoundError ErrorType = "ER1092 User with name %s is not found"
 // Then you can insert the name
 // UserNotFoundError.Var("mirza") --> "User with name mirza is not found"
-func (u ErrorType) Var(params ...interface{}) error {
-	return fmt.Errorf(u.String(), params...)
+func (u ErrorType) Var(params ...interface{}) ErrorType {
+	return ErrorType(fmt.Sprintf(u.String(), params...))
 }
 
 // String return the error as it is
