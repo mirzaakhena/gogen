@@ -9,13 +9,18 @@ type {{CamelCase .RegistryName}} struct {
 func New{{PascalCase .RegistryName}}() func() application.RegistryContract {
 	return func() application.RegistryContract {
 
-        httpHandler := server.NewLabstackEchoHandler(":8080")
+        httpHandler, err := server.NewLabstackEchoHandler(":8080")
+        if err != nil {
+			log.Error(context.Background(), "%v", err.Error())
+			os.Exit(1)
+		}
+                
         datasource, err := gateway.New{{PascalCase .GatewayName}}Gateway()
 		if err != nil {
 			log.Error(context.Background(), "%v", err.Error())
 			os.Exit(1)
 		}
-        
+
         return &{{CamelCase .RegistryName}}{
             LabstackEchoHandler: httpHandler,
             {{CamelCase .ControllerName}}Controller: {{LowerCase .ControllerName}}.Controller{
