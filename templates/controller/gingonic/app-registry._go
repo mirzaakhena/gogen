@@ -10,7 +10,11 @@ func New{{PascalCase .RegistryName}}() func() application.RegistryContract {
 	return func() application.RegistryContract {
 
         httpHandler := server.NewGinHTTPHandler(":8080")
-        datasource := gateway.New{{PascalCase .GatewayName}}Gateway()
+        datasource, err := gateway.New{{PascalCase .GatewayName}}Gateway()
+		if err != nil {
+			log.Error(context.Background(), "%v", err.Error())
+			os.Exit(1)
+		}        
 
         return &{{CamelCase .RegistryName}}{
             GinHTTPHandler: httpHandler,
