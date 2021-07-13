@@ -10,14 +10,14 @@ type JulienSchmidtHandler struct {
 	Router *httprouter.Router
 }
 
-func NewJulienSchmidtHandler(address string) JulienSchmidtHandler {
+func NewJulienSchmidtHandler(address string) (JulienSchmidtHandler, error) {
 
 	router := httprouter.New()
 
 	return JulienSchmidtHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}
+	}, nil
 
 }
 

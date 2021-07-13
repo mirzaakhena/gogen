@@ -10,14 +10,14 @@ type NetHTTPHandler struct {
 	Router *http.ServeMux
 }
 
-func NewNetHTTPHandler(address string) NetHTTPHandler {
+func NewNetHTTPHandler(address string) (NetHTTPHandler, error) {
 
 	router := http.NewServeMux()
 
 	return NetHTTPHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}
+	}, nil
 
 }
 

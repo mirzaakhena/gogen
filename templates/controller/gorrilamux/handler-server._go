@@ -10,14 +10,14 @@ type GorrilaMuxHandler struct {
 	Router *mux.Router
 }
 
-func NewGorrilaMuxHandler(address string) GorrilaMuxHandler {
+func NewGorrilaMuxHandler(address string) (GorrilaMuxHandler, error) {
 
 	router := mux.NewRouter()
 
 	return GorrilaMuxHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}
+	}, nil
 
 }
 

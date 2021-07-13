@@ -10,14 +10,14 @@ type LabstackEchoHandler struct {
 	Router *echo.Echo
 }
 
-func NewLabstackEchoHandler(address string) LabstackEchoHandler {
+func NewLabstackEchoHandler(address string) (LabstackEchoHandler, error) {
 
 	router := echo.New()
 
 	return LabstackEchoHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}
+	}, nil
 
 }
 

@@ -10,14 +10,14 @@ type GoChiHandler struct {
 	Router *chi.Mux
 }
 
-func NewGoChiHandler(address string) GoChiHandler {
+func NewGoChiHandler(address string) (GoChiHandler, error) {
 
 	router := chi.NewMux()
 
 	return GoChiHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}
+	}, nil
 
 }
 
