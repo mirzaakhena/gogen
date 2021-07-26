@@ -15,7 +15,7 @@ func New{{PascalCase .RegistryName}}() func() application.RegistryContract {
 			os.Exit(1)
 		}
         
-        datasource, err := gateway.New{{PascalCase .GatewayName}}Gateway()
+        datasource, err := {{LowerCase .GatewayName}}.New{{PascalCase .GatewayName}}Gateway()
 		if err != nil {
 			log.Error(context.Background(), "%v", err.Error())
 			os.Exit(1)

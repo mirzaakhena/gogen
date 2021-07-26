@@ -62,13 +62,15 @@ func (obj *GatewayModel) Run() error {
 		return err
 	}
 
+	// err := util.CreateFolderIfNotExist("controller/%s", strings.ToLower(obj.ControllerName))
+
 	// create a gateway folder
-	err = util.CreateFolderIfNotExist("gateway")
+	err = util.CreateFolderIfNotExist("gateway/%s", strings.ToLower(obj.GatewayName))
 	if err != nil {
 		return err
 	}
 
-	gatewayFile := fmt.Sprintf("gateway/%s.go", strings.ToLower(obj.GatewayName))
+	gatewayFile := fmt.Sprintf("gateway/%s/implementation.go", strings.ToLower(obj.GatewayName))
 
 	// gateway file not exist yet
 	if !util.IsExist(gatewayFile) {

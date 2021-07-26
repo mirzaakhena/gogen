@@ -1,4 +1,4 @@
-package gateway
+package {{LowerCase .GatewayName}}
 
 type {{CamelCase .GatewayName}}Gateway struct {
 }
