@@ -19,6 +19,7 @@ func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req 
     res := &InportResponse{}
 
     // code your usecase definition here ...
+    //!
 
     return res, nil
 }
