@@ -104,6 +104,14 @@ Install it into your local system (make sure you are in gogen directory)
 $ go install
 ```
 
+## Requirement
+Basically gogen use goimports to reformat the code, insert dependency import to code, and arrange import alphabetical. 
+You need to have goimports installed in your system. Not having goimports will causing problem like
+```
+failed with exec: "goimports": executable file not found in $PATH
+```
+
+
 ## Step by step to working with gogen
 
 ## Create your basic usecase structure
