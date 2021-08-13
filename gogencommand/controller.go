@@ -312,7 +312,7 @@ func (obj *ControllerModel) getInportLine(controllerFile string) (int, error) {
 
 func (obj *ControllerModel) getInportName() error {
 	{
-		fileReadPath := fmt.Sprintf("usecase/%s/inport.go", obj.UsecaseName)
+		fileReadPath := fmt.Sprintf("usecase/%s/inport.go", strings.ToLower(obj.UsecaseName))
 
 		fset := token.NewFileSet()
 		astFile, err := parser.ParseFile(fset, fileReadPath, nil, parser.ParseComments)
