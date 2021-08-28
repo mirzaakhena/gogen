@@ -20,7 +20,7 @@ Some of the principles I apply are
 Some of the benefits that can be obtained if you apply this tool are:
 1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
 2. Because it has become a standard, this tool can speed up the code review process, the communication process between developers, the handover process and knowledge transfer with new programmers and minimize code conflicts during code merges.
-3. The code generated results in a readable, simple structure with too many directories and a minimum depth that has been calculated very carefully.
+3. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
 4. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories.
 
 
