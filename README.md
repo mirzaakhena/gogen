@@ -223,6 +223,8 @@ $ gogen error SomethingGoesWrongError
 
 # Reference
 
+https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
+
 https://quii.gitbook.io/learn-go-with-tests/build-an-application/websockets
 
 https://github.com/go101/go101/releases/tag/v1.15.c
