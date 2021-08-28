@@ -1,6 +1,7 @@
 # Gogen (Clean Architecture Code Generator)
 Provide code structure based on clean architecure
 
+
 ## Introduction
 CLEAN ARCHITECTURE (CA) is a concept of "composing code" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
 
