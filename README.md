@@ -1,8 +1,28 @@
 # Gogen (Clean Architecture Code Generator)
-Provide code structure based on clean architecure and domain driven design
+Provide code structure based on clean architecure
 
 ## Introduction
-Gogen is a tools for generate code structure and boiler plate code. There are many commands for generate an usecase, repository, service, entity and etc.
+CLEAN ARCHITECTURE (CA) is a concept of "composing code" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
+
+If we googling looking for how the CA structure, then there will be many code examples that implement CA. But in general it is just a project template which if we want to apply it, we must imitate it.
+
+I'm trying to go one step further. Instead of copying the project template, why not create a code generator that applies this CA concept. These tools will help bootstrap the code so that developers don't have to struggle with imitating previous projects that aren't necessarily proven.
+
+The process of drafting the concept and making it is also not easy and requires time and coding experience. I had to do some research by reading and studying dozens of articles on the internet about Clean Architecture, Clean Code, Solid Design, Domain Driven Design.
+
+I try to empathize with programmers. Try to feel what they think when they want to write code. For example, "what should I create first? where should I put the controller? what is the proper name for this file?" I try to pour all these feelings and thoughts into this tool. So that it can guide programmers in coding activities.
+
+Some of the principles I apply are
+1. These tools should not be "know-it-all" tools. The programmer should still be the main controller. Because I don't want these tools to drive logic programmers instead. This tool only helps to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
+2. This tool has several alternatives to choose the technology. So if the programmer has better technology or is more familiar, the programmer can easily replace it.
+3. I apply the Scream Architecture concept in it so that the generated code can speak for itself to the developers about what their role is and what they are doing (helping the learning process).
+
+Some of the benefits that can be obtained if you apply this tool are:
+1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
+2. Because it has become a standard, this tool can speed up the code review process, the communication process between developers, the handover process and knowledge transfer with new programmers and minimize code conflicts during code merges.
+3. The code generated results in a readable, simple structure with too many directories and a minimum depth that has been calculated very carefully.
+4. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories.
+
 
 
 ## Sample Apps
