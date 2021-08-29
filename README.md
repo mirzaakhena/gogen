@@ -224,11 +224,7 @@ $ gogen error SomethingGoesWrongError
 
 # Reference
 
-https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
-
-https://quii.gitbook.io/learn-go-with-tests/build-an-application/websockets
-
-https://github.com/go101/go101/releases/tag/v1.15.c
+https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.htmlx
 
 https://sparxsystems.com/enterprise_architect_user_guide/14.0/guidebooks/meet_the_business_analysis_tools.html
 
@@ -249,10 +245,6 @@ http://web.archive.org/web/20180422210157/http://alistair.cockburn.us/Hexagonal+
 https://dev.to/pereiren/clean-architecture-series-part-3-2795
 
 http://www.plainionist.net/Implementing-Clean-Architecture-Controller-Presenter/
-
-https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
-
-https://vaadin.com/learn/tutorials/ddd/tactical_domain_driven_design
 
 https://blog.ploeh.dk/2013/12/03/layers-onions-ports-adapters-its-all-the-same/
 
@@ -282,9 +274,15 @@ https://enterprisecraftsmanship.com/posts/domain-centric-vs-data-centric-approac
 
 https://kevinlawry.wordpress.com/2012/08/07/why-i-avoid-stored-procedures-and-you-should-too/
 
+https://wkrzywiec.medium.com/ports-adapters-architecture-on-example-19cab9e93be7
+
 https://zogface.blog/2018/01/13/thinking-about-microservices-start-with-your-database/
 
 http://www.7loops.com/software-architect-interview-questions/
+
+https://crosp.net/blog/software-architecture/clean-architecture-part-2-the-clean-architecture/
+
+https://vaadin.com/learn/tutorials/ddd/tactical_domain_driven_design
 
 https://www.tutorialspoint.com/software_architecture_design/introduction.htm
 
