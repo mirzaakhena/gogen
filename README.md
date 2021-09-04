@@ -301,3 +301,13 @@ http://blog.cleancoder.com/uncle-bob/2016/01/04/ALittleArchitecture.html
 https://culttt.com/2014/09/29/creating-domain-services/
 
 https://towardsdatascience.com/how-to-implement-domain-driven-design-ddd-in-golang-2e2139beb09d
+
+https://pusher.com/tutorials/clean-architecture-introduction/
+
+https://khalilstemmler.com/articles/software-design-architecture/domain-driven-design-vs-clean-architecture/
+
+https://softwareengineering.stackexchange.com/questions/371966/is-clean-architecture-by-bob-martin-a-rule-of-thumb-for-all-architectures-or-i
+
+http://www.pinte.ro/Blog/DesignPatterns/Clean-Architecture-An-alternative-to-traditional-three-layer-database-centric-applications/37
+
+https://go2goplay.golang.org/p/zfTIGXO02tZ
