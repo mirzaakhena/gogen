@@ -224,7 +224,7 @@ $ gogen error SomethingGoesWrongError
 
 # Reference
 
-https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.htmlx
+https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html
 
 https://sparxsystems.com/enterprise_architect_user_guide/14.0/guidebooks/meet_the_business_analysis_tools.html
 
@@ -239,6 +239,10 @@ http://gorodinski.com/blog/2012/04/14/services-in-domain-driven-design-ddd/
 https://developer20.com/services-in-ddd-finally-explained/
 
 https://github.com/alesimoes/hexagonal-clean-architecture
+
+https://github.com/GSabadini/go-bank-transfer
+
+https://levelup.gitconnected.com/practical-ddd-in-golang-domain-service-4418a1650274
 
 http://web.archive.org/web/20180422210157/http://alistair.cockburn.us/Hexagonal+Architecture
 
@@ -266,7 +270,7 @@ https://stackoverflow.com/questions/56700996/if-business-logic-wants-to-send-an-
 
 https://softwareengineering.stackexchange.com/questions/357052/clean-architecture-use-case-containing-the-presenter-or-returning-data
 
-http://blog.opus.ch/2019/01/ddd-concepts-and-patterns-service-and-repository/
+https://opus.ch/ddd-concepts-and-patterns-service-and-repository/
 
 https://blog.flexiple.com/clean-architecture-build-software-like-an-artisan/
 
