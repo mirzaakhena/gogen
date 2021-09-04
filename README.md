@@ -299,3 +299,5 @@ https://github.com/mattia-battiston/clean-architecture-example/issues/1
 http://blog.cleancoder.com/uncle-bob/2016/01/04/ALittleArchitecture.html
 
 https://culttt.com/2014/09/29/creating-domain-services/
+
+https://towardsdatascience.com/how-to-implement-domain-driven-design-ddd-in-golang-2e2139beb09d
