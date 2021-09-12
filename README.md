@@ -27,7 +27,10 @@ Some of the benefits that can be obtained if you apply this tool are:
 
 
 ## Sample Apps
-https://github.com/mirzaakhena/userprofile
+- https://github.com/mirzaakhena/userprofile
+- https://github.com/mirzaakhena/danarisan
+- https://github.com/mirzaakhena/kraicklist
+- https://github.com/mirzaakhena/mywallet
 
 ## Structure
 This generator has basic structure like this
