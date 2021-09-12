@@ -1,5 +1,5 @@
 
-{{CamelCase .EntityName}}Objs, err := r.outport.{{PascalCase .RepositoryName}}(ctx)
+{{CamelCase .EntityName}}Objs, err := r.outport.{{PascalCase .RepositoryName}}(ctx, "someid")
 if err != nil {
     return nil, err
 }

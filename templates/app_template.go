@@ -93,13 +93,13 @@ var LogContractFile string
 //go:embed log/infra_log_default._go
 var LogImplFile string
 
-//go:embed infra_helper._go
+//go:embed infra/infra_helper._go
 var HelperFile string
 
-//go:embed infra_server_shutdown._go
+//go:embed infra/infra_server_shutdown._go
 var ServerShutdownFile string
 
-//go:embed application._go
+//go:embed application/application._go
 var ApplicationFile string
 
 //go:embed main._go
