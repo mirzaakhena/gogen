@@ -24,7 +24,8 @@ Some of the benefits that can be obtained if you apply this tool are:
 3. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
 4. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories.
 
-
+## Video Tutorial how to use it
+https://youtu.be/ZqZQGllfbbs
 
 ## Sample Apps
 - https://github.com/mirzaakhena/userprofile
