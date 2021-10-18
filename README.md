@@ -5,7 +5,9 @@ Provide code structure based on clean architecure
 ## Introduction
 CLEAN ARCHITECTURE (CA) is a concept of "composing code" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
 
-If we googling looking for how the CA structure, then there will be many code examples that implement CA. But in general it is just a project template which if we want to apply it, we must imitate it.
+This concept is agnostic against the technology. Means it does not depend on specific programming language. 
+
+If we are googling looking for how the CA structure, then there will be many code examples that implement CA in many programming language. But in general it is just a project template. If we want to apply it, we must imitate it.
 
 I'm trying to go one step further. Instead of copying the project template, why not create a code generator that applies this CA concept. These tools will help bootstrap the code so that developers don't have to struggle with imitating previous projects that aren't necessarily proven.
 
@@ -13,16 +15,20 @@ The process of drafting the concept and making it is also not easy and requires 
 
 I try to empathize with programmers. Try to feel what they think when they want to write code. For example, "what should I create first? where should I put the controller? what is the proper name for this file?" I try to pour all these feelings and thoughts into this tool. So that it can guide programmers in coding activities.
 
-Some of the principles I apply are
-1. These tools should not be "know-it-all" tools. The programmer should still be the main controller. Because I don't want these tools to drive logic programmers instead. This tool only helps to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
+Some principles I apply are
+1. These tools should not be "know-it-all" tools. The programmer should still be the master of design. Because I don't want these tools to drive logic programmers instead. This tool only helps to guide to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
 2. This tool has several alternatives to choose the technology. So if the programmer has better technology or is more familiar, the programmer can easily replace it.
 3. I apply the Scream Architecture concept in it so that the generated code can speak for itself to the developers about what their role is and what they are doing (helping the learning process).
 
-Some of the benefits that can be obtained if you apply this tool are:
+Some benefits that can be obtained if you apply this tool are:
 1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
-2. Because it has become a standard, this tool can speed up the code review process, the communication process between developers, the handover process and knowledge transfer with new programmers and minimize code conflicts during code merges.
-3. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
-4. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories.
+2. Because it has become a standard, this tool help the communication process between developers QA, project manager, annd product owner, 
+3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitate.
+4. Speed up the code review process and minimize code conflicts during code merges.
+5. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
+6. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories. For example every member of developer team can have task per usecase. 
+
+However, this is just a tools. The important things to remember is we must follow the basic principles of clean architecture itself. You may copy and paste the existing code if you think it is more easy. But remember you have to be careful anytime you do that. 
 
 ## Video Tutorial how to use it
 https://youtu.be/ZqZQGllfbbs
@@ -35,22 +41,83 @@ https://youtu.be/ZqZQGllfbbs
 
 ## Structure
 This generator has basic structure like this
+
 ```
-application/apperror
-application/registry
-
+application/
+  apperror/
+    error_enum.go
+    error_func.go
+  constant/
+    constant.go
+  registry/
+    mobileapps.go
+    backofficeapps.go
+    
 controller/
+  mobile/
+    handler_one.go
+    handler_two.go
+    interceptor.go
+    response.go
+    router.go  
+  backoffice/  
+    handler_three.go
+    handler_four.go
+    interceptor.go
+    response.go
+    router.go 
+  webhook/  
+    ...
+  openapi/
+    ...        
 
-domain/entity
-domain/repository
-domain/service
-domain/vo
+domain/
+  entity/
+    ent_one.go
+    ent_two.go
+  repository/
+    database.go
+    repository.go
+  service/
+    database.go
+    service.go
+  vo
+    vo_one.go
+    vo_two.go
 
 gateway/
+  prod/
+    gateway.go
+    table.go
+  experimental/
+    gateway.go 
+  testing/
+    gateway.go      
 
-infrastructure/log
-
+infrastructure/
+  log/
+    log.go
+    log_default.go
+  server/
+    gracefully_shutdown.go
+    http_server.go
+  util/
+    
 usecase/
+  usecaseone/
+    inport.go
+    interactor.go
+    outport.go
+    testcase_normal_test.go
+  usecasetwo/
+    inport.go
+    interactor.go
+    outport.go
+    testcase_normal_test.go      
+  usecasethree/
+    ...
+  usecasefour/
+    ...
 
 main.go
 ```
@@ -80,7 +147,7 @@ Interactor is using an Outport
 Outport is implemented by Gateway
 ```
 
-*Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in a interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. Request and response struct is allowed to share to *Outport* under the same usecase, but must not shared to other *Inport* or *Outport* usecase.
+*Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in an interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. Request and response struct is allowed to share to *Outport* under the same usecase, but must not shared to other *Inport* or *Outport* usecase.
 
 *Interactor* is the place that you can define your logic flow. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency.
 
@@ -90,7 +157,7 @@ By organize this usecase in a such structure, we can easily change the *Controll
 
 ## Comparison with three layer architecture (Controller -> Service -> Repository) pattern
 * *Controller* is the same controller for both architecture.
-* *Service* is similar like *Interactor* with additional strict rule. *Service* allowed to have many repositories. In Clean Architecture, *Interactor* only have one *Outport*.
+* *Service* is similar like *Interactor* with additional strict rule. *Service* allowed to have many repositories. In gogen Clean Architecture, *Interactor* only have one *Outport*.
 * *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
 * In *Repository* you often see the CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase.
 * *Repository* is an *Outport* with *Gateway* as its implementation.
