@@ -17,7 +17,7 @@ type GatewayReader struct {
 func (obj *GatewayReader) ReadCurrentGateway(gatewayName string) (map[string]int, error) {
 
 	structName := fmt.Sprintf("%sGateway", util.CamelCase(gatewayName))
-	fileReadPath := fmt.Sprintf("gateway/")
+	fileReadPath := fmt.Sprintf("gateway/%s", util.LowerCase(gatewayName))
 
 	existingFunc := map[string]int{}
 
