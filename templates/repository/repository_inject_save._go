@@ -1,9 +1,0 @@
-{{CamelCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}Request{})
-if err != nil {
-    return nil, err
-}
-
-err = r.outport.{{PascalCase .RepositoryName}}(ctx, {{CamelCase .EntityName}}Obj)
-if err != nil {
-    return nil, err
-}

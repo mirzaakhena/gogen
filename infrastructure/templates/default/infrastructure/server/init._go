@@ -1,0 +1,7 @@
+package server
+
+import "fmt"
+
+func NewGinHTTPHandlerDefault() GinHTTPHandler {
+  return NewGinHTTPHandler(fmt.Sprintf(":8081"))
+}

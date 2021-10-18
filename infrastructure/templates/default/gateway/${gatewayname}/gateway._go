@@ -1,0 +1,24 @@
+package {{LowerCase .GatewayName}}
+
+import (
+	"context"
+
+	"{{.PackagePath}}/domain/entity"
+	"{{.PackagePath}}/infrastructure/log"
+)
+
+type gateway struct {
+}
+
+// NewGateway ...
+func NewGateway() (*gateway) {
+	return &gateway{}
+}
+
+{{range .Methods}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}
