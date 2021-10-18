@@ -1,0 +1,6 @@
+{{CamelCase .ServiceName}}Response, err := r.outport.{{PascalCase .ServiceName}}(ctx, service.{{PascalCase .ServiceName}}ServiceRequest{})
+if err != nil {
+    return nil, err
+}
+
+_ = {{CamelCase .ServiceName}}Response

@@ -1,0 +1,192 @@
+
+addon later
+    nambahin transaction
+    nambahin default gorm dan gin
+    perbaiki error_func
+    tambahkan const
+    perbaiki enum
+    bisa pilih log library
+    create new usecase will create new interactor
+    create new test will adding new unexisting method
+    tambahin komen di tiap template
+    tambahkann traceID
+
+
+gogen2 gateway prod CreateOrder
+gogen2 gateway prod CreateOrder ShowOrder
+gogen2 gateway prod *
+gogen2 gateway prod.mobile CreateOrder
+
+
+usecase
+    menerima nama usecase
+    akan membuat folder usecase/<namausecase>
+    membuat 3 file yaitu inport.go, outport.go dan interactor.go dibawah folder tersebut
+    next feature: jika dipanggil untuk kedua kalinya, maka akan membuat file interactor baru
+    dengan diberi tambahan index sesuai jumlah interactor dibelakang nama interactor baru tersebut
+
+test
+    menerima nama test dan nama usecase
+    akan membaca Outport yang berisi semua method yang dibutuhkan untuk menjalankan usecase tersebut
+    membuat file test dibawah folder usecase yang sesuai dengan nama testcase_<namatest>_test.go
+    nextfeature: jika dipanggil untuk kedua kalinya
+    maka akann menambahkan method yang mungkin baru saja ditambahkan di Outport usecase
+
+entity
+    menerima nama entity
+    membuat file entity dengan nama entity dibawah folder domain/entity/<namaentity>.go
+    jika dipanggil untuk kedua kalinya maka akan muncul pesan error
+
+error
+    menerima nama error
+    membuatkan struktur folder dibawah application/apperror
+    jika belum ada, membuat error_func.go file yang berisi fungsionalitas umum untuk error
+    jika belum ada, membuat error_enum.go file yang berisi koleksi error code dan message
+    jika file error_enum.go sudah ada maka hanya akan menambahkan error line nya saja
+    jika dipanggil untuk kedua kalinya maka akan muncul pesan error
+
+repository
+    menerima nama repository, nama entity dan nama usecase sebagai parameter opsional
+    jika file repository.go belum ada, maka akan membuat folder dan file domain/repository/repository.go
+    jika entity belum ada, maka akan membuatkan entity dibawah domain/entity/<namaentity>.go
+    jika menerima nama usecase, maka akan menginjeksikan repo tersebut didalam struct Outport
+    jika diberi injection point didalam interactor, maka akan menginjeksikan code repository
+
+gateway
+    menerima nama gateway dan nama usecase
+    membaca Outport dari usecase dan mengkoleksi semua method dari Outport tersebut
+    jika belum ada, membuat folder dan file gateway/<namagateway>/implementation.go
+    membuat struct Gateway yang berisi semua method dari Outport usecase tersebut
+    jika dipanggil untuk kedua kalinya maka baca dan koleksi semua function yang sudah ada dari
+    struct Gateway tersebut, yang mana beberapa implementasi mungkin saja sudah dipindah ke file lain
+    perintah kedua kalinya ini hanya akan menambahkan function baru saja ke dalam implementation.go
+
+controller
+    menerima nama controller dan nama usecase
+    membuat folder controller/<namacontroller>
+    membuat file controller/controller.go berisi interface
+    membuat file controller/<namacontroller>/response.go
+    membuat file controller/<namacontroller>/interceptor.go
+    membuat file controller/<namacontroller>/handler_<namausecase>.go
+    membuat file controller/<namacontroller>/router.go
+    menginjeksikan inport yang sesuai usecase kedalam struct Controller
+    menginjeksikan router yang sesuai kedalam method RegisterRouter
+
+registry
+    menerima nama registry dan nama controller
+    akan membaca semua usecase yang terdaftar dalam controller
+    coba membaca gateway, jika cuma 1 gateway, maka akan langsung dipakai
+    jika ada lebih dari 1 gateway, maka akan diminta untuk memilih
+    jika filenya sudah ada maka akan diberi pesan info saja
+    membuat folder application/registry
+    membuat file application/application.go berisi interface
+    membuat file application/<namaregistry>.go berisi implementation
+
+Method
+    read entity
+    create an entity's method
+
+ValueObject
+    create a valueobject
+
+ValueString
+    create a valuestring
+
+Enum
+    create an enum
+    create error
+
+
+Mapper
+
+Init
+
+Config
+
+Template
+
+
+https://betterprogramming.pub/rpc-in-golang-19661033942
+https://medium.com/rungo/building-rpc-remote-procedure-call-network-in-go-5bfebe90f7e9
+
+kalo implementasi gateway ada di struct lain? kita harus bisa handle dan tidak perlu di extend lagi
+
+Controller dikategorikan berdasarkan actor yang mengakses usecase
+    user api
+    backoffice api
+    dev api
+    webhook api
+
+<ControllerName>Controller
+    RegisterHandler()
+    handle<UsecaseName>(inport)
+
+
+Read Gateway
+    Kita cari outport interface dari usecase yang di inginkan
+    baca seluruh field interface nya
+    ada 4 kemungkinan dari field tsb
+    1. berupa extension interface lain yang berada di package yang berbeda
+    2. berupa extension interface lain yang berada di dalam package dan file yang sama : BELUM DIHANDLE
+    3. berupa extension interface lain yang berada di dalam package namun file yang berbeda : BELUM DIHANDLE
+    4. berupa direct method
+        jika parameter punya type yang berada di packgae yg sama : BELUM DIHANDLE
+
+    tujuannya adalah mengkoleksi semua method yang dibutuhkan
+
+
+usecase
+test
+entity
+repository
+application
+gateway
+error
+controller
+
+registry
+service
+valueobject
+valuestring
+enum
+init
+config
+
+
+Usecase driven approach
+start from usecase
+usecase say everything about the system
+usecase doesnot care what tech you use
+useccase said :
+    - call me however you like, you want to use restapi, commandline,
+        grpc, as webhook, pubsub subscriber/consumer,what tech you use,
+        i dont care!
+    - give me this data, i dont care whereever yoou get it from
+    - i will doing this, and i dont care how you implement it
+
+problem on controller-service-repository
+- one repo has many method
+- one service has many repo
+- no clear
+
+- save time because we think less for naming (one of "hardest" think in programming), conventions and structure
+- Increase readability, scream arcitecture
+- for lazy developer
+- consistent structure
+- gogen is zero dependency
+- gogen is not engine it just a "well written code" so there is no performance issue
+- registry name is an application name
+- the power of copy paste
+- deleting is easier than creating
+- gogen support multiple applicationn in one repo
+- sequence diagram explain the usecase per user task
+- implement trace id in every usecase Request
+- support lazy documentationn. no need to work twice
+- thinking in oop perspective first instead of database perspective.
+- gogen is not to eliminate boilerplate code. but for helpinng you write a code layout
+- suitable for new project and revamp existing project per service
+- allow you to do code modification for experimental purpose without changing the current implementation
+- Private/internal struct for controller
+- manual depedency injection
+
+

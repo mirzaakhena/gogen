@@ -1,0 +1,6 @@
+package constant
+
+// All constant used in controller and gateway
+const (
+
+)

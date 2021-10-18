@@ -1,0 +1,42 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}"
+)
+
+// {{CamelCase .UsecaseName}}Handler ...
+func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) gin.HandlerFunc {
+
+	return func(c *gin.Context) {
+
+		traceID := util.GenerateID()
+
+		ctx := log.Context(c.Request.Context(), traceID)
+
+		var req {{LowerCase .UsecaseName}}.InportRequest
+		if err := c.BindJSON(&req); err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		log.Info(ctx, util.MustJSON(res))
+		c.JSON(http.StatusOK, NewSuccessResponse(res, traceID))
+
+	}
+}

@@ -1,5 +1,0 @@
-func (r *{{PascalCase .EntityName}}) {{PascalCase .MethodName}}() error {
-
-	return nil
-}
-

@@ -1,6 +1,0 @@
-package {{LowerCase .UsecaseName}}
-
-// Outport of {{.UsecaseName}}
-type Outport interface {
-
-}
