@@ -38,6 +38,7 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
+- https://github.com/mirzaakhena/gogen (this code itself)
 
 ## Structure
 This generator has basic structure like this
