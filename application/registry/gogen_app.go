@@ -60,7 +60,7 @@ func (r *gogenApp) RunApplication() {
   cmd := flag.Arg(0)
 
   if cmd == "" {
-    fmt.Printf("try gogenApp usecase\n")
+    fmt.Printf("try gogen usecase CreateOrder\n")
     return
   }
 
