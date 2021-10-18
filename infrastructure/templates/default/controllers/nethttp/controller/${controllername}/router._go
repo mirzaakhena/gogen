@@ -1,0 +1,13 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+)
+
+type Controller struct {
+	Router              *http.ServeMux
+}
+
+// RegisterRouter registering all the router
+func (r *Controller) RegisterRouter() {
+}

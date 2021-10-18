@@ -26,7 +26,7 @@ func (r *Controller) genControllerHandler(inputPort gencontroller.Inport) func(.
     if len(commands) >= 3 {
       req.DriverName = commands[2]
     } else {
-      req.DriverName = "gingonic"
+      req.DriverName = "gin"
     }
 
     _, err := inputPort.Execute(ctx, req)

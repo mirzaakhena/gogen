@@ -1,0 +1,40 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}"
+)
+
+// {{CamelCase .UsecaseName}}Handler ...
+func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) echo.HandlerFunc {
+
+	return func(c echo.Context) error {
+
+		traceID := util.GenerateID()
+
+		ctx := log.Context(c.Request().Context(), traceID)
+
+		var req {{LowerCase .UsecaseName}}.InportRequest
+		if err := c.Bind(&req); err != nil {
+			log.Error(ctx, err.Error())
+			return c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+		}
+
+		log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			return c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+		}
+
+		log.Info(ctx, util.MustJSON(res))
+		return c.JSON(http.StatusOK, NewSuccessResponse(res, traceID))
+
+	}
+}

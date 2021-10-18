@@ -1,12 +1,17 @@
 package server
 
 import (
+    "fmt"
 	"net/http"
 	"time"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
+
+func NewGinHTTPHandlerDefault() GinHTTPHandler {
+  return NewGinHTTPHandler(fmt.Sprintf(":8081"))
+}
 
 // GinHTTPHandler will define basic HTTP configuration with gracefully shutdown
 type GinHTTPHandler struct {

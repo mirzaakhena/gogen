@@ -2,6 +2,7 @@ package gencontroller
 
 import (
   "context"
+  "fmt"
   "github.com/mirzaakhena/gogen/domain/entity"
   "github.com/mirzaakhena/gogen/domain/service"
 )
@@ -36,22 +37,27 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
 
   packagePath := r.outport.GetPackagePath(ctx)
 
-  err = service.CreateEverythingExactly("default/", "application/apperror", map[string]string{}, struct{PackagePath string}{PackagePath: packagePath})
+  err = service.CreateEverythingExactly("default/", "application/apperror", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
   if err != nil {
     return nil, err
   }
 
-  err = service.CreateEverythingExactly("default/", "infrastructure/log", map[string]string{}, struct{PackagePath string}{PackagePath: packagePath})
+  err = service.CreateEverythingExactly("default/", "infrastructure/log", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
   if err != nil {
     return nil, err
   }
 
-  err = service.CreateEverythingExactly("default/", "infrastructure/util", map[string]string{}, struct{PackagePath string}{PackagePath: packagePath})
+  err = service.CreateEverythingExactly("default/", "infrastructure/util", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
   if err != nil {
     return nil, err
   }
 
-  err = service.CreateEverythingExactly("default/", "controller", map[string]string{
+  if req.DriverName == "" {
+    req.DriverName = "gin"
+  }
+
+  skippedFolder := fmt.Sprintf("default/controllers/%s/", req.DriverName)
+  err = service.CreateEverythingExactly(skippedFolder, "controller", map[string]string{
     "controllername": objCtrl.ControllerName.LowerCase(),
     "usecasename":    objUsecase.UsecaseName.LowerCase(),
   }, objCtrl.GetData(packagePath, *objUsecase))
@@ -59,13 +65,15 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
     return nil, err
   }
 
-  //framework := "gingonic"
-
   objDataCtrl := objCtrl.GetData(packagePath, *objUsecase)
 
-  // inject inport to struct
+  //inject inport to struct
+  //type Controller struct {
+  //  Router            gin.IRouter
+  //  CreateOrderInport createorder.Inport <----- here
+  //}
   {
-    templateCode := r.outport.GetRouterInportTemplate(ctx)
+    templateCode := r.outport.GetRouterInportTemplate(ctx, req.DriverName)
 
     templateWithData, err := r.outport.PrintTemplate(ctx, templateCode, objDataCtrl)
     if err != nil {
@@ -85,8 +93,11 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
   }
 
   // inject router for register
+  //func (r *Controller) RegisterRouter() {
+  //  r.Router.POST("/createorder", r.authorized(), r.createOrderHandler(r.CreateOrderInport)) <-- here
+  //}
   {
-    templateCode := r.outport.GetRouterRegisterTemplate(ctx)
+    templateCode := r.outport.GetRouterRegisterTemplate(ctx, req.DriverName)
 
     templateWithData, err := r.outport.PrintTemplate(ctx, templateCode, objDataCtrl)
     if err != nil {
@@ -103,7 +114,6 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
     if err != nil {
       return nil, err
     }
-
   }
 
   return res, nil
