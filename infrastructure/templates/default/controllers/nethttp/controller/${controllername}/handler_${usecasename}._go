@@ -22,7 +22,7 @@ func (r *Controller) {{CamelCase .UsecaseName}}Handler(method string, inputPort 
 		}
 
 		// for accessing query params /{{CamelCase .UsecaseName}}?id=123
-        // r.URL.Query().Get("id")
+		// r.URL.Query().Get("id")
 
 		traceID := util.GenerateID()
 
@@ -45,7 +45,7 @@ func (r *Controller) {{CamelCase .UsecaseName}}Handler(method string, inputPort 
 		}
 
 		log.Info(ctx, util.MustJSON(res))
-        fmt.Fprint(w, NewSuccessResponse(res, traceID))
+		fmt.Fprint(w, NewSuccessResponse(res, traceID))
 
 	}
 }

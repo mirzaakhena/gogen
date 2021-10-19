@@ -2,12 +2,10 @@ package {{LowerCase .ControllerName}}
 
 import (
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 type Controller struct {
-	Router              gin.IRouter
+	Router              *http.ServeMux
 }
 
 // RegisterRouter registering all the router

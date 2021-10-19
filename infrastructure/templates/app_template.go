@@ -140,7 +140,7 @@ var(
 
 var(
 
-	//go:embed default/infrastructure/server/http_server._go
+  //go:embed default/infrastructure/server/http_server_gin._go
 	ServerGinGonicFile string
 )
 

@@ -30,7 +30,7 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
     return nil, err
   }
 
-  objCtrl, err := entity.NewObjController(req.ControllerName, req.DriverName)
+  objCtrl, err := entity.NewObjController(req.ControllerName)
   if err != nil {
     return nil, err
   }

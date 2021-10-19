@@ -16,7 +16,6 @@ import (
 
 type ObjController struct {
   ControllerName vo.Naming
-  DriverName     string
 }
 
 // ObjDataController ...
@@ -26,7 +25,7 @@ type ObjDataController struct {
   ControllerName string
 }
 
-func NewObjController(controllerName, driverName string) (*ObjController, error) {
+func NewObjController(controllerName string) (*ObjController, error) {
 
   if controllerName == "" {
     return nil, apperror.ControllerNameMustNotEmpty
@@ -34,7 +33,6 @@ func NewObjController(controllerName, driverName string) (*ObjController, error)
 
   var obj ObjController
   obj.ControllerName = vo.Naming(controllerName)
-  obj.DriverName = driverName
 
   return &obj, nil
 }
@@ -286,7 +284,7 @@ func FindControllerByName(controllerName string) (*ObjController, error) {
               continue
             }
 
-            return NewObjController(pkg.Name, "")
+            return NewObjController(pkg.Name)
 
             //inportLine = fset.Position(iStruct.Fields.Closing).Line
             //return inportLine, nil

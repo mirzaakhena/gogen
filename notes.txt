@@ -153,14 +153,16 @@ init
 config
 
 
+
+
 Usecase driven approach
-start from usecase
+start from usecase.
 usecase say everything about the system
-usecase doesnot care what tech you use
-useccase said :
+usecase don't care what technology you use
+usecase said :
     - call me however you like, you want to use restapi, commandline,
         grpc, as webhook, pubsub subscriber/consumer,what tech you use,
-        i dont care!
+        i don't care!
     - give me this data, i dont care whereever yoou get it from
     - i will doing this, and i dont care how you implement it
 
@@ -169,21 +171,22 @@ problem on controller-service-repository
 - one service has many repo
 - no clear
 
+- we want to separate logic code and infrastructure code
 - save time because we think less for naming (one of "hardest" think in programming), conventions and structure
 - Increase readability, scream arcitecture
-- for lazy developer
+- built for lazy developer
 - consistent structure
 - gogen is zero dependency
 - gogen is not engine it just a "well written code" so there is no performance issue
 - registry name is an application name
 - the power of copy paste
 - deleting is easier than creating
-- gogen support multiple applicationn in one repo
+- gogen support multiple application in one repo
 - sequence diagram explain the usecase per user task
 - implement trace id in every usecase Request
-- support lazy documentationn. no need to work twice
+- support lazy documentation. no need to work twice only to write/update doc
 - thinking in oop perspective first instead of database perspective.
-- gogen is not to eliminate boilerplate code. but for helpinng you write a code layout
+- gogen is not to eliminate boilerplate code. but for helping you write a code layout
 - suitable for new project and revamp existing project per service
 - allow you to do code modification for experimental purpose without changing the current implementation
 - Private/internal struct for controller

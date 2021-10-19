@@ -7,15 +7,17 @@ import (
 )
 
 // authorized is an interceptor
-func (r *Controller) authorized() gin.HandlerFunc {
+func (r *Controller) authorized(next http.HandlerFunc) http.HandlerFunc {
 
-	return func(c *gin.Context) {
+	return func(w http.ResponseWriter, r *http.Request) {
 
 		authorized := true
 
 		if !authorized {
-			c.AbortWithStatus(http.StatusForbidden)
+			http.Error(w, "Not Authorized", http.StatusForbidden)
 			return
 		}
+
+		next(w, r)
 	}
 }
