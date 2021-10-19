@@ -2,10 +2,10 @@ package gengateway
 
 import (
 	"context"
-  "github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/domain/service"
 
-  "github.com/mirzaakhena/gogen/domain/entity"
-  "github.com/mirzaakhena/gogen/domain/vo"
+	"github.com/mirzaakhena/gogen/domain/entity"
+	"github.com/mirzaakhena/gogen/domain/vo"
 )
 
 //go:generate mockery --name Outport -output mocks/
