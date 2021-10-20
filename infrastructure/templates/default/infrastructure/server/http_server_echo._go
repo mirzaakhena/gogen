@@ -4,17 +4,21 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-// LabstackEchoHandler will define basic HTTP configuration with gracefully shutdown
-type LabstackEchoHandler struct {
+func NewEchoHTTPHandlerDefault() EchoHTTPHandler {
+  return NewEchoHTTPHandler(fmt.Sprintf(":8081"))
+}
+
+// EchoHTTPHandler will define basic HTTP configuration with gracefully shutdown
+type EchoHTTPHandler struct {
 	GracefullyShutdown
 	Router *echo.Echo
 }
 
-func NewLabstackEchoHandler(address string) (LabstackEchoHandler, error) {
+func NewEchoHTTPHandler(address string) (EchoHTTPHandler, error) {
 
 	router := echo.New()
 
-	return LabstackEchoHandler{
+	return EchoHTTPHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
 	}, nil
@@ -22,6 +26,6 @@ func NewLabstackEchoHandler(address string) (LabstackEchoHandler, error) {
 }
 
 // RunApplication is implementation of RegistryContract.RunApplication()
-func (r *LabstackEchoHandler) RunApplication() {
+func (r *EchoHTTPHandler) RunApplication() {
 	r.RunWithGracefullyShutdown()
 }

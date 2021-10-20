@@ -2,8 +2,6 @@ package {{LowerCase .ControllerName}}
 
 import (
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 )
 
 // authorized is an interceptor

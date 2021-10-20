@@ -4,6 +4,10 @@ import (
 	"net/http"
 )
 
+func NewNetHTTPHandlerDefault() NetHTTPHandler {
+  return NewNetHTTPHandler(fmt.Sprintf(":8081"))
+}
+
 // NetHTTPHandler will define basic HTTP configuration with gracefully shutdown
 type NetHTTPHandler struct {
 	GracefullyShutdown

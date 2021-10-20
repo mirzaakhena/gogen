@@ -1,9 +1,9 @@
 package {{LowerCase .ControllerName}}
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
-
-	"github.com/gin-gonic/gin"
 
 	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/infrastructure/util"
