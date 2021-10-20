@@ -1,7 +1,6 @@
 package server
 
 import (
-    "fmt"
 	"net/http"
 	"time"
 
@@ -10,7 +9,7 @@ import (
 )
 
 func NewGinHTTPHandlerDefault() GinHTTPHandler {
-  return NewGinHTTPHandler(fmt.Sprintf(":8081"))
+  return NewGinHTTPHandler(":8081")
 }
 
 // GinHTTPHandler will define basic HTTP configuration with gracefully shutdown

@@ -8,16 +8,9 @@ import (
 // Outport of GenRegistry
 type Outport interface {
   service.GetPackagePathService
-  GetMainFileTemplate(ctx context.Context) string
   service.WriteFileIfNotExistService
-  //service.CreateFolderIfNotExistService
-  //service.ReformatService
-
-  //GetApplicationTemplate(ctx context.Context) string
-  //GetRegistryTemplate(ctx context.Context) string
-  //
-  //FindObjController(ctx context.Context, controllerName string) (*entity.ObjController, error)
-  //FindAllObjGateway(ctx context.Context) ([]*entity.ObjGateway, error)
-  //FindObjGateway(ctx context.Context, gatewayName string) (*entity.ObjGateway, error)
-  //FindAllObjUsecases(ctx context.Context, objController *entity.ObjController) ([]*entity.ObjUsecase, error)
+  service.ReformatService
+  GetMainFileTemplate(ctx context.Context) string
+  GetServerFileTemplate(ctx context.Context, driverName string) string
+  GetApplicationFileTemplate(ctx context.Context, driverName string) string
 }

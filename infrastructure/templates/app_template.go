@@ -134,13 +134,13 @@ var (
 
 var(
 
-	//go:embed default/application/registry/${registryname}._go
+  //go:embed default/application/registry/~driver_gin._go
 	RegistryGingonicFile string
 )
 
 var(
 
-  //go:embed default/infrastructure/server/http_server_gin._go
+  //go:embed default/infrastructure/server/~http_server_gin._go
 	ServerGinGonicFile string
 )
 

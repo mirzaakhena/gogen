@@ -5,7 +5,7 @@ import (
 )
 
 func NewEchoHTTPHandlerDefault() EchoHTTPHandler {
-  return NewEchoHTTPHandler(fmt.Sprintf(":8081"))
+  return NewEchoHTTPHandler(":8081")
 }
 
 // EchoHTTPHandler will define basic HTTP configuration with gracefully shutdown
@@ -14,14 +14,14 @@ type EchoHTTPHandler struct {
 	Router *echo.Echo
 }
 
-func NewEchoHTTPHandler(address string) (EchoHTTPHandler, error) {
+func NewEchoHTTPHandler(address string) EchoHTTPHandler {
 
 	router := echo.New()
 
 	return EchoHTTPHandler{
 		GracefullyShutdown: NewGracefullyShutdown(router, address),
 		Router:             router,
-	}, nil
+	}
 
 }
 

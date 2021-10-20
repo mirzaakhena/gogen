@@ -1,11 +1,11 @@
 package server
 
 import (
-	"net/http"
+    "net/http"
 )
 
 func NewNetHTTPHandlerDefault() NetHTTPHandler {
-  return NewNetHTTPHandler(fmt.Sprintf(":8081"))
+  return NewNetHTTPHandler(":8081")
 }
 
 // NetHTTPHandler will define basic HTTP configuration with gracefully shutdown

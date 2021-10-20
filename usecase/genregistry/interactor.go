@@ -38,6 +38,15 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
     return nil, err
   }
 
+  driverName := "gin"
+
+  tem := r.outport.GetServerFileTemplate(ctx, driverName)
+  out := fmt.Sprintf("infrastructure/server/http_server_%s.go", driverName)
+  _, err = r.outport.WriteFileIfNotExist(ctx, tem, out, struct{}{})
+  if err != nil {
+    return nil, err
+  }
+
   // if controller name is not given, then we will do auto controller discovery strategy
   if req.ControllerName == "" {
 
@@ -138,12 +147,26 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
 
   if !util.IsFileExist(objRegistry.GetRegistryFileName()) {
 
-    err = service.CreateEverythingExactly("default/", "application", map[string]string{
-      "registryname": objRegistry.RegistryName.LowerCase(),
-    }, objRegistry.GetData(packagePath))
+    //err = service.CreateEverythingExactly("default/", "application", map[string]string{
+    //  "registryname": objRegistry.RegistryName.LowerCase(),
+    //}, objRegistry.GetData(packagePath))
+    //if err != nil {
+    //  return nil, err
+    //}
+
+    tem := r.outport.GetApplicationFileTemplate(ctx, driverName)
+    out := fmt.Sprintf("application/registry/%s.go", objRegistry.RegistryName.LowerCase())
+    _, err = r.outport.WriteFileIfNotExist(ctx, tem, out, objRegistry.GetData(packagePath))
     if err != nil {
       return nil, err
     }
+
+    // reformat registry.go
+    err = r.outport.Reformat(ctx, out, nil)
+    if err != nil {
+      return nil, err
+    }
+
   } else {
 
     //err = objRegistry.InjectUsecaseInportField()
@@ -158,69 +181,6 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
    if err != nil {
      return nil, err
    }
-
-  //// find controller by folder name
-  //objController, err := r.outport.FindObjController(ctx, req.ControllerName)
-  //if err != nil {
-  //  return nil, err
-  //}
-  //
-  //// extract the usecase from controler
-  //usecases, err := r.outport.FindAllObjUsecases(ctx, objController)
-  //if err != nil {
-  //  return nil, err
-  //}
-  //
-  //// create registry object
-  //objRegistry, err := entity.NewObjRegistry(entity.ObjGatewayRequest{
-  //  RegistryName:  req.RegistryName,
-  //  ObjController: objController,
-  //  ObjGateway:    objGateway,
-  //  Usecases:      usecases,
-  //})
-  //if err != nil {
-  //  return nil, err
-  //}
-  //
-  //// create folder usecase
-  //rootFolderName := entity.GetRegistryRootFolderName()
-  //{
-  //  _, err := r.outport.CreateFolderIfNotExist(ctx, rootFolderName)
-  //  if err != nil {
-  //    return nil, err
-  //  }
-  //}
-  //
-  //if err != nil {
-  //  return nil, err
-  //}
-  //
-  //packagePath := r.outport.GetPackagePath(ctx)
-  //
-  //// create file application.go
-  //{
-  //  templateFile := r.outport.GetApplicationTemplate(ctx)
-  //  outputFile := entity.GetApplicationFileName()
-  //  _, err := r.outport.WriteFileIfNotExist(ctx, templateFile, outputFile, objRegistry.GetData(packagePath))
-  //  if err != nil {
-  //    return nil, err
-  //  }
-  //}
-  //
-  //// create file registry.go
-  //{
-  //  templateFile := r.outport.GetRegistryTemplate(ctx)
-  //  outputFile := entity.GetRegistryFileName(*objRegistry)
-  //  _, err := r.outport.WriteFileIfNotExist(ctx, templateFile, outputFile, objRegistry.GetData(packagePath))
-  //  if err != nil {
-  //    return nil, err
-  //  }
-  //
-  //  err = r.outport.Reformat(ctx, outputFile, nil)
-  //  if err != nil {
-  //    return nil, err
-  //  }
-  //}
 
   return res, nil
 }

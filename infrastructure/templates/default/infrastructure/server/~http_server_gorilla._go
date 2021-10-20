@@ -5,7 +5,7 @@ import (
 )
 
 func NewGorrilaHTTPHandlerDefault() GorrilaHTTPHandler {
-  return NewGorrilaHTTPHandler(fmt.Sprintf(":8081"))
+  return NewGorrilaHTTPHandler(":8081")
 }
 
 // GorrilaHTTPHandler will define basic HTTP configuration with gracefully shutdown
