@@ -154,8 +154,13 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
     //  return nil, err
     //}
 
+    _, err = r.outport.CreateFolderIfNotExist(ctx,"application/registry")
+    if err != nil {
+      return nil, err
+    }
+
     tem := r.outport.GetApplicationFileTemplate(ctx, driverName)
-    out := fmt.Sprintf("application/registry/%s.go", objRegistry.RegistryName.LowerCase())
+    out := objRegistry.GetRegistryFileName()
     _, err = r.outport.WriteFileIfNotExist(ctx, tem, out, objRegistry.GetData(packagePath))
     if err != nil {
       return nil, err

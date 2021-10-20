@@ -10,6 +10,7 @@ type Outport interface {
   service.GetPackagePathService
   service.WriteFileIfNotExistService
   service.ReformatService
+  service.CreateFolderIfNotExistService
   GetMainFileTemplate(ctx context.Context) string
   GetServerFileTemplate(ctx context.Context, driverName string) string
   GetApplicationFileTemplate(ctx context.Context, driverName string) string
