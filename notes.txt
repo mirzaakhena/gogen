@@ -179,6 +179,16 @@ why or when you are using "copy and paste" instead of code generator?
 - theory -> what (limitation, known, unknown)
 - practise -> how
 
+step by step how to work with this architecture:
+- create the usecase and entity
+- create the gateway
+- create the controller
+- create the registry
+
+i recommend you to design the class diagram first and the interaction between class
+but sometime you can just start from usecase if you think that you handle the class diagram later.
+sometimes both
+
 usecase
 - usecase is first class citizen
 - put the respect to the usecase
@@ -187,19 +197,23 @@ usecase
 - usecase say everything about the system
 - usecase don't care what technology you use
 - usecase is a blackbox
+- usecase basically manage interaction between entity and run some action
 - usecase said
-    i don't care how the way you are calling me but if you want to run me, i need you to do two things:
+    - i don't care how the way you are calling me but if you want to run me, i need you to do two things:
     - input some params in inport, and i don't care wherever you get it from
     - fullfil anything in outport, and i don't care how you implement it
 
-too many usecase is also a code smell. when a project has so many usecase we need to separate it into the other repo project
+too many usecase is also a code smell.
+when a project has so many usecase we need to separate it into the other repo project
 
-if we call a method and not return an error == nil means it method is success
+make sure to always return error and handle it. never ever ignore it
+if we call a method and the not return (error == nil) means this method is success
 
 problem on controller-service-repository
 - one repo has many method
 - one service has many repo
 - one class has may service as usecase
+- many usecase in one file
 
 - save time because we think less for naming (one of "hardest" think in programming), conventions and structure
 - Increase readability, scream arcitecture
@@ -255,15 +269,26 @@ what should you only call/do in interactor?
 - do the simple logic like looping condition checking
 
 what can you put in InportRequest?
-- simple builtin field
+- simple builtin data type as field
+- we can also expose the func for advanced usage
 
-what can you declare in Outport?
-- mostly repository
+what can you put in InportResponse?
+- we can expose simple builtin data type (more recommended)
+- we can also expose our Entity or Value Object
+
+can we use entity as database structure?
+- i recommend not to use it to database structure
+- create the other structure in gateway is better but you must create a mapper for this
+
+what you can declare in Outport?
+- (mostly) repository
 - service
 - direct method
 
-why choosing to use repository or service instead of direct method?
+how to decide whether to use service instead of direct method?
 - it is depend on the question "are we will sharing it to other usecase?"
+- if we think that we want to share the method to other usecase then put it to the service
+- otherwise put it as direct method in outport
 
 what is entity
 - mutable object that has an id
@@ -272,7 +297,9 @@ what is value object?
 - imutable object that all the field combination as an id
 
 why we need value object?
-- address, price
+- to objectify the value instead of using primitive datatype, for ex:
+- address has a street, number, city,
+- price has a amount, currency and must not negative (depend on bussiness process)
 
 what is handled by repository?
 - anything that related to data storage
@@ -280,9 +307,14 @@ what is handled by repository?
 - always passing the entity
 
 what is handled by service (when we use service?)
-- Anything that is not related to data storage
+- anything that is not related to data storage
+- anything that cannot be handled by method entity
+- when it is hard to find to which Entity that behavior belongs
+- contains business invariants that are too complex to be stored in a single Entity or Value Object
 - generating id which used in interactor
 - publishing message to message broker
+- basically it is an interface. But it can be a function that has a repository and entity
+- does not hold any state
 
 how to naming the controller?
 - we are naming it by the actor who is accessing it
@@ -309,11 +341,11 @@ who is using infrastructure?
 - registry: log,
 
 make sure to naming bool variable as positif word
-make sure to always return error and handle it. never ever ignore it
+
 
 when to use panic?
 - when you first time initialize the system
-- never call it in runtime method
+- never call it in runtime method otherwise your system will stop and crash
 
 any repository, service or method in entity at least always return the error
 
