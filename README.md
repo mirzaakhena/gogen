@@ -70,7 +70,9 @@ controller/
   webhook/  
     ...
   openapi/
-    ...        
+    ...    
+  userapi/
+    ...    
 
 domain/
   entity/
@@ -92,7 +94,7 @@ gateway/
     table.go
   experimental/
     gateway.go 
-  testing/
+  inmemory/
     gateway.go      
 
 infrastructure/
@@ -103,6 +105,7 @@ infrastructure/
     gracefully_shutdown.go
     http_server.go
   util/
+    ...
     
 usecase/
   usecaseone/

@@ -17,7 +17,6 @@ gogen2 gateway prod CreateOrder ShowOrder
 gogen2 gateway prod *
 gogen2 gateway prod.mobile CreateOrder
 
-
 usecase
     menerima nama usecase
     akan membuat folder usecase/<namausecase>
@@ -121,7 +120,6 @@ Controller dikategorikan berdasarkan actor yang mengakses usecase
     RegisterHandler()
     handle<UsecaseName>(inport)
 
-
 Read Gateway
     Kita cari outport interface dari usecase yang di inginkan
     baca seluruh field interface nya
@@ -133,7 +131,6 @@ Read Gateway
         jika parameter punya type yang berada di packgae yg sama : BELUM DIHANDLE
 
     tujuannya adalah mengkoleksi semua method yang dibutuhkan
-
 
 usecase
 test
@@ -152,24 +149,71 @@ enum
 init
 config
 
+why we are using an architecture?
+- because we must manage many service
+- because we have to handle the interaction between service
+- because development is never stop
+- because we want to sleep better
 
+there are 3 types of architecture:
+- "yang penting bisa jalan" architecture
+- "ikut-ikutan" architecture
+- "well concepted" architecture
 
+how the memory/cpu performance when using this archietcture?
+- is not a relevant question because
+- what we want to achieve in architecture is performance in development process
+- it doesnt mean we ignore the memory/cpu performance
 
-Usecase driven approach
-start from usecase.
-usecase say everything about the system
-usecase don't care what technology you use
-usecase said :
-    - call me however you like, you want to use restapi, commandline,
-        grpc, as webhook, pubsub subscriber/consumer,what tech you use,
-        i don't care!
-    - give me this data, i dont care whereever yoou get it from
-    - i will doing this, and i dont care how you implement it
+why using a code generator?
+- because we are lazy
+- we immediately want to focus on business process instead of ceremony and boilerplate code
+- we want consistent structure
+
+why or when you are using "copy and paste" instead of code generator?
+- when you are lazy to use code generator
+- but you need to assure the structure
+
+3 phase on achieve something
+- motivation -> why
+- theory -> what (limitation, known, unknown)
+- practise -> how
+
+step by step how to work with this architecture:
+- create the usecase and entity
+- create the gateway
+- create the controller
+- create the registry
+
+i recommend you to design the class diagram first and the interaction between class
+but sometime you can just start from usecase if you think that you handle the class diagram later.
+sometimes both
+
+usecase
+- usecase is first class citizen
+- put the respect to the usecase
+- usecase driven approach paradigm
+- always start concepting system from usecase
+- usecase say everything about the system
+- usecase don't care what technology you use
+- usecase is a blackbox
+- usecase basically manage interaction between entity and run some action
+- usecase said
+    - i don't care how the way you are calling me but if you want to run me, i need you to do two things:
+    - input some params in inport, and i don't care wherever you get it from
+    - fullfil anything in outport, and i don't care how you implement it
+
+too many usecase is also a code smell.
+when a project has so many usecase we need to separate it into the other repo project
+
+make sure to always return error and handle it. never ever ignore it
+if we call a method and the not return (error == nil) means this method is success
 
 problem on controller-service-repository
 - one repo has many method
 - one service has many repo
-- no clear
+- one class has may service as usecase
+- many usecase in one file
 
 - we want to separate logic code and infrastructure code
 - save time because we think less for naming (one of "hardest" think in programming), conventions and structure
@@ -179,7 +223,7 @@ problem on controller-service-repository
 - gogen is zero dependency
 - gogen is not engine it just a "well written code" so there is no performance issue
 - registry name is an application name
-- the power of copy paste
+- the power of copy and paste
 - deleting is easier than creating
 - gogen support multiple application in one repo
 - sequence diagram explain the usecase per user task
@@ -191,5 +235,131 @@ problem on controller-service-repository
 - allow you to do code modification for experimental purpose without changing the current implementation
 - Private/internal struct for controller
 - manual depedency injection
+
+before you start coding, you must have and understand
+- the big picture of system
+- clear design and data structure of your system
+- the usecases of specific system
+
+Fact
+- all repository is interface
+- almost all the repository only have one method
+- controller may call multi usecase via inport
+- service can be a simple function or an interface
+- All method in repository and service have a context in its first params
+
+what is the prerequisite of interface that has more than one method?
+- when the client of interface call all the method on it
+
+violation of interface method
+- when one of method is guarantee will never called
+
+benefit of simple interface
+- easy to mock and test simulation
+
+what is handled by entity
+- collectiong data as object
+- action related to that object only
+- use other entity
+- use value object
+
+what should you only call/do in interactor?
+- any method available in Outport
+- entity
+- value object
+- do the simple logic like looping condition checking
+
+what can you put in InportRequest?
+- simple builtin data type as field
+- we can also expose the func for advanced usage
+
+what can you put in InportResponse?
+- we can expose simple builtin data type (more recommended)
+- we can also expose our Entity or Value Object
+
+can we use entity as database structure?
+- i recommend not to use it to database structure
+- create the other structure in gateway is better but you must create a mapper for this
+
+what you can declare in Outport?
+- (mostly) repository
+- service
+- direct method
+
+how to decide whether to use service instead of direct method?
+- it is depend on the question "are we will sharing it to other usecase?"
+- if we think that we want to share the method to other usecase then put it to the service
+- otherwise put it as direct method in outport
+
+what is entity
+- mutable object that has an id
+
+what is value object?
+- imutable object that all the field combination as an id
+
+why we need value object?
+- to objectify the value instead of using primitive datatype, for ex:
+- address has a street, number, city,
+- price has a amount, currency and must not negative (depend on bussiness process)
+
+what is handled by repository?
+- anything that related to data storage
+- Find, Save, Delete, or Update Soemthing
+- always passing the entity
+
+what is handled by service (when we use service?)
+- anything that is not related to data storage
+- anything that cannot be handled by method entity
+- when it is hard to find to which Entity that behavior belongs
+- contains business invariants that are too complex to be stored in a single Entity or Value Object
+- generating id which used in interactor
+- publishing message to message broker
+- basically it is an interface. But it can be a function that has a repository and entity
+- does not hold any state
+
+how to naming the controller?
+- we are naming it by the actor who is accessing it
+- for example: mobileapi, userapi, restapi, backoffice, consumer, webhook
+
+how to naming the registry?
+- we are naming it by your application/service name
+- for ex: paymentservice, shippingservice, backofficeservice
+
+how to naming the gateway?
+- we are naming it by your ennviroment
+- for ex: prod (for production), local (for local db), experimental, mockdb, inmemory
+
+how to naming the usecase?
+- use simple 2 or 3 word that describe the action
+
+there are two types of usecase
+- command / action
+- query / display, idempotent
+
+who is using infrastructure?
+- controller: log, server, consumer, util, token
+- gateway: log, database, publisher, util, token, cache
+- registry: log,
+
+make sure to naming bool variable as positif word
+
+
+when to use panic?
+- when you first time initialize the system
+- never call it in runtime method otherwise your system will stop and crash
+
+any repository, service or method in entity at least always return the error
+
+You are not allowed to call util directly from entity or service
+
+service may include the repository
+
+avoid init method
+
+follow the rule even you are not understand yet
+
+
+
+
 
 
