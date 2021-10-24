@@ -188,6 +188,18 @@ step by step how to work with this architecture:
 i recommend you to design the class diagram first and the interaction between class
 but sometime you can just start from usecase if you think that you handle the class diagram later.
 sometimes both
+can thinking on how do we store some information
+how do we perform some action and which data is added or updated after an that
+
+before you start coding, you must have and understand
+- the big picture of system
+- clear design and data structure of your system
+- the usecases of specific system
+
+we can answer all question from product design
+
+every system must pay respect each other
+one system must not access the data directly
 
 usecase
 - usecase is first class citizen
@@ -236,11 +248,6 @@ problem on controller-service-repository
 - Private/internal struct for controller
 - manual depedency injection
 
-before you start coding, you must have and understand
-- the big picture of system
-- clear design and data structure of your system
-- the usecases of specific system
-
 Fact
 - all repository is interface
 - almost all the repository only have one method
@@ -248,8 +255,10 @@ Fact
 - service can be a simple function or an interface
 - All method in repository and service have a context in its first params
 
-what is the prerequisite of interface that has more than one method?
-- when the client of interface call all the method on it
+ideally repository interface has only one method on it
+then in what condition an interface can have more than one method?
+- when the client of that interface guarantee will call one or more from all the method on it
+- sample : repository for transaction that have begin commit and rollback
 
 violation of interface method
 - when one of method is guarantee will never called
@@ -258,13 +267,13 @@ benefit of simple interface
 - easy to mock and test simulation
 
 what is handled by entity
-- collectiong data as object
+- collection data as object
 - action related to that object only
 - use other entity
 - use value object
 
 what should you only call/do in interactor?
-- any method available in Outport
+- any method available in Outport (repository/service)
 - entity
 - value object
 - do the simple logic like looping condition checking
@@ -290,22 +299,32 @@ how to decide whether to use service instead of direct method?
 - it is depend on the question "are we will sharing it to other usecase?"
 - if we think that we want to share the method to other usecase then put it to the service
 - otherwise put it as direct method in outport
+- we can promoted direct method to service if it is used by other usecase
 
 what is entity
 - mutable object that has an id
+- two entity is a same object if the id is similar even all of the field value is different
+- entity can be a aggregate for other entity
+- entity has its own factory method as constructor
 
 what is value object?
 - imutable object that all the field combination as an id
+- two value object is a same object if all of the field value is different
+- changing single value on any field will make it treated as different object
 
 why we need value object?
 - to objectify the value instead of using primitive datatype, for ex:
 - address has a street, number, city,
 - price has a amount, currency and must not negative (depend on bussiness process)
 
-what is handled by repository?
+what will handled by repository?
 - anything that related to data storage
-- Find, Save, Delete, or Update Soemthing
-- always passing the entity
+- Find, Save, Delete, or Update data
+- always passing the entity or primitve type
+- make sure not use a loot of parameter
+
+if you find a lot of parameter inf a function/method
+then it can be wrapped to the struct
 
 what is handled by service (when we use service?)
 - anything that is not related to data storage
@@ -326,15 +345,16 @@ how to naming the registry?
 - for ex: paymentservice, shippingservice, backofficeservice
 
 how to naming the gateway?
-- we are naming it by your ennviroment
+- we are naming it by your enviroment
+- you can using different gateway if you want to make a simulation without changing the existing implementation
 - for ex: prod (for production), local (for local db), experimental, mockdb, inmemory
 
 how to naming the usecase?
 - use simple 2 or 3 word that describe the action
 
 there are two types of usecase
-- command / action
-- query / display, idempotent
+- command (or called an action)
+- query (displaying information only without changing the data)
 
 who is using infrastructure?
 - controller: log, server, consumer, util, token
@@ -343,12 +363,12 @@ who is using infrastructure?
 
 make sure to naming bool variable as positif word
 
-
 when to use panic?
 - when you first time initialize the system
-- never call it in runtime method otherwise your system will stop and crash
+- never call it in runtime method otherwise your system will stop and crash suddenly
 
 any repository, service or method in entity at least always return the error
+any repository and service method must have context.Context in its first params
 
 You are not allowed to call util directly from entity or service
 
@@ -358,8 +378,15 @@ avoid init method
 
 follow the rule even you are not understand yet
 
+what is benefit of using the repository/service interface instead of make your own method?
+- you can reuse the existinng implementation without writing the new one
 
+what if you want to create your own implementation but still using existing repository/service interface?
+- you can create your own method on outport
+- or you can create your own implementation in gateway by create new gateway
 
+sample case:
+- upload image to Google Content Store
 
 
 

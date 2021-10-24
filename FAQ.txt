@@ -1,6 +1,5 @@
 pertanyaan
 - kenapa foldernya banyak banget?
-- kenapa usecase perlu dibuat sebagai package?
 - kenapa file inport, outport dan interactor dipisah? kan bisa dalam satu file?
 - kenapa Inport cuman boleh punya satu method?
 - kenapa Inport Request dan Response dijadikan struct?
@@ -12,6 +11,7 @@ pertanyaan
 - kenapa gateway dipisah kedalam beberapa folder? untuk apa?
 - kenapa domain hanya berisi entity, service, repository dan vo? dimana bounded context nya?
 - kenapa controller dipisah dengan nama controller? untuk apa?
+- kenapa usecase dipisah dengan folder?
 - kenapa interactor, response, router dan handler dipisah dengan file berbeda?
 - kenapa tiap handler dipisah-pisah pada file yang berbeda?
 - kenapa error di sentralisasi? bagaimana cara kerja dan kelebihannya?
