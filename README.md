@@ -3,7 +3,7 @@ Provide code structure based on clean architecure
 
 
 ## Introduction
-CLEAN ARCHITECTURE (CA) is a concept of "composing code" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
+CLEAN ARCHITECTURE (CA) is a concept of "composing and organizing folder and code files in the very maintainable ways" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
 
 This concept is agnostic against the technology. Means it does not depend on specific programming language. 
 
@@ -38,7 +38,7 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
-- https://github.com/mirzaakhena/gogen (this code itself)
+- https://github.com/mirzaakhena/gogen (this code itself, just for gimmick purpose)
 
 ## Structure
 This generator has basic structure like this
