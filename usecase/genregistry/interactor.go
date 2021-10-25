@@ -145,21 +145,25 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
     return nil, err
   }
 
+  err = service.CreateEverythingExactly("default/", "application/apperror", map[string]string{}, struct{}{})
+  if err != nil {
+    return nil, err
+  }
+
+  _, err = r.outport.CreateFolderIfNotExist(ctx, "application/registry")
+  if err != nil {
+    return nil, err
+  }
+
+  templateFile := r.outport.GetApplicationFileTemplate(ctx)
+  _, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "application/application.go", objRegistry.GetData(packagePath))
+  if err != nil {
+    return nil, err
+  }
+
   if !util.IsFileExist(objRegistry.GetRegistryFileName()) {
 
-    //err = service.CreateEverythingExactly("default/", "application", map[string]string{
-    //  "registryname": objRegistry.RegistryName.LowerCase(),
-    //}, objRegistry.GetData(packagePath))
-    //if err != nil {
-    //  return nil, err
-    //}
-
-    _, err = r.outport.CreateFolderIfNotExist(ctx,"application/registry")
-    if err != nil {
-      return nil, err
-    }
-
-    tem := r.outport.GetApplicationFileTemplate(ctx, driverName)
+    tem := r.outport.GetRegistryFileTemplate(ctx, driverName)
     out := objRegistry.GetRegistryFileName()
     _, err = r.outport.WriteFileIfNotExist(ctx, tem, out, objRegistry.GetData(packagePath))
     if err != nil {
@@ -181,11 +185,13 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
 
   }
 
-   templateFile := r.outport.GetMainFileTemplate(ctx)
-   _, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "main.go", objRegistry.GetData(packagePath))
-   if err != nil {
-     return nil, err
-   }
+  {
+    templateFile := r.outport.GetMainFileTemplate(ctx)
+    _, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "main.go", objRegistry.GetData(packagePath))
+    if err != nil {
+      return nil, err
+    }
+  }
 
   return res, nil
 }

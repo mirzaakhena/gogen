@@ -13,5 +13,6 @@ type Outport interface {
   service.CreateFolderIfNotExistService
   GetMainFileTemplate(ctx context.Context) string
   GetServerFileTemplate(ctx context.Context, driverName string) string
-  GetApplicationFileTemplate(ctx context.Context, driverName string) string
+  GetApplicationFileTemplate(ctx context.Context) string
+  GetRegistryFileTemplate(ctx context.Context,driverName string) string
 }

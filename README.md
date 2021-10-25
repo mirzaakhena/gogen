@@ -386,3 +386,7 @@ https://softwareengineering.stackexchange.com/questions/371966/is-clean-architec
 http://www.pinte.ro/Blog/DesignPatterns/Clean-Architecture-An-alternative-to-traditional-three-layer-database-centric-applications/37
 
 https://go2goplay.golang.org/p/zfTIGXO02tZ
+
+https://www.youtube.com/watch?v=WcU0EImGI_g
+
+https://www.youtube.com/watch?v=92ZJcxJgmmE
