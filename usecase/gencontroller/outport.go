@@ -16,11 +16,11 @@ type Outport interface {
   service.GetPackagePathService
   service.PrintTemplateService
 
-  GetControllerTemplate(ctx context.Context) string
-  GetResponseTemplate(ctx context.Context) string
-  GetInterceptorTemplate(ctx context.Context, framework string) string
-  GetRouterTemplate(ctx context.Context, framework string) string
-  GetHandlerTemplate(ctx context.Context, framework string) string
-  GetRouterInportTemplate(ctx context.Context) string
-  GetRouterRegisterTemplate(ctx context.Context) string
+  //GetResponseTemplate(ctx context.Context) string
+  //GetInterceptorTemplate(ctx context.Context, driverName string) string
+  //GetRouterTemplate(ctx context.Context, driverName string) string
+
+  GetHandlerTemplate(ctx context.Context, driverName string) string
+  GetRouterInportTemplate(ctx context.Context, driverName string) string
+  GetRouterRegisterTemplate(ctx context.Context, driverName string) string
 }

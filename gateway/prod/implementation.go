@@ -2,6 +2,7 @@ package prod
 
 import (
   "context"
+  "fmt"
   "github.com/mirzaakhena/gogen/domain/entity"
   "github.com/mirzaakhena/gogen/infrastructure/templates"
 )
@@ -11,11 +12,15 @@ type prodGateway struct {
   *errorGateway
 }
 
+func (r *prodGateway) GetServerFileTemplate(ctx context.Context, driverName string) string {
+  return templates.ReadFile(fmt.Sprintf("infrastructure/server/~http_server_%s._go", driverName))
+}
+
 func (r *prodGateway) GetRegistryTemplate(ctx context.Context) string {
   return templates.RegistryGingonicFile
 }
 
-func (r *prodGateway) GetMainFileTemplate(ctx context.Context) (string) {
+func (r *prodGateway) GetMainFileTemplate(ctx context.Context) string {
   return templates.ReadFile("main._go")
 }
 

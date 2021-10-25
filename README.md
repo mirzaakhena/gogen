@@ -3,7 +3,7 @@ Provide code structure based on clean architecure
 
 
 ## Introduction
-CLEAN ARCHITECTURE (CA) is a concept of "composing code" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
+CLEAN ARCHITECTURE (CA) is a concept of "composing and organizing folder and code files in the very maintainable ways" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
 
 This concept is agnostic against the technology. Means it does not depend on specific programming language. 
 
@@ -23,7 +23,7 @@ Some principles I apply are
 Some benefits that can be obtained if you apply this tool are:
 1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
 2. Because it has become a standard, this tool help the communication process between developers QA, project manager, annd product owner, 
-3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitate.
+3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitated.
 4. Speed up the code review process and minimize code conflicts during code merges.
 5. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
 6. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories. For example every member of developer team can have task per usecase. 
@@ -38,7 +38,7 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
-- https://github.com/mirzaakhena/gogen (this code itself)
+- https://github.com/mirzaakhena/gogen (this code itself, just for gimmick purpose)
 
 ## Structure
 This generator has basic structure like this
@@ -386,3 +386,7 @@ https://softwareengineering.stackexchange.com/questions/371966/is-clean-architec
 http://www.pinte.ro/Blog/DesignPatterns/Clean-Architecture-An-alternative-to-traditional-three-layer-database-centric-applications/37
 
 https://go2goplay.golang.org/p/zfTIGXO02tZ
+
+https://www.youtube.com/watch?v=WcU0EImGI_g
+
+https://www.youtube.com/watch?v=92ZJcxJgmmE

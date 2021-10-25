@@ -1,0 +1,42 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}"
+)
+
+// {{CamelCase .UsecaseName}}Handler ...
+func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		traceID := util.GenerateID()
+
+		ctx := log.Context(c.Request.Context(), traceID)
+
+		var req {{LowerCase .UsecaseName}}.InportRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			log.Error(ctx, err.Error())
+			http.Error(w, util.MustJSON(NewErrorResponse(err, traceID)), http.StatusBadRequest)
+			return
+		}
+
+		log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			http.Error(w, util.MustJSON(NewErrorResponse(err, traceID)), http.StatusBadRequest)
+			return
+		}
+
+		log.Info(ctx, util.MustJSON(res))
+		fmt.Fprint(w, NewSuccessResponse(res))
+
+	}
+}

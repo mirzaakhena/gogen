@@ -8,6 +8,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func NewGinHTTPHandlerDefault() GinHTTPHandler {
+  return NewGinHTTPHandler(":8081")
+}
+
 // GinHTTPHandler will define basic HTTP configuration with gracefully shutdown
 type GinHTTPHandler struct {
 	GracefullyShutdown
