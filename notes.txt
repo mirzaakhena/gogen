@@ -385,6 +385,7 @@ what if you want to create your own implementation but still using existing repo
 - you can create your own method on outport
 - or you can create your own implementation in gateway by create new gateway
 
+
 sample case:
 - upload image to Google Content Store
 
