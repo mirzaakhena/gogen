@@ -389,5 +389,10 @@ what if you want to create your own implementation but still using existing repo
 sample case:
 - upload image to Google Content Store
 
+We always start from
+- Data structure using class diagram database table
+- According to DDD
+
+-
 
 
