@@ -43,30 +43,9 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	outportMethods, err := vo.NewOutportMethods(req.UsecaseName, packagePath)
+	notExistingMethod, err := r.createGatewayImpl(req.UsecaseName, packagePath, obj)
 	if err != nil {
 		return nil, err
-	}
-
-	err = service.CreateEverythingExactly("default/", "gateway", map[string]string{
-		"gatewayname": obj.GatewayName.LowerCase(),
-	}, obj.GetData(packagePath, outportMethods))
-	if err != nil {
-		return nil, err
-	}
-
-	// file gateway impl file is already exist, we want to inject non existing method
-	existingFunc, err := vo.NewOutportMethodImpl("gateway", obj.GetGatewayRootFolderName(), packagePath)
-	if err != nil {
-		return nil, err
-	}
-
-	// collect the only methods that has not added yet
-	notExistingMethod := vo.OutportMethods{}
-	for _, m := range outportMethods {
-		if _, exist := existingFunc[m.MethodName]; !exist {
-			notExistingMethod = append(notExistingMethod, m)
-		}
 	}
 
 	gatewayCode := r.outport.GetGatewayMethodTemplate(ctx)
@@ -91,4 +70,33 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 	}
 
 	return res, nil
+}
+
+func (r *genGatewayInteractor) createGatewayImpl(usecaseName string, packagePath string, obj *entity.ObjGateway) (vo.OutportMethods, error) {
+	outportMethods, err := vo.NewOutportMethods(usecaseName, packagePath)
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("default/", "gateway", map[string]string{
+		"gatewayname": obj.GatewayName.LowerCase(),
+	}, obj.GetData(packagePath, outportMethods))
+	if err != nil {
+		return nil, err
+	}
+
+	// file gateway impl file is already exist, we want to inject non existing method
+	existingFunc, err := vo.NewOutportMethodImpl("gateway", obj.GetGatewayRootFolderName(), packagePath)
+	if err != nil {
+		return nil, err
+	}
+
+	// collect the only methods that has not added yet
+	notExistingMethod := vo.OutportMethods{}
+	for _, m := range outportMethods {
+		if _, exist := existingFunc[m.MethodName]; !exist {
+			notExistingMethod = append(notExistingMethod, m)
+		}
+	}
+	return notExistingMethod, nil
 }

@@ -12,7 +12,16 @@ func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}Request) (*{{Pa
 
 var obj {{PascalCase .EntityName}}
 
+// assign value here
+
+err := obj.Validate()
+if err != nil {
+    return nil, err
+}
+
 return &obj, nil
 }
 
-
+func (r *{{PascalCase .EntityName}}) Validate() error {
+    return nil
+}

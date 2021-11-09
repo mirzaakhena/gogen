@@ -9,7 +9,7 @@ addon later
     create new usecase will create new interactor
     create new test will adding new unexisting method
     tambahin komen di tiap template
-    tambahkann traceID
+    tambahkan traceID
 
 
 gogen2 gateway prod CreateOrder
@@ -29,7 +29,7 @@ test
     akan membaca Outport yang berisi semua method yang dibutuhkan untuk menjalankan usecase tersebut
     membuat file test dibawah folder usecase yang sesuai dengan nama testcase_<namatest>_test.go
     nextfeature: jika dipanggil untuk kedua kalinya
-    maka akann menambahkan method yang mungkin baru saja ditambahkan di Outport usecase
+    maka akan menambahkan method yang mungkin baru saja ditambahkan di Outport usecase
 
 entity
     menerima nama entity
@@ -191,6 +191,8 @@ sometimes both
 can thinking on how do we store some information
 how do we perform some action and which data is added or updated after an that
 
+prefer to design by class diagram than relational database table
+
 before you start coding, you must have and understand
 - the big picture of system
 - clear design and data structure of your system
@@ -328,7 +330,7 @@ then it can be wrapped to the struct
 
 what is handled by service (when we use service?)
 - anything that is not related to data storage
-- anything that cannot be handled by method entity
+- anything that canot be handled by method entity
 - when it is hard to find to which Entity that behavior belongs
 - contains business invariants that are too complex to be stored in a single Entity or Value Object
 - generating id which used in interactor
@@ -379,12 +381,11 @@ avoid init method
 follow the rule even you are not understand yet
 
 what is benefit of using the repository/service interface instead of make your own method?
-- you can reuse the existinng implementation without writing the new one
+- you can reuse the existing implementation without writing the new one
 
 what if you want to create your own implementation but still using existing repository/service interface?
 - you can create your own method on outport
 - or you can create your own implementation in gateway by create new gateway
-
 
 sample case:
 - upload image to Google Content Store
