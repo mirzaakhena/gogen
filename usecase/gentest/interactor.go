@@ -63,8 +63,6 @@ func (r *genTestInteractor) Execute(ctx context.Context, req InportRequest) (*In
     return nil, err
   }
 
-  fmt.Printf("%v\n", existingFunc)
-
   // collect the only methods that has not added yet
   notExistingMethod := vo.OutportMethods{}
   for _, m := range outportMethods {

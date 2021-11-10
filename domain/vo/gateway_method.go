@@ -27,7 +27,7 @@ func NewOutportMethodImpl(structName, gatewayRootFolderName string, packagePath 
   return existingFunc, nil
 }
 
-// existingFunc map[string]int dibuag dari parameter
+// existingFunc map[string]int dibuang dari parameter
 func (obj *gatewayMethod) readStruct(structName, folderPath string) error {
 
   fset := token.NewFileSet()

@@ -3,6 +3,7 @@ package gengateway
 import (
 	"context"
 	"github.com/mirzaakhena/gogen/domain/service"
+	"io/ioutil"
 
 	"github.com/mirzaakhena/gogen/domain/entity"
 	"github.com/mirzaakhena/gogen/domain/vo"
@@ -28,12 +29,22 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 
 	packagePath := r.outport.GetPackagePath(ctx)
 
-	err := service.CreateEverythingExactly("default/", "infrastructure/log", map[string]string{}, struct{PackagePath string}{PackagePath: packagePath})
+	err := service.CreateEverythingExactly("default/", "infrastructure/log", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
 	if err != nil {
 		return nil, err
 	}
 
-	err = service.CreateEverythingExactly("default/", "infrastructure/util", map[string]string{}, struct{PackagePath string}{PackagePath: packagePath})
+	err = service.CreateEverythingExactly("default/", "infrastructure/util", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("default/", "infrastructure/config", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("default/", "infrastructure/database", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
 	if err != nil {
 		return nil, err
 	}
@@ -43,9 +54,40 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	notExistingMethod, err := r.createGatewayImpl(req.UsecaseName, packagePath, obj)
-	if err != nil {
-		return nil, err
+	var notExistingMethod vo.OutportMethods
+
+	if req.UsecaseName == "" {
+
+		var folders []string
+		fileInfo, err := ioutil.ReadDir("usecase")
+		if err != nil {
+			return nil, err
+		}
+
+		for _, file := range fileInfo {
+
+			folders = append(folders, file.Name())
+
+			em, err := r.createGatewayImpl(file.Name(), packagePath, obj)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, method := range em {
+				notExistingMethod = append(notExistingMethod, method)
+			}
+		}
+
+	} else {
+		em, err := r.createGatewayImpl(req.UsecaseName, packagePath, obj)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, method := range em {
+			notExistingMethod = append(notExistingMethod, method)
+		}
+
 	}
 
 	gatewayCode := r.outport.GetGatewayMethodTemplate(ctx)

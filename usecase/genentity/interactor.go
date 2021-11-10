@@ -31,6 +31,15 @@ func (r *genEntityInteractor) Execute(ctx context.Context, req InportRequest) (*
     return nil, err
   }
 
+  exist, err := obj.IsEntityExist()
+  if err != nil {
+    return nil, err
+  }
+
+  if exist {
+    return res, nil
+  }
+
   err = service.CreateEverythingExactly("default/", "domain/entity", map[string]string{
     "entityname": obj.EntityName.SnakeCase(),
   }, obj.GetData())

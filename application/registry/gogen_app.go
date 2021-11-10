@@ -56,6 +56,7 @@ func NewGogen2() func() application.RegistryContract {
 
 // RunApplication ...
 func (r *gogenApp) RunApplication() {
+
   flag.Parse()
   cmd := flag.Arg(0)
 

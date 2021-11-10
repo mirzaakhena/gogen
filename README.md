@@ -219,27 +219,42 @@ $ gogen usecase CreateOrder
 
 Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
 
-`usecase/createorder/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
-
-`usecase/createorder/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
-
-`usecase/createorder/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
+- `usecase/createorder/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
+- `usecase/createorder/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
+- `usecase/createorder/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
 
 ## Create your usecase test file
 ```
 $ gogen test normal CreateOrder
 ```
-normal is the test name and CreateOrder is the usecase name
+normal is the test name and CreateOrder is the usecase name.
+This command will help you
+- create a test file under `usecase/createorder/testcase_normal_test.go`
 
 ## Create a repository 
 ```
 $ gogen repository SaveOrder Order CreateOrder
 ```
+This command will help you 
+- create a Repository named `SaveOrderRepo` under `repository/repository.go` (if it not exists yet)
+- create an Entity with name `Order` under `domain/entity/order.go` (if it not exists yet)
+- inject `repository.SaveOrderRepo` into `usecase/createorder/outport.go` 
+- and inject code template into `usecase/createorder/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
+
+Usecase name in Create a Repository command is optional so you can call it too without injecting it to the usecase
+```
+$ gogen repository SaveOrder Order
+```
+
 
 ## Create a service
 ```
 $ gogen service PublishMessage CreateOrder
 ```
+This command will help you to
+- create a Service named `PublishMessageService` under `domain/service/service.go`
+- inject `service.PublishMessageService` into `usecase/createorder/outport.go`
+- Inject code template into `usecase/createorder/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
 
 ## Create a gateway for your usecase
 
@@ -248,10 +263,17 @@ In this example we will set name : inmemory
 ```
 $ gogen gateway inmemory CreateOrder
 ```
+This command will read the Outport of `CreateOrder` usecase and implement all the method needed in `gateway/inmemory/gateway.go`
+
+```
+$ gogen gateway inmemory *
+```
+This command will read all the usecase under `usecase/*` and create all the default implementation needed in one struct
+
 
 ## Create a controller for your usecase
 
-In gogen, we define a controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default, it only uses net/http restapi. 
+In gogen, we define a controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default, it only uses gin/gonic web framework. 
 Call this command for create a controller. Restapi is your controller name. You can name it whatever you want.
 ```
 $ gogen controller restapi CreateOrder
@@ -263,7 +285,7 @@ You also will get the global interceptor for all controllers.
 
 After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
-$ gogen registry appone restapi inmemory CreateOrder
+$ gogen registry appone restapi CreateOrder inmemory
 ```
 appone is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generate for you in `application/registry`
 
