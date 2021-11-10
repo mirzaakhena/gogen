@@ -266,20 +266,21 @@ $ gogen gateway inmemory CreateOrder
 This command will read the Outport of `CreateOrder` usecase and implement all the method needed in `gateway/inmemory/gateway.go`
 
 ```
-$ gogen gateway inmemory *
+$ gogen gateway inmemory
 ```
-This command will read all the usecase under `usecase/*` and create all the default implementation needed in one struct
+This command will read all the usecase under `usecase/` and create all the default implementation needed in one struct
 
 
 ## Create a controller for your usecase
 
-In gogen, we define a controller as trigger of the usecase. It can be rest api, grpc, consumer for event handling, or any other source input. By default, it only uses gin/gonic web framework. 
-Call this command for create a controller. Restapi is your controller name. You can name it whatever you want.
+In gogen, we define a controller as trigger of the usecase. 
+It can be rest api, grpc, consumer for event handling, or any other source input. 
+By default, it only uses gin/gonic web framework. 
+Call this command for create a controller. 
+`restapi` is your controller name. Controller name can be grouped by client who use the API
 ```
-$ gogen controller restapi CreateOrder
+$ gogen controller restapi CreateOrder gin
 ```
-
-You also will get the global interceptor for all controllers.
 
 ## Glue your controller, usecase, and gateway together
 
@@ -287,7 +288,7 @@ After generate the usecase, gateway and controller, we need to bind them all by 
 ```
 $ gogen registry appone restapi CreateOrder inmemory
 ```
-appone is the registry name. You can name it whatever you want. After calling the command, some of those file generated will generate for you in `application/registry`
+appone is the registry name. registry name is an application name. After calling the command, some of those file generated will generate for you in `application/registry`
 
 ## Create entity
 entity is a mutable object that has an identifier. This command will create new entity struct under `domain/entity/` folder
