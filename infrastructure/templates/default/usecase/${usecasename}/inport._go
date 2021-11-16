@@ -4,15 +4,15 @@ import (
 	"context"
 )
 
-// Inport of {{.UsecaseName}}
+// Inport of Usecase
 type Inport interface {
 	Execute(ctx context.Context, req InportRequest) (*InportResponse, error)
 }
 
-// InportRequest is request payload to run the usecase {{.UsecaseName}}
+// InportRequest is request payload to run the usecase
 type InportRequest struct {
 }
 
-// InportResponse is response payload after running the usecase {{.UsecaseName}}
+// InportResponse is response payload after running the usecase
 type InportResponse struct {
 }

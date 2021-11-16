@@ -10,14 +10,14 @@ type {{CamelCase .UsecaseName}}Interactor struct {
 	outport Outport
 }
 
-// NewUsecase is constructor for create default implementation of usecase {{.UsecaseName}}
+// NewUsecase is constructor for create default implementation of usecase
 func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
 		outport: outputPort,
 	}
 }
 
-// Execute the usecase {{.UsecaseName}}
+// Execute the usecase
 func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
     res := &InportResponse{}

@@ -31,6 +31,11 @@ func (r *genEntityInteractor) Execute(ctx context.Context, req InportRequest) (*
     return nil, err
   }
 
+  _, err = r.outport.CreateFolderIfNotExist(ctx, "domain/entity/")
+  if err != nil {
+    return nil, err
+  }
+
   exist, err := obj.IsEntityExist()
   if err != nil {
     return nil, err

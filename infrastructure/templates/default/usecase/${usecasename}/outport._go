@@ -1,5 +1,5 @@
 package {{LowerCase .UsecaseName}}
 
-// Outport of {{.UsecaseName}}
+// Outport of usecase
 type Outport interface {
 }

@@ -13,6 +13,15 @@ func New{{PascalCase .ValueStringName}}(req {{PascalCase .ValueStringName}}Reque
 	return obj, nil
 }
 
+const (
+	{{PascalCase .ValueStringName}}Hello {{PascalCase .ValueStringName}} = "hello"
+	{{PascalCase .ValueStringName}}World {{PascalCase .ValueStringName}} = "world"
+)
+
+func (r {{PascalCase .ValueStringName}}) Validate() error {
+	return nil
+}
+
 func (r {{PascalCase .ValueStringName}}) String() string {
 	return string(r)
 }
