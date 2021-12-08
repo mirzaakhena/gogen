@@ -38,7 +38,7 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
-- - https://github.com/mirzaakhena/yourwishes
+- https://github.com/mirzaakhena/yourwishes
 - https://github.com/mirzaakhena/gogen (this code itself, just for gimmick purpose)
 
 ## Structure
