@@ -214,7 +214,7 @@ usecase
 - usecase basically manage interaction between entity and run some action
 - usecase said
     - i don't care how the way you are calling me but if you want to run me, i need you to do two things:
-    - input some params in inport, and i don't care wherever you get it from
+    - input some params in inport, and i don't care how you call it
     - fullfil anything in outport, and i don't care how you implement it
 
 too many usecase is also a code smell.

@@ -168,6 +168,10 @@ By organize this usecase in a such structure, we can easily change the *Controll
 * *Repository* is an *Outport* with *Gateway* as its implementation.
 
 ## Gogen Convention
+* Usecase is first class citizen. 
+* We always start the code from the usecase.
+* Usecase doesn't care about what the technology will be used
+* Usecase basically manage interaction between entity, value object, repository and service
 * As interface, inport has one and only one method which handle one usecase
 * Interactor is a manager for entity and outport
 * Interactor must not decide to have any technology. All technology is provided by Outport.
@@ -175,7 +179,6 @@ By organize this usecase in a such structure, we can easily change the *Controll
 * As interface, Outport at least have one method and can have multiple method
 * All method in Outport is guarantee used by interactor
 * Inport and Outport must not shared to other usecase. They are exclusive for specific usecase
-* Request or Response DTO from Inport may shared to Outport in the same Usecase (Interactor)
 * Interactor have one and only one outport. Mutiple outport is prohibited
 * Entity is mandatory to make a validation for any input. Controller optionaly handle the validation
 * Interactor is the one who made a decision mostly based on Entity consideration.
@@ -191,6 +194,21 @@ By organize this usecase in a such structure, we can easily change the *Controll
 * Controller name can be an actor name who is using the system
 * Registry name can be an application name. You can utilize it if you want to develop microservice with mono repo
 
+## Why you (will) need gogen?
+- we want to separate logic code and infrastructure code
+- save time because we think less for naming (one of "hardest" think in programming), conventions and structure
+- Increase readability, scream architecture
+- built for lazy developer
+- consistent structure
+- gogen is zero dependency. Your code will not have dependency to gogen at all
+- gogen is not engine it just a "well written code" so there is no performance issue
+- gogen is good templating tools, because deleting is easier than creating right
+- gogen support multiple application in one repo
+- gogen already implement trace id in every usecase Request
+- support lazy documentation. Your interactor is telling everything about how it's work. no need to work twice only to write/update doc
+- suitable for new project and revamp existing project per service
+- allow you to do code modification for experimental purpose without changing the current implementation
+- there is no automagically in gogen. 
 
 ## Download it
 ```
@@ -200,14 +218,6 @@ Install it into your local system (make sure you are in gogen directory)
 ```
 $ go install
 ```
-
-## Requirement
-Basically gogen use goimports to reformat the code, insert dependency import to code, and arrange import alphabetical. 
-You need to have goimports installed in your system. Not having goimports will causing problem like
-```
-failed with exec: "goimports": executable file not found in $PATH
-```
-
 
 ## Step by step to working with gogen
 
@@ -246,7 +256,6 @@ Usecase name in Create a Repository command is optional so you can call it too w
 ```
 $ gogen repository SaveOrder Order
 ```
-
 
 ## Create a service
 ```
@@ -287,7 +296,7 @@ $ gogen controller restapi CreateOrder gin
 
 After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
-$ gogen registry appone restapi CreateOrder inmemory
+$ gogen registry appone restapi
 ```
 appone is the registry name. registry name is an application name. After calling the command, some of those file generated will generate for you in `application/registry`
 
@@ -319,6 +328,153 @@ $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 error enum is a shared error collection. This command will add new error enum line in `application/apperror/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError
+```
+
+Some Information and FAQ
+```
+Fact
+- all repository is interface
+- almost all the repository only have one method
+- controller may call multi usecase via inport
+- service can be a simple function or an interface
+- All method in repository and service have a context in its first params
+
+ideally repository interface has only one method on it
+then in what condition an interface can have more than one method?
+- when the client of that interface guarantee will call one or more from all the method on it
+- sample : repository for transaction that have begin commit and rollback
+
+violation of interface method
+- when one of method is guarantee will never called
+
+benefit of simple interface
+- easy to mock and test simulation
+
+what is handled by entity
+- collection data as object
+- action related to that object only
+- use other entity
+- use value object
+
+what should you only call/do in interactor?
+- any method available in Outport (repository/service)
+- entity
+- value object
+- do the simple logic like looping condition checking
+
+what can you put in InportRequest?
+- simple builtin data type as field
+- we can also expose the func for advanced usage
+
+what can you put in InportResponse?
+- we can expose simple builtin data type (more recommended)
+- we can also expose our Entity or Value Object
+
+can we use entity as database structure?
+- i recommend not to use it to database structure
+- create the other structure in gateway is better but you must create a mapper for this
+
+what you can declare in Outport?
+- (mostly) repository
+- service
+- direct method
+
+how to decide whether to use service instead of direct method?
+- it is depend on the question "are we will sharing it to other usecase?"
+- if we think that we want to share the method to other usecase then put it to the service
+- otherwise put it as direct method in outport
+- we can promoted direct method to service if it is used by other usecase
+
+what is entity
+- mutable object that has an id
+- two entity is a same object if the id is similar even all of the field value is different
+- entity can be a aggregate for other entity
+- entity has its own factory method as constructor
+
+what is value object?
+- imutable object that all the field combination as an id
+- two value object is a same object if all of the field value is different
+- changing single value on any field will make it treated as different object
+
+why we need value object?
+- to objectify the value instead of using primitive datatype, for ex:
+- address has a street, number, city,
+- price has a amount, currency and must not negative (depend on bussiness process)
+
+what will handled by repository?
+- anything that related to data storage
+- Find, Save, Delete, or Update data
+- always passing the entity or primitve type
+- make sure not use a loot of parameter
+
+if you find a lot of parameter inf a function/method
+then it can be wrapped to the struct
+
+what is handled by service (when we use service?)
+- anything that is not related to data storage
+- anything that canot be handled by method entity
+- when it is hard to find to which Entity that behavior belongs
+- contains business invariants that are too complex to be stored in a single Entity or Value Object
+- generating id which used in interactor
+- publishing message to message broker
+- basically it is an interface. But it can be a function that has a repository and entity
+- does not hold any state
+
+how to naming the controller?
+- we are naming it by the actor who is accessing it
+- for example: mobileapi, userapi, restapi, backoffice, consumer, webhook
+
+how to naming the registry?
+- we are naming it by your application/service name
+- for ex: paymentservice, shippingservice, backofficeservice
+
+how to naming the gateway?
+- we are naming it by your enviroment
+- you can using different gateway if you want to make a simulation without changing the existing implementation
+- for ex: prod (for production), local (for local db), experimental, mockdb, inmemory
+
+how to naming the usecase?
+- use simple 2 or 3 word that describe the action
+
+there are two types of usecase
+- command (or called an action)
+- query (displaying information only without changing the data)
+
+who is using infrastructure?
+- controller: log, server, consumer, util, token
+- gateway: log, database, publisher, util, token, cache
+- registry: log,
+
+make sure to naming bool variable as positif word like : isRunning instead of isNotRunning, isFound instead of isNotFound
+
+when to use panic?
+- when you first time initialize the system
+- never call it in runtime method otherwise your system will stop and crash suddenly
+
+any repository, service or method in entity at least always return the error
+any repository and service method must have context.Context in its first params
+
+You are not allowed to call util directly from entity or service
+
+service may include the repository
+
+avoid init method
+
+follow the rule even you are not understand yet
+
+what is benefit of using the repository/service interface instead of make your own method?
+- you can reuse the existing implementation without writing the new one
+
+what if you want to create your own implementation but still using existing repository/service interface?
+- you can create your own method on outport
+- or you can create your own implementation in gateway by create new gateway
+
+sample case:
+- upload image to Google Content Store
+
+We always start from
+- Data structure using class diagram database table
+- According to DDD
 ```
 
 # Reference
