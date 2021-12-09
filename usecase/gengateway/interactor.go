@@ -64,6 +64,8 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 			return nil, err
 		}
 
+		uniqueMethodMap := map[string]int{}
+
 		for _, file := range fileInfo {
 
 			folders = append(folders, file.Name())
@@ -74,7 +76,14 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 			}
 
 			for _, method := range em {
+
+				if _, exist := uniqueMethodMap[method.MethodName]; exist {
+					continue
+				}
+
 				notExistingMethod = append(notExistingMethod, method)
+
+				uniqueMethodMap[method.MethodName] = 1
 			}
 		}
 
