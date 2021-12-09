@@ -46,84 +46,11 @@ This generator has basic structure like this
 
 ```
 application/
-  apperror/
-    error_enum.go
-    error_func.go
-  constant/
-    constant.go
-  registry/
-    mobileapps.go
-    backofficeapps.go
-    
 controller/
-  mobile/
-    handler_one.go
-    handler_two.go
-    interceptor.go
-    response.go
-    router.go  
-  backoffice/  
-    handler_three.go
-    handler_four.go
-    interceptor.go
-    response.go
-    router.go 
-  webhook/  
-    ...
-  openapi/
-    ...    
-  userapi/
-    ...    
-
 domain/
-  entity/
-    ent_one.go
-    ent_two.go
-  repository/
-    database.go
-    repository.go
-  service/
-    database.go
-    service.go
-  vo
-    vo_one.go
-    vo_two.go
-
 gateway/
-  prod/
-    gateway.go
-    table.go
-  experimental/
-    gateway.go 
-  inmemory/
-    gateway.go      
-
 infrastructure/
-  log/
-    log.go
-    log_default.go
-  server/
-    gracefully_shutdown.go
-    http_server.go
-  util/
-    ...
-    
 usecase/
-  usecaseone/
-    inport.go
-    interactor.go
-    outport.go
-    testcase_normal_test.go
-  usecasetwo/
-    inport.go
-    interactor.go
-    outport.go
-    testcase_normal_test.go      
-  usecasethree/
-    ...
-  usecasefour/
-    ...
-
 main.go
 ```
 
@@ -152,9 +79,9 @@ Interactor is using an Outport
 Outport is implemented by Gateway
 ```
 
-*Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in an interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. Request and response struct is allowed to share to *Outport* under the same usecase, but must not shared to other *Inport* or *Outport* usecase.
+*Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in an interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*. 
 
-*Interactor* is the place that you can define your logic flow. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency.
+*Interactor* is the place that you can define your business process flow by involving entity, valueobject, service and repository. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency.
 
 *Outport* is a data and action provider for *Interactor*. *Outport* never know how it is implemented. The implementor (in this case a *Gateway*) will decide how to provide a data or do an action. This *Outport* is very exclusive for specific usecase (in this case *Interactor*) and must not shared to other usecase. By having exclusive *Outport* it will isolate the testing for usecase.
 
