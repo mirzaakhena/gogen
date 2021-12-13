@@ -2,7 +2,7 @@ package entity
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/application/apperror"
+	"github.com/mirzaakhena/gogen/domain/domerror"
 	"github.com/mirzaakhena/gogen/domain/vo"
 	"go/ast"
 	"go/token"
@@ -22,7 +22,7 @@ type ObjDataEntity struct {
 func NewObjEntity(entityName string) (*ObjEntity, error) {
 
 	if entityName == "" {
-		return nil, apperror.EntityNameMustNotEmpty
+		return nil, domerror.EntityNameMustNotEmpty
 	}
 
 	var obj ObjEntity

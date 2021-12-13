@@ -402,6 +402,24 @@ sample case:
 We always start from
 - Data structure using class diagram database table
 - According to DDD
+
+
+In domain, (entity, vo, service, repository) we will never find dependency to usecase, gateway and controller (outside layer)
+entity never know about the technology it used.
+so you never mention a sql or json or gorm or something else here
+except you adopt external technology that wrapped in your code and never expose it directly
+
+In usecase you mostly mention about entity, vo, service, repository and domerror only
+even, no log found here
+
+in gateway and controller, you may mention about entity, vo, 
+
+
+
+
+
+
+
 ```
 
 # Reference

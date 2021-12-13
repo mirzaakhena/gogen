@@ -1,4 +1,4 @@
-package apperror
+package domerror
 
 const (
 	UsecaseNameMustNotEmpty    ErrorType = "ER1000 usecase name must not empty"    // UsecaseNameMustNotEmpty ...

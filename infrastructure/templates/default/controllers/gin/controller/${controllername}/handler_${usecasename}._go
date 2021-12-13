@@ -13,18 +13,27 @@ import (
 // {{CamelCase .UsecaseName}}Handler ...
 func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) gin.HandlerFunc {
 
+    type request struct {
+    }
+
+    type response struct {
+    }
+
 	return func(c *gin.Context) {
 
 		traceID := util.GenerateID()
 
 		ctx := log.Context(c.Request.Context(), traceID)
 
-		var req {{LowerCase .UsecaseName}}.InportRequest
-		if err := c.BindJSON(&req); err != nil {
+        var jsonReq request
+		if err := c.BindJSON(&jsonReq); err != nil {
 			log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
 			return
 		}
+
+		var req {{LowerCase .UsecaseName}}.InportRequest
+		// TODO assign value from jsonReq object to InportRequest req
 
 		log.Info(ctx, util.MustJSON(req))
 
@@ -35,8 +44,12 @@ func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .Use
 			return
 		}
 
-		log.Info(ctx, util.MustJSON(res))
-		c.JSON(http.StatusOK, NewSuccessResponse(res, traceID))
+		var jsonRes response
+		// TODO assign value from InportResponse object to response jsonRes object
+		_ = res
+
+		log.Info(ctx, util.MustJSON(jsonRes))
+		c.JSON(http.StatusOK, NewSuccessResponse(jsonRes, traceID))
 
 	}
 }

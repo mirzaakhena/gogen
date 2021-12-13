@@ -27,7 +27,7 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
 
 	packagePath := r.outport.GetPackagePath(ctx)
 
-	err := service.CreateEverythingExactly("default/", "application/apperror", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
+	err := service.CreateEverythingExactly("default/", "domain/domerror", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
 	if err != nil {
 		return nil, err
 	}

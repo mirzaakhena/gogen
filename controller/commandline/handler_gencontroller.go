@@ -21,6 +21,10 @@ func (r *Controller) genControllerHandler(inputPort gencontroller.Inport) func(.
     var req gencontroller.InportRequest
 
     req.ControllerName = commands[0]
+
+
+
+
     req.UsecaseName = commands[1]
 
     if len(commands) >= 3 {

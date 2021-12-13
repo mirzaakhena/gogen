@@ -13,17 +13,26 @@ import (
 // {{CamelCase .UsecaseName}}Handler ...
 func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .UsecaseName}}.Inport) echo.HandlerFunc {
 
+    type request struct {
+    }
+
+    type response struct {
+    }
+
 	return func(c echo.Context) error {
 
 		traceID := util.GenerateID()
 
 		ctx := log.Context(c.Request().Context(), traceID)
 
-		var req {{LowerCase .UsecaseName}}.InportRequest
-		if err := c.Bind(&req); err != nil {
+        var jsonReq request
+		if err := c.Bind(&jsonReq); err != nil {
 			log.Error(ctx, err.Error())
 			return c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
 		}
+
+		var req {{LowerCase .UsecaseName}}.InportRequest
+		// TODO assign value from jsonReq object to InportRequest req
 
 		log.Info(ctx, util.MustJSON(req))
 
@@ -33,8 +42,12 @@ func (r *Controller){{CamelCase .UsecaseName}}Handler(inputPort {{LowerCase .Use
 			return c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
 		}
 
-		log.Info(ctx, util.MustJSON(res))
-		return c.JSON(http.StatusOK, NewSuccessResponse(res, traceID))
+		var jsonRes response
+		// TODO assign value from InportResponse object to response jsonRes object
+		_ = res
+
+		log.Info(ctx, util.MustJSON(jsonRes))
+		return c.JSON(http.StatusOK, NewSuccessResponse(jsonRes, traceID))
 
 	}
 }

@@ -61,7 +61,7 @@ func (r *gogenApp) RunApplication() {
 	cmd := flag.Arg(0)
 
 	if cmd == "" {
-		fmt.Printf("try \n\n" +
+		fmt.Printf("Those are the sample of gogen command: \n\n" +
 			"   # Create a new usecase\n" +
 			"   gogen usecase CreateOrder\n" +
 			"     'CreateOrder' is an usecase name\n"+
@@ -104,7 +104,7 @@ func (r *gogenApp) RunApplication() {
 			"   gogen controller restapi CreateOrder gin\n" +
 			"     'restapi'     is a gateway name\n"+
 			"     'CreateOrder' is an usecase name\n"+
-			"     'gin' is a sample webframewrok. You may try the other one like: nethttp, echo, and gorilla\n"+
+			"     'gin'         is a sample webframewrok. You may try the other one like: nethttp, echo, and gorilla\n"+
 			"\n"+
 			"   # Create a controller with gin as default web framework\n" +
 			"   gogen controller restapi CreateOrder\n" +
@@ -131,11 +131,11 @@ func (r *gogenApp) RunApplication() {
 			"   # Create an enum predefine value\n" +
 			"   gogen enum PaymentMethod DANA Gopay Ovo LinkAja\n" +
 			"     'PaymentMethod' is an enum name\n"+
-			"     'DANA', 'Gopay', 'Ovo', and 'LinkAja' is constanta name\n"+
+			"     'DANA', 'Gopay', 'Ovo', and 'LinkAja' is constant name\n"+
 			"\n"+
 			"   # Create an error enum\n" +
 			"   gogen error SomethingGoesWrongError\n" +
-			"     'SomethingGoesWrongError' is an error constanta name\n"+
+			"     'SomethingGoesWrongError' is an error constant name\n"+
 			"\n")
 		return
 	}

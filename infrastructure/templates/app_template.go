@@ -50,98 +50,58 @@ var (
 
 var (
 
-	//// RepositoryFile ...
-  ////go:embed default/domain/repository/repository._go
-	//RepositoryFile string
-	//
-	//// RepositoryInterfaceFile ...
-  ////go:embed default/domain/repository/repository_interface._go
-	//RepositoryInterfaceFile string
-	//
-	//// RepositoryInterfaceFindFile ...
-  ////go:embed default/domain/repository/repository_interface_find._go
-	//RepositoryInterfaceFindFile string
-	//
-	//// RepositoryInterfaceFindOneFile ...
-  ////go:embed default/domain/repository/repository_interface_findone._go
-	//RepositoryInterfaceFindOneFile string
-	//
-	//// RepositoryInterfaceRemoveFile ...
-  ////go:embed default/domain/repository/repository_interface_remove._go
-	//RepositoryInterfaceRemoveFile string
-	//
-	//// RepositoryInterfaceSaveFile ...
-  ////go:embed default/domain/repository/repository_interface_save._go
-	//RepositoryInterfaceSaveFile string
+//// RepositoryFile ...
+////go:embed default/domain/repository/repository._go
+//RepositoryFile string
+//
+//// RepositoryInterfaceFile ...
+////go:embed default/domain/repository/repository_interface._go
+//RepositoryInterfaceFile string
+//
+//// RepositoryInterfaceFindFile ...
+////go:embed default/domain/repository/repository_interface_find._go
+//RepositoryInterfaceFindFile string
+//
+//// RepositoryInterfaceFindOneFile ...
+////go:embed default/domain/repository/repository_interface_findone._go
+//RepositoryInterfaceFindOneFile string
+//
+//// RepositoryInterfaceRemoveFile ...
+////go:embed default/domain/repository/repository_interface_remove._go
+//RepositoryInterfaceRemoveFile string
+//
+//// RepositoryInterfaceSaveFile ...
+////go:embed default/domain/repository/repository_interface_save._go
+//RepositoryInterfaceSaveFile string
 )
 
 var (
 
-	//// RepoInjectInteractorFile ...
-  ////go:embed default/domain/repository/repository_inject._go
-	//RepoInjectInteractorFile string
-	//
-	//// RepoInjectInteractorFindFile ...
-  ////go:embed default/domain/repository/repository_inject_find._go
-	//RepoInjectInteractorFindFile string
-	//
-	//// RepoInjectInteractorFindOneFile ...
-  ////go:embed default/domain/repository/repository_inject_findone._go
-	//RepoInjectInteractorFindOneFile string
-	//
-	//// RepoInjectInteractorSaveFile ...
-  ////go:embed default/domain/repository/repository_inject_save._go
-	//RepoInjectInteractorSaveFile string
-	//
-	//// RepoInjectInteractorRemoveFile ...
-  ////go:embed default/domain/repository/repository_inject_remove._go
-	//RepoInjectInteractorRemoveFile string
+//// RepoInjectInteractorFile ...
+////go:embed default/domain/repository/repository_inject._go
+//RepoInjectInteractorFile string
+//
+//// RepoInjectInteractorFindFile ...
+////go:embed default/domain/repository/repository_inject_find._go
+//RepoInjectInteractorFindFile string
+//
+//// RepoInjectInteractorFindOneFile ...
+////go:embed default/domain/repository/repository_inject_findone._go
+//RepoInjectInteractorFindOneFile string
+//
+//// RepoInjectInteractorSaveFile ...
+////go:embed default/domain/repository/repository_inject_save._go
+//RepoInjectInteractorSaveFile string
+//
+//// RepoInjectInteractorRemoveFile ...
+////go:embed default/domain/repository/repository_inject_remove._go
+//RepoInjectInteractorRemoveFile string
 )
 
 var (
 
-	// ApplicationFile ...
-  //go:embed default/application/application._go
-	ApplicationFile string
-
-	// ApplicationErrorEnumFile ...
-  //go:embed default/application/apperror/error_enum._go
-	ApplicationErrorEnumFile string
-
-	// ApplicationErrorFuncFile ...
-  //go:embed default/application/apperror/error_func._go
-	ApplicationErrorFuncFile string
-
-	// ApplicationErrorTemplateFile ...
-	//go:embed default/application/apperror/~inject._go
-	ApplicationErrorTemplateFile string
-
-	// ApplicationConstantTemplateFile ...
-  //go:embed default/application/constant/constant._go
-	ApplicationConstantTemplateFile string
-)
-
-var (
-
-	// GatewayGormFile ...
-	//go:embed default/gateway/${gatewayname}/gateway._go
-	GatewayGormFile string
-
-	// GatewayGormInjectMethodFile ...
-	//go:embed default/gateway/${gatewayname}/~inject._go
-	GatewayGormInjectMethodFile string
-)
-
-var(
-
-  //go:embed default/application/registry/~driver_gin._go
+	//go:embed default/application/registry/~driver_gin._go
 	RegistryGingonicFile string
-)
-
-var(
-
-  //go:embed default/infrastructure/server/~http_server_gin._go
-	ServerGinGonicFile string
 )
 
 var (
@@ -163,5 +123,4 @@ var (
 
 	//go:embed default/_controller/gingonic/router-register._go
 	ControllerGinGonicRouterRegisterFile string
-
 )

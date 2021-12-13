@@ -1,7 +1,7 @@
 package {{LowerCase .ControllerName}}
 
 import (
-    "{{.PackagePath}}/application/apperror"
+    "{{.PackagePath}}/domain/domerror"
 )
 
 type Response struct {
@@ -24,7 +24,7 @@ func NewErrorResponse(err error, traceID string) interface{} {
 	var res Response
 	res.Success = false
 
-	et, ok := err.(apperror.ErrorWithCode)
+	et, ok := err.(domerror.ErrorWithCode)
 	if !ok {
 		res.ErrorCode = "UNDEFINED"
 		res.ErrorMessage = err.Error()

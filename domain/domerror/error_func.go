@@ -1,4 +1,4 @@
-package apperror
+package domerror
 
 import (
 	"fmt"
@@ -8,7 +8,7 @@ import (
 // Error is defined as this sample
 // TransitionError ErrorType = "ER1043 Transition from %s to %s is not allowed"
 //
-// All Error is registered in application/apperror/error_enum.go file
+// All Error is registered in domain/domerror/error_enum.go file
 //
 // TransitionError
 // 		is the Error Enum

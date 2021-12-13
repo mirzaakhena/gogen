@@ -2,8 +2,8 @@ package entity
 
 import (
 	"fmt"
-  "github.com/mirzaakhena/gogen/application/apperror"
-  "github.com/mirzaakhena/gogen/domain/vo"
+	"github.com/mirzaakhena/gogen/domain/domerror"
+	"github.com/mirzaakhena/gogen/domain/vo"
 )
 
 // ObjError depend on (which) usecase that want to be tested
@@ -20,7 +20,7 @@ type ObjDataError struct {
 func NewObjError(errorName string) (*ObjError, error) {
 
 	if errorName == "" {
-		return nil, apperror.ErrorNameMustNotEmpty
+		return nil, domerror.ErrorNameMustNotEmpty
 	}
 
 	var obj ObjError
@@ -40,7 +40,7 @@ func (o ObjError) GetData() *ObjDataError {
 
 // GetErrorRootFolderName ...
 func (o ObjError) GetErrorRootFolderName() string {
-	return fmt.Sprintf("application/apperror")
+	return fmt.Sprintf("domain/domerror")
 }
 
 // GetErrorEnumFileName ...

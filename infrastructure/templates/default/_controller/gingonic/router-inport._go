@@ -1,1 +1,0 @@
-{{PascalCase .UsecaseName}}Inport {{LowerCase .UsecaseName}}.Inport
