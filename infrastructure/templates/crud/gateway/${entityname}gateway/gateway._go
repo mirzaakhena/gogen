@@ -1,0 +1,210 @@
+package localdb
+
+import (
+	"context"
+	"fmt"
+	gonanoid "github.com/matoous/go-nanoid/v2"
+	"{{.PackagePath}}/domain/entity"
+	"{{.PackagePath}}/domain/repository"
+	"{{.PackagePath}}/domain/vo"
+	"{{.PackagePath}}/infrastructure/database"
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+)
+
+type gateway struct {
+	*database.GormWithTransactionImpl
+	*database.GormWithoutTransactionImpl
+}
+
+// NewGateway ...
+func NewGateway() *gateway {
+
+	db := database.NewSQLiteDefault()
+
+	err := db.AutoMigrate(&{{PascalCase .EntityName}}{})
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return &gateway{
+		GormWithoutTransactionImpl: database.NewGormWithoutTransactionImpl(db),
+		GormWithTransactionImpl:    database.NewGormWithTransactionImpl(db),
+	}
+}
+
+func (r gateway) GenerateID(ctx context.Context) string {
+	log.Info(ctx, "called")
+
+	id, err := gonanoid.Generate("ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890", 4)
+	if err != nil {
+		return "abcd"
+	}
+
+	return id
+}
+
+func (r gateway) Save{{PascalCase .EntityName}}(ctx context.Context, obj *entity.{{PascalCase .EntityName}}) error {
+	log.Info(ctx, "called")
+
+	db, err := database.ExtractDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	sm := {{PascalCase .EntityName}}{
+		ID:   obj.ID.String(),
+		Name: obj.Name,
+		Date: obj.Date,
+	}
+
+	err = db.Debug().Save(&sm).Error
+	if err != nil {
+		return err
+	}
+
+	obj.ID = vo.{{PascalCase .EntityName}}ID(sm.ID)
+
+	return nil
+}
+
+func (r gateway) UpdateName{{PascalCase .EntityName}}(ctx context.Context, id string, makeChanges func(obj *entity.{{PascalCase .EntityName}}) error) error {
+
+	log.Info(ctx, "called")
+
+	db, err := database.ExtractDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	var sm {{PascalCase .EntityName}}
+	err = db.First(&sm, "id = ?", id).Error
+	if err != nil {
+		return err
+	}
+
+	var obj{{PascalCase .EntityName}} = &entity.{{PascalCase .EntityName}}{
+		ID:   vo.{{PascalCase .EntityName}}ID(id),
+		Name: sm.Name,
+		Date: sm.Date,
+	}
+
+	err = makeChanges(obj{{PascalCase .EntityName}})
+	if err != nil {
+		return err
+	}
+
+	err = db.Debug().Model(&sm).Updates(map[string]interface{}{
+		"name": obj{{PascalCase .EntityName}}.Name,
+		"date": obj{{PascalCase .EntityName}}.Date,
+	}).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r gateway) Delete{{PascalCase .EntityName}}(ctx context.Context, {{LowerCase .EntityName}}ID string) error {
+	log.Info(ctx, "called")
+
+	db, err := database.ExtractDB(ctx)
+	if err != nil {
+		return err
+	}
+
+	err = db.Delete(&{{PascalCase .EntityName}}{}, "id = ?", {{LowerCase .EntityName}}ID).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (r gateway) FindAll{{PascalCase .EntityName}}(ctx context.Context, req repository.FindAll{{PascalCase .EntityName}}RepoRequest) ([]*entity.{{PascalCase .EntityName}}, int64, error) {
+	log.Info(ctx, "called")
+
+	var count int64
+
+	db, err := database.ExtractDB(ctx)
+	if err != nil {
+		return nil, 0, err
+	}
+
+	db = db.Model(&{{PascalCase .EntityName}}{})
+
+	if req.NameLike != nil {
+		db = db.Where("name LIKE ?", fmt.Sprintf("%s%%", *req.NameLike))
+	}
+
+	if req.DateStart != nil {
+		db = db.Where("date >= ?", req.DateStart)
+	}
+
+	if req.DateEnd != nil {
+		db = db.Where("date <= ?", req.DateEnd)
+	}
+
+	rows, err := db.Count(&count).
+		Offset((req.Page - 1) * req.Size).
+		Limit(req.Size).
+		Rows()
+
+	if err != nil {
+		return nil, 0, err
+	}
+
+	defer func() {
+		err := rows.Close()
+		if err != nil {
+			return
+		}
+	}()
+
+	sms := make([]*entity.{{PascalCase .EntityName}}, 0)
+
+	for rows.Next() {
+		var sm {{PascalCase .EntityName}}
+
+		err := db.ScanRows(rows, &sm)
+		if err != nil {
+			return nil, 0, err
+		}
+
+		log.Info(ctx, "\n\n %v\n\n", util.MustJSON(sm))
+
+		result{{PascalCase .EntityName}} := r.mapTableToObject(sm)
+
+		sms = append(sms, &result{{PascalCase .EntityName}})
+	}
+
+	return sms, count, nil
+}
+
+func (r gateway) FindOne{{PascalCase .EntityName}}(ctx context.Context, {{LowerCase .EntityName}}ID string) (*entity.{{PascalCase .EntityName}}, error) {
+	log.Info(ctx, "called")
+
+	db, err := database.ExtractDB(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var {{LowerCase .EntityName}} {{PascalCase .EntityName}}
+
+	err = db.First(&{{LowerCase .EntityName}}, "id = ?", {{LowerCase .EntityName}}ID).Error
+	if err != nil {
+		return nil, err
+	}
+
+	result{{PascalCase .EntityName}} := r.mapTableToObject({{LowerCase .EntityName}})
+
+	return &result{{PascalCase .EntityName}}, nil
+}
+
+func (r gateway) mapTableToObject({{LowerCase .EntityName}} {{PascalCase .EntityName}}) entity.{{PascalCase .EntityName}} {
+	var result{{PascalCase .EntityName}} entity.{{PascalCase .EntityName}}
+	result{{PascalCase .EntityName}}.ID = vo.{{PascalCase .EntityName}}ID({{LowerCase .EntityName}}.ID)
+	result{{PascalCase .EntityName}}.Name = {{LowerCase .EntityName}}.Name
+	result{{PascalCase .EntityName}}.Date = {{LowerCase .EntityName}}.Date
+	return result{{PascalCase .EntityName}}
+}

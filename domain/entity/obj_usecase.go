@@ -1,9 +1,9 @@
 package entity
 
 import (
-  "fmt"
-  "github.com/mirzaakhena/gogen/domain/domerror"
-  "github.com/mirzaakhena/gogen/domain/vo"
+	"fmt"
+	"github.com/mirzaakhena/gogen/domain/domerror"
+	"github.com/mirzaakhena/gogen/domain/vo"
 )
 
 const (
@@ -52,15 +52,15 @@ func (o ObjUsecase) GetUsecaseRootFolderName() string {
 
 // GetInportFileName ...
 func (o ObjUsecase) GetInportFileName() string {
-	return fmt.Sprintf("%s/inport.go", o.GetUsecaseRootFolderName())
+	return fmt.Sprintf("%s/inport._go", o.GetUsecaseRootFolderName())
 }
 
 // GetOutportFileName ...
 func (o ObjUsecase) GetOutportFileName() string {
-	return fmt.Sprintf("%s/outport.go", o.GetUsecaseRootFolderName())
+	return fmt.Sprintf("%s/outport._go", o.GetUsecaseRootFolderName())
 }
 
 // GetInteractorFileName ...
 func (o ObjUsecase) GetInteractorFileName() string {
-	return fmt.Sprintf("%s/interactor.go", o.GetUsecaseRootFolderName())
+	return fmt.Sprintf("%s/interactor._go", o.GetUsecaseRootFolderName())
 }

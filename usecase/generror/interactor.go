@@ -51,7 +51,7 @@ func (r *genErrorInteractor) Execute(ctx context.Context, req InportRequest) (*I
 		return nil, err
 	}
 
-	// reformat outport.go
+	// reformat outport._go
 	err = r.outport.Reformat(ctx, objError.GetErrorEnumFileName(), bytes)
 	if err != nil {
 		return nil, err

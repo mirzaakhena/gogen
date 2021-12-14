@@ -1,18 +1,18 @@
 package entity
 
 import (
-  "bufio"
-  "bytes"
-  "fmt"
-  "github.com/mirzaakhena/gogen/domain/domerror"
-  "github.com/mirzaakhena/gogen/domain/vo"
-  "go/ast"
-  "go/printer"
-  "go/token"
-  "golang.org/x/tools/imports"
-  "io/ioutil"
-  "os"
-  "strings"
+	"bufio"
+	"bytes"
+	"fmt"
+	"github.com/mirzaakhena/gogen/domain/domerror"
+	"github.com/mirzaakhena/gogen/domain/vo"
+	"go/ast"
+	"go/printer"
+	"go/token"
+	"golang.org/x/tools/imports"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 // ObjRepository ...
@@ -77,7 +77,7 @@ func (o ObjRepository) GetRepositoryRootFolderName() string {
 
 // GetRepositoryFileName ...
 func (o ObjRepository) GetRepositoryFileName() string {
-	return fmt.Sprintf("%s/repository.go", o.GetRepositoryRootFolderName())
+	return fmt.Sprintf("%s/repository._go", o.GetRepositoryRootFolderName())
 }
 
 // IsRepoExist ...

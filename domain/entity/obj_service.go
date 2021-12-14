@@ -1,18 +1,18 @@
 package entity
 
 import (
-  "bufio"
-  "bytes"
-  "fmt"
-  "github.com/mirzaakhena/gogen/domain/domerror"
-  "github.com/mirzaakhena/gogen/domain/vo"
-  "go/ast"
-  "go/printer"
-  "go/token"
-  "golang.org/x/tools/imports"
-  "io/ioutil"
-  "os"
-  "strings"
+	"bufio"
+	"bytes"
+	"fmt"
+	"github.com/mirzaakhena/gogen/domain/domerror"
+	"github.com/mirzaakhena/gogen/domain/vo"
+	"go/ast"
+	"go/printer"
+	"go/token"
+	"golang.org/x/tools/imports"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 // ObjService ...
@@ -66,7 +66,7 @@ func (o ObjService) GetServiceRootFolderName() string {
 
 // GetServiceFileName ...
 func (o ObjService) GetServiceFileName() string {
-	return fmt.Sprintf("%s/service.go", o.GetServiceRootFolderName())
+	return fmt.Sprintf("%s/service._go", o.GetServiceRootFolderName())
 }
 
 // IsServiceExist ...

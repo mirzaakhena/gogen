@@ -1,0 +1,67 @@
+package restapi
+
+import (
+	"net/http"
+	"time"
+
+	"github.com/gin-gonic/gin"
+
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}update"
+)
+
+// {{LowerCase .EntityName}}UpdateHandler ...
+func (r *Controller) {{LowerCase .EntityName}}UpdateHandler(inputPort {{LowerCase .EntityName}}update.Inport) gin.HandlerFunc {
+
+	type request struct {
+		Name string `json:"name"`
+		Date string `json:"date"`
+	}
+
+	type response struct {
+	}
+
+	return func(c *gin.Context) {
+
+		traceID := util.GenerateID()
+
+		ctx := log.Context(c.Request.Context(), traceID)
+
+		var jsonReq request
+		if err := c.BindJSON(&jsonReq); err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		var req {{LowerCase .EntityName}}update.InportRequest
+		req.ID = c.Param("{{LowerCase .EntityName}}id")
+		req.Name = jsonReq.Name
+
+		date, err := time.Parse("2006-01-02", jsonReq.Date)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		req.Date = date
+
+		log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		var jsonRes response
+		_ = res
+
+		log.Info(ctx, util.MustJSON(jsonRes))
+		c.JSON(http.StatusOK, NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

@@ -1,0 +1,37 @@
+<template>
+
+  <table class="table table-sm">
+
+    <thead>
+    <tr>
+      <th v-for="field in fields" :key="field" scope="col"> {{"{{"}} field.header {{"}}"}}</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr v-for="item in items" :key="item.id">
+
+      <td v-for="(field, index) in fields" :key="field.header">
+        <slot :name="field.fieldName" :field="field" :item="item" :index="index">
+          {{"{{"}} item[field.fieldName] {{"}}"}}
+        </slot>
+      </td>
+
+    </tr>
+    </tbody>
+  </table>
+
+
+</template>
+
+<script setup>
+
+defineProps({
+  fields: {type: Array, required: true},
+  items: {type: Array, required: true}
+})
+
+</script>
+
+<style scoped>
+
+</style>

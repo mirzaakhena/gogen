@@ -1,15 +1,15 @@
 package entity
 
 import (
-  "fmt"
-  "github.com/mirzaakhena/gogen/domain/domerror"
-  "github.com/mirzaakhena/gogen/domain/vo"
-  "github.com/mirzaakhena/gogen/infrastructure/util"
-  "go/ast"
-  "go/parser"
-  "go/token"
-  "os"
-  "strings"
+	"fmt"
+	"github.com/mirzaakhena/gogen/domain/domerror"
+	"github.com/mirzaakhena/gogen/domain/vo"
+	"github.com/mirzaakhena/gogen/infrastructure/util"
+	"go/ast"
+	"go/parser"
+	"go/token"
+	"os"
+	"strings"
 )
 
 const gatewayStructName = "gateway"
@@ -55,7 +55,7 @@ func (o ObjGateway) GetGatewayRootFolderName() string {
 
 // GetGatewayFileName ...
 func (o ObjGateway) GetGatewayFileName() string {
-	return fmt.Sprintf("%s/gateway.go", o.GetGatewayRootFolderName())
+	return fmt.Sprintf("%s/gateway._go", o.GetGatewayRootFolderName())
 }
 
 // GetGatewayStructName ...

@@ -151,7 +151,7 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
 	}
 
 	templateFile := r.outport.GetApplicationFileTemplate(ctx)
-	_, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "application/application.go", objRegistry.GetData(packagePath))
+	_, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "application/application._go", objRegistry.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}
@@ -182,7 +182,7 @@ func (r *genRegistryInteractor) Execute(ctx context.Context, req InportRequest) 
 
 	{
 		templateFile := r.outport.GetMainFileTemplate(ctx)
-		_, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "main.go", objRegistry.GetData(packagePath))
+		_, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "main._go", objRegistry.GetData(packagePath))
 		if err != nil {
 			return nil, err
 		}

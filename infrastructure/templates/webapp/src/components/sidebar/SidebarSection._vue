@@ -1,0 +1,23 @@
+<template>
+  <hr>
+  <h4>{{"{{"}} header {{"}}"}}</h4>
+  <ul class="nav nav-pills flex-column">
+    <SidebarLink v-for="menu in menus" :key="menu.href" :to="menu.href" :icon="menu.icon">
+      {{"{{"}} menu.title {{"}}"}}
+    </SidebarLink>
+  </ul>
+</template>
+
+<script setup>
+import SidebarLink from './SidebarLink._vue'
+
+defineProps({
+  header: {type: String, required: true},
+  menus: {type: Array, required: true},
+})
+
+</script>
+
+<style scoped>
+
+</style>

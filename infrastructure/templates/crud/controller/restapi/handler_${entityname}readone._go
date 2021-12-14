@@ -1,0 +1,60 @@
+package restapi
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"{{.PackagePath}}/infrastructure/log"
+	"{{.PackagePath}}/infrastructure/util"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}readone"
+)
+
+// {{LowerCase .EntityName}}ReadOneHandler ...
+func (r *Controller) {{LowerCase .EntityName}}ReadOneHandler(inputPort {{LowerCase .EntityName}}readone.Inport) gin.HandlerFunc {
+
+	type request struct {
+	}
+
+	type response struct {
+		ID   string
+		Name string
+		Date string
+	}
+
+	return func(c *gin.Context) {
+
+		traceID := util.GenerateID()
+
+		ctx := log.Context(c.Request.Context(), traceID)
+
+		//var jsonReq request
+		//if err := c.BindJSON(&jsonReq); err != nil {
+		//	log.Error(ctx, err.Error())
+		//	c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+		//	return
+		//}
+
+		var req {{LowerCase .EntityName}}readone.InportRequest
+		req.ID = c.Param("{{LowerCase .EntityName}}id")
+
+		log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, NewErrorResponse(err, traceID))
+			return
+		}
+
+		var jsonRes response
+
+		jsonRes.Name = res.Name
+		jsonRes.Date = res.Date.Format("2006-01-02")
+		jsonRes.ID = res.ID
+
+		log.Info(ctx, util.MustJSON(jsonRes))
+		c.JSON(http.StatusOK, NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

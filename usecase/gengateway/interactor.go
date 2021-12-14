@@ -114,7 +114,7 @@ func (r *genGatewayInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	// reformat outport.go
+	// reformat outport._go
 	err = r.outport.Reformat(ctx, obj.GetGatewayFileName(), bytes)
 	if err != nil {
 		return nil, err

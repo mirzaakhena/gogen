@@ -1,0 +1,13 @@
+package {{LowerCase .EntityName}}create
+
+import (
+	"{{.PackagePath}}/domain/repository"
+	"{{.PackagePath}}/domain/service"
+)
+
+// Outport of usecase
+type Outport interface {
+	service.GenerateIDService
+	repository.Save{{PascalCase .EntityName}}Repo
+	repository.WithTransactionDB
+}

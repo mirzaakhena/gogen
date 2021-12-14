@@ -2,8 +2,8 @@ package genservice
 
 import (
 	"context"
-  "github.com/mirzaakhena/gogen/domain/entity"
-  "github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/domain/entity"
+	"github.com/mirzaakhena/gogen/domain/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -38,7 +38,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	// service.go file is already exist, but is the interface is exist ?
+	// service._go file is already exist, but is the interface is exist ?
 	exist, err := obj.IsServiceExist()
 	if err != nil {
 		return nil, err
@@ -57,8 +57,8 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 			return nil, err
 		}
 
-		// reformat interactor.go
-		err = r.outport.Reformat(ctx, "domain/service/service.go", bytes)
+		// reformat interactor._go
+		err = r.outport.Reformat(ctx, "domain/service/service._go", bytes)
 		if err != nil {
 			return nil, err
 		}
@@ -79,7 +79,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 
 		outportFile := obj.ObjUsecase.GetOutportFileName()
 
-		// reformat outport.go
+		// reformat outport._go
 		err = r.outport.Reformat(ctx, outportFile, nil)
 		if err != nil {
 			return nil, err
@@ -100,7 +100,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 			return nil, err
 		}
 
-		// reformat interactor.go
+		// reformat interactor._go
 		err = r.outport.Reformat(ctx, obj.ObjUsecase.GetInteractorFileName(), interactorBytes)
 		if err != nil {
 			return nil, err

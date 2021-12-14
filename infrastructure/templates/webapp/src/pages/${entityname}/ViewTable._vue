@@ -1,0 +1,215 @@
+<template>
+
+  <div class="container ">
+    <div class="row">
+      <div class="col-6">
+        <div class="btn-group">
+          <button type="button" class="btn btn-success" @click="showModalInput">Create New</button>
+          <button type="button" class="btn btn-primary" @click="reload">Reload</button>
+          <button type="button" class="btn btn-dark" @click="showModalFilter">Filter</button>
+        </div>
+        <div class="btn-group" style="margin-left: 2px">
+          <button type="button" class="btn btn-success" @click="previousPage">Prev Page</button>
+          <button type="button" class="btn btn-light disabled">{{"{{"}} state.filter.page {{"}}"}} / {{"{{"}}getNumberOfPage(){{"}}"}}</button>
+          <button type="button" class="btn btn-dark" @click="nextPage">Next Page</button>
+        </div>
+      </div>
+    </div>
+    <div class="col-6">
+
+    </div>
+  </div>
+
+  <MirzaTable :fields="fields" :items="state.items">
+    <template #action="{item}">
+      <div class="btn-group">
+        <button type="button" class="btn btn-warning btn-sm" @click="showModalDetail(item)">Detail</button>
+        <button type="button" class="btn btn-info btn-sm" @click="showModalUpdate(item)">Update</button>
+        <button type="button" class="btn btn-danger btn-sm" @click="submitDataDelete(item)">Delete</button>
+      </div>
+    </template>
+  </MirzaTable>
+
+  <MirzaModal id="modalInput" ref="modalInput" title="Input Something" @submit="submitDataInput">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
+    </div>
+  </MirzaModal>
+
+  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Something" @submit="submitDataUpdate">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" placeholder="Date" v-model="state.item.date">
+    </div>
+  </MirzaModal>
+
+  <MirzaModal id="modalDetail" ref="modalDetail" title="Raw Data">
+    <pre>{{"{{"}} JSON.stringify(state.item, null, 2) {{"}}"}}</pre>
+  </MirzaModal>
+
+  <MirzaModal id="modalFilter" ref="modalFilter" title="Filter Something" @submit="reload">
+    <div class="mb-3">
+      <label class="form-label">Name start with</label>
+      <input type="text" class="form-control" placeholder="Name Like" v-model="state.filter.name_like">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Date Start</label>
+      <input type="date" class="form-control" placeholder="Date" v-model="state.filter.date_start">
+    </div>
+
+    <div class="mb-3">
+      <label class="form-label">Date End</label>
+      <input type="date" class="form-control" placeholder="Date" v-model="state.filter.date_end">
+    </div>
+  </MirzaModal>
+
+</template>
+
+<script setup>
+
+import BasicCrud from "../../modules/basiccrud._js"
+import MirzaTable from "../../components/table/MirzaTable._vue";
+import MirzaModal from "../../components/modal/MirzaModal._vue";
+import {computed, ref} from "vue";
+import Swal from "sweetalert2";
+import to from "await-to-js";
+import {state, getNumberOfPage} from "./state._js";
+
+const modalDetail = ref()
+
+const modalInput = ref()
+
+const modalUpdate = ref()
+
+const modalFilter = ref()
+
+const url = "http://localhost:8081/{{LowerCase .EntityName}}"
+
+const {loadData, addNewData, updateData, deleteData} = BasicCrud(url)
+
+const reload = async () => {
+
+  const [err, res] = await to(loadData(state.filter))
+
+  if (err) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.errorMessage,
+    })
+  }
+
+  state.items = res.data.items
+  state.totalItems = res.data.count
+
+  modalFilter.value.hideModal()
+}
+
+const showModalInput = () => {
+  state.item = {
+    name: ""
+  }
+  modalInput.value.showModal()
+}
+
+const showModalDetail = (payload) => {
+  state.item = payload
+  modalDetail.value.showModal()
+}
+
+const showModalUpdate = (payload) => {
+  state.item = payload
+  modalUpdate.value.showModal()
+}
+
+const showModalFilter = () => {
+  modalFilter.value.showModal()
+}
+
+const submitDataInput = async () => {
+
+  const [err] = await to(addNewData(state.item))
+
+  if (err) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.errorMessage,
+    })
+    return
+  }
+
+  await reload()
+
+  modalInput.value.hideModal()
+}
+
+const submitDataUpdate = async () => {
+
+  const [err] = await to(updateData(state.item.id, state.item))
+
+  if (err) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.errorMessage,
+    })
+    return
+  }
+
+  await reload()
+
+  modalUpdate.value.hideModal()
+}
+
+const submitDataDelete = async (payload) => {
+
+  const [err] = await to(deleteData(payload.id))
+
+  if (err) {
+    await Swal.fire({
+      icon: 'error',
+      title: 'Oops...',
+      text: err.errorMessage,
+    })
+    return
+  }
+
+  await reload()
+}
+
+const nextPage = () => {
+  if (state.filter.page + 1 <= getNumberOfPage()) {
+    state.filter.page++
+    reload()
+  }
+}
+
+const previousPage = () => {
+  if (state.filter.page - 1 > 0) {
+    state.filter.page--
+    reload()
+  }
+}
+
+
+const fields = [
+  {header: "Action", fieldName: "action",},
+  {header: "Name", fieldName: "name",},
+  {header: "Date", fieldName: "date",},
+]
+
+reload()
+
+</script>
+
+<style scoped>
+
+</style>

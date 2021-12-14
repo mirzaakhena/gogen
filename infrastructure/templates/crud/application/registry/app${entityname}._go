@@ -1,0 +1,41 @@
+package registry
+
+import (
+	"{{.PackagePath}}/application"
+	"{{.PackagePath}}/controller"
+	"{{.PackagePath}}/controller/restapi"
+	"{{.PackagePath}}/gateway/{{LowerCase .EntityName}}gateway"
+	"{{.PackagePath}}/infrastructure/server"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}create"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}delete"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}readall"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}readone"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}update"
+)
+
+type app{{PascalCase .EntityName}} struct {
+	*server.GinHTTPHandler
+	controller.Controller
+}
+
+func NewApp{{PascalCase .EntityName}}() func() application.RegistryContract {
+	return func() application.RegistryContract {
+
+		httpHandler := server.NewGinHTTPHandlerDefault()
+
+		datasource := localdb.NewGateway()
+
+		return &app{{PascalCase .EntityName}}{
+			GinHTTPHandler: &httpHandler,
+			Controller: &restapi.Controller{
+				Router:                 httpHandler.Router,
+				{{PascalCase .EntityName}}CreateInport:  {{LowerCase .EntityName}}create.NewUsecase(datasource),
+				{{PascalCase .EntityName}}DeleteInport:  {{LowerCase .EntityName}}delete.NewUsecase(datasource),
+				{{PascalCase .EntityName}}ReadAllInport: {{LowerCase .EntityName}}readall.NewUsecase(datasource),
+				{{PascalCase .EntityName}}ReadOneInport: {{LowerCase .EntityName}}readone.NewUsecase(datasource),
+				{{PascalCase .EntityName}}UpdateInport:  {{LowerCase .EntityName}}update.NewUsecase(datasource),
+			},
+		}
+
+	}
+}
