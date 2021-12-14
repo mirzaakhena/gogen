@@ -10,7 +10,9 @@
         </div>
         <div class="btn-group" style="margin-left: 2px">
           <button type="button" class="btn btn-success" @click="previousPage">Prev Page</button>
-          <button type="button" class="btn btn-light disabled">{{"{{"}} state.filter.page {{"}}"}} / {{"{{"}}getNumberOfPage(){{"}}"}}</button>
+          <button type="button" class="btn btn-primary" @click="showModalPaging">{{ state.filter.page }} /
+            {{ getNumberOfPage() }}
+          </button>
           <button type="button" class="btn btn-dark" @click="nextPage">Next Page</button>
         </div>
       </div>
@@ -30,14 +32,14 @@
     </template>
   </MirzaTable>
 
-  <MirzaModal id="modalInput" ref="modalInput" title="Input Something" @submit="submitDataInput">
+  <MirzaModal id="modalInput" ref="modalInput" title="Input New Data" @submit="submitDataInput">
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
     </div>
   </MirzaModal>
 
-  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Something" @submit="submitDataUpdate">
+  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Item" @submit="submitDataUpdate">
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
@@ -50,10 +52,10 @@
   </MirzaModal>
 
   <MirzaModal id="modalDetail" ref="modalDetail" title="Raw Data">
-    <pre>{{"{{"}} JSON.stringify(state.item, null, 2) {{"}}"}}</pre>
+    <pre>{{ JSON.stringify(state.item, null, 2) }}</pre>
   </MirzaModal>
 
-  <MirzaModal id="modalFilter" ref="modalFilter" title="Filter Something" @submit="reload">
+  <MirzaModal id="modalFilter" ref="modalFilter" title="Filter Items" @submit="submitDataFilter">
     <div class="mb-3">
       <label class="form-label">Name start with</label>
       <input type="text" class="form-control" placeholder="Name Like" v-model="state.filter.name_like">
@@ -61,26 +63,31 @@
 
     <div class="mb-3">
       <label class="form-label">Date Start</label>
-      <input type="date" class="form-control" placeholder="Date" v-model="state.filter.date_start">
+      <input type="date" class="form-control" placeholder="Date Start" v-model="state.filter.date_start">
     </div>
 
     <div class="mb-3">
       <label class="form-label">Date End</label>
-      <input type="date" class="form-control" placeholder="Date" v-model="state.filter.date_end">
+      <input type="date" class="form-control" placeholder="Date End" v-model="state.filter.date_end">
     </div>
+  </MirzaModal>
+
+  <MirzaModal id="modalPaging" ref="modalPaging" title="Paging Config" @submit="submitDataPaging">
+    <label class="form-label">Item Size Per Page</label>
+    <input type="number" class="form-control" placeholder="Page Size" v-model="state.filter.size">
   </MirzaModal>
 
 </template>
 
 <script setup>
 
-import BasicCrud from "../../modules/basiccrud._js"
-import MirzaTable from "../../components/table/MirzaTable._vue";
-import MirzaModal from "../../components/modal/MirzaModal._vue";
-import {computed, ref} from "vue";
+import BasicCrud from "../../modules/basiccrud.js"
+import MirzaTable from "../../components/table/MirzaTable.vue";
+import MirzaModal from "../../components/modal/MirzaModal.vue";
+import {ref} from "vue";
 import Swal from "sweetalert2";
 import to from "await-to-js";
-import {state, getNumberOfPage} from "./state._js";
+import {getNumberOfPage, state, url} from "./state.js";
 
 const modalDetail = ref()
 
@@ -90,7 +97,7 @@ const modalUpdate = ref()
 
 const modalFilter = ref()
 
-const url = "http://localhost:8081/{{LowerCase .EntityName}}"
+const modalPaging = ref()
 
 const {loadData, addNewData, updateData, deleteData} = BasicCrud(url)
 
@@ -108,8 +115,6 @@ const reload = async () => {
 
   state.items = res.data.items
   state.totalItems = res.data.count
-
-  modalFilter.value.hideModal()
 }
 
 const showModalInput = () => {
@@ -131,6 +136,10 @@ const showModalUpdate = (payload) => {
 
 const showModalFilter = () => {
   modalFilter.value.showModal()
+}
+
+const showModalPaging = () => {
+  modalPaging.value.showModal()
 }
 
 const submitDataInput = async () => {
@@ -183,6 +192,19 @@ const submitDataDelete = async (payload) => {
   }
 
   await reload()
+}
+
+const submitDataPaging = () => {
+  reload()
+
+  state.filter.page = 1
+  modalPaging.value.hideModal()
+}
+
+const submitDataFilter = () => {
+  reload()
+  state.filter.page = 1
+  modalFilter.value.hideModal()
 }
 
 const nextPage = () => {

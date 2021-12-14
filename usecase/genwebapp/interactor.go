@@ -36,12 +36,7 @@ func (r *genWebappInteractor) Execute(ctx context.Context, req InportRequest) (*
 		"entityname": obj.Entity.EntityName.LowerCase(),
 	}
 
-	err = service.CreateEverythingExactly("webapp/", "src", filerenamer, obj.GetData(packagePath))
-	if err != nil {
-		return nil, err
-	}
-
-	err = service.CreateEverythingExactly("webapp/", "public", filerenamer, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("webapp/", "webapp", filerenamer, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}

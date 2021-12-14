@@ -28,8 +28,8 @@ func (r *Controller) {{LowerCase .EntityName}}ReadAllHandler(inputPort {{LowerCa
 	}
 
 	type response struct {
-		Items []{{PascalCase .EntityName}} `json:"{{LowerCase .EntityName}}s"`
-		Count      int64       `json:"count" json:"count,omitempty"`
+		Items []{{PascalCase .EntityName}} `json:"items"`
+		Count int64 `json:"count" json:"count,omitempty"`
 	}
 
 	return func(c *gin.Context) {

@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import SidebarLink from './SidebarLink._vue'
+import SidebarLink from './SidebarLink.vue'
 
 defineProps({
   header: {type: String, required: true},

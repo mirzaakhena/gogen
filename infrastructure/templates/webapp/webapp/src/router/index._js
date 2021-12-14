@@ -4,11 +4,11 @@ const routes = [
 
     {
         path: '/',
-        component: () => import('../pages/PageWithSidebar._vue'),
+        component: () => import('../pages/PageWithSidebar.vue'),
         children: [
             {
                 path: '/{{LowerCase .EntityName}}',
-                component: () => import('../pages/{{LowerCase .EntityName}}/ViewTable._vue'),
+                component: () => import('../pages/{{LowerCase .EntityName}}/ViewTable.vue'),
             },
         ],
     },

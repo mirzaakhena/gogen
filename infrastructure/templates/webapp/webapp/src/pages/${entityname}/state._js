@@ -1,5 +1,7 @@
 import {reactive} from "vue";
 
+export const url = "http://localhost:8081/{{LowerCase .EntityName}}"
+
 export const state = reactive({
     items: [],
     item: {},

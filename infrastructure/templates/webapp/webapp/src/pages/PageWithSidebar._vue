@@ -7,7 +7,7 @@
 
 <script setup>
 
-import Sidebar from "../components/sidebar/Sidebar._vue";
+import Sidebar from "../components/sidebar/Sidebar.vue";
 
 const sections = [
   {
