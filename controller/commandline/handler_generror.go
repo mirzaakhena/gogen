@@ -1,32 +1,37 @@
 package commandline
 
 import (
-  "context"
-  "fmt"
-  "github.com/mirzaakhena/gogen/usecase/generror"
+	"context"
+	"fmt"
+	"github.com/mirzaakhena/gogen/usecase/generror"
 )
 
 // genErrorHandler ...
 func (r *Controller) genErrorHandler(inputPort generror.Inport) func(...string) error {
 
-  return func(commands ...string) error {
+	return func(commands ...string) error {
 
-    ctx := context.Background()
+		ctx := context.Background()
 
-    if len(commands) < 1 {
-      err := fmt.Errorf("invalid gogen error command format. Try this `gogen error ErrorName`")
-      return err
-    }
+		if len(commands) < 1 {
+			err := fmt.Errorf("\n" +
+				"   # Create an error enum\n" +
+				"   gogen error SomethingGoesWrongError\n" +
+				"     'SomethingGoesWrongError' is an error constant name\n" +
+				"\n")
 
-    var req generror.InportRequest
-    req.ErrorName = commands[0]
+			return err
+		}
 
-    _, err := inputPort.Execute(ctx, req)
-    if err != nil {
-      return err
-    }
+		var req generror.InportRequest
+		req.ErrorName = commands[0]
 
-    return nil
+		_, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			return err
+		}
 
-  }
+		return nil
+
+	}
 }

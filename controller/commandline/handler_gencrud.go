@@ -14,7 +14,11 @@ func (r *Controller) genCrudHandler(inputPort gencrud.Inport) func(...string) er
 		ctx := context.Background()
 
 		if len(commands) < 1 {
-			err := fmt.Errorf("invalid gogen crud command format. Try this `gogen crud EntityName`")
+			err := fmt.Errorf("\n" +
+				"   # Create a complete CRUD bootstrap for specific entity\n" +
+				"   gogen crud Product\n" +
+				"     'Product' is an entity name\n" +
+				"\n")
 			return err
 		}
 

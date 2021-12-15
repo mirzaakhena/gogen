@@ -1,34 +1,39 @@
 package commandline
 
 import (
-  "context"
-  "fmt"
-  "github.com/mirzaakhena/gogen/usecase/genusecase"
+	"context"
+	"fmt"
+	"github.com/mirzaakhena/gogen/usecase/genusecase"
 )
 
 // genTestHandler ...
 func (r *Controller) genUsecaseHandler(inputPort genusecase.Inport) func(...string) error {
 
-  return func(commands ...string) error {
+	return func(commands ...string) error {
 
-    ctx := context.Background()
+		ctx := context.Background()
 
-    if len(commands) < 1 {
-      err := fmt.Errorf("usecase name must not empty. `gogen usecase UsecaseName`")
-      return err
-    }
+		if len(commands) < 1 {
+			err := fmt.Errorf("\n" +
+				"   # Create a new usecase\n" +
+				"   gogen usecase CreateOrder\n" +
+				"     'CreateOrder' is an usecase name\n" +
+				"\n")
 
-    usecaseName := commands[0]
+			return err
+		}
 
-    var req genusecase.InportRequest
-    req.UsecaseName = usecaseName
+		usecaseName := commands[0]
 
-    _, err := inputPort.Execute(ctx, req)
-    if err != nil {
-      return err
-    }
+		var req genusecase.InportRequest
+		req.UsecaseName = usecaseName
 
-    return nil
+		_, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			return err
+		}
 
-  }
+		return nil
+
+	}
 }

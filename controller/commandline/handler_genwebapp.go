@@ -14,7 +14,11 @@ func (r *Controller) genWebappHandler(inputPort genwebapp.Inport) func(...string
 		ctx := context.Background()
 
 		if len(commands) < 1 {
-			err := fmt.Errorf("invalid gogen webapp command format. Try this `gogen webapp EntityName`")
+			err := fmt.Errorf("\n" +
+				"   # Create a complete CRUD webapp ui for specific entity\n" +
+				"   gogen webapp Product\n" +
+				"     'Product' is an entity name\n" +
+				"\n")
 			return err
 		}
 

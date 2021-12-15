@@ -65,82 +65,21 @@ func (r *gogenApp) RunApplication() {
 	cmd := flag.Arg(0)
 
 	if cmd == "" {
-		fmt.Printf("Those are the sample of gogen command: \n\n" +
-			"   # Create a new usecase\n" +
-			"   gogen usecase CreateOrder\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a test case file for current usecase\n" +
-			"   gogen test normal CreateOrder\n" +
-			"     'normal'      is a test case name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a repository and inject the template code into interactor file with '//!' flag\n" +
-			"   gogen repository SaveOrder Order CreateOrder\n" +
-			"     'SaveOrder'   is a repository func name\n" +
-			"     'Order'       is an entity name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a repository without inject the template code into usecase\n" +
-			"   gogen repository SaveOrder Order\n" +
-			"     'SaveOrder' is a repository func name\n" +
-			"     'Order'     is an entity name\n" +
-			"\n" +
-			"   # Create a service and inject the template code into interactor file with '//!' flag\n" +
-			"   gogen service PublishMessage CreateOrder\n" +
-			"     'PublishMessage' is a service func name\n" +
-			"     'CreateOrder'    is an usecase name\n" +
-			"\n" +
-			"   # Create a service without inject the template code into usecase\n" +
-			"   gogen service PublishMessage\n" +
-			"     'PublishMessage' is a service func name\n" +
-			"\n" +
-			"   # Create a gateway for specific usecase\n" +
-			"   gogen gateway inmemory CreateOrder\n" +
-			"     'inmemory'    is a gateway name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a gateway for all usecases\n" +
-			"   gogen gateway inmemory\n" +
-			"     'inmemory' is a gateway name\n" +
-			"\n" +
-			"   # Create a controller with defined web framework or other handler\n" +
-			"   gogen controller restapi CreateOrder gin\n" +
-			"     'restapi'     is a gateway name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"     'gin'         is a sample webframewrok. You may try the other one like: nethttp, echo, and gorilla\n" +
-			"\n" +
-			"   # Create a controller with gin as default web framework\n" +
-			"   gogen controller restapi CreateOrder\n" +
-			"     'restapi'     is a gateway name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a registry for specific controller\n" +
-			"   gogen registry appone restapi\n" +
-			"     'appone'  is an application name\n" +
-			"     'restapi' is a controller name\n" +
-			"\n" +
-			"   # Create a registry for specific controller\n" +
-			"   gogen entity Order\n" +
-			"     'Order' is an entity name\n" +
-			"\n" +
-			"   # Create a valueobject with simple string type\n" +
-			"   gogen valuestring OrderID\n" +
-			"     'OrderID' is an valueobject name\n" +
-			"\n" +
-			"   # Create a valueobject with struct type\n" +
-			"   gogen valueobject FullName FirstName LastName\n" +
-			"     'FullName', 'FirstName', and 'LastName' is a Fields to created\n" +
-			"\n" +
-			"   # Create an enum predefine value\n" +
-			"   gogen enum PaymentMethod DANA Gopay Ovo LinkAja\n" +
-			"     'PaymentMethod' is an enum name\n" +
-			"     'DANA', 'Gopay', 'Ovo', and 'LinkAja' is constant name\n" +
-			"\n" +
-			"   # Create an error enum\n" +
-			"   gogen error SomethingGoesWrongError\n" +
-			"     'SomethingGoesWrongError' is an error constant name\n" +
-			"\n")
+		fmt.Printf("Try one of this command to learn how to use it\n" +
+			"  gogen usecase\n" +
+			"  gogen test\n" +
+			"  gogen repository\n" +
+			"  gogen service\n" +
+			"  gogen gateway\n" +
+			"  gogen gateway\n" +
+			"  gogen controller\n" +
+			"  gogen controller\n" +
+			"  gogen registry\n" +
+			"  gogen entity\n" +
+			"  gogen valuestring\n" +
+			"  gogen valueobject\n" +
+			"  gogen enum\n" +
+			"  gogen error\n")
 		return
 	}
 
