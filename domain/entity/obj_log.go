@@ -11,10 +11,10 @@ func GetLogRootFolderName() string {
 
 // GetLogInterfaceFileName ...
 func GetLogInterfaceFileName() string {
-	return fmt.Sprintf("%s/log._go", GetLogRootFolderName())
+	return fmt.Sprintf("%s/log.go", GetLogRootFolderName())
 }
 
 // GetLogImplementationFileName ...
 func GetLogImplementationFileName() string {
-	return fmt.Sprintf("%s/log_default._go", GetLogRootFolderName())
+	return fmt.Sprintf("%s/log_default.go", GetLogRootFolderName())
 }

@@ -45,12 +45,12 @@ func (o ObjError) GetErrorRootFolderName() string {
 
 // GetErrorEnumFileName ...
 func (o ObjError) GetErrorEnumFileName() string {
-	return fmt.Sprintf("%s/error_enum._go", o.GetErrorRootFolderName())
+	return fmt.Sprintf("%s/error_enum.go", o.GetErrorRootFolderName())
 }
 
 // GetErrorFuncFileName ...
 func (o ObjError) GetErrorFuncFileName() string {
-	return fmt.Sprintf("%s/error_func._go", o.GetErrorRootFolderName())
+	return fmt.Sprintf("%s/error_func.go", o.GetErrorRootFolderName())
 }
 
 // InjectCode ...

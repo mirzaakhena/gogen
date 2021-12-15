@@ -77,7 +77,7 @@ func (o ObjRepository) GetRepositoryRootFolderName() string {
 
 // GetRepositoryFileName ...
 func (o ObjRepository) GetRepositoryFileName() string {
-	return fmt.Sprintf("%s/repository._go", o.GetRepositoryRootFolderName())
+	return fmt.Sprintf("%s/repository.go", o.GetRepositoryRootFolderName())
 }
 
 // IsRepoExist ...

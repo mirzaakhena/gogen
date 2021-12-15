@@ -55,7 +55,7 @@ func (o ObjGateway) GetGatewayRootFolderName() string {
 
 // GetGatewayFileName ...
 func (o ObjGateway) GetGatewayFileName() string {
-	return fmt.Sprintf("%s/gateway._go", o.GetGatewayRootFolderName())
+	return fmt.Sprintf("%s/gateway.go", o.GetGatewayRootFolderName())
 }
 
 // GetGatewayStructName ...

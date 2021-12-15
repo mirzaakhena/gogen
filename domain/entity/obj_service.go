@@ -66,7 +66,7 @@ func (o ObjService) GetServiceRootFolderName() string {
 
 // GetServiceFileName ...
 func (o ObjService) GetServiceFileName() string {
-	return fmt.Sprintf("%s/service._go", o.GetServiceRootFolderName())
+	return fmt.Sprintf("%s/service.go", o.GetServiceRootFolderName())
 }
 
 // IsServiceExist ...

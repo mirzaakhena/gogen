@@ -72,7 +72,7 @@ func GetRegistryRootFolderName() string {
 
 // GetApplicationFileName ...
 func GetApplicationFileName() string {
-	return fmt.Sprintf("application/application._go")
+	return fmt.Sprintf("application/application.go")
 }
 
 // GetRegistryFileName ...

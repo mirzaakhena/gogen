@@ -53,22 +53,22 @@ func (o ObjController) GetControllerRootFolderName() string {
 
 // GetControllerInterfaceFile ...
 func (o ObjController) GetControllerInterfaceFile() string {
-	return fmt.Sprintf("controller/controller._go")
+	return fmt.Sprintf("controller/controller.go")
 }
 
 // GetControllerResponseFileName ...
 func (o ObjController) GetControllerResponseFileName() string {
-	return fmt.Sprintf("%s/response._go", o.GetControllerRootFolderName())
+	return fmt.Sprintf("%s/response.go", o.GetControllerRootFolderName())
 }
 
 // GetControllerInterceptorFileName ...
 func (o ObjController) GetControllerInterceptorFileName() string {
-	return fmt.Sprintf("%s/interceptor._go", o.GetControllerRootFolderName())
+	return fmt.Sprintf("%s/interceptor.go", o.GetControllerRootFolderName())
 }
 
 // GetControllerRouterFileName ...
 func (o ObjController) GetControllerRouterFileName() string {
-	return fmt.Sprintf("%s/router._go", o.GetControllerRootFolderName())
+	return fmt.Sprintf("%s/router.go", o.GetControllerRootFolderName())
 }
 
 // GetControllerHandlerFileName ...
