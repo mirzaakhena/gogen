@@ -1,4 +1,4 @@
-package {{LowerCase .EntityName}}create
+{{LowerCase .UsecaseName}}
 
 import (
 	"context"
@@ -8,19 +8,19 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{PascalCase .EntityName}}CreateInteractor struct {
+type {{PascalCase .UsecaseName}}Interactor struct {
 	outport Outport
 }
 
 // NewUsecase is constructor for create default implementation of usecase
 func NewUsecase(outputPort Outport) Inport {
-	return &{{PascalCase .EntityName}}CreateInteractor{
+	return &{{PascalCase .UsecaseName}}Interactor{
 		outport: outputPort,
 	}
 }
 
 // Execute the usecase
-func (r *{{PascalCase .EntityName}}CreateInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *{{PascalCase .UsecaseName}}Interactor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 
@@ -28,7 +28,7 @@ func (r *{{PascalCase .EntityName}}CreateInteractor) Execute(ctx context.Context
 
 		randomID := r.outport.GenerateID(ctx)
 
-		{{PascalCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}Request{
+		{{LowerCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}Request{
 			RandomID: randomID,
 			Name:     req.Name,
 			Now:      req.Now,
@@ -37,12 +37,12 @@ func (r *{{PascalCase .EntityName}}CreateInteractor) Execute(ctx context.Context
 			return err
 		}
 
-		err = r.outport.Save{{PascalCase .EntityName}}(ctx, {{PascalCase .EntityName}}Obj)
+		err = r.outport.Save{{PascalCase .EntityName}}(ctx, {{LowerCase .EntityName}}Obj)
 		if err != nil {
 			return err
 		}
 
-		res.{{PascalCase .EntityName}}ID = {{PascalCase .EntityName}}Obj.ID.String()
+		res.{{PascalCase .EntityName}}ID = {{LowerCase .EntityName}}Obj.ID.String()
 
 		return nil
 	})

@@ -1,0 +1,17 @@
+package restapi
+
+import (
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}create"
+
+	"github.com/gin-gonic/gin"
+)
+
+type Controller struct {
+	Router                 gin.IRouter
+	{{PascalCase .EntityName}}CreateInport  {{LowerCase .EntityName}}create.Inport
+}
+
+// RegisterRouter registering all the router
+func (r *Controller) RegisterRouter() {
+	r.Router.POST("/{{LowerCase .EntityName}}", r.authorized(), r.{{LowerCase .EntityName}}CreateHandler(r.{{PascalCase .EntityName}}CreateInport))
+}

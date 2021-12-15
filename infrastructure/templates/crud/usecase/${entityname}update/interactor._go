@@ -8,19 +8,19 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{LowerCase .EntityName}}UpdateInteractor struct {
+type {{PascalCase .EntityName}}UpdateInteractor struct {
 	outport Outport
 }
 
 // NewUsecase is constructor for create default implementation of usecase
 func NewUsecase(outputPort Outport) Inport {
-	return &{{LowerCase .EntityName}}UpdateInteractor{
+	return &{{PascalCase .EntityName}}UpdateInteractor{
 		outport: outputPort,
 	}
 }
 
 // Execute the usecase
-func (r *{{LowerCase .EntityName}}UpdateInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *{{PascalCase .EntityName}}UpdateInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 

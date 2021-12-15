@@ -8,25 +8,25 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{LowerCase .EntityName}}ReadAllInteractor struct {
+type {{PascalCase .EntityName}}ReadAllInteractor struct {
 	outport Outport
 }
 
 // NewUsecase is constructor for create default implementation of usecase
 func NewUsecase(outputPort Outport) Inport {
-	return &{{LowerCase .EntityName}}ReadAllInteractor{
+	return &{{PascalCase .EntityName}}ReadAllInteractor{
 		outport: outputPort,
 	}
 }
 
 // Execute the usecase
-func (r *{{LowerCase .EntityName}}ReadAllInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *{{PascalCase .EntityName}}ReadAllInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 
 	err := service.WithoutTransaction(ctx, r.outport, func(ctx context.Context) error {
 
-		{{LowerCase .EntityName}}Objs, count, err := r.outport.FindAll{{PascalCase .EntityName}}(ctx, repository.FindAll{{PascalCase .EntityName}}RepoRequest{
+		{{PascalCase .EntityName}}Objs, count, err := r.outport.FindAll{{PascalCase .EntityName}}(ctx, repository.FindAll{{PascalCase .EntityName}}RepoRequest{
 			Page:      req.Page,
 			Size:      req.Size,
 			NameLike:  req.NameLike,
@@ -37,7 +37,7 @@ func (r *{{LowerCase .EntityName}}ReadAllInteractor) Execute(ctx context.Context
 			return err
 		}
 
-		for _, obj := range {{LowerCase .EntityName}}Objs {
+		for _, obj := range {{PascalCase .EntityName}}Objs {
 
 			res.ListOf{{PascalCase .EntityName}} = append(res.ListOf{{PascalCase .EntityName}}, {{PascalCase .EntityName}}{
 				ID:   obj.ID.String(),

@@ -7,19 +7,19 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{LowerCase .EntityName}}DeleteInteractor struct {
+type {{PascalCase .EntityName}}DeleteInteractor struct {
 	outport Outport
 }
 
 // NewUsecase is constructor for create default implementation of usecase
 func NewUsecase(outputPort Outport) Inport {
-	return &{{LowerCase .EntityName}}DeleteInteractor{
+	return &{{PascalCase .EntityName}}DeleteInteractor{
 		outport: outputPort,
 	}
 }
 
 // Execute the usecase
-func (r *{{LowerCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *{{PascalCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 

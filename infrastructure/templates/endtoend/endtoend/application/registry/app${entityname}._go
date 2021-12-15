@@ -1,0 +1,33 @@
+package registry
+
+import (
+	"{{.PackagePath}}/application"
+	"{{.PackagePath}}/controller"
+	"{{.PackagePath}}/controller/restapi"
+	"{{.PackagePath}}/gateway/{{LowerCase .EntityName}}gateway"
+	"{{.PackagePath}}/infrastructure/server"
+	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}create"
+)
+
+type app{{PascalCase .EntityName}} struct {
+	*server.GinHTTPHandler
+	controller.Controller
+}
+
+func NewApp{{PascalCase .EntityName}}() func() application.RegistryContract {
+	return func() application.RegistryContract {
+
+		httpHandler := server.NewGinHTTPHandlerDefault()
+
+		datasource := localdb.NewGateway()
+
+		return &app{{PascalCase .EntityName}}{
+			GinHTTPHandler: &httpHandler,
+			Controller: &restapi.Controller{
+				Router:                 httpHandler.Router,
+				{{PascalCase .EntityName}}CreateInport:  {{LowerCase .EntityName}}create.NewUsecase(datasource),
+			},
+		}
+
+	}
+}
