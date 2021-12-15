@@ -252,7 +252,7 @@ $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
 ## Create error enum
-error enum is a shared error collection. This command will add new error enum line in `application/apperror/error_enum.go` file
+error enum is a shared error collection. This command will add new error enum line in `domain/domerror/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError
 ```
