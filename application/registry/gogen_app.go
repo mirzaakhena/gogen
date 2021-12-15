@@ -79,7 +79,9 @@ func (r *gogenApp) RunApplication() {
 			"  gogen valuestring\n" +
 			"  gogen valueobject\n" +
 			"  gogen enum\n" +
-			"  gogen error\n")
+			"  gogen error\n" +
+			"  gogen crud\n" +
+			"  gogen webapp\n")
 		return
 	}
 
