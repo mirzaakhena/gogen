@@ -1,5 +1,5 @@
 <template>
-  <MirzaModal id="myModal" ref="myModal" title="Paging Config" @submit="submitDataPaging">
+  <MirzaModal id="modalPaging" ref="modalPaging" title="Paging Config" @submit="submitDataPaging">
     <label class="form-label">Item Size Per Page</label>
     <input type="number" class="form-control" placeholder="Page Size" v-model="state.filter.size">
   </MirzaModal>
@@ -11,7 +11,7 @@ import MirzaModal from "../../components/modal/MirzaModal.vue";
 import {state} from "./state.js";
 import {ref} from "vue";
 
-const myModal = ref()
+const modalPaging = ref()
 
 const emit = defineEmits(["submit"])
 
@@ -22,11 +22,11 @@ const submitDataPaging = () => {
 }
 
 const showModal = () => {
-  myModal.value.showModal()
+  modalPaging.value.showModal()
 }
 
 const hideModal = () => {
-  myModal.value.hideModal()
+  modalPaging.value.hideModal()
 }
 
 defineExpose({showModal, hideModal})

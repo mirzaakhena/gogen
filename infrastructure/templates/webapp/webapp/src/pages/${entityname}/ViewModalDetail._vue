@@ -1,5 +1,5 @@
 <template>
-  <MirzaModal id="myModal" ref="myModal" title="Raw Data" @submit="hideModal">
+  <MirzaModal id="modalDetail" ref="modalDetail" title="Raw Data" @submit="hideModal">
     <pre>{{"{{"}} JSON.stringify(state.item, null, 2) {{"}}"}}</pre>
   </MirzaModal>
 </template>
@@ -9,14 +9,14 @@ import MirzaModal from "../../components/modal/MirzaModal.vue";
 import {state} from "./state.js";
 import {ref} from "vue";
 
-const myModal = ref()
+const modalDetail = ref()
 
 const showModal = () => {
-  myModal.value.showModal()
+  modalDetail.value.showModal()
 }
 
 const hideModal = () => {
-  myModal.value.hideModal()
+  modalDetail.value.hideModal()
 }
 
 defineExpose({showModal, hideModal})

@@ -1,5 +1,5 @@
 <template>
-  <MirzaModal id="myModal" ref="myModal" title="Filter Items" @submit="submitDataFilter">
+  <MirzaModal id="modalFilter" ref="modalFilter" title="Filter Items" @submit="submitDataFilter">
     <div class="mb-3">
       <label class="form-label">Name start with</label>
       <input type="text" class="form-control" placeholder="Name Like" v-model="state.filter.name_like">
@@ -22,7 +22,7 @@ import MirzaModal from "../../components/modal/MirzaModal.vue";
 import {state} from "./state.js";
 import {ref} from "vue";
 
-const myModal = ref()
+const modalFilter = ref()
 
 const emit = defineEmits(["submit"])
 
@@ -33,11 +33,11 @@ const submitDataFilter = () => {
 }
 
 const showModal = () => {
-  myModal.value.showModal()
+  modalFilter.value.showModal()
 }
 
 const hideModal = () => {
-  myModal.value.hideModal()
+  modalFilter.value.hideModal()
 }
 
 defineExpose({showModal, hideModal})

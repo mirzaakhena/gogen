@@ -1,5 +1,5 @@
 <template>
-  <MirzaModal id="myModal" ref="myModal" title="Update Item" @submit="submitDataUpdate">
+  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Item" @submit="submitDataUpdate">
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
@@ -20,7 +20,7 @@ import to from "await-to-js";
 
 const {loadData, addNewData, updateData, deleteData} = BasicCrud(url)
 
-const myModal = ref()
+const modalUpdate = ref()
 
 const emit = defineEmits(["submit"])
 
@@ -43,11 +43,11 @@ const submitDataUpdate = async () => {
 }
 
 const showModal = () => {
-  myModal.value.showModal()
+  modalUpdate.value.showModal()
 }
 
 const hideModal = () => {
-  myModal.value.hideModal()
+  modalUpdate.value.hideModal()
 }
 
 defineExpose({showModal, hideModal})

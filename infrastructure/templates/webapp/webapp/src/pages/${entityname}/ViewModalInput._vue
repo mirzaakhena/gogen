@@ -1,5 +1,5 @@
 <template>
-  <MirzaModal id="myModal" ref="myModal" title="Input New Data" @submit="submitDataInput">
+  <MirzaModal id="modalInput" ref="modalInput" title="Input New Data" @submit="submitDataInput">
     <div class="mb-3">
       <label class="form-label">Name</label>
       <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
@@ -17,7 +17,7 @@ import Swal from "sweetalert2";
 
 const {loadData, addNewData, updateData, deleteData} = BasicCrud(url)
 
-const myModal = ref()
+const modalInput = ref()
 
 const emit = defineEmits(["submit"])
 
@@ -40,11 +40,11 @@ const submitDataInput = async () => {
 }
 
 const showModal = () => {
-  myModal.value.showModal()
+  modalInput.value.showModal()
 }
 
 const hideModal = () => {
-  myModal.value.hideModal()
+  modalInput.value.hideModal()
 }
 
 defineExpose({showModal, hideModal})
