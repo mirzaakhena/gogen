@@ -1,24 +1,23 @@
 <template>
 
-  <div class="container ">
+  <div class="container" style="padding: 0">
     <div class="row">
-      <div class="col-6">
+      <div class="col">
         <div class="btn-group">
           <button type="button" class="btn btn-success" @click="showModalInput">Create New</button>
           <button type="button" class="btn btn-primary" @click="reload">Reload</button>
           <button type="button" class="btn btn-dark" @click="showModalFilter">Filter</button>
         </div>
-        <div class="btn-group" style="margin-left: 2px">
+      </div>
+      <div class="col">
+        <div class="btn-group float-end">
           <button type="button" class="btn btn-success" @click="previousPage">Prev Page</button>
-          <button type="button" class="btn btn-primary" @click="showModalPaging">{{"{{"}} state.filter.page {{"}}"}} /
-            {{"{{"}} getNumberOfPage() {{"}}"}}
+          <button type="button" class="btn btn-primary" @click="showModalPaging">
+            {{"{{"}} state.filter.page {{"}}"}} / {{"{{"}} getNumberOfPage() {{"}}"}}
           </button>
           <button type="button" class="btn btn-dark" @click="nextPage">Next Page</button>
         </div>
       </div>
-    </div>
-    <div class="col-6">
-
     </div>
   </div>
 
@@ -32,58 +31,27 @@
     </template>
   </MirzaTable>
 
-  <MirzaModal id="modalInput" ref="modalInput" title="Input New Data" @submit="submitDataInput">
-    <div class="mb-3">
-      <label class="form-label">Name</label>
-      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
-    </div>
-  </MirzaModal>
+  <ViewModalInput ref="modalInput" @submit="reload"></ViewModalInput>
 
-  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Item" @submit="submitDataUpdate">
-    <div class="mb-3">
-      <label class="form-label">Name</label>
-      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
-    </div>
+  <ViewModalUpdate ref="modalUpdate" @submit="reload"></ViewModalUpdate>
 
-    <div class="mb-3">
-      <label class="form-label">Date</label>
-      <input type="date" class="form-control" placeholder="Date" v-model="state.item.date">
-    </div>
-  </MirzaModal>
+  <ViewModalDetail ref="modalDetail" @submit="reload"></ViewModalDetail>
 
-  <MirzaModal id="modalDetail" ref="modalDetail" title="Raw Data">
-    <pre>{{"{{"}} JSON.stringify(state.item, null, 2) {{"}}"}}</pre>
-  </MirzaModal>
+  <ViewModalFilter ref="modalFilter" @submit="reload"></ViewModalFilter>
 
-  <MirzaModal id="modalFilter" ref="modalFilter" title="Filter Items" @submit="submitDataFilter">
-    <div class="mb-3">
-      <label class="form-label">Name start with</label>
-      <input type="text" class="form-control" placeholder="Name Like" v-model="state.filter.name_like">
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Date Start</label>
-      <input type="date" class="form-control" placeholder="Date Start" v-model="state.filter.date_start">
-    </div>
-
-    <div class="mb-3">
-      <label class="form-label">Date End</label>
-      <input type="date" class="form-control" placeholder="Date End" v-model="state.filter.date_end">
-    </div>
-  </MirzaModal>
-
-  <MirzaModal id="modalPaging" ref="modalPaging" title="Paging Config" @submit="submitDataPaging">
-    <label class="form-label">Item Size Per Page</label>
-    <input type="number" class="form-control" placeholder="Page Size" v-model="state.filter.size">
-  </MirzaModal>
+  <ViewModalPaging ref="modalPaging" @submit="reload"></ViewModalPaging>
 
 </template>
 
 <script setup>
 
-import BasicCrud from "../../modules/basiccrud.js"
+import ViewModalDetail from "./ViewModalDetail.vue";
+import ViewModalPaging from "./ViewModalPaging.vue";
+import ViewModalInput from "./ViewModalInput.vue";
+import ViewModalFilter from "./ViewModalFilter.vue";
+import ViewModalUpdate from "./ViewModalUpdate.vue";
 import MirzaTable from "../../components/table/MirzaTable.vue";
-import MirzaModal from "../../components/modal/MirzaModal.vue";
+import BasicCrud from "../../modules/basiccrud.js"
 import {ref} from "vue";
 import Swal from "sweetalert2";
 import to from "await-to-js";
@@ -142,42 +110,6 @@ const showModalPaging = () => {
   modalPaging.value.showModal()
 }
 
-const submitDataInput = async () => {
-
-  const [err] = await to(addNewData(state.item))
-
-  if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
-    return
-  }
-
-  await reload()
-
-  modalInput.value.hideModal()
-}
-
-const submitDataUpdate = async () => {
-
-  const [err] = await to(updateData(state.item.id, state.item))
-
-  if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
-    return
-  }
-
-  await reload()
-
-  modalUpdate.value.hideModal()
-}
-
 const submitDataDelete = async (payload) => {
 
   const [err] = await to(deleteData(payload.id))
@@ -194,19 +126,6 @@ const submitDataDelete = async (payload) => {
   await reload()
 }
 
-const submitDataPaging = () => {
-  reload()
-
-  state.filter.page = 1
-  modalPaging.value.hideModal()
-}
-
-const submitDataFilter = () => {
-  reload()
-  state.filter.page = 1
-  modalFilter.value.hideModal()
-}
-
 const nextPage = () => {
   if (state.filter.page + 1 <= getNumberOfPage()) {
     state.filter.page++
@@ -220,7 +139,6 @@ const previousPage = () => {
     reload()
   }
 }
-
 
 const fields = [
   {header: "Action", fieldName: "action",},
