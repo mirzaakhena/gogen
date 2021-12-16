@@ -70,8 +70,8 @@ func (r *genRepositoryInteractor) Execute(ctx context.Context, req InportRequest
 			return nil, err
 		}
 
-		// reformat interactor._go
-		err = r.outport.Reformat(ctx, "domain/repository/repository._go", bytes)
+		// reformat interactor.go
+		err = r.outport.Reformat(ctx, "domain/repository/repository.go", bytes)
 		if err != nil {
 			return nil, err
 		}

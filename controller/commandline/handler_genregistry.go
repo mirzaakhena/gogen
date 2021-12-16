@@ -15,14 +15,14 @@ func (r *Controller) genRegistryHandler(inputPort genregistry.Inport) func(...st
 
 		if len(commands) < 1 {
 			err := fmt.Errorf("\n" +
+				"   # Create a registry for all controller\n" +
+				"   gogen registry appone\n" +
+				"     'appone'  is an application name\n" +
+				"\n" +
 				"   # Create a registry for specific controller\n" +
 				"   gogen registry appone restapi\n" +
 				"     'appone'  is an application name\n" +
 				"     'restapi' is a controller name\n" +
-				"\n" +
-				"   # Create a registry for specific controller\n" +
-				"   gogen entity Order\n" +
-				"     'Order' is an entity name\n" +
 				"\n")
 
 			return err
