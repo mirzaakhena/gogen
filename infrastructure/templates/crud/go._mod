@@ -1,3 +1,0 @@
-module simplecrud
-
-go 1.17

@@ -1,4 +1,4 @@
-{{LowerCase .UsecaseName}}
+package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
@@ -31,7 +31,6 @@ func (r *{{PascalCase .UsecaseName}}Interactor) Execute(ctx context.Context, req
 		{{LowerCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}Request{
 			RandomID: randomID,
 			Name:     req.Name,
-			Now:      req.Now,
 		})
 		if err != nil {
 			return err

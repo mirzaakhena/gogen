@@ -53,7 +53,6 @@ func (r gateway) Save{{PascalCase .EntityName}}(ctx context.Context, obj *entity
 	sm := {{PascalCase .EntityName}}{
 		ID:   obj.ID.String(),
 		Name: obj.Name,
-		Date: obj.Date,
 	}
 
 	err = db.Debug().Save(&sm).Error

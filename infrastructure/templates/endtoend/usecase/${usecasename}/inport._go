@@ -2,7 +2,6 @@ package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
-	"time"
 )
 
 // Inport of Usecase

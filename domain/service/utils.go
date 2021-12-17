@@ -32,6 +32,10 @@ func CreateEverythingExactly(skip, path string, fileRenamer map[string]string, d
 		efs = templates.WebappTemplates
 	}
 
+	if strings.HasPrefix(skip, "endtoend") {
+		efs = templates.E2ETemplates
+	}
+
 	err := readFolders(efs, path, &ff)
 	if err != nil {
 		return err

@@ -12,6 +12,9 @@ var AppTemplates embed.FS
 //go:embed crud
 var CrudTemplates embed.FS
 
+//go:embed endtoend
+var E2ETemplates embed.FS
+
 //go:embed webapp
 var WebappTemplates embed.FS
 
@@ -25,6 +28,14 @@ func ReadFile(filepath string) string {
 
 func ReadFileCrud(filepath string) string {
 	bytes, err := CrudTemplates.ReadFile(fmt.Sprintf("crud/%s", filepath))
+	if err != nil {
+		panic(err.Error())
+	}
+	return string(bytes)
+}
+
+func ReadFileE2E(filepath string) string {
+	bytes, err := E2ETemplates.ReadFile(fmt.Sprintf("endtoend/%s", filepath))
 	if err != nil {
 		panic(err.Error())
 	}

@@ -9,6 +9,7 @@ import (
 	"github.com/mirzaakhena/gogen/gateway/prod"
 	"github.com/mirzaakhena/gogen/usecase/gencontroller"
 	"github.com/mirzaakhena/gogen/usecase/gencrud"
+	"github.com/mirzaakhena/gogen/usecase/genendtoend"
 	"github.com/mirzaakhena/gogen/usecase/genentity"
 	"github.com/mirzaakhena/gogen/usecase/generror"
 	"github.com/mirzaakhena/gogen/usecase/gengateway"
@@ -52,6 +53,7 @@ func NewGogen2() func() application.RegistryContract {
 				GenValueStringInport: genvaluestring.NewUsecase(datasource),
 				GenCrudInport:        gencrud.NewUsecase(datasource),
 				GenWebappInport:      genwebapp.NewUsecase(datasource),
+				GenEndToEndInport:    genendtoend.NewUsecase(datasource),
 			},
 		}
 
@@ -81,7 +83,8 @@ func (r *gogenApp) RunApplication() {
 			"  gogen enum\n" +
 			"  gogen error\n" +
 			"  gogen crud\n" +
-			"  gogen webapp\n")
+			"  gogen webapp\n" +
+			"  gogen endtoend\n")
 		return
 	}
 

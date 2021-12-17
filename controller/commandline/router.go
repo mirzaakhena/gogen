@@ -3,6 +3,7 @@ package commandline
 import (
 	"github.com/mirzaakhena/gogen/usecase/gencontroller"
 	"github.com/mirzaakhena/gogen/usecase/gencrud"
+	"github.com/mirzaakhena/gogen/usecase/genendtoend"
 	"github.com/mirzaakhena/gogen/usecase/genentity"
 	"github.com/mirzaakhena/gogen/usecase/generror"
 	"github.com/mirzaakhena/gogen/usecase/gengateway"
@@ -32,6 +33,7 @@ type Controller struct {
 	GenValueStringInport genvaluestring.Inport
 	GenCrudInport        gencrud.Inport
 	GenWebappInport      genwebapp.Inport
+	GenEndToEndInport    genendtoend.Inport
 }
 
 // RegisterRouter registering all the router
@@ -49,4 +51,5 @@ func (r *Controller) RegisterRouter() {
 	r.CommandMap["valuestring"] = r.genValueStringHandler(r.GenValueStringInport)
 	r.CommandMap["crud"] = r.genCrudHandler(r.GenCrudInport)
 	r.CommandMap["webapp"] = r.genWebappHandler(r.GenWebappInport)
+	r.CommandMap["endtoend"] = r.genEndToEndHandler(r.GenEndToEndInport)
 }

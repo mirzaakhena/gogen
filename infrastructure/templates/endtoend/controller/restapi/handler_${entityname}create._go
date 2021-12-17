@@ -8,11 +8,11 @@ import (
 
 	"{{.PackagePath}}/infrastructure/log"
 	"{{.PackagePath}}/infrastructure/util"
-	"{{.PackagePath}}/usecase/{{LowerCase .EntityName}}create"
+	"{{.PackagePath}}/usecase/{{LowerCase .UsecaseName}}"
 )
 
 // {{LowerCase .EntityName}}CreateHandler ...
-func (r *Controller) {{LowerCase .EntityName}}CreateHandler(inputPort {{LowerCase .EntityName}}create.Inport) gin.HandlerFunc {
+func (r *Controller) {{LowerCase .EntityName}}CreateHandler(inputPort {{LowerCase .UsecaseName}}.Inport) gin.HandlerFunc {
 
 	type request struct {
 		Name string `json:"name"`
@@ -35,9 +35,8 @@ func (r *Controller) {{LowerCase .EntityName}}CreateHandler(inputPort {{LowerCas
 			return
 		}
 
-		var req {{LowerCase .EntityName}}create.InportRequest
+		var req {{LowerCase .UsecaseName}}.InportRequest
 		req.Name = jsonReq.Name
-		req.Now = time.Now()
 
 		log.Info(ctx, util.MustJSON(req))
 

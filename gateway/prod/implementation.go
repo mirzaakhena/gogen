@@ -27,6 +27,10 @@ func (r *prodGateway) GetMainFileForCrudTemplate(ctx context.Context) string {
 	return templates.ReadFileCrud("main._go")
 }
 
+func (r *prodGateway) GetMainFileForE2ETemplate(ctx context.Context) string {
+	return templates.ReadFileE2E("main._go")
+}
+
 // NewProdGateway ...
 func NewProdGateway() *prodGateway {
 	return &prodGateway{

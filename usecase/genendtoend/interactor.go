@@ -37,9 +37,42 @@ func (r *genEndToEndInteractor) Execute(ctx context.Context, req InportRequest) 
 		"entityname":  obj.Entity.EntityName.LowerCase(),
 	}
 
-	err = service.CreateEverythingExactly("endtoend/", "endtoend", filerenamer, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("endtoend/", "application", filerenamer, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("endtoend/", "controller", filerenamer, obj.GetData(packagePath))
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("endtoend/", "domain", filerenamer, obj.GetData(packagePath))
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("endtoend/", "gateway", filerenamer, obj.GetData(packagePath))
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("endtoend/", "infrastructure", filerenamer, obj.GetData(packagePath))
+	if err != nil {
+		return nil, err
+	}
+
+	err = service.CreateEverythingExactly("endtoend/", "usecase", filerenamer, obj.GetData(packagePath))
+	if err != nil {
+		return nil, err
+	}
+
+	{
+		templateFile := r.outport.GetMainFileForE2ETemplate(ctx)
+		_, err = r.outport.WriteFileIfNotExist(ctx, templateFile, "main.go", obj.GetData(packagePath))
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	return res, nil

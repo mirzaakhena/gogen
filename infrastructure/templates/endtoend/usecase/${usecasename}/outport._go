@@ -1,4 +1,4 @@
-{{LowerCase .UsecaseName}}
+package {{LowerCase .UsecaseName}}
 
 import (
 	"{{.PackagePath}}/domain/repository"
