@@ -396,4 +396,6 @@ We always start from
 
 -
 
+app_instance xxxx-yymmddmmhhss
+app_name
 
