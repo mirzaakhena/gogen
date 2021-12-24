@@ -2,7 +2,7 @@ package genusecase
 
 import (
 	"context"
-  "github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 // Outport of GenUsecase

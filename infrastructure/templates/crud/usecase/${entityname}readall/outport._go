@@ -1,6 +1,6 @@
 package {{LowerCase .EntityName}}readall
 
-import "{{.PackagePath}}/domain/repository"
+import "{{.PackagePath}}/model/repository"
 
 // Outport of usecase
 type Outport interface {

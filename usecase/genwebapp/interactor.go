@@ -2,8 +2,8 @@ package genwebapp
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/

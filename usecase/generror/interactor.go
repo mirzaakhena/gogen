@@ -2,8 +2,8 @@ package generror
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -26,7 +26,7 @@ func (r *genErrorInteractor) Execute(ctx context.Context, req InportRequest) (*I
 
 	//packagePath := r.outport.GetPackagePath(ctx)
 
-	err := service.CreateEverythingExactly("default/", "domain/domerror", map[string]string{}, struct{}{})
+	err := service.CreateEverythingExactly("default/", "model/domerror", map[string]string{}, struct{}{})
 	if err != nil {
 		return nil, err
 	}

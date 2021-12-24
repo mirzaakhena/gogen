@@ -3,7 +3,7 @@ package {{LowerCase .EntityName}}readone
 import (
 	"context"
 	"fmt"
-	"{{.PackagePath}}/domain/service"
+	"{{.PackagePath}}/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/

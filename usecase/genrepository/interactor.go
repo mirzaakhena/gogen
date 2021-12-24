@@ -2,8 +2,8 @@ package genrepository
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 	"github.com/mirzaakhena/gogen/usecase/genentity"
 )
 
@@ -40,13 +40,13 @@ func (r *genRepositoryInteractor) Execute(ctx context.Context, req InportRequest
 	packagePath := r.outport.GetPackagePath(ctx)
 
 	// create repository
-	err = service.CreateEverythingExactly("default/", "domain/repository", map[string]string{}, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("default/", "model/repository", map[string]string{}, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}
 
 	// create service
-	err = service.CreateEverythingExactly("default/", "domain/service", map[string]string{}, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("default/", "model/service", map[string]string{}, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +71,7 @@ func (r *genRepositoryInteractor) Execute(ctx context.Context, req InportRequest
 		}
 
 		// reformat interactor.go
-		err = r.outport.Reformat(ctx, "domain/repository/repository.go", bytes)
+		err = r.outport.Reformat(ctx, "model/repository/repository.go", bytes)
 		if err != nil {
 			return nil, err
 		}

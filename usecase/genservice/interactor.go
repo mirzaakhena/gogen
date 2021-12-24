@@ -2,8 +2,8 @@ package genservice
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -33,7 +33,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 	packagePath := r.outport.GetPackagePath(ctx)
 
 	// create service
-	err = service.CreateEverythingExactly("default/", "domain/service", map[string]string{}, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("default/", "model/service", map[string]string{}, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +58,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 		}
 
 		// reformat interactor._go
-		err = r.outport.Reformat(ctx, "domain/service/service._go", bytes)
+		err = r.outport.Reformat(ctx, "model/service/service.go", bytes)
 		if err != nil {
 			return nil, err
 		}

@@ -3,8 +3,8 @@ package gencontroller
 import (
 	"context"
 	"fmt"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -27,7 +27,7 @@ func (r *genControllerInteractor) Execute(ctx context.Context, req InportRequest
 
 	packagePath := r.outport.GetPackagePath(ctx)
 
-	err := service.CreateEverythingExactly("default/", "domain/domerror", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
+	err := service.CreateEverythingExactly("default/", "model/domerror", map[string]string{}, struct{ PackagePath string }{PackagePath: packagePath})
 	if err != nil {
 		return nil, err
 	}

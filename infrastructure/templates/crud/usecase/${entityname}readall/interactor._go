@@ -2,8 +2,8 @@ package {{LowerCase .EntityName}}readall
 
 import (
 	"context"
-	"{{.PackagePath}}/domain/repository"
-	"{{.PackagePath}}/domain/service"
+	"{{.PackagePath}}/model/repository"
+	"{{.PackagePath}}/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/

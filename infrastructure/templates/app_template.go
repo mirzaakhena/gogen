@@ -59,10 +59,6 @@ var (
 	// LogDefaultFile ...
 	//go:embed default/infrastructure/log/log_default._go
 	LogDefaultFile string
-
-	// EntityFile ...
-	//go:embed default/domain/entity/${entityname}._go
-	EntityFile string
 )
 
 var (

@@ -2,8 +2,8 @@ package genendtoend
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -47,7 +47,7 @@ func (r *genEndToEndInteractor) Execute(ctx context.Context, req InportRequest) 
 		return nil, err
 	}
 
-	err = service.CreateEverythingExactly("endtoend/", "domain", filerenamer, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("endtoend/", "model", filerenamer, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}
