@@ -2,7 +2,7 @@ package {{LowerCase .EntityName}}delete
 
 import (
 	"context"
-	"{{.PackagePath}}/domain/service"
+	"{{.PackagePath}}/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/

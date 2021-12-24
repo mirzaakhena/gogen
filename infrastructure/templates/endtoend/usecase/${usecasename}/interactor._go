@@ -2,8 +2,8 @@ package {{LowerCase .UsecaseName}}
 
 import (
 	"context"
-	"{{.PackagePath}}/domain/entity"
-	"{{.PackagePath}}/domain/service"
+	"{{.PackagePath}}/model/entity"
+	"{{.PackagePath}}/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/

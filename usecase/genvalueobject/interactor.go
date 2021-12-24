@@ -3,7 +3,7 @@ package genvalueobject
 import (
 	"context"
 	"fmt"
-	"github.com/mirzaakhena/gogen/domain/entity"
+	"github.com/mirzaakhena/gogen/model/entity"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -30,13 +30,13 @@ func (r *genValueObjectInteractor) Execute(ctx context.Context, req InportReques
 	}
 
 	// code your usecase definition here ...
-	_, err = r.outport.CreateFolderIfNotExist(ctx,"domain/vo")
+	_, err = r.outport.CreateFolderIfNotExist(ctx, "model/vo")
 	if err != nil {
 		return nil, err
 	}
 
 	{
-		outputFile := fmt.Sprintf("domain/vo/%s.go", obj.ValueObjectName.SnakeCase())
+		outputFile := fmt.Sprintf("model/vo/%s.go", obj.ValueObjectName.SnakeCase())
 		tem := r.outport.GetValueObjectTemplate(ctx)
 		_, err = r.outport.WriteFileIfNotExist(ctx, tem, outputFile, obj.GetData())
 		if err != nil {

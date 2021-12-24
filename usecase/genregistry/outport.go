@@ -1,18 +1,18 @@
 package genregistry
 
 import (
-  "context"
-  "github.com/mirzaakhena/gogen/domain/service"
+	"context"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 // Outport of GenRegistry
 type Outport interface {
-  service.GetPackagePathService
-  service.WriteFileIfNotExistService
-  service.ReformatService
-  service.CreateFolderIfNotExistService
-  GetMainFileTemplate(ctx context.Context) string
-  GetServerFileTemplate(ctx context.Context, driverName string) string
-  GetApplicationFileTemplate(ctx context.Context) string
-  GetRegistryFileTemplate(ctx context.Context,driverName string) string
+	service.GetPackagePathService
+	service.WriteFileIfNotExistService
+	service.ReformatService
+	service.CreateFolderIfNotExistService
+	GetMainFileTemplate(ctx context.Context) string
+	GetServerFileTemplate(ctx context.Context, driverName string) string
+	GetApplicationFileTemplate(ctx context.Context) string
+	GetRegistryFileTemplate(ctx context.Context, driverName string) string
 }

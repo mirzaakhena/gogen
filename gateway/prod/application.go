@@ -16,5 +16,5 @@ func (r *prodGateway) GetRegistryFileTemplate(ctx context.Context, driverName st
 
 // GetErrorLineTemplate ...
 func (r prodGateway) GetErrorLineTemplate(ctx context.Context) string {
-	return templates.ReadFile("domain/domerror/~inject._go")
+	return templates.ReadFile("model/domerror/~inject._go")
 }

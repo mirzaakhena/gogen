@@ -2,8 +2,8 @@ package gencrud
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -46,7 +46,7 @@ func (r *genCrudInteractor) Execute(ctx context.Context, req InportRequest) (*In
 		return nil, err
 	}
 
-	err = service.CreateEverythingExactly("crud/", "domain", filerenamer, obj.GetData(packagePath))
+	err = service.CreateEverythingExactly("crud/", "model", filerenamer, obj.GetData(packagePath))
 	if err != nil {
 		return nil, err
 	}

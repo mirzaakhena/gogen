@@ -1,8 +1,8 @@
 package {{LowerCase .EntityName}}create
 
 import (
-	"{{.PackagePath}}/domain/repository"
-	"{{.PackagePath}}/domain/service"
+	"{{.PackagePath}}/model/repository"
+	"{{.PackagePath}}/model/service"
 )
 
 // Outport of usecase

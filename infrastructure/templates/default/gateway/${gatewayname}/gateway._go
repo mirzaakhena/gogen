@@ -3,7 +3,7 @@ package {{LowerCase .GatewayName}}
 import (
 	"context"
 
-	"{{.PackagePath}}/domain/entity"
+	"{{.PackagePath}}/model/entity"
 	"{{.PackagePath}}/infrastructure/log"
 )
 

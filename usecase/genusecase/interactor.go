@@ -2,8 +2,8 @@ package genusecase
 
 import (
 	"context"
-	"github.com/mirzaakhena/gogen/domain/entity"
-	"github.com/mirzaakhena/gogen/domain/service"
+	"github.com/mirzaakhena/gogen/model/entity"
+	"github.com/mirzaakhena/gogen/model/service"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -36,12 +36,12 @@ func (r *genUsecaseInteractor) Execute(ctx context.Context, req InportRequest) (
 		"usecasename": obj.UsecaseName.LowerCase(),
 	}
 
-	//err = service.CreateEverythingExactly("default/", "domain/repository", fileRenamer, obj.GetData(packagePath))
+	//err = service.CreateEverythingExactly("default/", "model/repository", fileRenamer, obj.GetData(packagePath))
 	//if err != nil {
 	//  return nil, err
 	//}
 	//
-	//err = service.CreateEverythingExactly("default/", "domain/service", fileRenamer, obj.GetData(packagePath))
+	//err = service.CreateEverythingExactly("default/", "model/service", fileRenamer, obj.GetData(packagePath))
 	//if err != nil {
 	//  return nil, err
 	//}
@@ -51,12 +51,12 @@ func (r *genUsecaseInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	//_, err = r.outport.CreateFolderIfNotExist(ctx, "domain/entity")
+	//_, err = r.outport.CreateFolderIfNotExist(ctx, "model/entity")
 	//if err != nil {
 	//  return nil, err
 	//}
 	//
-	//_, err = r.outport.CreateFolderIfNotExist(ctx, "domain/vo")
+	//_, err = r.outport.CreateFolderIfNotExist(ctx, "model/vo")
 	//if err != nil {
 	//  return nil, err
 	//}
