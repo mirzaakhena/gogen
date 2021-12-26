@@ -74,11 +74,7 @@ const reload = async () => {
   const [err, res] = await to(loadData(state.filter))
 
   if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
   }
 
   state.items = res.data.items
@@ -115,11 +111,7 @@ const submitDataDelete = async (payload) => {
   const [err] = await to(deleteData(payload.id))
 
   if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
     return
   }
 

@@ -29,11 +29,7 @@ const submitDataUpdate = async () => {
   const [err] = await to(updateData(state.item.id, state.item))
 
   if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
     return
   }
 

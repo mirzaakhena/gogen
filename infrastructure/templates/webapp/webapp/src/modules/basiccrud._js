@@ -8,9 +8,7 @@ export default function BasicCrud(url) {
 
         const requestConfig = { params: { ...params } }
 
-        const [err, res] = await to(axios.get(url, requestConfig).catch((err) => {
-            return Promise.reject(err)
-        }))
+        const [err, res] = await to(axios.get(url, requestConfig).catch((err) => Promise.reject(err)))
 
         if (err) {
             return Promise.reject(err.response.data)
@@ -22,9 +20,7 @@ export default function BasicCrud(url) {
 
     const addNewData = async (payload) => {
 
-        const [err, res] = await to(axios.post(url, payload).catch((err) => {
-            return Promise.reject(err)
-        }))
+        const [err, res] = await to(axios.post(url, payload).catch((err) => Promise.reject(err)))
 
         if (err) {
             return Promise.reject(err.response.data)
@@ -35,9 +31,7 @@ export default function BasicCrud(url) {
 
     const deleteData = async (id) => {
 
-        const [err, res] = await to(axios.delete(`${url}/${id}`).catch((err) => {
-            return Promise.reject(err)
-        }))
+        const [err, res] = await to(axios.delete(`${url}/${id}`).catch((err) => Promise.reject(err)))
 
         if (err) {
             return Promise.reject(err.response.data)
@@ -48,9 +42,7 @@ export default function BasicCrud(url) {
 
     const updateData = async (id, payload) => {
 
-        const [err, res] = await to(axios.put(`${url}/${id}`, payload).catch((err) => {
-            return Promise.reject(err)
-        }))
+        const [err, res] = await to(axios.put(`${url}/${id}`, payload).catch((err) => Promise.reject(err)))
 
         if (err) {
             return Promise.reject(err.response.data)

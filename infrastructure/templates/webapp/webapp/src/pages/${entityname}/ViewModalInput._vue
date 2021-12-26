@@ -26,11 +26,7 @@ const submitDataInput = async () => {
   const [err] = await to(addNewData(state.item))
 
   if (err) {
-    await Swal.fire({
-      icon: 'error',
-      title: 'Oops...',
-      text: err.errorMessage,
-    })
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
     return
   }
 
