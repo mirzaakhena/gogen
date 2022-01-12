@@ -515,3 +515,5 @@ https://go2goplay.golang.org/p/zfTIGXO02tZ
 https://www.youtube.com/watch?v=WcU0EImGI_g
 
 https://www.youtube.com/watch?v=92ZJcxJgmmE
+
+https://davidwells.io/blog/clean-analytics

@@ -38,7 +38,7 @@ func (r *genServiceInteractor) Execute(ctx context.Context, req InportRequest) (
 		return nil, err
 	}
 
-	// service._go file is already exist, but is the interface is exist ?
+	// service.go file is already exist, but is the interface is exist ?
 	exist, err := obj.IsServiceExist()
 	if err != nil {
 		return nil, err
