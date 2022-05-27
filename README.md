@@ -382,6 +382,8 @@ error enum is a shared error collection. This command will add new error enum li
 $ gogen error SomethingGoesWrongError
 ```
 
+## Too many command and I cannot remember it!
+
 Phew!! I knew you cannot remember those all command. Don't worry if you forget the command, then you can just call 'gogen'
 ```
 $ gogen
@@ -427,6 +429,34 @@ $ gogen repository
 
 It will show sample command to remind you on how to use it. In this case, repository has 2 type of command.  
 
+You can create another domain let say you want to create domain payment
+
+```
+$ gogen init payment
+```
+
+Then you want to create a usecase under domain payment
+```
+$ gogen usecase RunPaymentCreate
+```
+
+But, hei the usecase is created under the order domain! How to create it under payment domain?
+
+open the folder `.gogen` you will see file `domain`. You need to update the file from this
+
+```
+-order
+payment
+```
+
+into this
+
+```
+order
+-payment
+```
+
+Now you are working under payment domain. 
 
 
 Some Information and FAQ
