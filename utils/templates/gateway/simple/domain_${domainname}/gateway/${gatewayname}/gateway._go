@@ -1,0 +1,33 @@
+package {{LowerCase .GatewayName}}
+
+import (
+	"context"
+	"{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/infrastructure/config"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+)
+
+type gateway struct {
+    log     logger.Logger
+    appData driver.ApplicationData
+    config  *config.Config
+}
+
+// NewGateway ...
+func NewGateway(log logger.Logger, appData driver.ApplicationData, config *config.Config) (*gateway) {
+
+	return &gateway{
+	    log:     log,
+		appData: appData,
+		config:  config,
+	}
+}
+
+{{range .Methods}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}

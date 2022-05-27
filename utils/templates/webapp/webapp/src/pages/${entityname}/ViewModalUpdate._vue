@@ -1,0 +1,55 @@
+<template>
+  <MirzaModal id="modalUpdate" ref="modalUpdate" title="Update Item" @submit="submitDataUpdate">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Date</label>
+      <input type="date" class="form-control" placeholder="Date" v-model="state.item.date">
+    </div>
+  </MirzaModal>
+</template>
+
+<script setup>
+import MirzaModal from "../../components/modal/MirzaModal.vue";
+import BasicCrud from "../../modules/basiccrud.js"
+import {state} from "./state.js";
+import {ref} from "vue";
+import to from "await-to-js";
+
+const {updateData} = BasicCrud()
+
+const modalUpdate = ref()
+
+const emit = defineEmits(["submit"])
+
+const submitDataUpdate = async () => {
+
+  const [err] = await to(updateData(state.item.id, state.item))
+
+  if (err) {
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
+    return
+  }
+
+  emit("submit")
+
+  hideModal()
+}
+
+const showModal = () => {
+  modalUpdate.value.showModal()
+}
+
+const hideModal = () => {
+  modalUpdate.value.hideModal()
+}
+
+defineExpose({showModal, hideModal})
+
+</script>
+
+<style scoped>
+
+</style>

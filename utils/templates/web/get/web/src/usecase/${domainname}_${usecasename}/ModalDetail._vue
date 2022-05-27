@@ -1,0 +1,45 @@
+<template>
+  <MirzaModal id="modalDetail" ref="modalDetail" title="Raw Data" @submit="hideModal">
+    <pre>{{"{{"}} JSON.stringify(state.item, null, 2) {{"}}"}}</pre>
+  </MirzaModal>
+</template>
+
+<script setup>
+import MirzaModal from "../../components/modal/MirzaModal.vue";
+import {ref} from "vue";
+import {reactive} from "vue";
+
+const state = reactive({
+  item: {},
+})
+
+const modalDetail = ref()
+
+const showModal = async () => {
+
+  const url = `${BASE_URL}/{{LowerCase .UsecaseName}}`
+
+  const requestConfig = { params: {} }
+
+  const [err, res] = await to(axios.get(url, requestConfig).catch((err) => Promise.reject(err)))
+
+  if (err) {
+    await swal.fire({ icon: 'error', title: 'Oops...', text: err.response.data.errorMessage, })
+    return
+  }
+
+  state.item = res.data.data.
+  modalDetail.value.showModal()
+}
+
+const hideModal = () => {
+  modalDetail.value.hideModal()
+}
+
+defineExpose({showModal, hideModal})
+
+</script>
+
+<style scoped>
+
+</style>

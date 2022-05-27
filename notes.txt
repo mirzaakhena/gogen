@@ -399,3 +399,29 @@ We always start from
 app_instance xxxx-yymmddmmhhss
 app_name
 
+
+pertanyaan
+- kenapa foldernya banyak banget?
+- kenapa file inport, outport dan interactor dipisah? kan bisa dalam satu file?
+- kenapa Inport cuman boleh punya satu method?
+- kenapa Inport Request dan Response dijadikan struct?
+- kenapa Interactor hanya boleh memiliki satu Outport?
+- kenapa test case ada didalam usecase ?
+- kenapa interactor struct private?
+- kenapa outport hanya mengextend repository atau service? apakah bisa dibuat method langsung?
+- kenapa ada folder infrastructure dan untuk apa?
+- kenapa gateway dipisah kedalam beberapa folder? untuk apa?
+- kenapa domain hanya berisi entity, service, repository dan vo? dimana bounded context nya?
+- kenapa controller dipisah dengan nama controller? untuk apa?
+- kenapa usecase dipisah dengan folder?
+- kenapa interactor, response, router dan handler dipisah dengan file berbeda?
+- kenapa tiap handler dipisah-pisah pada file yang berbeda?
+- kenapa error di sentralisasi? bagaimana cara kerja dan kelebihannya?
+- kenapa constant disentralisasi
+- kenapa log hanya muncul pada controller dan gateway? bagaimana dengan usecase dan entity?
+- kenapa ada registry dan untuk apakah registry tersebut?
+- kenapa satu registry bisa punya banyak controller?
+- apakah satu controller hanya boleh menghandle satu usecase saja?
+- kenapa gak pake file config ?
+- apa fungsi controller dan RegisterRouter method ? kenapa gak bikin constructor?
+- Why do you introduce new layout instead of the standart layout from https://github.com/golang-standards/project-layout ?

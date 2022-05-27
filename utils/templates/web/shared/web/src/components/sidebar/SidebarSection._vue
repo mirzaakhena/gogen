@@ -1,0 +1,30 @@
+<template>
+  <hr style="margin-top: 20px; margin-bottom: 0px">
+  <button class="btn btn-toggle" @click="state.collapse=!state.collapse">
+    <h4>{{"{{"}} header {{"}}"}}</h4>
+  </button>
+    <ul class="nav nav-pills flex-column" v-if="state.collapse">
+      <SidebarLink v-for="menu in menus" :key="menu.href" :to="menu.href" :icon="menu.icon">
+        {{"{{"}} menu.title {{"}}"}}
+      </SidebarLink>
+    </ul>
+</template>
+
+<script setup>
+import SidebarLink from './SidebarLink.vue'
+import {reactive} from "vue";
+
+const state = reactive({
+  collapse: true,
+})
+
+defineProps({
+  header: {type: String, required: true},
+  menus: {type: Array, required: true},
+})
+
+</script>
+
+<style scoped>
+
+</style>

@@ -1,0 +1,11 @@
+
+{{CamelCase .EntityName}}Objs, err := r.outport.{{PascalCase .RepositoryName}}(ctx, "{{CamelCase .EntityName}}ID")
+if err != nil {
+    return nil, err
+}
+
+for _, obj := range {{CamelCase .EntityName}}Objs {
+    fmt.Printf("%v\n", obj)
+}
+
+//!

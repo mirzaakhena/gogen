@@ -1,0 +1,147 @@
+<template>
+
+  <div class="container" style="padding: 0">
+    <div class="row">
+      <div class="col">
+        <div class="btn-group">
+          <button type="button" class="btn btn-success" @click="showModalInput">Create New</button>
+          <button type="button" class="btn btn-primary" @click="reload">Reload</button>
+          <button type="button" class="btn btn-dark" @click="showModalFilter">Filter</button>
+        </div>
+      </div>
+      <div class="col">
+        <div class="btn-group float-end">
+          <button type="button" class="btn btn-success" @click="previousPage">Prev Page</button>
+          <button type="button" class="btn btn-primary" @click="showModalPaging">
+            {{"{{"}} state.filter.page {{"}}"}} / {{"{{"}} getNumberOfPage() {{"}}"}}
+          </button>
+          <button type="button" class="btn btn-dark" @click="nextPage">Next Page</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <MirzaTable :fields="fields" :items="state.items">
+    <template #action="{item}">
+      <div class="btn-group">
+        <button type="button" class="btn btn-warning btn-sm" @click="showModalDetail(item)">Detail</button>
+        <button type="button" class="btn btn-info btn-sm" @click="showModalUpdate(item)">Update</button>
+        <button type="button" class="btn btn-danger btn-sm" @click="submitDataDelete(item)">Delete</button>
+      </div>
+    </template>
+  </MirzaTable>
+
+  <ViewModalInput ref="modalInput" @submit="reload"></ViewModalInput>
+
+  <ViewModalUpdate ref="modalUpdate" @submit="reload"></ViewModalUpdate>
+
+  <ViewModalDetail ref="modalDetail" @submit="reload"></ViewModalDetail>
+
+  <ViewModalFilter ref="modalFilter" @submit="reload"></ViewModalFilter>
+
+  <ViewModalPaging ref="modalPaging" @submit="reload"></ViewModalPaging>
+
+</template>
+
+<script setup>
+
+import ViewModalDetail from "./ViewModalDetail.vue";
+import ViewModalPaging from "./ViewModalPaging.vue";
+import ViewModalInput from "./ViewModalInput.vue";
+import ViewModalFilter from "./ViewModalFilter.vue";
+import ViewModalUpdate from "./ViewModalUpdate.vue";
+import MirzaTable from "../../components/table/MirzaTable.vue";
+import BasicCrud from "../../modules/basiccrud.js"
+import {ref} from "vue";
+import Swal from "sweetalert2";
+import to from "await-to-js";
+import {getNumberOfPage, state} from "./state.js";
+
+const modalDetail = ref()
+
+const modalInput = ref()
+
+const modalUpdate = ref()
+
+const modalFilter = ref()
+
+const modalPaging = ref()
+
+const {loadData, deleteData} = BasicCrud()
+
+const reload = async () => {
+
+  const [err, res] = await to(loadData(state.filter))
+
+  if (err) {
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
+  }
+
+  state.items = res.data.items
+  state.totalItems = res.data.count
+}
+
+const showModalInput = () => {
+  state.item = {
+    name: ""
+  }
+  modalInput.value.showModal()
+}
+
+const showModalDetail = (payload) => {
+  state.item = payload
+  modalDetail.value.showModal()
+}
+
+const showModalUpdate = (payload) => {
+  state.item = payload
+  modalUpdate.value.showModal()
+}
+
+const showModalFilter = () => {
+  modalFilter.value.showModal()
+}
+
+const showModalPaging = () => {
+  modalPaging.value.showModal()
+}
+
+const submitDataDelete = async (payload) => {
+
+  const [err] = await to(deleteData(payload.id))
+
+  if (err) {
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
+    return
+  }
+
+  await reload()
+}
+
+const nextPage = () => {
+  if (state.filter.page + 1 <= getNumberOfPage()) {
+    state.filter.page++
+    reload()
+  }
+}
+
+const previousPage = () => {
+  if (state.filter.page - 1 > 0) {
+    state.filter.page--
+    reload()
+  }
+}
+
+const fields = [
+  {header: "Action", fieldName: "action",},
+  {header: "Name", fieldName: "name",},
+  {header: "Date", fieldName: "date",},
+]
+
+reload()
+
+</script>
+
+<style scoped>
+
+</style>

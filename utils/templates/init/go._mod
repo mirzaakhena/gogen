@@ -1,0 +1,3 @@
+module {{.GomodPath}}
+
+go 1.17

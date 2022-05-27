@@ -1,0 +1,52 @@
+package application
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/controller/{{LowerCase .EntityName}}api"
+    "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .EntityName}}gateway"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}create"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}delete"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readall"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readone"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}update"
+    "{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/infrastructure/config"
+    "{{.PackagePath}}/shared/infrastructure/server"
+    "{{.PackagePath}}/shared/infrastructure/logger"
+    "{{.PackagePath}}/shared/infrastructure/util"
+)
+
+type app{{PascalCase .EntityName}} struct {
+	*server.GinHTTPHandler
+	driver.Controller
+}
+
+func NewApp{{PascalCase .EntityName}}() func() driver.RegistryContract {
+	return func() driver.RegistryContract {
+
+        cfg := config.ReadConfig()
+
+		appID := util.GenerateID(4)
+
+		appData := driver.NewApplicationData("{{LowerCase .EntityName}}", appID)
+
+		log := logger.NewSimpleJSONLogger(appData)
+
+        httpHandler := server.NewGinHTTPHandlerDefault(log, appData, cfg)
+
+		datasource := {{LowerCase .EntityName}}gateway.NewGateway(log, cfg)
+
+		return &app{{PascalCase .EntityName}}{
+			GinHTTPHandler: &httpHandler,
+			Controller: &{{LowerCase .EntityName}}api.Controller{
+				Router: httpHandler.Router,
+				Log: log,
+				{{PascalCase .EntityName}}CreateInport:  {{LowerCase .EntityName}}create.NewUsecase(datasource),
+				{{PascalCase .EntityName}}DeleteInport:  {{LowerCase .EntityName}}delete.NewUsecase(datasource),
+				{{PascalCase .EntityName}}ReadAllInport: {{LowerCase .EntityName}}readall.NewUsecase(datasource),
+				{{PascalCase .EntityName}}ReadOneInport: {{LowerCase .EntityName}}readone.NewUsecase(datasource),
+				{{PascalCase .EntityName}}UpdateInport:  {{LowerCase .EntityName}}update.NewUsecase(datasource),
+			},
+		}
+
+	}
+}

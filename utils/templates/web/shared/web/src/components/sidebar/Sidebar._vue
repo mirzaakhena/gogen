@@ -1,0 +1,104 @@
+<template>
+
+
+  <div class="d-flex flex-column flex-shrink-0 p-3 bg-light sidebar" style="width: 280px;">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+      <svg class="bi me-2" width="147" height="46">
+        <use xlink:href="#paxel"/>
+      </svg>
+      <span class="fs-4">{{"{{"}} title {{"}}"}}</span>
+    </a>
+    <div class="mb-auto" style="overflow-y: auto">
+      <SidebarSection v-for="section in sections" :key="section.header" :header="section.header" :menus="section.menus"></SidebarSection>
+    </div>
+    <hr>
+    <div class="dropdown">
+      <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2"
+         data-bs-toggle="dropdown" aria-expanded="false">
+        <img src="https://github.com/mirzaakhena.png" alt="" width="32" height="32" class="rounded-circle me-2">
+        <strong>mirzaakhena</strong>
+      </a>
+      <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+        <li><a class="dropdown-item" href="#">New project...</a></li>
+        <li><a class="dropdown-item" href="#">Settings</a></li>
+        <li><a class="dropdown-item" href="#">Profile</a></li>
+        <li>
+          <hr class="dropdown-divider">
+        </li>
+        <li><a class="dropdown-item" href="#">Sign out</a></li>
+      </ul>
+    </div>
+  </div>
+</template>
+
+<script setup>
+import SidebarSection from './SidebarSection.vue'
+
+defineProps({
+  title: {type: String, required: false},
+  sections: {type: Array, required: true},
+})
+
+</script>
+
+<style>
+:root {
+  --sidebar-bg-color: #2f855a;
+  --sidebar-item-hover: #38a169;
+  --sidebar-item-active: #276749;
+}
+</style>
+
+<style scoped>
+.sidebar {
+  color: royalblue;
+  background-color: var(--sidebar-bg-color);
+
+  float: left;
+  position: fixed;
+  z-index: 1;
+  margin-top: 0px;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  padding: 0.5em;
+
+  transition: 0.3s ease;
+
+  display: flex;
+  flex-direction: column;
+}
+
+hr {
+  color: #2c3e50;
+}
+
+.btn-toggle::before {
+  width: 1.25em;
+  line-height: 0;
+  content: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='rgba%280,0,0,.5%29' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M5 14l6-6-6-6'/%3e%3c/svg%3e");
+  transition: transform .35s ease;
+  transform-origin: .5em 50%;
+}
+
+.btn-toggle[aria-expanded="true"] {
+  color: rgba(0, 0, 0, .85);
+}
+.btn-toggle[aria-expanded="true"]::before {
+  transform: rotate(90deg);
+}
+
+.btn-toggle-nav a {
+  display: inline-flex;
+  padding: .1875rem .5rem;
+  margin-top: .125rem;
+  margin-left: 1.25rem;
+  text-decoration: none;
+}
+
+.btn-toggle-nav a:hover,
+.btn-toggle-nav a:focus {
+  background-color: #d2f4ea;
+}
+
+</style>

@@ -1,9 +1,0 @@
-package {{LowerCase .EntityName}}readone
-
-import "{{.PackagePath}}/model/repository"
-
-// Outport of usecase
-type Outport interface {
-	repository.FindOne{{PascalCase .EntityName}}Repo
-	repository.WithoutTransactionDB
-}

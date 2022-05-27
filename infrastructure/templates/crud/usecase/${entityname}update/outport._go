@@ -1,9 +1,0 @@
-package {{LowerCase .EntityName}}update
-
-import "{{.PackagePath}}/model/repository"
-
-// Outport of usecase
-type Outport interface {
-	repository.UpdateName{{PascalCase .EntityName}}Repo
-	repository.WithTransactionDB
-}

@@ -1,0 +1,29 @@
+<template>
+  <li class="nav-item">
+    <router-link :to="to" class="nav-link" :class="{'active': isActive}">
+      <svg class="bi me-2" width="16" height="16">
+        <use :href="icon"/>
+      </svg>
+      {{"{{"}} label {{"}}"}}
+    </router-link>
+  </li>
+</template>
+
+<script setup>
+
+import {computed} from "vue";
+import {useRoute} from "vue-router";
+
+const props = defineProps({
+  to: {type: String, required: true},
+  icon: {type: String, required: true},
+  label: {type: String, required: true},
+})
+
+const isActive = computed(() => useRoute().path === props.to)
+
+</script>
+
+<style scoped>
+
+</style>

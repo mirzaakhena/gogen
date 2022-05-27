@@ -1,5 +1,0 @@
-
-err := r.outport.{{PascalCase .RepositoryName}}(ctx, "{{CamelCase .EntityName}}ID")
-if err != nil {
-    return nil, err
-}

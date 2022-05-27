@@ -1,0 +1,56 @@
+package {{LowerCase .EntityName}}api
+
+import (
+    "context"
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/util"
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}delete"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+// {{LowerCase .EntityName}}DeleteHandler ...
+func (r *Controller) {{LowerCase .EntityName}}DeleteHandler(inputPort {{LowerCase .EntityName}}delete.Inport) gin.HandlerFunc {
+
+	type request struct {
+	}
+
+	type response struct {
+	}
+
+	return func(c *gin.Context) {
+
+		traceID := util.GenerateID(16)
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		//var jsonReq request
+		//if err := c.BindJSON(&jsonReq); err != nil {
+		//	r.Log.Error(ctx, err.Error())
+		//	c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+		//	return
+		//}
+
+		var req {{LowerCase .EntityName}}delete.InportRequest
+		req.ID = c.Param("{{LowerCase .EntityName}}id")
+
+		r.Log.Info(ctx, util.MustJSON(req))
+
+		res, err := inputPort.Execute(ctx, req)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+			return
+		}
+
+		var jsonRes response
+		_ = res
+
+		r.Log.Info(ctx, util.MustJSON(jsonRes))
+		c.JSON(http.StatusOK, payload.NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

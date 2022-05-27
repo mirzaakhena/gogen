@@ -1,5 +1,0 @@
-package domerror
-
-const (
-    SomethingError ErrorType = "ER1000 Your error message here "
-)

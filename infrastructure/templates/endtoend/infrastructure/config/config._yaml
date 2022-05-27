@@ -1,7 +1,0 @@
-host: ""
-port: 0
-user: ""
-password: ""
-database: ""
-ssl_mode: false
-log_mode: false

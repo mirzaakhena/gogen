@@ -1,0 +1,5 @@
+package errorenum
+
+const (
+	SomethingError apperror.ErrorType = "ER0000 something error"
+)

@@ -1,0 +1,53 @@
+package application
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/controller/{{LowerCase .ControllerName}}"
+    "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .GatewayName}}" {{range .UsecaseNames}}
+    "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
+    "{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/infrastructure/logger"
+    "{{.PackagePath}}/shared/infrastructure/messaging"
+    "{{.PackagePath}}/shared/infrastructure/server"
+    "{{.PackagePath}}/shared/infrastructure/util"
+)
+
+type {{CamelCase .ApplicationName}} struct {
+	*server.GinHTTPHandler
+	driver.Controller
+	Messaging messaging.Subscriber
+}
+
+func New{{PascalCase .ApplicationName}}() func() driver.RegistryContract {
+	return func() driver.RegistryContract {
+
+		appID := util.GenerateID(4)
+
+		appData := driver.NewApplicationData("{{LowerCase .ApplicationName}}", appID)
+
+		log := logger.NewSimpleJSONLogger(appData)
+
+        httpHandler := server.NewGinHTTPHandlerDefault(log, appData)
+
+        datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData)
+
+        Messaging := messaging.NewSubscriber(appData.AppName)
+
+        return &{{CamelCase .ApplicationName}}{
+            GinHTTPHandler: &httpHandler,
+            Messaging:      Messaging,
+            Controller: &{{LowerCase .ControllerName}}.Controller{
+                Log: log,
+                Messaging: Messaging,
+                Router: httpHandler.Router, {{range .UsecaseNames}}
+                {{PascalCase .}}Inport: {{LowerCase .}}.NewUsecase(datasource), {{end}}
+            },
+        }
+
+    }
+}
+
+// RunApplication is implementation of RegistryContract.RunApplication()
+func (r *{{CamelCase .ApplicationName}}) RunApplication() {
+	go r.Messaging.Run("localhost:4150")
+	r.RunWithGracefullyShutdown()
+}

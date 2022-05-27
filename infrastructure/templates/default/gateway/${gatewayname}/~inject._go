@@ -1,8 +1,0 @@
-
-{{range .Methods}}
-func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
-    log.Info(ctx, "called")
-
-    return {{.DefaultReturnVal}}
-}
-{{end}}

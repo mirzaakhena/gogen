@@ -1,0 +1,52 @@
+<template>
+  <MirzaModal id="modalInput" ref="modalInput" title="Input New Data" @submit="submitDataInput">
+    <div class="mb-3">
+      <label class="form-label">Name</label>
+      <input type="text" class="form-control" placeholder="Your name" v-model="state.item.name">
+    </div>
+  </MirzaModal>
+</template>
+
+<script setup>
+import MirzaModal from "../../components/modal/MirzaModal.vue";
+import BasicCrud from "../../modules/basiccrud.js"
+import {state} from "./state.js";
+import {ref} from "vue";
+import to from "await-to-js";
+import Swal from "sweetalert2";
+
+const {addNewData} = BasicCrud()
+
+const modalInput = ref()
+
+const emit = defineEmits(["submit"])
+
+const submitDataInput = async () => {
+
+  const [err] = await to(addNewData(state.item))
+
+  if (err) {
+    await Swal.fire({ icon: 'error', title: 'Oops...', text: err.errorMessage, })
+    return
+  }
+
+  emit("submit")
+
+  hideModal()
+}
+
+const showModal = () => {
+  modalInput.value.showModal()
+}
+
+const hideModal = () => {
+  modalInput.value.hideModal()
+}
+
+defineExpose({showModal, hideModal})
+
+</script>
+
+<style scoped>
+
+</style>

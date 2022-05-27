@@ -1,0 +1,22 @@
+package vo
+
+type {{PascalCase .ValueStringName}} string
+
+type {{PascalCase .ValueStringName}}Request struct {
+
+}
+
+func New{{PascalCase .ValueStringName}}(req {{PascalCase .ValueStringName}}Request) ({{PascalCase .ValueStringName}}, error) {
+
+	var obj {{PascalCase .ValueStringName}}
+
+	return obj, nil
+}
+
+func (r {{PascalCase .ValueStringName}}) Validate() error {
+	return nil
+}
+
+func (r {{PascalCase .ValueStringName}}) String() string {
+	return string(r)
+}

@@ -1,0 +1,7 @@
+package enum
+
+type {{PascalCase .EnumName}} string
+
+const ( {{range .EnumValues}}
+	{{PascalCase $.EnumName}}{{PascalCase .}} = {{PascalCase $.EnumName}}("{{LowerCase .}}") {{ end }}
+)

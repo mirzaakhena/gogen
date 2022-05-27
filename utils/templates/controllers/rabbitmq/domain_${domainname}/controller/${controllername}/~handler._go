@@ -1,0 +1,58 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"encoding/json"
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/util"
+	"{{.PackagePath}}/shared/infrastructure/messaging"
+	"{{.PackagePath}}/shared/model/event"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+// {{CamelCase .Usecase.Name}}Handler ...
+func (r *Controller) {{CamelCase .Usecase.Name}}Handler(inputPort {{LowerCase .Usecase.Name}}.Inport) messaging.HandleFunc {
+
+	type request struct { {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
+        {{.Name}} {{.Type}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}}
+	}
+
+	return func(payload payload.Payload, err error) {
+
+		traceID := payload.TraceID
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			return
+		}
+
+		dbByte, err := json.Marshal(payload.Data)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			return
+		}
+
+		var dataPayload request
+		err = json.Unmarshal(dbByte, &dataPayload)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			return
+		}
+
+		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+        req.Now = time.Now(){{ else }}
+        req.{{.Name}} = dataPayload.{{.Name}}{{ end }}{{ end }}
+
+		r.Log.Info(ctx, util.MustJSON(req))
+
+		_, err = inputPort.Execute(ctx, req)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			return
+		}
+
+	}
+}

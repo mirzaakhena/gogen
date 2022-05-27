@@ -1,0 +1,41 @@
+package {{LowerCase .EntityName}}delete
+
+import (
+	"context"
+	sharedservice "{{.PackagePath}}/shared/model/service"
+)
+
+//go:generate mockery --name Outport -output mocks/
+
+type {{PascalCase .EntityName}}DeleteInteractor struct {
+	outport Outport
+}
+
+// NewUsecase is constructor for create default implementation of usecase
+func NewUsecase(outputPort Outport) Inport {
+	return &{{PascalCase .EntityName}}DeleteInteractor{
+		outport: outputPort,
+	}
+}
+
+// Execute the usecase
+func (r *{{PascalCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+
+	res := &InportResponse{}
+
+	err := sharedservice.WithTransaction(ctx, r.outport, func(ctx context.Context) error {
+
+		err := r.outport.Delete{{PascalCase .EntityName}}(ctx, req.ID)
+		if err != nil {
+			return err
+		}
+
+		return nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return res, nil
+}

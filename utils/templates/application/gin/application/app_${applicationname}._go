@@ -1,0 +1,50 @@
+package application
+
+import (
+  "{{.PackagePath}}/domain_{{.DomainName}}/controller/{{LowerCase .ControllerName}}"
+  "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .GatewayName}}" {{range .UsecaseNames}}
+  "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
+  "{{.PackagePath}}/shared/driver"
+  "{{.PackagePath}}/shared/infrastructure/config"
+  "{{.PackagePath}}/shared/infrastructure/server"
+  "{{.PackagePath}}/shared/infrastructure/logger"
+  "{{.PackagePath}}/shared/infrastructure/util"
+)
+
+type {{CamelCase .ApplicationName}} struct {
+	httpHandler *server.GinHTTPHandler
+	controller  driver.Controller
+}
+
+func (c {{CamelCase .ApplicationName}}) RunApplication() {
+	c.controller.RegisterRouter()
+	c.httpHandler.RunApplication()
+}
+
+func New{{PascalCase .ApplicationName}}() func() driver.RegistryContract {
+	return func() driver.RegistryContract {
+
+	    cfg := config.ReadConfig()
+
+		appID := util.GenerateID(4)
+
+		appData := driver.NewApplicationData("{{LowerCase .ApplicationName}}", appID)
+
+		log := logger.NewSimpleJSONLogger(appData)
+
+        httpHandler := server.NewGinHTTPHandlerDefault(log, appData, cfg)
+
+        datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData, cfg)
+
+        return &{{CamelCase .ApplicationName}}{
+            httpHandler: &httpHandler,
+            controller: &{{LowerCase .ControllerName}}.Controller{
+                Log: log,
+                Config: cfg,
+                Router: httpHandler.Router, {{range .UsecaseNames}}
+                {{PascalCase .}}Inport: {{LowerCase .}}.NewUsecase(datasource), {{end}}
+            },
+        }
+
+    }
+}

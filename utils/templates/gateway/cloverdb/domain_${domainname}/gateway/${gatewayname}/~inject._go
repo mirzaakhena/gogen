@@ -1,0 +1,57 @@
+
+{{range .Methods}} {{if StartWith (LowerCase .MethodName) "save"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    // doc := clover.NewDocument()
+    // doc.Set("order", obj)
+    //
+    // docId, err := r.db.InsertOne("order", doc)
+    // if err != nil {
+    //     return err
+    // }
+    //
+    // r.log.Info(ctx, "ID %v", docId)
+
+    return {{.DefaultReturnVal}}
+}
+{{else if StartWith (LowerCase .MethodName) "find"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    //	query := r.db.Query("order")
+    //
+    //	count, err := query.Count()
+    //	if err != nil {
+    //		return nil, 0, err
+    //	}
+    //
+    //	objs, err := query.FindAll()
+    //	if err != nil {
+    //		return nil, 0, err
+    //	}
+    //
+    //	results := make([]*entity.Order, 0)
+    //
+    //	for _, obj := range objs {
+    //
+    //		document := struct{ Order entity.Order }{}
+    //
+    //		err := obj.Unmarshal(&document)
+    //		if err != nil {
+    //			return nil, 0, err
+    //		}
+    //
+    //		results = append(results, &document.Order)
+    //
+    //	}
+
+    return {{.DefaultReturnVal}}
+}
+{{else}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}} {{end}}

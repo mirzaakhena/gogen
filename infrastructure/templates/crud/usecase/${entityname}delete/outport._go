@@ -1,9 +1,0 @@
-package {{LowerCase .EntityName}}delete
-
-import "{{.PackagePath}}/model/repository"
-
-// Outport of usecase
-type Outport interface {
-	repository.Delete{{PascalCase .EntityName}}Repo
-	repository.WithTransactionDB
-}

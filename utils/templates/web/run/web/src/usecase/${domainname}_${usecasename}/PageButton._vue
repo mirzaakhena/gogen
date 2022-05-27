@@ -1,0 +1,23 @@
+<template>
+
+  <button type="button" class="btn btn-outline-primary" @click="showModal{{.UsecaseName}}">Show</button>
+
+  <ViewModal{{.UsecaseName}} ref="modal{{.UsecaseName}}" @submit="reload"></ViewModal{{.UsecaseName}}>
+
+</template>
+
+<script setup>
+import swal from "sweetalert2";
+import {ref} from "vue";
+
+import ViewModal{{.UsecaseName}} from "./ModalInput.vue";
+const modal{{.UsecaseName}} = ref()
+const showModal{{.UsecaseName}} = () => modal{{.UsecaseName}}.value.showModal()
+
+const reload = () => swal.fire({ icon: 'success', title: 'Success', text: 'Usecase executed', })
+
+</script>
+
+<style scoped>
+
+</style>

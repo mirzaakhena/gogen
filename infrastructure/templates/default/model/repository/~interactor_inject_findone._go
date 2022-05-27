@@ -1,8 +1,0 @@
-
-{{CamelCase .EntityName}}Obj, err := r.outport.{{PascalCase .RepositoryName}}(ctx, "{{CamelCase .EntityName}}ID")
-if err != nil {
-    return nil, err
-}
-if {{CamelCase .EntityName}}Obj == nil {
-    return nil, fmt.Errorf("object not found")
-}

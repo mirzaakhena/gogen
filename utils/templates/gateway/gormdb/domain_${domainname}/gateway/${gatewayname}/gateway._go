@@ -1,0 +1,70 @@
+package {{LowerCase .GatewayName}}
+
+import (
+	"context"
+	"{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/infrastructure/config"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+
+    // "gorm.io/driver/sqlite"
+    // "gorm.io/gorm"
+)
+
+type gateway struct {
+    log     logger.Logger
+    appData driver.ApplicationData
+    config  *config.Config
+    // db   *gorm.DB
+}
+
+// NewGateway ...
+func NewGateway(log logger.Logger, appData driver.ApplicationData, config *config.Config) (*gateway) {
+
+	// db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	// if err != nil {
+	// 	panic("failed to connect database")
+	// }
+	// err = db.AutoMigrate(&entity.Person{})
+	// if err != nil {
+	// 	panic("cannot create schema")
+	// }
+
+	return &gateway{
+	    log:     log,
+		appData: appData,
+		config:  config,
+		// db:      db,
+	}
+}
+
+{{range .Methods}} {{if StartWith (LowerCase .MethodName) "save"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	// err := r.db.Create(obj).Error
+	// if err != nil {
+	//     return err
+	// }
+
+    return {{.DefaultReturnVal}}
+}
+{{else if StartWith (LowerCase .MethodName) "find"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	//var result []*entity.Person
+	//err := r.db.Find(&result).Error
+	//if err != nil {
+	//    return nil, err
+	//}
+
+    return {{.DefaultReturnVal}}
+}
+{{else}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}} {{end}}
