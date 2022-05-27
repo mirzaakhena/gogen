@@ -40,6 +40,8 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/mywallet
 - https://github.com/mirzaakhena/yourwishes
 
+> Those video and sample apps structure has become obsoleted due to the gogen evolution. 
+
 ## Structure
 This generator has basic structure like this
 
@@ -131,7 +133,7 @@ The main purpose of this architecture is :
 
 
 ## How to use the gogen?
-You always start from creating an usecase, then you continue to create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in registry part. That's it.
+You always start from creating an usecase, then you continue to create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in application part. That's it.
 
 To create the usecase, you need to understand the concept of usecase according to Uncle Bob's Clean Architecture article. Usecase has 3 main part.
 * Input Port (Inport)
@@ -185,7 +187,6 @@ By organize this usecase in a such structure, we can easily change the *Controll
 * Error enum must accessed by the developer and Error code can read by end user
 * Interactor and Entity is prioritized to be tested first rather than Controller and Gateway
 * Controller name can be an actor name who is using the system
-* Registry name can be an application name. You can utilize it if you want to develop microservice with mono repo
 
 ## Why you (will) need gogen?
 - we want to separate logic code and infrastructure code
@@ -347,7 +348,7 @@ $ go run main.go appone
 
 [GIN-debug] GET    /ping                     --> gogendemo/shared/infrastructure/server.NewGinHTTPHandler.func1 (3 handlers)
 [GIN-debug] POST   /runordersubmit           --> gogendemo/domain_order/controller/restapi.(*Controller).runOrderSubmitHandler.func1 (5 handlers)
-{"appName":"appone","appInstID":"MFC3","start":"2022-05-27 22:19:40","severity":"INFO","message":"0000000000000000 server is running at :8080","location":"server.(*GracefullyShutdown).RunWithGracefullyShutdown:40","time":"2022-05-27 22:19:40"}
+{"appName":"appone","appInstID":"MIRZ","start":"2022-05-27 22:19:40","severity":"INFO","message":"0000000000000000 server is running at :8080","location":"server.(*GracefullyShutdown).RunWithGracefullyShutdown:40","time":"2022-05-27 22:19:40"}
 ```
 
 Congratulation! your application is running

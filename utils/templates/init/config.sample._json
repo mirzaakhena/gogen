@@ -1,0 +1,63 @@
+{
+    "jwt_secret_key": "11111271e18bccb5b1958e7d57db0821f12829d4bd12e5d3b0f54f3937ddd45c7deabd0a6f2aec2daaabba928190c3a0930b1075c697a86acafd48dcbcb6abcd",
+    "database": {
+        "mongodb": {
+            "host": "localhost:27017",
+            "database": "yourdb",
+            "username": "",
+            "password": ""
+        }
+    },
+    "cache": {
+        "redis": {
+            "address": "localhost",
+            "port": 6379,
+            "db": 0,
+            "password": ""
+        }
+    },
+    "message_broker": {
+        "rabbitmq": {
+            "address": "localhost",
+            "port": 5672,
+            "username": "guest",
+            "password": "guest"
+        }
+    },
+    "application_server": {
+        "app_order_core_service": {
+            "port": 8080,
+            "rpc_port": 123
+        },
+        "app_payment_core_service": {
+            "port": 8081
+        },
+        "app_shipment_core_service": {
+            "port": 8082
+        },
+        "app_buyer_api_service": {
+            "port": 8083
+        },
+        "app_cms_api_service": {
+            "port": 8084
+        },
+        "app_seller_api_service": {
+            "port": 8085
+        },
+        "app_event_core_service": {
+            "port": 8086
+        },
+        "app_log_core_service": {
+            "port": 8087
+        },
+        "app_message_core_service": {
+            "port": 8088
+        },
+        "app_product_cart_core_service": {
+            "port": 8089
+        }
+    },
+    "reporting": {
+        "interval_ping": 60
+    }
+}
