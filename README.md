@@ -352,11 +352,10 @@ Congratulation! your application is running
 
 You can also adding another component into your code.
 
-
 ## Create entity
 entity is a mutable object that has an identifier. This command will create new entity struct under `domain_order/usecase/model/entity/` folder
 ```
-$ gogen entity Order
+$ gogen entity OrderHistory
 ```
 
 ## Create valueobject
@@ -383,6 +382,50 @@ error enum is a shared error collection. This command will add new error enum li
 $ gogen error SomethingGoesWrongError
 ```
 
+Phew!! I knew you cannot remember those all command. Don't worry if you forget the command, then you can just call 'gogen'
+```
+$ gogen
+
+Try one of this command to learn how to use it
+  gogen application
+  gogen web
+  gogen valueobject
+  gogen repository
+  gogen service
+  gogen gateway
+  gogen error
+  gogen crud
+  gogen webapp
+  gogen init
+  gogen usecase
+  gogen entity
+  gogen valuestring
+  gogen enum
+  gogen controller
+  gogen test
+  gogen openapi
+```
+
+It will help you to remember what command do you want to use. Let say you forgot how to use the `gogen repository` command
+
+Just call like this
+```
+$ gogen repository
+
+   # Create a repository and inject the template code into interactor file with '//!' flag
+   gogen repository SaveOrder Order CreateOrder
+     'SaveOrder'   is a repository func name
+     'Order'       is an entity name
+     'CreateOrder' is an usecase name
+
+   # Create a repository without inject the template code into usecase
+   gogen repository SaveOrder Order
+     'SaveOrder' is a repository func name
+     'Order'     is an entity name
+     
+```
+
+It will show sample command to remind you on how to use it. In this case, repository has 2 type of command.  
 
 
 
