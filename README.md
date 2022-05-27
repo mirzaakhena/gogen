@@ -44,79 +44,78 @@ https://youtu.be/ZqZQGllfbbs
 This generator has basic structure like this
 
 ```
-.
-    ├── .gogen
-    ├── application
-    │   ├── app_one.go
-    │   ├── app_two.go  
-    │   └── app_three.go    
-    ├── domain_order                    
-    │   ├── controller
-    │   │   └── restapi
-    │   │       ├── handler_getallorder.go
-    │   │       ├── handler_getoneorder.go    
-    │   │       ├── handler_onwebhook.go
-    │   │       ├── handler_runordersubmit.go            
-    │   │       ├── interceptor.go
-    │   │       └── router.go                       
-    │   ├── gateway
-    │   │   └── prod
-    │   │       └── gateway.go             
-    │   ├── model
-    │   │   ├── entity
-    │   │   │   ├── order.go
-    │   │   │   └── order_history.go
-    │   │   ├── enum
-    │   │   │   └── order_status.go        
-    │   │   ├── service
-    │   │   │   └── order_service.go
-    │   │   ├── repository
-    │   │   │   └── order_repo.go    
-    │   │   └── vo
-    │   │       └── order_id.go            
-    │   └── usecase
-    │       ├── getallorder
-    │       │   ├── inport.go
-    │       │   ├── interactor.go
-    │       │   ├── outport.go   
-    │       │   └── README.md                 
-    │       ├── getoneorder  
-    │       ├── onpaymentsuccess
-    │       ├── onpaymentfail
-    │       └── runordersubmit                    
-    ├── domain_b                    
-    │   ├── controller          
-    │   ├── gateway
-    │   ├── model             
-    │   └── usecase
-    ├── domain_c                    
-    │   ├── controller          
-    │   ├── gateway   
-    │   ├── model     
-    │   ├── usecase              
-    │   └── README.md    
-    ├── shared
-    │   ├── driver          
-    │   ├── gateway   
-    │   ├── infrastructure          
-    │   │   ├── cache
-    │   │   ├── config
-    │   │   ├── database
-    │   │   ├── logger
-    │   │   ├── messaging
-    │   │   ├── remoting
-    │   │   ├── server
-    │   │   ├── token
-    │   │   └── util                                    
-    │   └── model
-    ├── .gitignore    
-    ├── config.json    
-    ├── config.sample.json  
-    ├── docker-compose.yml
-    ├── Dockerfile                  
-    ├── go.mod 
-    ├── main.go                        
-    └── README.md
+  ├── .gogen
+  ├── application
+  │   ├── app_one.go
+  │   ├── app_two.go  
+  │   └── app_three.go    
+  ├── domain_order                    
+  │   ├── controller
+  │   │   └── restapi
+  │   │       ├── handler_getallorder.go
+  │   │       ├── handler_getoneorder.go    
+  │   │       ├── handler_onwebhook.go
+  │   │       ├── handler_runordersubmit.go            
+  │   │       ├── interceptor.go
+  │   │       └── router.go                       
+  │   ├── gateway
+  │   │   └── prod
+  │   │       └── gateway.go             
+  │   ├── model
+  │   │   ├── entity
+  │   │   │   ├── order.go
+  │   │   │   └── order_history.go
+  │   │   ├── enum
+  │   │   │   └── order_status.go        
+  │   │   ├── service
+  │   │   │   └── order_service.go
+  │   │   ├── repository
+  │   │   │   └── order_repo.go    
+  │   │   └── vo
+  │   │       └── order_id.go            
+  │   └── usecase
+  │       ├── getallorder
+  │       │   ├── inport.go
+  │       │   ├── interactor.go
+  │       │   ├── outport.go   
+  │       │   └── README.md                 
+  │       ├── getoneorder  
+  │       ├── onpaymentsuccess
+  │       ├── onpaymentfail
+  │       └── runordersubmit                    
+  ├── domain_b                    
+  │   ├── controller          
+  │   ├── gateway
+  │   ├── model             
+  │   └── usecase
+  ├── domain_c                    
+  │   ├── controller          
+  │   ├── gateway   
+  │   ├── model     
+  │   ├── usecase              
+  │   └── README.md    
+  ├── shared
+  │   ├── driver          
+  │   ├── gateway   
+  │   ├── infrastructure          
+  │   │   ├── cache
+  │   │   ├── config
+  │   │   ├── database
+  │   │   ├── logger
+  │   │   ├── messaging
+  │   │   ├── remoting
+  │   │   ├── server
+  │   │   ├── token
+  │   │   └── util                                    
+  │   └── model
+  ├── .gitignore    
+  ├── config.json    
+  ├── config.sample.json  
+  ├── docker-compose.yml
+  ├── Dockerfile                  
+  ├── go.mod 
+  ├── main.go                        
+  └── README.md
 ```
 
 ## Clean Architecture Concept
@@ -213,36 +212,61 @@ $ go install
 
 ## Step by step to working with gogen
 
+## Create a domain
+
+You need to create the domain first. Let say you want to create order domain
+```
+$ gogen init order
+```
+
+Then you will see some file and folder created for you
+
 ## Create your basic usecase structure
 
-So you will create your first usecase. Let say the usecase name is  a `CreateOrder`. We will always create our usecase name with `PascalCase`. Now let's try our gogen code generator to create this usecase for us.
+So you will create your first usecase. Let say the usecase name is  a `RunOrderCreate`. We will always create our usecase name with `PascalCase`. Now let's try our gogen code generator to create this usecase for us.
 ```
-$ gogen usecase CreateOrder
+$ gogen usecase RunOrderCreate
 ```
+
+But wait, why the name is very awkward?
+
+In Gogen we have some usecase name convention
+
+```
+Run<SomeEntityName><Action>
+On<SomeEntityName><Action>
+GetAll<SomeEntityName><Action>
+GetOne<SomeEntityName><Action>
+```
+
+Run prefix used for command usecase that is actively called by external service, something like restapi. 
+GetAll prefix used for usecase that return a list. 
+GetOne (or just Get) prefix used for usecase that return single object.
+On prefix used for command usecase that is passively called by internal service, something like messagebroker event.
 
 Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
 
-- `usecase/createorder/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
-- `usecase/createorder/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
-- `usecase/createorder/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
+- `domain_order/usecase/runordercreate/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
+- `domain_order/usecase/runordercreate/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
+- `domain_order/usecase/runordercreate/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
 
 ## Create your usecase test file
 ```
-$ gogen test normal CreateOrder
+$ gogen test normal RunOrderCreate
 ```
-normal is the test name and CreateOrder is the usecase name.
+normal is the test name and RunOrderCreate is the usecase name.
 This command will help you
-- create a test file under `usecase/createorder/testcase_normal_test.go`
+- create a test file `domain_order/usecase/runordercreate/testcase_normal_test.go`
 
 ## Create a repository 
 ```
-$ gogen repository SaveOrder Order CreateOrder
+$ gogen repository SaveOrder Order RunOrderCreate
 ```
 This command will help you 
-- create a Repository named `SaveOrderRepo` under `repository/repository.go` (if it not exists yet)
-- create an Entity with name `Order` under `domain/entity/order.go` (if it not exists yet)
-- inject `repository.SaveOrderRepo` into `usecase/createorder/outport.go` 
-- and inject code template into `usecase/createorder/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
+- create a Repository named `SaveOrderRepo` under `domain_order/usecase/model/repository/repository.go` (if it not exists yet)
+- create an Entity with name `Order` under `domain_order/usecase/model/entity/order.go` (if it not exists yet)
+- inject `repository.SaveOrderRepo` into `domain_order/usecase/runordercreate/outport.go` 
+- and inject code template into `domain_order/usecase/runordercreate/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
 
 Usecase name in Create a Repository command is optional so you can call it too without injecting it to the usecase
 ```
@@ -251,26 +275,21 @@ $ gogen repository SaveOrder Order
 
 ## Create a service
 ```
-$ gogen service PublishMessage CreateOrder
+$ gogen service PublishMessage RunOrderCreate
 ```
 This command will help you to
-- create a Service named `PublishMessageService` under `domain/service/service.go`
-- inject `service.PublishMessageService` into `usecase/createorder/outport.go`
-- Inject code template into `usecase/createorder/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
+- create a Service named `PublishMessageService` under `domain_order/usecase/model/service/service.go`
+- inject `service.PublishMessageService` into `domain_order/usecase/runordercreate/outport.go`
+- Inject code template into `domain_order/usecase/runordercreate/interactor.go`. Injected code will be appear if `//!` is found in interactor's file.
 
 ## Create a gateway for your usecase
 
 Gateway is the struct to implement your outport interface. You need to set a name for your gateway. 
-In this example we will set name : inmemory
+In this example we will set name : prod
 ```
-$ gogen gateway inmemory CreateOrder
+$ gogen gateway prod
 ```
-This command will read the Outport of `CreateOrder` usecase and implement all the method needed in `gateway/inmemory/gateway.go`
-
-```
-$ gogen gateway inmemory
-```
-This command will read all the usecase under `usecase/` and create all the default implementation needed in one struct
+This command will read the Outport of `runordercreate` usecase and implement all the method needed in `domain_order/gateway/prod/gateway.go`
 
 
 ## Create a controller for your usecase
@@ -281,46 +300,91 @@ By default, it only uses gin/gonic web framework.
 Call this command for create a controller. 
 `restapi` is your controller name. Controller name can be grouped by client who use the API
 ```
-$ gogen controller restapi CreateOrder gin
+$ gogen controller restapi
+```
+
+You need to download some dependency after this step by calling
+```
+$ go mod tidy
+
+go: finding module for package github.com/matoous/go-nanoid
+go: finding module for package github.com/gin-contrib/cors
+go: finding module for package github.com/gin-gonic/gin
+go: found github.com/gin-gonic/gin in github.com/gin-gonic/gin v1.7.7
+go: found github.com/gin-contrib/cors in github.com/gin-contrib/cors v1.3.1
+go: found github.com/matoous/go-nanoid in github.com/matoous/go-nanoid v1.5.0
+
 ```
 
 ## Glue your controller, usecase, and gateway together
 
 After generate the usecase, gateway and controller, we need to bind them all by calling this command.
 ```
-$ gogen registry appone restapi
+$ gogen application appone
 ```
-appone is the registry name. registry name is an application name. After calling the command, some of those file generated will generate for you in `application/registry`
+appone is the application name. After calling the command, some of those file generated will generate for you in `application/app_one.go`
+
+Now you can run the application by opening the terminal then type
+
+```
+$ go run main.go
+
+You may try 'go run main.go <app_name>' :
+ - appone
+```
+You will see that message, tell you to run the complete command. type once again the complete command like this
+
+```
+$ go run main.go appone
+
+[GIN-debug] [WARNING] Creating an Engine instance with the Logger and Recovery middleware already attached.
+
+[GIN-debug] [WARNING] Running in "debug" mode. Switch to "release" mode in production.
+ - using env:   export GIN_MODE=release
+ - using code:  gin.SetMode(gin.ReleaseMode)
+
+[GIN-debug] GET    /ping                     --> gogendemo/shared/infrastructure/server.NewGinHTTPHandler.func1 (3 handlers)
+[GIN-debug] POST   /runordersubmit           --> gogendemo/domain_order/controller/restapi.(*Controller).runOrderSubmitHandler.func1 (5 handlers)
+{"appName":"appone","appInstID":"MFC3","start":"2022-05-27 22:19:40","severity":"INFO","message":"0000000000000000 server is running at :8080","location":"server.(*GracefullyShutdown).RunWithGracefullyShutdown:40","time":"2022-05-27 22:19:40"}
+```
+
+Congratulation! your application is running
+
+You can also adding another component into your code.
+
 
 ## Create entity
-entity is a mutable object that has an identifier. This command will create new entity struct under `domain/entity/` folder
+entity is a mutable object that has an identifier. This command will create new entity struct under `domain_order/usecase/model/entity/` folder
 ```
 $ gogen entity Order
 ```
 
 ## Create valueobject
-valueobject is an immutable object that has no identifier. This command will create new valueobject under `domain/vo/` folder
+valueobject is an immutable object that has no identifier. This command will create new valueobject under `domain_order/usecase/model/vo/` folder
 ```
 $ gogen valueobject FullName FirstName LastName 
 ```
 
 ## Create valuestring
-valuestring is a valueobject simple string type. This command will create new valuestring struct under `domain/vo/` folder
+valuestring is a valueobject simple string type. This command will create new valuestring struct under `domain_order/usecase/model/vo/` folder
 ```
 $ gogen valuestring OrderID
 ```
 
 ## Create enum
-enum is a single immutable value. This command will create new enum struct under `domain/vo/` folder
+enum is a single immutable value. This command will create new enum struct under `domain_order/usecase/model/enum/` folder
 ```
 $ gogen enum PaymentMethod DANA Gopay Ovo LinkAja
 ```
 
 ## Create error enum
-error enum is a shared error collection. This command will add new error enum line in `domain/domerror/error_enum.go` file
+error enum is a shared error collection. This command will add new error enum line in `domain_order/usecase/model/errorenum/error_enum.go` file
 ```
 $ gogen error SomethingGoesWrongError
 ```
+
+
+
 
 Some Information and FAQ
 ```
