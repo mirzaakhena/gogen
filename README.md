@@ -120,7 +120,7 @@ This generator has basic structure like this
   └── README.md
 ```
 
-![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture.png)
+![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-1.png)
 
 ## Clean Architecture Concept
 The main purpose of this architecture is :
