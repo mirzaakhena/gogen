@@ -13,6 +13,7 @@ import (
 type ObjTemplate struct {
 	GomodPath     string
 	DefaultDomain string
+	DomainName    string
 }
 
 func Run(inputs ...string) error {
@@ -35,9 +36,12 @@ func Run(inputs ...string) error {
 	obj := &ObjTemplate{
 		GomodPath:     gomodPath,
 		DefaultDomain: defaultDomain,
+		DomainName:    domainName,
 	}
 
-	fileRenamer := map[string]string{}
+	fileRenamer := map[string]string{
+		"domainname": utils.LowerCase(domainName),
+	}
 
 	err := utils.CreateEverythingExactly("templates/", "init", fileRenamer, obj, utils.AppTemplates)
 	if err != nil {
@@ -78,19 +82,35 @@ config.json
 	if err != nil {
 		return err
 	}
-	defer inFile.Close()
+	defer func(inFile *os.File) {
+		err := inFile.Close()
+		if err != nil {
+
+		}
+	}(inFile)
 
 	scanner := bufio.NewScanner(inFile)
 	for scanner.Scan() {
-		domainName := strings.TrimSpace(scanner.Text())
-		if domainName == "" {
+		domainNameInGogenFile := strings.TrimSpace(scanner.Text())
+		if domainNameInGogenFile == "" {
 			continue
 		}
-		if strings.HasPrefix(domainName, "-") {
-			domainName = strings.ReplaceAll(domainName, "-", "")
+		if strings.HasPrefix(domainNameInGogenFile, "-") {
+			domainNameInGogenFile = strings.ReplaceAll(domainNameInGogenFile, "-", "")
 		}
-		domainName = strings.ToLower(domainName)
-		_, err := utils.CreateFolderIfNotExist(fmt.Sprintf("domain_%s", domainName))
+		domainNameInGogenFile = strings.ToLower(domainNameInGogenFile)
+		//_, err := utils.CreateFolderIfNotExist(fmt.Sprintf("domain_%s", domainNameInGogenFile))
+		//if err != nil {
+		//	return err
+		//}
+
+		fileRenamer := map[string]string{
+			"domainname": utils.LowerCase(domainNameInGogenFile),
+		}
+
+		domainObj := ObjTemplate{DomainName: domainNameInGogenFile}
+
+		err = utils.CreateEverythingExactly("templates/", "init", fileRenamer, domainObj, utils.AppTemplates)
 		if err != nil {
 			return err
 		}
@@ -107,7 +127,12 @@ func insertNewDomainName(filePath, domainName string) error {
 	if err != nil {
 		return err
 	}
-	defer f.Close()
+	defer func(f *os.File) {
+		err := f.Close()
+		if err != nil {
+
+		}
+	}(f)
 
 	isEmptyFile := true
 

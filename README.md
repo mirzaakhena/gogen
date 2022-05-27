@@ -39,19 +39,84 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
 - https://github.com/mirzaakhena/yourwishes
-- https://github.com/mirzaakhena/gogen (this code itself, just for gimmick purpose)
 
 ## Structure
 This generator has basic structure like this
 
 ```
-application/
-controller/
-domain/
-gateway/
-infrastructure/
-usecase/
-main.go
+.
+    ├── .gogen
+    ├── application
+    │   ├── app_one.go
+    │   ├── app_two.go  
+    │   └── app_three.go    
+    ├── domain_order                    
+    │   ├── controller
+    │   │   └── restapi
+    │   │       ├── handler_getallorder.go
+    │   │       ├── handler_getoneorder.go    
+    │   │       ├── handler_onwebhook.go
+    │   │       ├── handler_runordersubmit.go            
+    │   │       ├── interceptor.go
+    │   │       └── router.go                       
+    │   ├── gateway
+    │   │   └── prod
+    │   │       └── gateway.go             
+    │   ├── model
+    │   │   ├── entity
+    │   │   │   ├── order.go
+    │   │   │   └── order_history.go
+    │   │   ├── enum
+    │   │   │   └── order_status.go        
+    │   │   ├── service
+    │   │   │   └── order_service.go
+    │   │   ├── repository
+    │   │   │   └── order_repo.go    
+    │   │   └── vo
+    │   │       └── order_id.go            
+    │   └── usecase
+    │       ├── getallorder
+    │       │   ├── inport.go
+    │       │   ├── interactor.go
+    │       │   ├── outport.go   
+    │       │   └── README.md                 
+    │       ├── getoneorder  
+    │       ├── onpaymentsuccess
+    │       ├── onpaymentfail
+    │       └── runordersubmit                    
+    ├── domain_b                    
+    │   ├── controller          
+    │   ├── gateway
+    │   ├── model             
+    │   └── usecase
+    ├── domain_c                    
+    │   ├── controller          
+    │   ├── gateway   
+    │   ├── model     
+    │   ├── usecase              
+    │   └── README.md    
+    ├── shared
+    │   ├── driver          
+    │   ├── gateway   
+    │   ├── infrastructure          
+    │   │   ├── cache
+    │   │   ├── config
+    │   │   ├── database
+    │   │   ├── logger
+    │   │   ├── messaging
+    │   │   ├── remoting
+    │   │   ├── server
+    │   │   ├── token
+    │   │   └── util                                    
+    │   └── model
+    ├── .gitignore    
+    ├── config.json    
+    ├── config.sample.json  
+    ├── docker-compose.yml
+    ├── Dockerfile                  
+    ├── go.mod 
+    ├── main.go                        
+    └── README.md
 ```
 
 ## Clean Architecture Concept
