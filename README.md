@@ -122,6 +122,8 @@ This generator has basic structure like this
 
 ![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-1.png)
 
+
+
 ## Clean Architecture Concept
 The main purpose of this architecture is :
 * Separation concern between INFRASTRUCTURE part and LOGIC Part

@@ -92,3 +92,16 @@ https://www.youtube.com/watch?v=WcU0EImGI_g
 https://www.youtube.com/watch?v=92ZJcxJgmmE
 
 https://davidwells.io/blog/clean-analytics
+
+https://blog.christianposta.com/microservices/the-hardest-part-about-microservices-data/
+
+https://www.michalbialecki.com/en/2019/02/08/why-duplication-isnt-always-a-bad-thing-in-micro-services/
+
+https://microservices.io/
+
+https://docs.microsoft.com/en-us/azure/architecture/microservices/design/data-considerations
+
+https://softwareengineering.stackexchange.com/questions/367910/microservices-without-data-duplication
+
+https://docs.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/communication-in-microservice-architecture
+
