@@ -63,8 +63,7 @@ func Run(inputs ...string) error {
 		_ = insertNewDomainName(gogenDomainFile, domainName)
 	}
 
-	gitignoreContent := `
-.idea/
+	gitignoreContent := `.idea/
 .DS_Store
 config.json
 *.app
@@ -72,7 +71,7 @@ config.json
 *.log
 *.db
 */node_modules/
-	`
+`
 	_, err = utils.WriteFileIfNotExist(gitignoreContent, "./.gitignore", struct{}{})
 	if err != nil {
 		return err

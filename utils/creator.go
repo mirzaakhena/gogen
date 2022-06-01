@@ -50,10 +50,19 @@ func (x Haha) CreateEverythingExactly(pathUnder string, fileRenamer map[string]s
 		j := strings.LastIndex(nameFileWithExtOnly, "._")
 
 		var nameFileWithoutUnderscore string
+
 		if i == -1 {
-			nameFileWithoutUnderscore = fmt.Sprintf("%s%s", nameFileWithExtOnly[:j+1], nameFileWithExtOnly[j+2:])
+
+			if file == "Dockerfile" {
+				nameFileWithoutUnderscore = file
+			} else {
+				nameFileWithoutUnderscore = fmt.Sprintf("%s%s", nameFileWithExtOnly[:j+1], nameFileWithExtOnly[j+2:])
+			}
+
 		} else {
+
 			nameFileWithoutUnderscore = fmt.Sprintf("%s/%s%s", file[:i], nameFileWithExtOnly[:j+1], nameFileWithExtOnly[j+2:])
+
 		}
 
 		if IsFileExist(nameFileWithoutUnderscore) {
@@ -163,7 +172,9 @@ func (x Haha) readFolders(efs embed.FS, skip, path string, ff *FileAndFolders) e
 		} else {
 			s := fmt.Sprintf("%s/%s", path, name)
 			//fmt.Printf("found file   %s\n", s)
-			ff.Files = append(ff.Files, s[len(skip)+1:])
+			fileName := s[len(skip)+1:]
+			//fmt.Printf("%v\n", fileName)
+			ff.Files = append(ff.Files, fileName)
 		}
 
 	}

@@ -105,3 +105,5 @@ https://softwareengineering.stackexchange.com/questions/367910/microservices-wit
 
 https://docs.microsoft.com/en-us/dotnet/architecture/microservices/architect-microservice-container-applications/communication-in-microservice-architecture
 
+https://itnext.io/bff-pattern-with-go-microservices-using-rest-grpc-87d269bc2434
+
