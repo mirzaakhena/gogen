@@ -46,24 +46,58 @@ func Run(inputs ...string) error {
 
 	if len(inputs) < 1 {
 
-		err := fmt.Errorf("\n" +
-			"   # Create a controller with gin as default web frameworkfor all usecases\n" +
-			"   gogen controller restapi\n" +
-			"     'restapi' is a gateway name\n" +
-			"\n" +
-			"   # Create a controller with with defined web framework for all usecases\n" +
-			"   gogen controller restapi gin\n" +
-			"     'restapi'     is a gateway name\n" +
-			"     'CreateOrder' is an usecase name\n" +
-			"\n" +
-			"   # Create a controller with defined web framework and specific usecase\n" +
-			"   gogen controller restapi gin CreateOrder\n" +
-			"     'restapi'      is a gateway name\n" +
-			"     'gin'          is a sample webframewrok. You may try the other one like: nethttp, echo, and gorilla\n" +
-			"     'CreateOrder'  is an usecase name\n" +
-			"\n")
+		frameworks := ""
 
-		return err
+		dirs, err := utils.AppTemplates.ReadDir("templates/controllers")
+		if err != nil {
+			return err
+		}
+
+		for i, dir := range dirs {
+
+			name := dir.Name()
+
+			if dir.IsDir() {
+
+				if len(dirs) == 1 {
+					frameworks = fmt.Sprintf("%s", frameworks)
+					continue
+				}
+
+				if i == 0 {
+					frameworks = fmt.Sprintf("%s,", name)
+					continue
+				}
+
+				if i == len(dirs)-1 {
+					frameworks = fmt.Sprintf("%s %s", frameworks, name)
+					continue
+				}
+
+				frameworks = fmt.Sprintf("%s %s,", frameworks, name)
+			}
+		}
+
+		msg := fmt.Errorf("\n"+
+			"   # Create a controller for all usecases using gin as default web framework\n"+
+			"   gogen controller restapi\n"+
+			"     'restapi' is a gateway name\n"+
+			"\n"+
+			"   # Create a controller with for all usecases with selected framework\n"+
+			"   You may try the other one like : %s\n"+
+			"   in this example we use 'echo'\n"+
+			"   gogen controller restapi echo\n"+
+			"     'restapi'     is a gateway name\n"+
+			"     'CreateOrder' is an usecase name\n"+
+			"\n"+
+			"   # Create a controller with defined web framework and specific usecase\n"+
+			"   gogen controller restapi gin CreateOrder\n"+
+			"     'restapi'      is a gateway name\n"+
+			"     'gin'          is a sample webframework.\n"+
+			"     'CreateOrder'  is an usecase name\n"+
+			"\n", frameworks)
+
+		return msg
 	}
 
 	domainName := utils.GetDefaultDomain()
@@ -241,6 +275,12 @@ func Run(inputs ...string) error {
 
 	}
 
+	fmt.Printf("Code is generated successfuly. If you saw the error like :\n")
+	fmt.Printf("- could not import \"some/path\" (no required module provides package \"some/path\")\n")
+	fmt.Printf("- unresolved type 'x'\n")
+	fmt.Printf("- cannot resolve symbol 'x'\n")
+	fmt.Printf("try to run the 'go mod tidy' manually in order to download required dependency\n")
+
 	return nil
 
 }
@@ -250,6 +290,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 	inportRequestFields := make([]*StructField, 0)
 	inportResponseFields := make([]*StructField, 0)
 	fset := token.NewFileSet()
+
 	utils.IsExist(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), func(file *ast.File, ts *ast.TypeSpec) bool {
 
 		structObj, isStruct := ts.Type.(*ast.StructType)

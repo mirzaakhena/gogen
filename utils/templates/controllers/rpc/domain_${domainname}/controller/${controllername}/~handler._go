@@ -1,0 +1,54 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/util"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+// {{PascalCase .Usecase.Name}}Handler ...
+func (r *Controller) {{PascalCase .Usecase.Name}}Handler(rpcReq payload.Args, rpcRes *payload.Reply) error {
+
+	ctx := logger.SetTraceID(context.Background(), rpcReq.TraceID)
+
+	reqBytes, ok := rpcReq.Data.([]byte)
+	if !ok {
+		r.Log.Error(ctx, "assertion fail to []byte")
+		return errors.New("assertion fail to []byte")
+	}
+
+	// TODO need to change this 'any' to specific type!
+	var reqData any
+	err := json.Unmarshal(reqBytes, &reqData)
+	if err != nil {
+		return err
+	}
+
+	r.Log.Info(ctx, util.MustJSON(reqData))
+
+	req := {{LowerCase .Usecase.Name}}.InportRequest{
+		// ... from req
+	}
+
+	res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
+	if err != nil {
+		r.Log.Error(ctx, err.Error())
+		return err
+	}
+
+    r.Log.Info(ctx, util.MustJSON(res))
+
+    // TODO remove later ...
+    _ = res
+
+	rpcRes = &payload.Reply{
+		Success:      true,
+		ErrorMessage: "",
+		Data:         nil,
+	}
+
+    return nil
+}
