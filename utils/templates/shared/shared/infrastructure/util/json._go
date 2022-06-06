@@ -2,7 +2,7 @@ package util
 
 import "encoding/json"
 
-func MustJSON(obj interface{}) string {
+func MustJSON(obj any) string {
 	bytes, _ := json.Marshal(obj)
 	return string(bytes)
 }

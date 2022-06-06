@@ -24,7 +24,7 @@ func CreateFolderIfNotExist(folderPath string) (bool, error) {
 }
 
 // WriteFileIfNotExist ...
-func WriteFileIfNotExist(templateFile, outputFilePath string, obj interface{}) (bool, error) {
+func WriteFileIfNotExist(templateFile, outputFilePath string, obj any) (bool, error) {
 	if IsFileExist(outputFilePath) {
 		return true, nil
 	}
@@ -32,7 +32,7 @@ func WriteFileIfNotExist(templateFile, outputFilePath string, obj interface{}) (
 }
 
 // WriteFile ...
-func WriteFile(templateData, outputFilePath string, obj interface{}) error {
+func WriteFile(templateData, outputFilePath string, obj any) error {
 
 	// TODO move it outside
 	fileOut, err := os.Create(outputFilePath)

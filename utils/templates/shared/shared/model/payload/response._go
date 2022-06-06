@@ -8,11 +8,11 @@ type Response struct {
 	Success      bool        `json:"success"`
 	ErrorCode    string      `json:"errorCode"`
 	ErrorMessage string      `json:"errorMessage"`
-	Data         interface{} `json:"data"`
+	Data         any `json:"data"`
 	TraceID      string      `json:"traceId"`
 }
 
-func NewSuccessResponse(data interface{}, traceID string) interface{} {
+func NewSuccessResponse(data any, traceID string) any {
 	var res Response
 	res.Success = true
 	res.Data = data
@@ -20,7 +20,7 @@ func NewSuccessResponse(data interface{}, traceID string) interface{} {
 	return res
 }
 
-func NewErrorResponse(err error, traceID string) interface{} {
+func NewErrorResponse(err error, traceID string) any {
 	var res Response
 	res.Success = false
 	res.TraceID = traceID

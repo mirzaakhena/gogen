@@ -8,13 +8,13 @@ import (
 	"text/template"
 )
 
-func CreateEverythingExactly(rootToSkip, pathUnder string, fileRenamer map[string]string, data interface{}, efs embed.FS) error {
+func CreateEverythingExactly(rootToSkip, pathUnder string, fileRenamer map[string]string, data any, efs embed.FS) error {
 	return Haha{}.CreateEverythingExactly(rootToSkip+pathUnder, fileRenamer, data, efs)
 }
 
 type Haha struct{}
 
-func (x Haha) CreateEverythingExactly(pathUnder string, fileRenamer map[string]string, data interface{}, efs embed.FS) error {
+func (x Haha) CreateEverythingExactly(pathUnder string, fileRenamer map[string]string, data any, efs embed.FS) error {
 
 	ff := FileAndFolders{
 		Folders: map[string]int{},

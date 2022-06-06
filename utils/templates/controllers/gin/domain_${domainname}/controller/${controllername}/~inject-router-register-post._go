@@ -1,1 +1,1 @@
-r.Router.POST("/{{LowerCase .Usecase.Name}}", r.authorized(), r.{{CamelCase .Usecase.Name}}Handler(r.{{PascalCase .Usecase.Name}}Inport))
+r.Router.POST("/{{LowerCase .Usecase.Name}}", r.authorized(), r.{{CamelCase .Usecase.Name}}Handler())

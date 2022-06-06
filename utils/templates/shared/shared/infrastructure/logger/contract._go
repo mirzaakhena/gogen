@@ -9,8 +9,8 @@ import (
 )
 
 type Logger interface {
-	Info(ctx context.Context, message string, args ...interface{})
-	Error(ctx context.Context, message string, args ...interface{})
+	Info(ctx context.Context, message string, args ...any)
+	Error(ctx context.Context, message string, args ...any)
 }
 
 type traceDataType int
@@ -47,7 +47,7 @@ func getFileLocationInfo(skip int) string {
 	return fmt.Sprintf("%s:%d", funcName[x+1:], line)
 }
 
-func toJsonString(obj interface{}) string {
+func toJsonString(obj any) string {
 	bytes, _ := json.Marshal(obj)
 	return string(bytes)
 }

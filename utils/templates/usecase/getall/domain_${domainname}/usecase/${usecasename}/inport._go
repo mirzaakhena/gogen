@@ -20,7 +20,7 @@ type InportRequest struct {
 // InportResponse is response payload after running the usecase
 type InportResponse struct {
     Count int
-    Items []interface{}
+    Items []any
 }
 
 func (r InportRequest) Validate() error {

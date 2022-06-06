@@ -111,7 +111,7 @@ func (r TypeHandler) processStarExpr(param *bytes.Buffer, t *ast.StarExpr) strin
 }
 
 func (r TypeHandler) processInterfaceType(param *bytes.Buffer, t *ast.InterfaceType) string {
-	param.WriteString("interface{}")
+	param.WriteString("any")
 	_ = t
 	return param.String()
 }

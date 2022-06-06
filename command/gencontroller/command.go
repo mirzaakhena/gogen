@@ -275,11 +275,11 @@ func Run(inputs ...string) error {
 
 	}
 
-	fmt.Printf("Code is generated successfuly. If you saw the error like :\n")
-	fmt.Printf("- could not import \"some/path\" (no required module provides package \"some/path\")\n")
-	fmt.Printf("- unresolved type 'x'\n")
-	fmt.Printf("- cannot resolve symbol 'x'\n")
-	fmt.Printf("try to run the 'go mod tidy' manually in order to download required dependency\n")
+	//fmt.Printf("Code is generated successfuly. If you saw the error like :\n")
+	//fmt.Printf("- could not import \"some/path\" (no required module provides package \"some/path\")\n")
+	//fmt.Printf("- unresolved type 'x'\n")
+	//fmt.Printf("- cannot resolve symbol 'x'\n")
+	//fmt.Printf("try to run the 'go mod tidy' manually in order to download required dependency\n")
 
 	return nil
 

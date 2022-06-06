@@ -9,7 +9,7 @@ import (
 //go:embed templates
 var AppTemplates embed.FS
 
-func PrintTemplate(templateString string, x interface{}) (string, error) {
+func PrintTemplate(templateString string, x any) (string, error) {
 
 	tpl, err := template.New("something").Funcs(FuncMap).Parse(templateString)
 	if err != nil {

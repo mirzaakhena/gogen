@@ -5,15 +5,19 @@ import (
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
 	"io/ioutil"
+	"math/rand"
 	"os"
 	"strings"
+	"time"
 )
 
 // ObjTemplate ...
 type ObjTemplate struct {
+	PackagePath   string
 	GomodPath     string
 	DefaultDomain string
 	DomainName    string
+	SecretKey     string
 }
 
 func Run(inputs ...string) error {
@@ -33,10 +37,24 @@ func Run(inputs ...string) error {
 	gomodPath := "your/path/project"
 	defaultDomain := fmt.Sprintf("-%s", utils.LowerCase(domainName))
 
+	var letters = []rune("abcdef1234567890")
+
+	randSeq := func(n int) string {
+		b := make([]rune, n)
+		for i := range b {
+			b[i] = letters[rand.Intn(len(letters))]
+		}
+		return string(b)
+	}
+
+	rand.Seed(time.Now().UnixNano())
+
 	obj := &ObjTemplate{
+		PackagePath:   utils.GetPackagePath(),
 		GomodPath:     gomodPath,
 		DefaultDomain: defaultDomain,
 		DomainName:    domainName,
+		SecretKey:     randSeq(128),
 	}
 
 	fileRenamer := map[string]string{

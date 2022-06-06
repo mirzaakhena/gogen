@@ -5,7 +5,7 @@ import (
 )
 
 type Payload struct {
-	Data      interface{}            `json:"data"`
+	Data      any            `json:"data"`
 	Publisher driver.ApplicationData `json:"publisher"`
 	TraceID   string                 `json:"traceId"`
 }

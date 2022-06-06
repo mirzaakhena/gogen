@@ -98,7 +98,7 @@ func (r gateway) UpdateName{{PascalCase .EntityName}}(ctx context.Context, id st
 		return err
 	}
 
-	err = db.Debug().Model(&sm).Updates(map[string]interface{}{
+	err = db.Debug().Model(&sm).Updates(map[string]any{
 		"name": obj{{PascalCase .EntityName}}.Name,
 		"date": obj{{PascalCase .EntityName}}.Date,
 	}).Error

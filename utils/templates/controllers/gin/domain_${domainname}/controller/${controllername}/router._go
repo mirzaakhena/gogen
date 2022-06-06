@@ -19,6 +19,6 @@ type Controller struct {
 
 // RegisterRouter registering all the router
 func (r *Controller) RegisterRouter() { {{range .Usecases}} {{if StartWith (LowerCase .Name) "get"}}
-    r.Router.GET("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler(r.{{PascalCase .Name}}Inport)) {{else}}
-    r.Router.POST("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler(r.{{PascalCase .Name}}Inport)) {{end}} {{end}}
+    r.Router.GET("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler()) {{else}}
+    r.Router.POST("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler()) {{end}} {{end}}
 }

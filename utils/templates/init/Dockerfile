@@ -20,7 +20,7 @@ RUN go mod tidy
 RUN go mod verify
 
 # CMD go build -v
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o ./yourapp .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o ./{{.PackagePath}} .
 
 #####################
 # MAKE SMALL BINARY #
@@ -37,6 +37,6 @@ COPY --from=builder /etc/passwd /etc/passwd
 # Copy the executable.
 WORKDIR /app
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
-COPY --from=builder /go/src/yourapp/yourapp /app
-# COPY --from=builder /go/src/yourapp/config.json /app
+COPY --from=builder /go/src/{{.PackagePath}}/{{.PackagePath}} /app
+# COPY --from=builder /go/src/{{.PackagePath}}/config.json /app
 

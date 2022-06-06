@@ -13,7 +13,7 @@ import (
 )
 
 // {{CamelCase .Usecase.Name}}Handler ...
-func (r *Controller) {{CamelCase .Usecase.Name}}Handler(inputPort {{LowerCase .Usecase.Name}}.Inport) gin.HandlerFunc {
+func (r *Controller) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 
 	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
         {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
@@ -43,7 +43,7 @@ func (r *Controller) {{CamelCase .Usecase.Name}}Handler(inputPort {{LowerCase .U
 
 		r.Log.Info(ctx, util.MustJSON(req))
 
-		res, err := inputPort.Execute(ctx, req)
+		res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
 		if err != nil {
 			r.Log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
