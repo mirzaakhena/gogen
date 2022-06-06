@@ -448,11 +448,6 @@ func findAllUsecaseInportNameFromController(domainName, controllerName string) (
 
 						for _, field := range x.Fields.List {
 
-							err := ast.Print(fset, field)
-							if err != nil {
-								panic(err)
-							}
-
 							ile, ok := field.Type.(*ast.IndexListExpr)
 							if !ok {
 								continue

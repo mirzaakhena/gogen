@@ -21,20 +21,21 @@ func (c {{CamelCase .ApplicationName}}) RunApplication() {
 	c.httpHandler.RunApplication()
 }
 
-const {{PascalCase .ApplicationName}}Name = "{{CamelCase .ApplicationName}}"
-
 func New{{PascalCase .ApplicationName}}() func() driver.RegistryContract {
+
+    const appName = "{{CamelCase .ApplicationName}}"
+
 	return func() driver.RegistryContract {
 
 	    cfg := config.ReadConfig()
 
 		appID := util.GenerateID(4)
 
-		appData := driver.NewApplicationData({{PascalCase .ApplicationName}}Name, appID)
+		appData := driver.NewApplicationData(appName, appID)
 
 		log := logger.NewSimpleJSONLogger(appData)
 
-        httpHandler := server.NewGinHTTPHandler(log, ":8080", appData)
+        httpHandler := server.NewGinHTTPHandler(log, cfg.Servers[appName].Address, appData)
 
         datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData, cfg)
 

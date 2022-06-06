@@ -12,10 +12,6 @@ import (
 	"{{.PackagePath}}/shared/driver"
 )
 
-func NewGinHTTPHandlerDefault(log logger.Logger, appData driver.ApplicationData, cfg *config.Config) GinHTTPHandler {
-	return NewGinHTTPHandler(log, fmt.Sprintf(":%d", cfg.Server.Port), appData)
-}
-
 // GinHTTPHandler will define basic HTTP configuration with gracefully shutdown
 type GinHTTPHandler struct {
 	GracefullyShutdown
