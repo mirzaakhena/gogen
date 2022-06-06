@@ -1,8 +1,8 @@
 package {{LowerCase .UsecaseName}}
 
-import (
-	"context"
-)
+import "{{.PackagePath}}/shared/usecase"
+
+type Inport usecase.Inport[InportRequest, InportResponse]
 
 // InportRequest is request payload to run the usecase
 type InportRequest struct {

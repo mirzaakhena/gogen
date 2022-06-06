@@ -8,14 +8,13 @@ import (
     "{{.PackagePath}}/shared/infrastructure/config"
 	"{{.PackagePath}}/shared/infrastructure/logger" {{range .Usecases}}
     "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .Name}}" {{end}}
-    "{{.PackagePath}}/shared/usecase"
 )
 
 type Controller struct {
 	Router gin.IRouter
 	Config *config.Config
     Log    logger.Logger {{range .Usecases}}
-    {{PascalCase .Name}}Inport usecase.Inport[{{LowerCase .Name}}.InportRequest, {{LowerCase .Name}}.InportResponse] {{end}}
+    {{PascalCase .Name}}Inport {{LowerCase .Name}}.Inport {{end}}
 }
 
 // RegisterRouter registering all the router

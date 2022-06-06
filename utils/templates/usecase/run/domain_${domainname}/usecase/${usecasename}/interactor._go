@@ -2,7 +2,6 @@ package {{LowerCase .UsecaseName}}
 
 import (
     "context"
-    "{{.PackagePath}}/shared/usecase"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -12,7 +11,7 @@ type {{CamelCase .UsecaseName}}Interactor struct {
 }
 
 // NewUsecase is constructor for create default implementation of usecase
-func NewUsecase(outputPort Outport) usecase.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
 		outport: outputPort,
 	}

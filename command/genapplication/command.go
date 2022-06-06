@@ -448,17 +448,12 @@ func findAllUsecaseInportNameFromController(domainName, controllerName string) (
 
 						for _, field := range x.Fields.List {
 
-							ile, ok := field.Type.(*ast.IndexListExpr)
+							se, ok := field.Type.(*ast.SelectorExpr)
 							if !ok {
 								continue
 							}
 
-							se, ok := ile.X.(*ast.SelectorExpr)
-							if !ok {
-								continue
-							}
-
-							if se.Sel.String() == "Inport" && se.X.(*ast.Ident).String() == "usecase" && len(field.Names) > 0 {
+							if se.Sel.String() == "Inport" && len(field.Names) > 0 {
 								name := field.Names[0].String()
 								i := strings.Index(name, "Inport")
 								res = append(res, name[:i])
