@@ -46,9 +46,9 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_enum.go", domainName)
+	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_codes.go", domainName)
 
-	// inject to error_enum.go
+	// inject to error_codes.go
 	{
 		fset := token.NewFileSet()
 		utils.InjectToErrorEnum(fset, errEnumFile, errorName, "ER")

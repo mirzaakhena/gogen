@@ -4,13 +4,6 @@ import (
 	"context"
 )
 
-// mirza here
-
-// Inport of Usecase
-type Inport interface {
-	Execute(ctx context.Context, req InportRequest) (*InportResponse, error)
-}
-
 // InportRequest is request payload to run the usecase
 type InportRequest struct {
     Page int
@@ -21,11 +14,4 @@ type InportRequest struct {
 type InportResponse struct {
     Count int
     Items []any
-}
-
-func (r InportRequest) Validate() error {
-    if r.Page <= 0 {
-
-    }
-	return nil
 }

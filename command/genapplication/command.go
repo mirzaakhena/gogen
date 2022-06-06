@@ -1,6 +1,7 @@
 package genapplication
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
 	"go/ast"
@@ -182,6 +183,47 @@ func Run(inputs ...string) error {
 	{
 		fset := token.NewFileSet()
 		utils.InjectToMain(fset, applicationName)
+	}
+
+	{
+		bytes, err := os.ReadFile("config.json")
+		if err != nil {
+			panic(err.Error())
+		}
+
+		var cfg map[string]any
+
+		err = json.Unmarshal(bytes, &cfg)
+		if err != nil {
+			panic(err.Error())
+		}
+
+		portStart := 8000
+
+		cfgServers, exist := cfg["servers"]
+		if !exist {
+			cfg["servers"] = map[string]any{
+				applicationName: map[string]any{
+					"address": fmt.Sprintf(":%d", portStart),
+				},
+			}
+		} else {
+			n := len(cfgServers.(map[string]any))
+			cfgServers.(map[string]any)[applicationName] = map[string]any{
+				"address": fmt.Sprintf(":%d", portStart+n),
+			}
+		}
+
+		arrBytes, err := json.MarshalIndent(cfg, "", "  ")
+		if err != nil {
+			panic(err.Error())
+		}
+
+		err = os.WriteFile("config.json", arrBytes, os.ModeAppend)
+		if err != nil {
+			panic(err)
+		}
+
 	}
 
 	return nil
@@ -406,12 +448,22 @@ func findAllUsecaseInportNameFromController(domainName, controllerName string) (
 
 						for _, field := range x.Fields.List {
 
-							se, ok := field.Type.(*ast.SelectorExpr)
+							err := ast.Print(fset, field)
+							if err != nil {
+								panic(err)
+							}
+
+							ile, ok := field.Type.(*ast.IndexListExpr)
 							if !ok {
 								continue
 							}
 
-							if se.Sel.String() == "Inport" && len(field.Names) > 0 {
+							se, ok := ile.X.(*ast.SelectorExpr)
+							if !ok {
+								continue
+							}
+
+							if se.Sel.String() == "Inport" && se.X.(*ast.Ident).String() == "usecase" && len(field.Names) > 0 {
 								name := field.Names[0].String()
 								i := strings.Index(name, "Inport")
 								res = append(res, name[:i])

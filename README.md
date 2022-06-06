@@ -68,29 +68,33 @@ This generator has basic structure like this
   │   │   │   ├── order.go
   │   │   │   └── order_history.go
   │   │   ├── enum
-  │   │   │   └── order_status.go        
+  │   │   │   └── order_status.go   
+  │   │   ├── errorenum
+  │   │   │   └── error_enum.go          
   │   │   ├── service
   │   │   │   └── order_service.go
   │   │   ├── repository
   │   │   │   └── order_repo.go    
   │   │   └── vo
   │   │       └── order_id.go            
-  │   └── usecase
-  │       ├── getallorder
-  │       │   ├── inport.go
-  │       │   ├── interactor.go
-  │       │   ├── outport.go   
-  │       │   └── README.md                 
-  │       ├── getoneorder  
-  │       ├── onpaymentsuccess
-  │       ├── onpaymentfail
-  │       └── runordersubmit                    
-  ├── domain_b                    
+  │   ├── usecase
+  │   │   ├── getallorder
+  │   │   │   ├── inport.go
+  │   │   │   ├── interactor.go
+  │   │   │   ├── outport.go   
+  │   │   │   └── README.md                 
+  │   │   ├── getoneorder  
+  │   │   ├── onpaymentsuccess
+  │   │   ├── onpaymentfail
+  │   │   └── runordersubmit   
+  │   └── README.md                     
+  ├── domain_payment                
   │   ├── controller          
   │   ├── gateway
   │   ├── model             
-  │   └── usecase
-  ├── domain_c                    
+  │   ├── usecase
+  │   └── README.md     
+  ├── domain_shipment                   
   │   ├── controller          
   │   ├── gateway   
   │   ├── model     
