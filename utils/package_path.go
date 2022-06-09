@@ -94,3 +94,9 @@ func GetPackagePath() string {
 	return strings.Trim(gomodPath, "\"")
 
 }
+
+func GetExecutableName() string {
+	pn := GetPackagePath()
+	i := strings.LastIndex(pn, "/")
+	return pn[i+1:]
+}

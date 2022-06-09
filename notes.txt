@@ -204,6 +204,7 @@ every system must pay respect each other
 one system must not access the data directly
 
 usecase
+- organize business logic, orchestrate repository and service call
 - usecase is first class citizen
 - put the respect to the usecase
 - usecase driven approach paradigm

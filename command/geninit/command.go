@@ -13,11 +13,12 @@ import (
 
 // ObjTemplate ...
 type ObjTemplate struct {
-	PackagePath   string
-	GomodPath     string
-	DefaultDomain string
-	DomainName    string
-	SecretKey     string
+	ExecutableName string
+	PackagePath    string
+	GomodPath      string
+	DefaultDomain  string
+	DomainName     string
+	SecretKey      string
 }
 
 func Run(inputs ...string) error {
@@ -50,11 +51,12 @@ func Run(inputs ...string) error {
 	rand.Seed(time.Now().UnixNano())
 
 	obj := &ObjTemplate{
-		PackagePath:   utils.GetPackagePath(),
-		GomodPath:     gomodPath,
-		DefaultDomain: defaultDomain,
-		DomainName:    domainName,
-		SecretKey:     randSeq(128),
+		ExecutableName: utils.GetExecutableName(),
+		PackagePath:    utils.GetPackagePath(),
+		GomodPath:      gomodPath,
+		DefaultDomain:  defaultDomain,
+		DomainName:     domainName,
+		SecretKey:      randSeq(128),
 	}
 
 	fileRenamer := map[string]string{

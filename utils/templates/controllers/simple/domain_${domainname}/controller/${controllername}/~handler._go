@@ -9,28 +9,25 @@ import (
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-// {{CamelCase .Usecase.Name}}Handler ...
-func (r *Controller) {{CamelCase .Usecase.Name}}Handler(inputPort {{LowerCase .Usecase.Name}}.Inport) func() {
+// {{PascalCase .Usecase.Name}}Handler ...
+func (r *Controller) {{PascalCase .Usecase.Name}}Handler() {
 
-	return func() {
+    traceID := util.GenerateID(16)
 
-		traceID := util.GenerateID(16)
+    ctx := logger.SetTraceID(context.Background(), traceID)
 
-		ctx := logger.SetTraceID(context.Background(), traceID)
+    var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+    req.Now = time.Now(){{ else }}
+    req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
 
-		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
-		req.Now = time.Now(){{ else }}
-		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
+    r.Log.Info(ctx, util.MustJSON(req))
 
-		r.Log.Info(ctx, util.MustJSON(req))
+    res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
+    if err != nil {
+        r.Log.Error(ctx, err.Error())
+        return
+    }
 
-		res, err := inputPort.Execute(ctx, req)
-		if err != nil {
-			r.Log.Error(ctx, err.Error())
-			return
-		}
+    r.Log.Info(ctx, util.MustJSON(res))
 
-		r.Log.Info(ctx, util.MustJSON(res))
-
-	}
 }

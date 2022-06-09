@@ -1,2 +1,2 @@
-# Your Application
+# {{PascalCase .ExecutableName}}
 
