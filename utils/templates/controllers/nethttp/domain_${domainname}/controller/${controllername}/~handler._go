@@ -1,0 +1,68 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/http"
+	"strings"
+
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/util"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+// {{CamelCase .Usecase.Name}}Handler ...
+func (r *Controller) {{CamelCase .Usecase.Name}}Handler(method string, inputPort {{LowerCase .Usecase.Name}}.Inport) http.HandlerFunc {
+
+    type request struct { {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
+        {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
+    }
+
+    type response struct { {{range .Usecase.InportResponseFields}}
+        {{.Name}} {{.Type}} `json:"{{SnakeCase .Name}}"` {{end}}
+    }
+
+	return func(rw http.ResponseWriter, rq *http.Request) {
+
+		if rq.Method != strings.ToUpper(method) {
+			http.Error(rw, "", http.StatusBadRequest)
+			return
+		}
+
+		// for accessing query params /{{CamelCase .Usecase.Name}}?id=123
+		// rq.URL.Query().Get("id")
+
+		traceID := util.GenerateID(16)
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		var jsonReq request
+		if err := json.NewDecoder(rq.Body).Decode(&jsonReq); err != nil {
+			r.Log.Error(ctx, err.Error())
+			http.Error(rw, util.MustJSON(payload.NewErrorResponse(err, traceID)), http.StatusBadRequest)
+			return
+		}
+
+		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+		req.Now = time.Now(){{ else }}
+		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
+
+		r.Log.Info(ctx, util.MustJSON(req))
+
+		res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			http.Error(rw, util.MustJSON(payload.NewErrorResponse(err, traceID)), http.StatusBadRequest)
+			return
+		}
+
+		var jsonRes response {{ if eq (len .Usecase.InportResponseFields) 0 }}
+        _ = res {{else}} {{range .Usecase.InportResponseFields}}
+        jsonRes.{{.Name}} = res.{{.Name}}{{ end }} {{ end }}
+
+		r.Log.Info(ctx, util.MustJSON(jsonRes))
+		fmt.Fprint(rw, payload.NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

@@ -242,21 +242,25 @@ func Run(inputs ...string) error {
 
 		services, exist := dc["services"]
 		if !exist {
-
+			panic("services not exist")
 		}
 
 		mapServices, ok := services.(map[string]any)
-		if !ok {
+		if ok {
+
+			for x := range mapServices {
+
+				if x == applicationName {
+					// we already have it then nothing to add
+					return nil
+				}
+
+			}
 
 		}
 
-		for x := range mapServices {
-
-			if x == applicationName {
-				// we already have it then nothing to add
-				return nil
-			}
-
+		if mapServices == nil {
+			mapServices = map[string]any{}
 		}
 
 		mapServices[applicationName] = map[string]any{

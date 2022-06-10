@@ -1,9 +1,9 @@
 version: "3.9"
 services:
 
-  appone:
-    container_name: appone
+  myapp:
+    container_name: myapp
     build: .
-    entrypoint: "./yourapp appone"
+    entrypoint: "./{{.ExecutableName}} myapp"
     ports:
       - "8080:8080"

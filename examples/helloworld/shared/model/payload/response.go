@@ -1,15 +1,15 @@
-package {{LowerCase .ControllerName}}
+package payload
 
 import (
-    "{{.PackagePath}}/model/domerror"
+	"helloworld/shared/model/apperror"
 )
 
 type Response struct {
-	Success      bool        `json:"success"`
-	ErrorCode    string      `json:"errorCode"`
-	ErrorMessage string      `json:"errorMessage"`
-	Data         any `json:"data"`
-	TraceID      string      `json:"traceId"`
+	Success      bool   `json:"success"`
+	ErrorCode    string `json:"errorCode"`
+	ErrorMessage string `json:"errorMessage"`
+	Data         any    `json:"data"`
+	TraceID      string `json:"traceId"`
 }
 
 func NewSuccessResponse(data any, traceID string) any {
@@ -23,8 +23,9 @@ func NewSuccessResponse(data any, traceID string) any {
 func NewErrorResponse(err error, traceID string) any {
 	var res Response
 	res.Success = false
+	res.TraceID = traceID
 
-	et, ok := err.(domerror.ErrorWithCode)
+	et, ok := err.(apperror.ErrorType)
 	if !ok {
 		res.ErrorCode = "UNDEFINED"
 		res.ErrorMessage = err.Error()
@@ -33,7 +34,5 @@ func NewErrorResponse(err error, traceID string) any {
 
 	res.ErrorCode = et.Code()
 	res.ErrorMessage = et.Error()
-	res.TraceID = traceID
 	return res
 }
-
