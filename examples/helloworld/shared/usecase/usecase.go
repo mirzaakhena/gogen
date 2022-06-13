@@ -1,7 +1,5 @@
 package usecase
 
-import "context"
-
-type Inport[REQUEST, RESPONSE any] interface {
-	Execute(ctx context.Context, req REQUEST) (*RESPONSE, error)
+type Inport[CONTEXT, REQUEST, RESPONSE any] interface {
+	Execute(ctx CONTEXT, req REQUEST) (*RESPONSE, error)
 }
