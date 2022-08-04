@@ -1,0 +1,31 @@
+
+{{range .Methods}} {{if StartWith (LowerCase .MethodName) "save"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	// err := r.db.Create(obj).Error
+	// if err != nil {
+	//     return err
+	// }
+
+    return {{.DefaultReturnVal}}
+}
+{{else if StartWith (LowerCase .MethodName) "find"}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	//var result []*entity.Person
+	//err := r.db.Find(&result).Error
+	//if err != nil {
+	//    return nil, err
+	//}
+
+    return {{.DefaultReturnVal}}
+}
+{{else}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+    return {{.DefaultReturnVal}}
+}
+{{end}} {{end}}

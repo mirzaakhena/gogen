@@ -1,6 +1,31 @@
 version: "3.9"
 services:
 
+    mongodb:
+        image : mongo
+        restart: always
+        ports:
+            - "27017:27017"
+
+    # https://hub.docker.com/r/bitnami/mongodb
+
+    mongodbrs:
+        image: candis/mongo-replica-set
+        ports:
+            - "27017:27017"
+
+    rabbitmq:
+        image: heidiks/rabbitmq-delayed-message-exchange:latest
+        ports:
+            - "5672:5672"
+            - "15672:15672"
+
+    redis:
+        image: redis
+        command: "redis-server --appendonly yes"
+        ports:
+            - "6379:6379"
+
   myapp:
     container_name: myapp
     build: .

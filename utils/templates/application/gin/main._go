@@ -7,6 +7,8 @@ import (
   "{{.PackagePath}}/shared/driver"
 )
 
+var Version = "0.0.1"
+
 func main() {
   appMap := map[string]func() driver.RegistryContract{}
 
@@ -14,6 +16,7 @@ func main() {
 
   app, exist := appMap[flag.Arg(0)]
   if exist {
+    fmt.Printf("Version %s", Version)
     driver.Run(app())
   } else {
     fmt.Println("You may try 'go run main.go <app_name>' :")

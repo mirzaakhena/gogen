@@ -4,6 +4,7 @@ import (
 	"context"
 	"{{.PackagePath}}/shared/driver"
     "{{.PackagePath}}/shared/infrastructure/config"
+    "{{.PackagePath}}/shared/infrastructure/database"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 
@@ -12,10 +13,10 @@ import (
 )
 
 type gateway struct {
+    *database.MongoWithTransaction
     log     logger.Logger
     appData driver.ApplicationData
     config  *config.Config
-    // db   *gorm.DB
 }
 
 // NewGateway ...
@@ -42,10 +43,13 @@ func NewGateway(log logger.Logger, appData driver.ApplicationData, cfg *config.C
 func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
     r.log.Info(ctx, "called")
 
-	// err := r.db.Create(obj).Error
-	// if err != nil {
-	//     return err
-	// }
+	//info, err := r.SaveOrUpdate(ctx, "DBName", "order", obj.OrderID, obj)
+	//if err != nil {
+	//	r.log.Error(ctx, err.Error())
+	//	return err
+	//}
+	//
+	//r.log.Info(ctx, "%s", info)
 
     return {{.DefaultReturnVal}}
 }
@@ -53,10 +57,49 @@ func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
 func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
     r.log.Info(ctx, "called")
 
-	//var result []*entity.Person
-	//err := r.db.Find(&result).Error
+	//var objs []*entity.Order
+	//
+	//coll := r.MongoClient.Database(DBName).Collection("order")
+	//
+	//criteria := bson.M{}
+	//
+	//if req.OrderID != "" {
+	//	criteria["order_id"] = primitive.Regex{Pattern: req.OrderID, Options: "i"}
+	//}
+	//
+	//if req.Status != "" {
+	//	criteria["order_status"] = primitive.Regex{Pattern: req.Status, Options: "i"}
+	//}
+	//
+	//skip := req.Size * (req.Page - 1)
+	//limit := req.Size
+	//
+	//countOpts := options.CountOptions{
+	//	Limit: &limit,
+	//	Skip:  &skip,
+	//}
+	//
+	//count, err := coll.CountDocuments(ctx, criteria, &countOpts)
 	//if err != nil {
-	//    return nil, err
+	//	r.log.Error(ctx, err.Error())
+	//	return nil, 0, err
+	//}
+	//
+	//findOpts := options.FindOptions{
+	//	Limit: &limit,
+	//	Skip:  &skip,
+	//	//Sort:  bson.M{"updated_date": -1},
+	//}
+	//
+	//cursor, err := coll.Find(ctx, criteria, &findOpts)
+	//if err != nil {
+	//	r.log.Error(ctx, err.Error())
+	//	return nil, 0, err
+	//}
+	//
+	//if err := cursor.All(ctx, &objs); err != nil {
+	//	r.log.Error(ctx, err.Error())
+	//	return nil, 0, err
 	//}
 
     return {{.DefaultReturnVal}}

@@ -581,3 +581,9 @@ pertanyaan
 - kenapa gak pake file config ?
 - apa fungsi controller dan RegisterRouter method ? kenapa gak bikin constructor?
 - Why do you introduce new layout instead of the standart layout from https://github.com/golang-standards/project-layout ?
+
+
+GOOS=windows GOARCH=amd64 go build
+
+GOOS=darwin GOARCH=amd64 go build
+
