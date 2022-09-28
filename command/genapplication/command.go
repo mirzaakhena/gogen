@@ -7,8 +7,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"gopkg.in/yaml.v3"
-
 	"os"
 	"strings"
 )
@@ -227,60 +225,60 @@ func Run(inputs ...string) error {
 
 	}
 
-	{
-		bytes, err := os.ReadFile("docker-compose.yml")
-		if err != nil {
-			panic(err.Error())
-		}
-
-		var dc map[string]any
-
-		err = yaml.Unmarshal(bytes, &dc)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		services, exist := dc["services"]
-		if !exist {
-			panic("services not exist")
-		}
-
-		mapServices, ok := services.(map[string]any)
-		if ok {
-
-			for x := range mapServices {
-
-				if x == applicationName {
-					// we already have it then nothing to add
-					return nil
-				}
-
-			}
-
-		}
-
-		if mapServices == nil {
-			mapServices = map[string]any{}
-		}
-
-		mapServices[applicationName] = map[string]any{
-			"container_name": applicationName,
-			"build":          `.`,
-			"entrypoint":     fmt.Sprintf("./%s %s", utils.GetExecutableName(), applicationName),
-			"ports":          []string{"8080:8080"},
-		}
-
-		arrBytes, err := yaml.Marshal(dc)
-		if err != nil {
-			panic(err.Error())
-		}
-
-		err = os.WriteFile("docker-compose.yml", arrBytes, os.ModeAppend)
-		if err != nil {
-			panic(err)
-		}
-
-	}
+	//{
+	//	bytes, err := os.ReadFile("docker-compose.yml")
+	//	if err != nil {
+	//		panic(err.Error())
+	//	}
+	//
+	//	var dc map[string]any
+	//
+	//	err = yaml.Unmarshal(bytes, &dc)
+	//	if err != nil {
+	//		panic(err.Error())
+	//	}
+	//
+	//	services, exist := dc["services"]
+	//	if !exist {
+	//		panic("services not exist")
+	//	}
+	//
+	//	mapServices, ok := services.(map[string]any)
+	//	if ok {
+	//
+	//		for x := range mapServices {
+	//
+	//			if x == applicationName {
+	//				// we already have it then nothing to add
+	//				return nil
+	//			}
+	//
+	//		}
+	//
+	//	}
+	//
+	//	if mapServices == nil {
+	//		mapServices = map[string]any{}
+	//	}
+	//
+	//	mapServices[applicationName] = map[string]any{
+	//		"container_name": applicationName,
+	//		"build":          `.`,
+	//		"entrypoint":     fmt.Sprintf("./%s %s", utils.GetExecutableName(), applicationName),
+	//		"ports":          []string{"8080:8080"},
+	//	}
+	//
+	//	arrBytes, err := yaml.Marshal(dc)
+	//	if err != nil {
+	//		panic(err.Error())
+	//	}
+	//
+	//	err = os.WriteFile("docker-compose.yml", arrBytes, os.ModeAppend)
+	//	if err != nil {
+	//		panic(err)
+	//	}
+	//
+	//}
 
 	return nil
 

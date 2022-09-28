@@ -8,7 +8,7 @@ import (
 
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
 	"{{.PackagePath}}/shared/infrastructure/logger"
-	"{{.PackagePath}}/shared/infrastructure/util"
+	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 

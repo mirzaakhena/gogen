@@ -1,6 +1,6 @@
 <template>
   <div class="modal fade" :id="id" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog" :class="modalSize">
       <div class="modal-content">
         <div class="modal-header">
           <h5 class="modal-title" id="exampleModalLabel">{{"{{"}} title {{"}}"}}</h5>
@@ -25,7 +25,8 @@ import {onMounted} from "vue";
 
 const props = defineProps({
   id: {type: String, required: true},
-  title: {type: String, required: true}
+  title: {type: String, required: true},
+  modalSize: {type: String, default: ''}
 })
 
 const emit = defineEmits(["submit"])

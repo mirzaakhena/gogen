@@ -3,7 +3,7 @@ package gengateway
 import (
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
-	"io/ioutil"
+	"os"
 )
 
 // ObjTemplate ...
@@ -68,7 +68,7 @@ func Run(inputs ...string) error {
 	if obj.UsecaseName == nil {
 
 		var folders []string
-		fileInfo, err := ioutil.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
+		fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
 		if err != nil {
 			return err
 		}

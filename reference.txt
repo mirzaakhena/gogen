@@ -107,3 +107,7 @@ https://docs.microsoft.com/en-us/dotnet/architecture/microservices/architect-mic
 
 https://itnext.io/bff-pattern-with-go-microservices-using-rest-grpc-87d269bc2434
 
+https://freshman.tech/snippets/go/cross-compile-go-programs/
+
+https://hackandsla.sh/posts/2021-06-18-embed-vuejs-in-go/
+

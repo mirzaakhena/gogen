@@ -1,11 +1,10 @@
 
-{{CamelCase .EntityName}}Objs, err := r.outport.{{PascalCase .RepositoryName}}(ctx, "{{CamelCase .EntityName}}ID")
+{{CamelCase .EntityName}}Objs, count, err := r.outport.{{PascalCase .RepositoryName}}(ctx, req.Page, req.Size, "{{CamelCase .EntityName}}ID")
 if err != nil {
     return nil, err
 }
 
-for _, obj := range {{CamelCase .EntityName}}Objs {
-    fmt.Printf("%v\n", obj)
-}
+res.Count = count
+res.Items = util.ToSliceAny({{CamelCase .EntityName}}Objs)
 
 //!

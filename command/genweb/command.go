@@ -6,7 +6,6 @@ import (
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"strings"
 )
@@ -53,7 +52,7 @@ func Run(inputs ...string) error {
 
 	controllerFolderName := fmt.Sprintf("domain_%s/controller/%s", domainName, controllerName)
 
-	fileInfo, err := ioutil.ReadDir(controllerFolderName)
+	fileInfo, err := os.ReadDir(controllerFolderName)
 	if err != nil {
 		return err
 	}
@@ -61,6 +60,10 @@ func Run(inputs ...string) error {
 	for _, file := range fileInfo {
 
 		if !strings.HasPrefix(file.Name(), "handler_") {
+			continue
+		}
+
+		if strings.HasSuffix(file.Name(), ".http") {
 			continue
 		}
 

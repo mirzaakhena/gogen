@@ -23,41 +23,5 @@
             "username": "guest",
             "password": "guest"
         }
-    },
-    "application_server": {
-        "app_order_core_service": {
-            "port": 8080,
-            "rpc_port": 123
-        },
-        "app_payment_core_service": {
-            "port": 8081
-        },
-        "app_shipment_core_service": {
-            "port": 8082
-        },
-        "app_buyer_api_service": {
-            "port": 8083
-        },
-        "app_cms_api_service": {
-            "port": 8084
-        },
-        "app_seller_api_service": {
-            "port": 8085
-        },
-        "app_event_core_service": {
-            "port": 8086
-        },
-        "app_log_core_service": {
-            "port": 8087
-        },
-        "app_message_core_service": {
-            "port": 8088
-        },
-        "app_product_cart_core_service": {
-            "port": 8089
-        }
-    },
-    "reporting": {
-        "interval_ping": 60
     }
 }

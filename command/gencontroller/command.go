@@ -4,13 +4,13 @@ import (
 	"bufio"
 	"bytes"
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"go/ast"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -123,7 +123,7 @@ func Run(inputs ...string) error {
 
 	} else {
 
-		fileInfo, err := ioutil.ReadDir(usecaseFolderName)
+		fileInfo, err := os.ReadDir(usecaseFolderName)
 		if err != nil {
 			return err
 		}
@@ -165,17 +165,6 @@ func Run(inputs ...string) error {
 
 	// handler_<usecase>.go
 	for _, usecase := range obj.Usecases {
-		templateCode, err := getHandlerTemplate(obj.DriverName)
-		if err != nil {
-			return err
-		}
-
-		//templateWithData, err := utils.PrintTemplate(string(templateCode), obj)
-		//if err != nil {
-		//	return err
-		//}
-
-		filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 		singleObj := ObjTemplateSingle{
 			PackagePath:    obj.PackagePath,
@@ -185,15 +174,59 @@ func Run(inputs ...string) error {
 			Usecase:        usecase,
 		}
 
-		_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
-		if err != nil {
-			return err
+		{
+			templateCode, err := getHandlerTemplate(obj.DriverName)
+			if err != nil {
+				return err
+			}
+
+			//templateWithData, err := utils.PrintTemplate(string(templateCode), obj)
+			//if err != nil {
+			//	return err
+			//}
+
+			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+
+			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
+			if err != nil {
+				return err
+			}
+
+			// reformat router.go
+			err = utils.Reformat(filename, nil)
+			if err != nil {
+				return err
+			}
 		}
 
-		// reformat router.go
-		err = utils.Reformat(filename, nil)
-		if err != nil {
-			return err
+		if strings.HasPrefix(strings.ToLower(usecase.Name), "get") {
+
+			templateCode, err := getHTTPClientGETTemplate(obj.DriverName)
+			if err != nil {
+				return err
+			}
+
+			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+
+			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
+			if err != nil {
+				return err
+			}
+
+		} else if strings.HasPrefix(strings.ToLower(usecase.Name), "run") {
+
+			templateCode, err := getHTTPClientPOSTTemplate(obj.DriverName)
+			if err != nil {
+				return err
+			}
+
+			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+
+			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
+			if err != nil {
+				return err
+			}
+
 		}
 
 	}
@@ -405,6 +438,7 @@ func injectInportToStruct(obj ObjTemplate, templateWithData string) ([]byte, err
 	if err != nil {
 		return nil, err
 	}
+
 	defer func() {
 		if err := file.Close(); err != nil {
 			return
@@ -559,6 +593,16 @@ func injectRouterBind(obj ObjTemplate, templateWithData string) ([]byte, error) 
 // getControllerRouterFileName ...
 func (o ObjTemplate) getControllerRouterFileName() string {
 	return fmt.Sprintf("domain_%s/controller/%s/router.go", utils.LowerCase(o.DomainName), utils.LowerCase(o.ControllerName))
+}
+
+func getHTTPClientGETTemplate(driverName string) ([]byte, error) {
+	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~httpclient-get._http", driverName)
+	return utils.AppTemplates.ReadFile(path)
+}
+
+func getHTTPClientPOSTTemplate(driverName string) ([]byte, error) {
+	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~httpclient-post._http", driverName)
+	return utils.AppTemplates.ReadFile(path)
 }
 
 func getHandlerTemplate(driverName string) ([]byte, error) {
