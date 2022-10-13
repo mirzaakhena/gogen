@@ -8,7 +8,7 @@ import (
   "{{.PackagePath}}/shared/infrastructure/config"
   "{{.PackagePath}}/shared/infrastructure/server"
   "{{.PackagePath}}/shared/infrastructure/logger"
-  "{{.PackagePath}}/shared/infrastructure/util"
+  "{{.PackagePath}}/shared/util"
 )
 
 type {{CamelCase .ApplicationName}} struct {

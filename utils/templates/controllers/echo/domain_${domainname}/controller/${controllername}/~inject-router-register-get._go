@@ -1,0 +1,1 @@
+r.Router.Add(http.MethodGet,  "/{{LowerCase .Name}}", r.authorized(r.{{CamelCase .Name}}Handler()))

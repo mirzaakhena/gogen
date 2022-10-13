@@ -1,4 +1,4 @@
-package geninit
+package gendomain
 
 import (
 	"bufio"
@@ -26,7 +26,7 @@ func Run(inputs ...string) error {
 	if len(inputs) < 1 {
 		err := fmt.Errorf("\n" +
 			"   # Initiate gogen project with default input. You may change later under .gogen folder\n" +
-			"   gogen init mydomain\n" +
+			"   gogen domain mydomain\n" +
 			"     'mydomain' is a your domain name\n" +
 			"\n")
 
@@ -63,7 +63,7 @@ func Run(inputs ...string) error {
 		"domainname": utils.LowerCase(domainName),
 	}
 
-	err := utils.CreateEverythingExactly("templates/", "init", fileRenamer, obj, utils.AppTemplates)
+	err := utils.CreateEverythingExactly("templates/", "domain", fileRenamer, obj, utils.AppTemplates)
 	if err != nil {
 		return err
 	}
@@ -129,7 +129,7 @@ config.json
 
 		domainObj := ObjTemplate{DomainName: domainNameInGogenFile}
 
-		err = utils.CreateEverythingExactly("templates/", "init", fileRenamer, domainObj, utils.AppTemplates)
+		err = utils.CreateEverythingExactly("templates/", "domain", fileRenamer, domainObj, utils.AppTemplates)
 		if err != nil {
 			return err
 		}

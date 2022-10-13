@@ -111,9 +111,10 @@ This generator has basic structure like this
   │   │   ├── messaging
   │   │   ├── remoting
   │   │   ├── server
-  │   │   ├── token
-  │   │   └── util                                    
-  │   └── model
+  │   │   └── token 
+  │   ├── model
+  │   ├── usecase                                       
+  │   └── util
   ├── .gitignore    
   ├── config.json    
   ├── config.sample.json  
@@ -225,7 +226,7 @@ $ go install
 
 You need to create the domain first. Let say you want to create order domain
 ```
-$ gogen init order
+$ gogen domain order
 ```
 
 Then you will see some file and folder created for you
@@ -407,7 +408,7 @@ Try one of this command to learn how to use it
   gogen error
   gogen crud
   gogen webapp
-  gogen init
+  gogen domain
   gogen usecase
   gogen entity
   gogen valuestring
@@ -441,7 +442,7 @@ It will show sample command to remind you on how to use it. In this case, reposi
 You can create another domain let say you want to create domain payment
 
 ```
-$ gogen init payment
+$ gogen domain payment
 ```
 
 Then you want to create a usecase under domain payment

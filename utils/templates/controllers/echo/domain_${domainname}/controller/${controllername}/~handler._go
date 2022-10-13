@@ -1,0 +1,58 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"net/http"
+
+	"github.com/labstack/echo/v4"
+
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/util"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+// {{CamelCase .Usecase.Name}}Handler ...
+func (r *Controller) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
+
+	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
+        {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
+	}
+
+	type response struct { {{range .Usecase.InportResponseFields}}
+        {{.Name}} {{.Type}} `json:"{{SnakeCase .Name}}"` {{end}}
+	}
+
+	return func(c echo.Context) error {
+
+		traceID := util.GenerateID(16)
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		var jsonReq request
+		if err := c.Bind(&jsonReq); err != nil {
+			r.Log.Error(ctx, err.Error())
+			return c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+		}
+
+		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+		req.Now = time.Now(){{ else }}
+		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
+
+		r.Log.Info(ctx, util.MustJSON(req))
+
+		res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
+		if err != nil {
+			r.Log.Error(ctx, err.Error())
+			return c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+		}
+
+		var jsonRes response {{ if eq (len .Usecase.InportResponseFields) 0 }}
+        _ = res {{else}} {{range .Usecase.InportResponseFields}}
+        jsonRes.{{.Name}} = res.{{.Name}}{{ end }} {{ end }}
+
+		r.Log.Info(ctx, util.MustJSON(jsonRes))
+		return c.JSON(http.StatusOK, payload.NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

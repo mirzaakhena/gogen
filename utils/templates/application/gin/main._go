@@ -3,8 +3,6 @@ package main
 import (
   "flag"
   "fmt"
-  "os/exec"
-  "runtime"
   "{{.PackagePath}}/application"
   "{{.PackagePath}}/shared/driver"
 )

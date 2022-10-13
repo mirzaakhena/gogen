@@ -1,1 +1,0 @@
-r.Router.Add(http.MethodPost, "/{{LowerCase .UsecaseName}}", r.authorized(r.{{CamelCase .UsecaseName}}Handler(r.{{PascalCase .UsecaseName}}Inport)))

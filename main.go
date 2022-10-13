@@ -6,11 +6,11 @@ import (
 	"github.com/mirzaakhena/gogen/command/genapplication"
 	"github.com/mirzaakhena/gogen/command/gencontroller"
 	"github.com/mirzaakhena/gogen/command/gencrud"
+	"github.com/mirzaakhena/gogen/command/gendomain"
 	"github.com/mirzaakhena/gogen/command/genentity"
 	"github.com/mirzaakhena/gogen/command/genenum"
 	"github.com/mirzaakhena/gogen/command/generror"
 	"github.com/mirzaakhena/gogen/command/gengateway"
-	"github.com/mirzaakhena/gogen/command/geninit"
 	"github.com/mirzaakhena/gogen/command/genopenapi"
 	"github.com/mirzaakhena/gogen/command/genrepository"
 	"github.com/mirzaakhena/gogen/command/genservice"
@@ -41,7 +41,7 @@ func main() {
 		"webapp":      genwebapp.Run,
 		"web":         genweb.Run,
 		"openapi":     genopenapi.Run,
-		"init":        geninit.Run,
+		"domain":      gendomain.Run,
 	}
 
 	flag.Parse()
