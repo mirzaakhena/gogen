@@ -13,7 +13,11 @@ import (
 
 func (r *ginController) getOne{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
 
-    theInport := r.GetUsecase(getone{{LowerCase .EntityName}}.Name)
+	anyInport := r.GetUsecase(getone{{LowerCase .EntityName}}.InportRequest{})
+	inport, ok := anyInport.(gogen.Inport[getone{{LowerCase .EntityName}}.InportRequest, getone{{LowerCase .EntityName}}.InportResponse])
+	if !ok {
+		panic("not match")
+	}
 
 	type request struct {
 	}
@@ -40,19 +44,12 @@ func (r *ginController) getOne{{PascalCase .EntityName}}Handler() gin.HandlerFun
 
 		r.log.Info(ctx, util.MustJSON(req))
 
-		theResponse, err := theInport.Execute(ctx, req)
+		res, err := inport.Execute(ctx, req)
 		if err != nil {
 			r.log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 			return
 		}
-
-        res, ok := theResponse.(*getone{{LowerCase .EntityName}}.InportResponse)
-        if !ok {
-            r.log.Error(ctx, err.Error())
-            c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
-            return
-        }
 
 		var jsonRes response
 		jsonRes.InportResponse = res

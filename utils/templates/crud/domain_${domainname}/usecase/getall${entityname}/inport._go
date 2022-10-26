@@ -5,8 +5,6 @@ import (
 	"time"
 )
 
-const Name = "GetAll{{PascalCase .EntityName}}"
-
 type InportRequest struct {
     repository.FindAll{{PascalCase .EntityName}}FilterRequest
 }

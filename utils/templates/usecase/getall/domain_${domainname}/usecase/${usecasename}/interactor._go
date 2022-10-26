@@ -6,25 +6,16 @@ import (
 )
 
 type {{CamelCase .UsecaseName}}Interactor struct {
-    gogen.NameUsecase
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport2 {
+func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
 	return &{{CamelCase .UsecaseName}}Interactor{
-	    NameUsecase: gogen.NameUsecase{Name: Name},
 		outport: outputPort,
 	}
 }
 
-func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, abstractReq any) (any, error) {
-
-	req, ok := abstractReq.(InportRequest)
-	if !ok {
-		return nil, fmt.Errorf("does not match request")
-	}
-
-	_ = req // TODO remove later
+func (r *{{CamelCase .UsecaseName}}Interactor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
     res := &InportResponse{}
 

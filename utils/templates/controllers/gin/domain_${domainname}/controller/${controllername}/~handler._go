@@ -12,7 +12,11 @@ import (
 
 func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 
-	theInport := r.GetUsecase({{LowerCase .Usecase.Name}}.Name)
+	anyInport := r.GetUsecase({{LowerCase .Usecase.Name}}.InportRequest{})
+	inport, ok := anyInport.(gogen.Inport[{{LowerCase .Usecase.Name}}.InportRequest, {{LowerCase .Usecase.Name}}.InportResponse])
+	if !ok {
+		panic("not match")
+	}
 
 	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
         {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
@@ -42,20 +46,14 @@ func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 
 		r.log.Info(ctx, util.MustJSON(req))
 
-		theResponse, err := theInport.Execute(ctx, req)
+		res, err := inport.Execute(ctx, req)
 		if err != nil {
 			r.log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 			return
 		}
 
-		var jsonRes response
-        res, ok := theResponse.(*{{LowerCase .Usecase.Name}}.InportResponse)
-        if !ok {
-            r.log.Error(ctx, err.Error())
-            c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
-            return
-        } {{ if eq (len .Usecase.InportResponseFields) 0 }}
+		var jsonRes response {{ if eq (len .Usecase.InportResponseFields) 0 }}
         _ = res {{else}} {{range .Usecase.InportResponseFields}}
         jsonRes.{{.Name}} = res.{{.Name}}{{ end }} {{ end }}
 

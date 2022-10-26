@@ -11,7 +11,7 @@ import (
 type selectedRouter = gin.IRouter
 
 type ginController struct {
-    *gogen.BaseController[selectedRouter]
+    *gogen.BaseController
 	log      logger.Logger
 	cfg      *config.Config
 	jwtToken token.JWTToken
@@ -19,18 +19,17 @@ type ginController struct {
 
 func NewGinController(log logger.Logger, cfg *config.Config, tk token.JWTToken) gogen.RegisterRouterHandler[selectedRouter] {
 	return &ginController{
-		BaseController: gogen.NewBaseController[selectedRouter](),
+		BaseController: gogen.NewBaseController(),
 		log:            log,
 		cfg:            cfg,
 		jwtToken:       tk,
 	}
 }
 
-func (r *ginController) RegisterRouter(router selectedRouter) gogen.RegisterRouterHandler[selectedRouter] {
+func (r *ginController) RegisterRouter(router selectedRouter) {
 
     resource := router.Group("/api/v1", r.authentication()) {{range .Usecases}} {{if StartWith (LowerCase .Name) "get"}}
     resource.GET("/{{LowerCase .Name}}", r.authorization(), r.{{CamelCase .Name}}Handler()) {{else}}
     resource.POST("/{{LowerCase .Name}}", r.authorization(), r.{{CamelCase .Name}}Handler()) {{end}} {{end}}
 
-    return r
 }

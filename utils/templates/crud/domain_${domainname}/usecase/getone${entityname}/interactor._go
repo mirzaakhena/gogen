@@ -9,23 +9,16 @@ import (
 //go:generate mockery --name Outport -output mocks/
 
 type {{CamelCase .EntityName}}GetOneInteractor struct {
-    gogen.NameUsecase
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport2 {
+func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
 	return &{{CamelCase .EntityName}}GetOneInteractor{
-	    NameUsecase: gogen.NameUsecase{Name: Name},
 		outport: outputPort,
 	}
 }
 
-func (r *{{CamelCase .EntityName}}GetOneInteractor) Execute(ctx context.Context, abstractReq any) (any, error) {
-
-	req, ok := abstractReq.(InportRequest)
-	if !ok {
-		return nil, fmt.Errorf("does not match request")
-	}
+func (r *{{CamelCase .EntityName}}GetOneInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 

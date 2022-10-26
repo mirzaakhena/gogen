@@ -33,12 +33,12 @@ func ({{CamelCase .ApplicationName}}) Run() error {
 
     httpHandler := server.NewGinHTTPHandler(log, cfg.Servers[appName].Address, appData)
 
-	{{LowerCase .ControllerName}}.NewGinController(log, cfg, jwtToken).
-		RegisterRouter(httpHandler.Router).
-		AddUsecase(
+	x := {{LowerCase .ControllerName}}.NewGinController(log, cfg, jwtToken)
+	x.AddUsecase(
         // {{range .UsecaseNames}}
-           {{LowerCase .}}.NewUsecase(datasource), {{end}}
-		)
+        {{LowerCase .}}.NewUsecase(datasource), {{end}}
+	)
+	x.RegisterRouter(httpHandler.Router)
 
 	httpHandler.RunWithGracefullyShutdown()
 

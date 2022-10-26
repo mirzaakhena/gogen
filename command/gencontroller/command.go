@@ -335,7 +335,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 		os.Exit(1)
 	}
 
-	usecaseNameFromConst := ""
+	//usecaseNameFromConst := ""
 
 	// in every package
 	for _, pkg := range pkgs {
@@ -349,24 +349,26 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 				// focus only to type
 				gen, ok := decl.(*ast.GenDecl)
 
-				if ok && gen.Tok == token.CONST {
+				//if ok && gen.Tok == token.CONST {
+				//
+				//	for _, spec := range gen.Specs {
+				//
+				//		valueSpec := spec.(*ast.ValueSpec)
+				//		for _, name := range valueSpec.Names {
+				//			if name.Name != "Name" {
+				//				break
+				//			}
+				//		}
+				//		for _, v := range valueSpec.Values {
+				//			bl := v.(*ast.BasicLit)
+				//			usecaseNameFromConst = strings.ReplaceAll(bl.Value, "\"", "")
+				//		}
+				//
+				//	}
+				//
+				//} else
 
-					for _, spec := range gen.Specs {
-
-						valueSpec := spec.(*ast.ValueSpec)
-						for _, name := range valueSpec.Names {
-							if name.Name != "Name" {
-								break
-							}
-						}
-						for _, v := range valueSpec.Values {
-							bl := v.(*ast.BasicLit)
-							usecaseNameFromConst = strings.ReplaceAll(bl.Value, "\"", "")
-						}
-
-					}
-
-				} else if ok && gen.Tok == token.TYPE {
+				if ok && gen.Tok == token.TYPE {
 
 					for _, specs := range gen.Specs {
 
@@ -405,16 +407,16 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 								}
 							}
 
-							//if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
-							//	usecaseNameWithInteractor := ts.Name.String()
-							//	usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
-							//	usecases = append(usecases, &Usecase{
-							//		Name:                 usecaseNameOnly,
-							//		InportRequestFields:  inportRequestFields,
-							//		InportResponseFields: inportResponseFields,
-							//	})
-							//
-							//}
+							if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
+								usecaseNameWithInteractor := ts.Name.String()
+								usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
+								usecases = append(usecases, &Usecase{
+									Name:                 usecaseNameOnly,
+									InportRequestFields:  inportRequestFields,
+									InportResponseFields: inportResponseFields,
+								})
+
+							}
 						}
 
 					}
@@ -424,11 +426,11 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 		}
 	}
 
-	usecases = append(usecases, &Usecase{
-		Name:                 usecaseNameFromConst,
-		InportRequestFields:  inportRequestFields,
-		InportResponseFields: inportResponseFields,
-	})
+	//usecases = append(usecases, &Usecase{
+	//	Name:                 usecaseNameFromConst,
+	//	InportRequestFields:  inportRequestFields,
+	//	InportResponseFields: inportResponseFields,
+	//})
 
 	//utils.IsExist(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), func(file *ast.File, ts *ast.TypeSpec) bool {
 	//

@@ -6,8 +6,6 @@ import (
 	"{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/entity"
 )
 
-const Name = "GetOne{{PascalCase .EntityName}}"
-
 type InportRequest struct {
 	{{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID
 }

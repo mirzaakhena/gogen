@@ -13,7 +13,11 @@ import (
 
 func (r *ginController) run{{PascalCase .EntityName}}DeleteHandler() gin.HandlerFunc {
 
-    theInport := r.GetUsecase(run{{LowerCase .EntityName}}delete.Name)
+	anyInport := r.GetUsecase(run{{LowerCase .EntityName}}delete.InportRequest{})
+	inport, ok := anyInport.(gogen.Inport[run{{LowerCase .EntityName}}delete.InportRequest, run{{LowerCase .EntityName}}delete.InportResponse])
+	if !ok {
+		panic("not match")
+	}
 
 	type request struct {
 	}
@@ -39,19 +43,12 @@ func (r *ginController) run{{PascalCase .EntityName}}DeleteHandler() gin.Handler
 
 		r.log.Info(ctx, util.MustJSON(req))
 
-		theResponse, err := theInport.Execute(ctx, req)
+		res, err := inport.Execute(ctx, req)
 		if err != nil {
 			r.log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 			return
 		}
-
-        res, ok := theResponse.(*run{{LowerCase .EntityName}}delete.InportResponse)
-        if !ok {
-            r.log.Error(ctx, err.Error())
-            c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
-            return
-        }
 
 		var jsonRes response
 		_ = res

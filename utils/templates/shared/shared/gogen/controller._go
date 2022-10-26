@@ -1,35 +1,49 @@
 package gogen
 
+import (
+	"reflect"
+	"strings"
+)
+
 type iUsecase interface {
-	AddUsecase(inports ...Inport2) iUsecase
+	AddUsecase(inports ...any) iUsecase
 }
 
 type RegisterRouterHandler[T any] interface {
 	iUsecase
-	RegisterRouter(h T) RegisterRouterHandler[T]
+	RegisterRouter(h T)
 }
 
-type BaseController[T any] struct {
-	inportObjs map[string]Inport2
+type BaseController struct {
+	inportObjs map[any]any
 }
 
-func NewBaseController[T any]() *BaseController[T] {
-	return &BaseController[T]{
-		inportObjs: map[string]Inport2{},
+func NewBaseController() *BaseController {
+	return &BaseController{
+		inportObjs: map[any]any{},
 	}
 }
 
-func (r *BaseController[T]) GetUsecase(name string) Inport2 {
-	uc, ok := r.inportObjs[name]
+func (r *BaseController) GetUsecase(nameStructType any) any {
+
+	x := reflect.TypeOf(nameStructType).String()
+
+	//fmt.Printf("keluar>>>> %v\n", x[:strings.Index(x, ".")])
+
+	packageName := x[:strings.Index(x, ".")]
+
+	uc, ok := r.inportObjs[packageName]
 	if !ok {
 		return nil
 	}
 	return uc
 }
 
-func (r *BaseController[T]) AddUsecase(inports ...Inport2) iUsecase {
+func (r *BaseController) AddUsecase(inports ...any) iUsecase {
 	for _, inport := range inports {
-		r.inportObjs[inport.UsecaseName()] = inport
+		x := reflect.ValueOf(inport).Elem().Type().String()
+		packagePath := x[:strings.Index(x, ".")]
+		r.inportObjs[packagePath] = inport
 	}
 	return r
 }

@@ -6,8 +6,6 @@ import (
 	"{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/entity"
 )
 
-const Name = "Run{{PascalCase .EntityName}}Create"
-
 type InportRequest struct {
 	entity.{{PascalCase .EntityName}}CreateRequest
 }

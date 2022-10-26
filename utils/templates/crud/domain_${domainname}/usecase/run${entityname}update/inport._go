@@ -7,8 +7,6 @@ import (
     "{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/vo"
 )
 
-const Name = "Run{{PascalCase .EntityName}}Update"
-
 type InportRequest struct {
     entity.{{PascalCase .EntityName}}UpdateRequest
     {{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID

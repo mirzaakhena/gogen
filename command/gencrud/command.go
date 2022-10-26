@@ -2,6 +2,7 @@ package gencrud
 
 import (
 	"fmt"
+	"github.com/mirzaakhena/gogen/command/gengateway"
 	"github.com/mirzaakhena/gogen/utils"
 )
 
@@ -51,11 +52,10 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	//// inject to main.__go
-	//{
-	//	fset := token.NewFileSet()
-	//	utils.InjectToMain(fset, fmt.Sprintf("App%s", entityName))
-	//}
+	err = gengateway.Run(fmt.Sprintf("gateway%s", entityName))
+	if err != nil {
+		return err
+	}
 
 	return nil
 

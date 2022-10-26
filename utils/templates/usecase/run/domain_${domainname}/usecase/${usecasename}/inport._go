@@ -4,8 +4,6 @@ import (
     "context"
 )
 
-const Name = "{{PascalCase .UsecaseName}}"
-
 type InportRequest struct {
 }
 
