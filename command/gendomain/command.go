@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
-	"io/ioutil"
 	"math/rand"
 	"os"
 	"strings"
@@ -191,5 +190,5 @@ func insertNewDomainName(filePath, domainName string) error {
 
 	fileContent += "\n"
 
-	return ioutil.WriteFile(filePath, []byte(fileContent), 0644)
+	return os.WriteFile(filePath, []byte(fileContent), 0644)
 }

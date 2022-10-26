@@ -1,24 +1,36 @@
 package {{LowerCase .ControllerName}}
 
 import (
-	"net/http"
-
 	"github.com/gin-gonic/gin"
-
+    "{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/config"
-	"{{.PackagePath}}/shared/infrastructure/logger" {{range .Usecases}}
-    "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .Name}}" {{end}}
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/token"
 )
 
-type Controller struct {
-	Router gin.IRouter
-	Config *config.Config
-    Log    logger.Logger {{range .Usecases}}
-    {{PascalCase .Name}}Inport {{LowerCase .Name}}.Inport {{end}}
+type selectedRouter = gin.IRouter
+
+type ginController struct {
+    *gogen.BaseController[selectedRouter]
+	log      logger.Logger
+	cfg      *config.Config
+	jwtToken token.JWTToken
 }
 
-// RegisterRouter registering all the router
-func (r *Controller) RegisterRouter() { {{range .Usecases}} {{if StartWith (LowerCase .Name) "get"}}
-    r.Router.GET("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler()) {{else}}
-    r.Router.POST("/{{LowerCase .Name}}", r.authorized(), r.{{CamelCase .Name}}Handler()) {{end}} {{end}}
+func NewGinController(log logger.Logger, cfg *config.Config, tk token.JWTToken) gogen.RegisterRouterHandler[selectedRouter] {
+	return &ginController{
+		BaseController: gogen.NewBaseController[selectedRouter](),
+		log:            log,
+		cfg:            cfg,
+		jwtToken:       tk,
+	}
+}
+
+func (r *ginController) RegisterRouter(router selectedRouter) gogen.RegisterRouterHandler[selectedRouter] {
+
+    resource := router.Group("/api/v1", r.authentication()) {{range .Usecases}} {{if StartWith (LowerCase .Name) "get"}}
+    resource.GET("/{{LowerCase .Name}}", r.authorization(), r.{{CamelCase .Name}}Handler()) {{else}}
+    resource.POST("/{{LowerCase .Name}}", r.authorization(), r.{{CamelCase .Name}}Handler()) {{end}} {{end}}
+
+    return r
 }

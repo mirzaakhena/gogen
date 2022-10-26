@@ -1,0 +1,14 @@
+package gogen
+
+import "context"
+
+type Inport2 interface {
+	Execute(ctx context.Context, req any) (any, error)
+	UsecaseName() string
+}
+
+type NameUsecase struct {
+	Name string
+}
+
+func (r NameUsecase) UsecaseName() string { return r.Name }

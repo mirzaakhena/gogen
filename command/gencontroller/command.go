@@ -206,7 +206,7 @@ func Run(inputs ...string) error {
 				return err
 			}
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+			filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 			if err != nil {
@@ -220,7 +220,7 @@ func Run(inputs ...string) error {
 				return err
 			}
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+			filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 			if err != nil {
@@ -231,10 +231,15 @@ func Run(inputs ...string) error {
 
 	}
 
-	unexistedUsecases, err := getUnexistedUsecase(packagePath, domainName, controllerName, obj.Usecases)
+	unexistedUsecases, err := getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName, obj.Usecases)
 	if err != nil {
 		return err
 	}
+
+	//unexistedUsecases, err := getUnexistedUsecaseFromImport(packagePath, domainName, controllerName, obj.Usecases)
+	//if err != nil {
+	//	return err
+	//}
 
 	if len(unexistedUsecases) == 0 {
 		// reformat router.go
@@ -259,28 +264,28 @@ func Run(inputs ...string) error {
 		//  Router            gin.IRouter
 		//  CreateOrderInport createorder.Inport <----- here
 		//}
-		{
-			templateCode, err := getRouterInportTemplate(obj.DriverName)
-			if err != nil {
-				return err
-			}
-
-			templateWithData, err := utils.PrintTemplate(string(templateCode), singleObj)
-			if err != nil {
-				return err
-			}
-
-			dataInBytes, err := injectInportToStruct(obj, templateWithData)
-			if err != nil {
-				return err
-			}
-
-			// reformat router.go
-			err = utils.Reformat(obj.getControllerRouterFileName(), dataInBytes)
-			if err != nil {
-				return err
-			}
-		}
+		//{
+		//	templateCode, err := getRouterInportTemplate(obj.DriverName)
+		//	if err != nil {
+		//		return err
+		//	}
+		//
+		//	templateWithData, err := utils.PrintTemplate(string(templateCode), singleObj)
+		//	if err != nil {
+		//		return err
+		//	}
+		//
+		//	dataInBytes, err := injectInportToStruct(obj, templateWithData)
+		//	if err != nil {
+		//		return err
+		//	}
+		//
+		//	// reformat router.go
+		//	err = utils.Reformat(obj.getControllerRouterFileName(), dataInBytes)
+		//	if err != nil {
+		//		return err
+		//	}
+		//}
 
 		// inject router for register
 		//func (r *Controller) RegisterRouter() {
@@ -324,57 +329,158 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 	inportResponseFields := make([]*StructField, 0)
 	fset := token.NewFileSet()
 
-	utils.IsExist(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), func(file *ast.File, ts *ast.TypeSpec) bool {
+	pkgs, err := parser.ParseDir(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), nil, parser.ParseComments)
+	if err != nil {
+		fmt.Printf("%v\n", err.Error())
+		os.Exit(1)
+	}
 
-		structObj, isStruct := ts.Type.(*ast.StructType)
+	usecaseNameFromConst := ""
 
-		if isStruct {
+	// in every package
+	for _, pkg := range pkgs {
 
-			if utils.LowerCase(ts.Name.String()) == "inportrequest" {
+		// in every files
+		for _, file := range pkg.Files {
 
-				for _, f := range structObj.Fields.List {
-					fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
-					for _, name := range f.Names {
-						inportRequestFields = append(inportRequestFields, &StructField{
-							Name: name.String(),
-							Type: fieldType,
-						})
+			// in every declaration like type, func, const
+			for _, decl := range file.Decls {
+
+				// focus only to type
+				gen, ok := decl.(*ast.GenDecl)
+
+				if ok && gen.Tok == token.CONST {
+
+					for _, spec := range gen.Specs {
+
+						valueSpec := spec.(*ast.ValueSpec)
+						for _, name := range valueSpec.Names {
+							if name.Name != "Name" {
+								break
+							}
+						}
+						for _, v := range valueSpec.Values {
+							bl := v.(*ast.BasicLit)
+							usecaseNameFromConst = strings.ReplaceAll(bl.Value, "\"", "")
+						}
+
 					}
-				}
-			}
 
-			if utils.LowerCase(ts.Name.String()) == "inportresponse" {
+				} else if ok && gen.Tok == token.TYPE {
 
-				for _, f := range structObj.Fields.List {
-					fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
-					for _, name := range f.Names {
-						inportResponseFields = append(inportResponseFields, &StructField{
-							Name: name.String(),
-							Type: fieldType,
-						})
+					for _, specs := range gen.Specs {
+
+						ts, ok := specs.(*ast.TypeSpec)
+						if !ok {
+							continue
+						}
+
+						structObj, isStruct := ts.Type.(*ast.StructType)
+
+						if isStruct {
+
+							if utils.LowerCase(ts.Name.String()) == "inportrequest" {
+
+								for _, f := range structObj.Fields.List {
+									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+									for _, name := range f.Names {
+										inportRequestFields = append(inportRequestFields, &StructField{
+											Name: name.String(),
+											Type: fieldType,
+										})
+									}
+								}
+							}
+
+							if utils.LowerCase(ts.Name.String()) == "inportresponse" {
+
+								for _, f := range structObj.Fields.List {
+									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+									for _, name := range f.Names {
+										inportResponseFields = append(inportResponseFields, &StructField{
+											Name: name.String(),
+											Type: fieldType,
+										})
+									}
+								}
+							}
+
+							//if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
+							//	usecaseNameWithInteractor := ts.Name.String()
+							//	usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
+							//	usecases = append(usecases, &Usecase{
+							//		Name:                 usecaseNameOnly,
+							//		InportRequestFields:  inportRequestFields,
+							//		InportResponseFields: inportResponseFields,
+							//	})
+							//
+							//}
+						}
+
 					}
+
 				}
-			}
-
-			if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
-				usecaseNameWithInteractor := ts.Name.String()
-				usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
-				usecases = append(usecases, &Usecase{
-					Name:                 usecaseNameOnly,
-					InportRequestFields:  inportRequestFields,
-					InportResponseFields: inportResponseFields,
-				})
-
 			}
 		}
+	}
 
-		return false
+	usecases = append(usecases, &Usecase{
+		Name:                 usecaseNameFromConst,
+		InportRequestFields:  inportRequestFields,
+		InportResponseFields: inportResponseFields,
 	})
+
+	//utils.IsExist(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), func(file *ast.File, ts *ast.TypeSpec) bool {
+	//
+	//	structObj, isStruct := ts.Type.(*ast.StructType)
+	//
+	//	if isStruct {
+	//
+	//		if utils.LowerCase(ts.Name.String()) == "inportrequest" {
+	//
+	//			for _, f := range structObj.Fields.List {
+	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+	//				for _, name := range f.Names {
+	//					inportRequestFields = append(inportRequestFields, &StructField{
+	//						Name: name.String(),
+	//						Type: fieldType,
+	//					})
+	//				}
+	//			}
+	//		}
+	//
+	//		if utils.LowerCase(ts.Name.String()) == "inportresponse" {
+	//
+	//			for _, f := range structObj.Fields.List {
+	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+	//				for _, name := range f.Names {
+	//					inportResponseFields = append(inportResponseFields, &StructField{
+	//						Name: name.String(),
+	//						Type: fieldType,
+	//					})
+	//				}
+	//			}
+	//		}
+	//
+	//		if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
+	//			usecaseNameWithInteractor := ts.Name.String()
+	//			usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
+	//			usecases = append(usecases, &Usecase{
+	//				Name:                 usecaseNameOnly,
+	//				InportRequestFields:  inportRequestFields,
+	//				InportResponseFields: inportResponseFields,
+	//			})
+	//
+	//		}
+	//	}
+	//
+	//	return false
+	//})
 
 	return usecases
 }
 
-func getUnexistedUsecase(packagePath, domainName, controllerName string, currentUsecases []*Usecase) ([]*Usecase, error) {
+func getUnexistedUsecaseFromImport(packagePath, domainName, controllerName string, currentUsecases []*Usecase) ([]*Usecase, error) {
 
 	unexistUsecase := make([]*Usecase, 0)
 
@@ -411,6 +517,79 @@ func getUnexistedUsecase(packagePath, domainName, controllerName string, current
 			}
 
 		}
+	}
+
+	for _, usecase := range currentUsecases {
+		_, exist := mapUsecase[utils.LowerCase(usecase.Name)]
+		if exist {
+			continue
+		}
+
+		unexistUsecase = append(unexistUsecase, usecase)
+	}
+
+	return unexistUsecase, nil
+}
+
+const HandlerSuffix = "handler"
+
+func getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName string, currentUsecases []*Usecase) ([]*Usecase, error) {
+
+	unexistUsecase := make([]*Usecase, 0)
+
+	routerFile := fmt.Sprintf("domain_%s/controller/%s/router.go", domainName, controllerName)
+
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, routerFile, nil, parser.ParseComments)
+	if err != nil {
+		return nil, err
+	}
+
+	//ast.Print(fset, astFile)
+
+	mapUsecase := map[string]int{}
+
+	// loop the outport for imports
+	for _, decl := range astFile.Decls {
+
+		ast.Inspect(decl, func(n ast.Node) bool {
+			var s string
+			switch x := n.(type) {
+			case *ast.CallExpr:
+				z, ok := x.Fun.(*ast.SelectorExpr)
+				if ok {
+					s = z.Sel.Name
+				}
+			}
+
+			lowerCaseUsecase := strings.ToLower(s)
+			if strings.HasSuffix(lowerCaseUsecase, HandlerSuffix) {
+				uc := lowerCaseUsecase[:strings.LastIndex(lowerCaseUsecase, HandlerSuffix)]
+				mapUsecase[uc] = 1
+			}
+			return true
+		})
+
+		//if gen, ok := decl.(*ast.GenDecl); ok {
+		//
+		//	if gen.Tok != token.IMPORT {
+		//		continue
+		//	}
+		//
+		//	for _, spec := range gen.Specs {
+		//
+		//		importSpec := spec.(*ast.ImportSpec)
+		//
+		//		if strings.HasPrefix(importSpec.Path.Value, fmt.Sprintf("\"%s/domain_%s/usecase/", packagePath, domainName)) {
+		//			readUsecase := importSpec.Path.Value[strings.LastIndex(importSpec.Path.Value, "/")+1:]
+		//			uc := readUsecase[:len(readUsecase)-1]
+		//
+		//			mapUsecase[uc] = 1
+		//
+		//		}
+		//	}
+		//
+		//}
 	}
 
 	for _, usecase := range currentUsecases {
@@ -522,33 +701,62 @@ func getBindRouterLine(obj ObjTemplate) (int, error) {
 		return 0, err
 	}
 	routerLine := 0
-	for _, decl := range astFile.Decls {
 
-		if gen, ok := decl.(*ast.FuncDecl); ok {
+	//ast.Print(fset, astFile)
 
-			if gen.Recv == nil {
-				continue
-			}
+	ast.Inspect(astFile, func(node ast.Node) bool {
 
-			startExp, ok := gen.Recv.List[0].Type.(*ast.StarExpr)
+		for {
+			funcDecl, ok := node.(*ast.FuncDecl)
 			if !ok {
-				continue
+				break
 			}
 
-			if startExp.X.(*ast.Ident).String() != "Controller" {
-				continue
+			if funcDecl.Name.String() != "RegisterRouter" {
+				break
 			}
 
-			if gen.Name.String() != "RegisterRouter" {
-				continue
-			}
+			routerLine = fset.Position(funcDecl.Body.Rbrace).Line
 
-			routerLine = fset.Position(gen.Body.Rbrace).Line
-			return routerLine, nil
+			return false
 		}
 
+		return true
+	})
+
+	if routerLine == 0 {
+		return 0, fmt.Errorf("register router Not found")
 	}
-	return 0, fmt.Errorf("register router Not found")
+
+	return routerLine, nil
+
+	//for _, decl := range astFile.Decls {
+	//
+	//	if gen, ok := decl.(*ast.FuncDecl); ok {
+	//
+	//		if gen.Recv == nil {
+	//			continue
+	//		}
+	//
+	//		startExp, ok := gen.Recv.List[0].Type.(*ast.StarExpr)
+	//		if !ok {
+	//			continue
+	//		}
+	//
+	//		if startExp.X.(*ast.Ident).String() != "Controller" {
+	//			continue
+	//		}
+	//
+	//		if gen.Name.String() != "RegisterRouter" {
+	//			continue
+	//		}
+	//
+	//		routerLine = fset.Position(gen.Body.Rbrace).Line
+	//		return routerLine, nil
+	//	}
+	//
+	//}
+
 }
 
 func injectRouterBind(obj ObjTemplate, templateWithData string) ([]byte, error) {

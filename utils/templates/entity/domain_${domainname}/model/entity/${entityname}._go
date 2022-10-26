@@ -1,27 +1,44 @@
 package entity
 
+import (
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/vo"
+	"strings"
+	"time"
+)
+
 type {{PascalCase .EntityName}} struct {
-    ID string `` //
+	ID vo.{{PascalCase .EntityName}}ID `bson:"_id" json:"id"`
+	Created time.Time `bson:"created" json:"created"`
 }
 
-type {{PascalCase .EntityName}}Request struct {
-
+type {{PascalCase .EntityName}}CreateRequest struct {
+	RandomString string    `json:"-"`
+	Now          time.Time `json:"-"`
 }
 
-func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}Request) (*{{PascalCase .EntityName}}, error) {
+func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}CreateRequest) (*{{PascalCase .EntityName}}, error) {
 
-    var obj {{PascalCase .EntityName}}
+	id, err := vo.New{{PascalCase .EntityName}}ID(req.RandomString, req.Now)
+	if err != nil {
+		return nil, err
+	}
 
-    // assign value here
+	// add validation and assignment value here ...
 
-    err := obj.Validate()
-    if err != nil {
-        return nil, err
-    }
+	var obj {{PascalCase .EntityName}}
+	obj.ID = id
+	obj.Created = req.Now
 
     return &obj, nil
 }
 
-func (r *{{PascalCase .EntityName}}) Validate() error {
-    return nil
+type {{PascalCase .EntityName}}UpdateRequest struct {
+	// add field to update here ...
+}
+
+func (r *{{PascalCase .EntityName}}) Update(req {{PascalCase .EntityName}}UpdateRequest) error {
+
+    // add validation and assignment value here ...
+
+	return nil
 }

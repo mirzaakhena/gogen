@@ -1,0 +1,45 @@
+package run{{LowerCase .EntityName}}create
+
+import (
+	"context"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
+)
+
+//go:generate mockery --name Outport -output mocks/
+
+type {{CamelCase .EntityName}}CreateInteractor struct {
+    gogen.NameUsecase
+	outport Outport
+}
+
+func NewUsecase(outputPort Outport) gogen.Inport2 {
+	return &{{CamelCase .EntityName}}CreateInteractor{
+	    NameUsecase: gogen.NameUsecase{Name: Name},
+		outport: outputPort,
+	}
+}
+
+func (r *{{CamelCase .EntityName}}CreateInteractor) Execute(ctx context.Context, abstractReq any) (any, error) {
+
+	req, ok := abstractReq.(InportRequest)
+	if !ok {
+		return nil, fmt.Errorf("does not match request")
+	}
+
+	res := &InportResponse{}
+
+    {{CamelCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(req.{{PascalCase .EntityName}}CreateRequest)
+    if err != nil {
+        return nil, err
+    }
+
+    err = r.outport.Save{{PascalCase .EntityName}}(ctx, {{CamelCase .EntityName}}Obj)
+    if err != nil {
+        return nil, err
+    }
+
+    res.{{PascalCase .EntityName}}ID = {{CamelCase .EntityName}}Obj.ID
+
+	return res, nil
+}

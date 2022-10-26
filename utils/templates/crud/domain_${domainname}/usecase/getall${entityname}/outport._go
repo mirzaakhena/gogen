@@ -1,0 +1,9 @@
+package getall{{LowerCase .EntityName}}
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+type Outport interface {
+	repository.FindAll{{PascalCase .EntityName}}Repo
+}

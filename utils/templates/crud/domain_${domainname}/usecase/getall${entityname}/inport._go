@@ -1,0 +1,17 @@
+package getall{{LowerCase .EntityName}}
+
+import (
+	"context"
+	"time"
+)
+
+const Name = "GetAll{{PascalCase .EntityName}}"
+
+type InportRequest struct {
+    repository.FindAll{{PascalCase .EntityName}}FilterRequest
+}
+
+type InportResponse struct {
+	Count int64
+	Items []any
+}

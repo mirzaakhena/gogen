@@ -4,7 +4,7 @@ import (
     "{{.PackagePath}}/domain_{{.DomainName}}/controller/{{LowerCase .ControllerName}}"
     "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .GatewayName}}" {{range .UsecaseNames}}
     "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
-    "{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/logger"
     "{{.PackagePath}}/shared/infrastructure/messaging"
     "{{.PackagePath}}/shared/infrastructure/server"
@@ -13,16 +13,16 @@ import (
 
 type {{CamelCase .ApplicationName}} struct {
 	*server.GinHTTPHandler
-	driver.Controller
+	gogen.Controller
 	Messaging messaging.Subscriber
 }
 
-func New{{PascalCase .ApplicationName}}() func() driver.RegistryContract {
-	return func() driver.RegistryContract {
+func New{{PascalCase .ApplicationName}}() func() gogen.RegistryContract {
+	return func() gogen.RegistryContract {
 
 		appID := util.GenerateID(4)
 
-		appData := driver.NewApplicationData("{{LowerCase .ApplicationName}}", appID)
+		appData := gogen.NewApplicationData("{{LowerCase .ApplicationName}}", appID)
 
 		log := logger.NewSimpleJSONLogger(appData)
 

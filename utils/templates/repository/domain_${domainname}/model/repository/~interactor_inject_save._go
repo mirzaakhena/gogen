@@ -1,5 +1,5 @@
 
-{{CamelCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}Request{})
+{{CamelCase .EntityName}}Obj, err := entity.New{{PascalCase .EntityName}}(entity.{{PascalCase .EntityName}}CreateRequest{})
 if err != nil {
     return nil, err
 }

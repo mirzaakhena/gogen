@@ -1,6 +1,8 @@
 package genapplication
 
 import (
+	"bufio"
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
@@ -157,14 +159,43 @@ func Run(inputs ...string) error {
 			}
 		}
 
+		// ================
+
+		// get all usecase from controller
 		usecaseNames, err := findAllUsecaseInportNameFromController(domainName, objController)
 		if err != nil {
 			return err
 		}
 
+		existingUsecaseNames := map[string]int{}
+
+		appFile := fmt.Sprintf("application/app_%s.go", strings.ToLower(applicationName))
+
+		appFileIsExist := false
+
+		if utils.IsFileExist(appFile) {
+			appFileIsExist = true
+			// get all existing usecase from application
+			existingUsecaseNames, err = findExistingUsecaseInApplication(appFile)
+			if err != nil {
+				return err
+			}
+		}
+
+		unexistUsecase := make([]string, 0)
+
+		for _, usecaseName := range usecaseNames {
+			_, exist := existingUsecaseNames[utils.LowerCase(usecaseName)]
+			if exist {
+				continue
+			}
+
+			unexistUsecase = append(unexistUsecase, usecaseName)
+		}
+
 		obj.GatewayName = &objGateway
 		obj.ControllerName = &objController
-		obj.UsecaseNames = usecaseNames
+		obj.UsecaseNames = unexistUsecase
 
 		fileRenamer := map[string]string{
 			"domainname":      utils.LowerCase(domainName),
@@ -176,23 +207,58 @@ func Run(inputs ...string) error {
 			return err
 		}
 
+		if appFileIsExist {
+
+			for _, usecase := range unexistUsecase {
+
+				dataInBytes, err := InjectRegisterUsecase(usecase, appFile)
+				if err != nil {
+					return err
+				}
+
+				// reformat router.go
+				err = utils.Reformat(appFile, dataInBytes)
+				if err != nil {
+					return err
+				}
+
+			}
+
+		}
+
 	} //---------
 
-	// inject to main.__go
+	// inject to main.go
 	{
-		fset := token.NewFileSet()
-		utils.InjectToMain(fset, applicationName)
+		// TODO find existing main.go check the existing application
+
+		dataInBytes, err := InjectApplicationInMain(applicationName)
+		if err != nil {
+			return err
+		}
+
+		// reformat router.go
+		err = utils.Reformat("main.go", dataInBytes)
+		if err != nil {
+			return err
+		}
 	}
 
+	//{
+	//	fset := token.NewFileSet()
+	//	utils.InjectToMain(fset, applicationName)
+	//}
+
+	// inject into config.json
 	{
-		bytes, err := os.ReadFile("config.json")
+		contentInBytes, err := os.ReadFile("config.json")
 		if err != nil {
 			panic(err.Error())
 		}
 
 		var cfg map[string]any
 
-		err = json.Unmarshal(bytes, &cfg)
+		err = json.Unmarshal(contentInBytes, &cfg)
 		if err != nil {
 			panic(err.Error())
 		}
@@ -460,6 +526,40 @@ func findGatewayByName(domainName, gatewayName string) (string, error) {
 	return "", nil
 }
 
+func findExistingUsecaseInApplication(appFile string) (map[string]int, error) {
+
+	existingUsecaseNames := map[string]int{}
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, appFile, nil, parser.ParseComments)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, decl := range astFile.Decls {
+
+		ast.Inspect(decl, func(n ast.Node) bool {
+
+			switch x := n.(type) {
+			case *ast.CallExpr:
+				z, ok := x.Fun.(*ast.SelectorExpr)
+				if ok {
+					if z.Sel.Name == "NewUsecase" {
+						usecaseName, ok2 := z.X.(*ast.Ident)
+						if ok2 {
+							existingUsecaseNames[usecaseName.String()] = 1
+						}
+					}
+				}
+			}
+
+			return true
+		})
+	}
+
+	return existingUsecaseNames, nil
+
+}
+
 func findAllUsecaseInportNameFromController(domainName, controllerName string) ([]string, error) {
 
 	res := make([]string, 0)
@@ -472,62 +572,235 @@ func findAllUsecaseInportNameFromController(domainName, controllerName string) (
 		return nil, err
 	}
 
+	const HandlerSuffix = "handler"
+
 	for _, pkg := range pkgs {
 
 		// read file by file
-		for _, file := range pkg.Files {
+		for _, astFile := range pkg.Files {
 
-			// in every declaration like type, func, const
-			for _, decl := range file.Decls {
+			for _, decl := range astFile.Decls {
 
-				// focus only to type
-				gen, ok := decl.(*ast.GenDecl)
-				if !ok || gen.Tok != token.TYPE {
-					continue
-				}
-
-				for _, specs := range gen.Specs {
-
-					ts, ok := specs.(*ast.TypeSpec)
-					if !ok {
-						continue
+				ast.Inspect(decl, func(n ast.Node) bool {
+					var s string
+					switch x := n.(type) {
+					case *ast.CallExpr:
+						z, ok := x.Fun.(*ast.SelectorExpr)
+						if ok {
+							s = z.Sel.Name
+						}
 					}
 
-					if x, ok := ts.Type.(*ast.StructType); ok {
-
-						// check the specific struct name
-						if !strings.HasSuffix(strings.ToLower(ts.Name.String()), "controller") {
-							continue
-						}
-
-						for _, field := range x.Fields.List {
-
-							se, ok := field.Type.(*ast.SelectorExpr)
-							if !ok {
-								continue
-							}
-
-							if se.Sel.String() == "Inport" && len(field.Names) > 0 {
-								name := field.Names[0].String()
-								i := strings.Index(name, "Inport")
-								res = append(res, name[:i])
-
-							}
-
-						}
-
-						//inportLine = fset.Position(iStruct.Fields.Closing).Line
-						//return inportLine, nil
+					lowerCaseUsecase := strings.ToLower(s)
+					if strings.HasSuffix(lowerCaseUsecase, HandlerSuffix) {
+						uc := lowerCaseUsecase[:strings.LastIndex(lowerCaseUsecase, HandlerSuffix)]
+						res = append(res, uc)
 					}
-				}
-
+					return true
+				})
 			}
+
+			//// in every declaration like type, func, const
+			//for _, decl := range file.Decls {
+			//
+			//	// focus only to type
+			//	gen, ok := decl.(*ast.GenDecl)
+			//	if !ok || gen.Tok != token.TYPE {
+			//		continue
+			//	}
+			//
+			//	for _, specs := range gen.Specs {
+			//
+			//		ts, ok := specs.(*ast.TypeSpec)
+			//		if !ok {
+			//			continue
+			//		}
+			//
+			//		if x, ok := ts.Type.(*ast.StructType); ok {
+			//
+			//			// check the specific struct name
+			//			if !strings.HasSuffix(strings.ToLower(ts.Name.String()), "controller") {
+			//				continue
+			//			}
+			//
+			//			for _, field := range x.Fields.List {
+			//
+			//				se, ok := field.Type.(*ast.SelectorExpr)
+			//				if !ok {
+			//					continue
+			//				}
+			//
+			//				if se.Sel.String() == "Inport" && len(field.Names) > 0 {
+			//					name := field.Names[0].String()
+			//					i := strings.Index(name, "Inport")
+			//					res = append(res, name[:i])
+			//
+			//				}
+			//
+			//			}
+			//
+			//			//inportLine = fset.Position(iStruct.Fields.Closing).Line
+			//			//return inportLine, nil
+			//		}
+			//	}
+			//
+			//}
 
 		}
 
 	}
 
 	return res, nil
+}
+
+func InjectApplicationInMain(appName string) ([]byte, error) {
+
+	templateWithData := fmt.Sprintf("\"%s\":application.New%s(),", strings.ToLower(appName), utils.PascalCase(appName))
+
+	beforeLine, err := getInjectedLineInMain()
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open("main.go")
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			return
+		}
+	}()
+
+	scanner := bufio.NewScanner(file)
+	var buffer bytes.Buffer
+	line := 0
+	for scanner.Scan() {
+		row := scanner.Text()
+
+		if line == beforeLine-1 {
+			buffer.WriteString(templateWithData)
+			buffer.WriteString("\n")
+		}
+
+		buffer.WriteString(row)
+		buffer.WriteString("\n")
+		line++
+	}
+	return buffer.Bytes(), nil
+}
+
+func getInjectedLineInMain() (int, error) {
+
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, "main.go", nil, parser.ParseComments)
+	if err != nil {
+		return 0, err
+	}
+	injectedLine := 0
+
+	//ast.Print(fset, astFile)
+
+	ast.Inspect(astFile, func(node ast.Node) bool {
+
+		for {
+			compositLit, ok := node.(*ast.CompositeLit)
+			if !ok {
+				break
+			}
+			injectedLine = fset.Position(compositLit.Rbrace).Line
+			return false
+		}
+
+		return true
+	})
+
+	return injectedLine, nil
+
+}
+
+func InjectRegisterUsecase(usecaseName, appFile string) ([]byte, error) {
+
+	templateWithData := fmt.Sprintf("%s.NewUsecase(datasource),", usecaseName)
+
+	// u.AddUsecase(runordercreate.NewUsecase(datasource))
+	//templateWithData := fmt.Sprintf("u.AddUsecase(%s.NewUsecase(datasource))", usecaseName)
+
+	beforeLine, err := getInjectedLine(appFile)
+	if err != nil {
+		return nil, err
+	}
+
+	file, err := os.Open(appFile)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			return
+		}
+	}()
+
+	scanner := bufio.NewScanner(file)
+	var buffer bytes.Buffer
+	line := 0
+	for scanner.Scan() {
+		row := scanner.Text()
+
+		if line == beforeLine+1 {
+			buffer.WriteString(templateWithData)
+			buffer.WriteString("\n")
+		}
+
+		buffer.WriteString(row)
+		buffer.WriteString("\n")
+		line++
+	}
+	return buffer.Bytes(), nil
+}
+
+func getInjectedLine(appFile string) (int, error) {
+
+	fset := token.NewFileSet()
+	astFile, err := parser.ParseFile(fset, appFile, nil, parser.ParseComments)
+	if err != nil {
+		return 0, err
+	}
+	injectedLine := 0
+
+	ast.Inspect(astFile, func(node ast.Node) bool {
+
+		//ast.Print(fset, node)
+
+		for {
+
+			exprStms, ok := node.(*ast.ExprStmt)
+			if !ok {
+				break
+			}
+
+			callExpr, ok := exprStms.X.(*ast.CallExpr)
+			if !ok {
+				break
+			}
+
+			selectorExpr, ok := callExpr.Fun.(*ast.SelectorExpr)
+			if !ok {
+				break
+			}
+
+			if selectorExpr.Sel.String() == "AddUsecase" {
+				injectedLine = fset.Position(selectorExpr.Sel.NamePos).Line
+			}
+
+			break
+		}
+
+		return true
+	})
+
+	return injectedLine, nil
+
 }
 
 func getControllerFolder(domainName string) string {

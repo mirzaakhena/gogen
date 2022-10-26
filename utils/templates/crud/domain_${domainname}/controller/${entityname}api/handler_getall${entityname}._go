@@ -1,0 +1,65 @@
+package {{LowerCase .EntityName}}api
+
+import (
+    "context"
+	"github.com/gin-gonic/gin"
+	"net/http"
+	"time"
+    "{{.PackagePath}}/domain_{{.DomainName}}/usecase/getall{{LowerCase .EntityName}}"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/util"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+func (r *ginController) getAll{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
+
+    theInport := r.GetUsecase(getall{{LowerCase .EntityName}}.Name)
+
+	type request struct {
+		getall{{LowerCase .EntityName}}.InportRequest
+	}
+
+	type response struct {
+		*getall{{LowerCase .EntityName}}.InportResponse
+	}
+
+	return func(c *gin.Context) {
+
+		traceID := util.GenerateID(16)
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		var jsonReq request
+		if err := c.Bind(&jsonReq); err != nil {
+			r.log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+			return
+		}
+
+		var req getall{{LowerCase .EntityName}}.InportRequest
+		req = jsonReq.InportRequest
+
+		r.log.Info(ctx, util.MustJSON(req))
+
+		theResponse, err := theInport.Execute(ctx, req)
+		if err != nil {
+			r.log.Error(ctx, err.Error())
+			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+			return
+		}
+
+        res, ok := theResponse.(*getall{{LowerCase .EntityName}}.InportResponse)
+        if !ok {
+            r.log.Error(ctx, err.Error())
+            c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
+            return
+        }
+
+		var jsonRes response
+        jsonRes.InportResponse = res
+
+		r.log.Info(ctx, util.MustJSON(jsonRes))
+		c.JSON(http.StatusOK, payload.NewSuccessResponse(jsonRes, traceID))
+
+	}
+}

@@ -19,7 +19,7 @@ func GetDefaultDomain() string {
 
 	file, err := os.Open("./.gogen/domain")
 	if err != nil {
-		fmt.Printf(".gogen/domain is not found. Please run 'gogen init' first\n")
+		fmt.Printf(".gogen/domain is not found. Please run 'gogen domain' first\n")
 		os.Exit(1)
 	}
 	defer func() {

@@ -1,8 +1,5 @@
-POST http://localhost:8000/{{LowerCase .Usecase.Name}}
+POST http://localhost:8000/api/v1/{{LowerCase .Usecase.Name}}
 
-{
-{{range .Usecase.InportRequestFields}}
-  "{{SnakeCase .Name}}": "",
-{{end}}
-
+{ {{range .Usecase.InportRequestFields}}
+  "{{SnakeCase .Name}}": "", {{end}}
 }

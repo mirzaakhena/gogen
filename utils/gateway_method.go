@@ -32,7 +32,7 @@ func (obj *gatewayMethod) readStruct(structName, folderPath string) error {
 
 	//fmt.Printf(">>>>> structname: %s, folderpath:%s\n", structName, folderPath)
 
-	if folderPath == "" {
+	if folderPath == "" || folderPath == "shared/gogen" {
 		return nil
 	}
 

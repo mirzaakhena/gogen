@@ -2,7 +2,7 @@ package {{LowerCase .GatewayName}}
 
 import (
 	"context"
-	"{{.PackagePath}}/shared/driver"
+	"{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/config"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
 	"{{.PackagePath}}/shared/infrastructure/logger"
@@ -12,13 +12,13 @@ import (
 
 type gateway struct {
     log     logger.Logger
-    appData driver.ApplicationData
+    appData gogen.ApplicationData
     config  *config.Config
     // db *clover.DB
 }
 
 // NewGateway ...
-func NewGateway(log logger.Logger, appData driver.ApplicationData, cfg *config.Config) (*gateway) {
+func NewGateway(log logger.Logger, appData gogen.ApplicationData, cfg *config.Config) (*gateway) {
 
     // db, err := clover.Open("database")
     // if err != nil {

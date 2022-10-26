@@ -4,20 +4,25 @@ import (
   "flag"
   "fmt"
   "{{.PackagePath}}/application"
-  "{{.PackagePath}}/shared/driver"
+  "{{.PackagePath}}/shared/gogen"
 )
 
 var Version = "0.0.1"
 
 func main() {
-  appMap := map[string]func() driver.RegistryContract{}
+  appMap := map[string]gogen.Runner{
+  //
+  }
 
   flag.Parse()
 
   app, exist := appMap[flag.Arg(0)]
   if exist {
     fmt.Printf("Version %s", Version)
-    driver.Run(app())
+    err := app.Run()
+    if err != nil {
+        return
+    }
   } else {
     fmt.Println("You may try 'go run main.go <app_name>' :")
     for appName := range appMap {

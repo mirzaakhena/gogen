@@ -1,11 +1,11 @@
 package payload
 
 import (
-    "{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/gogen"
 )
 
 type Payload struct {
 	Data      any            `json:"data"`
-	Publisher driver.ApplicationData `json:"publisher"`
+	Publisher gogen.ApplicationData `json:"publisher"`
 	TraceID   string                 `json:"traceId"`
 }

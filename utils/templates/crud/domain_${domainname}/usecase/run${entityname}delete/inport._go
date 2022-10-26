@@ -1,0 +1,15 @@
+package run{{LowerCase .EntityName}}delete
+
+import (
+	"context"
+    "{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/vo"
+)
+
+const Name = "Run{{PascalCase .EntityName}}Delete"
+
+type InportRequest struct {
+	{{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID
+}
+
+type InportResponse struct {
+}

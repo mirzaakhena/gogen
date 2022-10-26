@@ -2,7 +2,7 @@ package utils
 
 import (
 	"golang.org/x/tools/imports"
-	"io/ioutil"
+	"os"
 )
 
 func Reformat(goFilename string, bytes []byte) error {
@@ -14,7 +14,7 @@ func Reformat(goFilename string, bytes []byte) error {
 	}
 
 	// rewrite it
-	if err := ioutil.WriteFile(goFilename, newBytes, 0644); err != nil {
+	if err := os.WriteFile(goFilename, newBytes, 0644); err != nil {
 		return err
 	}
 

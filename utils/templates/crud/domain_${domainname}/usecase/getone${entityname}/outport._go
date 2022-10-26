@@ -1,0 +1,9 @@
+package getone{{LowerCase .EntityName}}
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+type Outport interface {
+	repository.FindOne{{PascalCase .EntityName}}ByIDRepo
+}

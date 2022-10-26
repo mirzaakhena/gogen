@@ -1,0 +1,10 @@
+package run{{LowerCase .EntityName}}delete
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+type Outport interface {
+    repository.FindOne{{PascalCase .EntityName}}ByIDRepo
+	repository.Delete{{PascalCase .EntityName}}Repo
+}

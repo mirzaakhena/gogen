@@ -1,0 +1,49 @@
+package run{{LowerCase .EntityName}}delete
+
+import (
+	"context"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
+	"{{.PackagePath}}/shared/gogen"
+)
+
+//go:generate mockery --name Outport -output mocks/
+
+type {{CamelCase .EntityName}}DeleteInteractor struct {
+    gogen.NameUsecase
+	outport Outport
+}
+
+func NewUsecase(outputPort Outport) gogen.Inport2 {
+	return &{{CamelCase .EntityName}}DeleteInteractor{
+	    NameUsecase: gogen.NameUsecase{Name: Name},
+		outport: outputPort,
+	}
+}
+
+func (r *{{CamelCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, abstractReq any) (any, error) {
+
+	req, ok := abstractReq.(InportRequest)
+	if !ok {
+		return nil, fmt.Errorf("does not match request")
+	}
+
+	res := &InportResponse{}
+
+    {{CamelCase .EntityName}}Obj, err := r.outport.FindOne{{PascalCase .EntityName}}ByID(ctx, req.{{PascalCase .EntityName}}ID)
+    if err != nil {
+        return nil, err
+    }
+    if {{CamelCase .EntityName}}Obj == nil {
+        return nil, fmt.Errorf("object not found")
+    }
+
+    // you may need to check the authorization part here
+    // is this user allowed to perform this action ?
+
+    err = r.outport.Delete{{PascalCase .EntityName}}(ctx, req.{{PascalCase .EntityName}}ID)
+    if err != nil {
+        return nil, err
+    }
+
+	return res, nil
+}

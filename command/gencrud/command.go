@@ -3,7 +3,6 @@ package gencrud
 import (
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
-	"go/token"
 )
 
 // ObjTemplate ...
@@ -52,11 +51,11 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	// inject to main.__go
-	{
-		fset := token.NewFileSet()
-		utils.InjectToMain(fset, fmt.Sprintf("App%s", entityName))
-	}
+	//// inject to main.__go
+	//{
+	//	fset := token.NewFileSet()
+	//	utils.InjectToMain(fset, fmt.Sprintf("App%s", entityName))
+	//}
 
 	return nil
 

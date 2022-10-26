@@ -1,1 +1,1 @@
-r.Router.POST("/{{LowerCase .Usecase.Name}}", r.authorized(), r.{{CamelCase .Usecase.Name}}Handler())
+resource.POST("/{{LowerCase .Usecase.Name}}", r.authorization(), r.{{CamelCase .Usecase.Name}}Handler())

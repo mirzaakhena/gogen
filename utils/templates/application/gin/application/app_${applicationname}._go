@@ -4,50 +4,43 @@ import (
   "{{.PackagePath}}/domain_{{.DomainName}}/controller/{{LowerCase .ControllerName}}"
   "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .GatewayName}}" {{range .UsecaseNames}}
   "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
-  "{{.PackagePath}}/shared/driver"
+  "{{.PackagePath}}/shared/gogen"
   "{{.PackagePath}}/shared/infrastructure/config"
   "{{.PackagePath}}/shared/infrastructure/server"
   "{{.PackagePath}}/shared/infrastructure/logger"
-  "{{.PackagePath}}/shared/util"
+  "{{.PackagePath}}/shared/infrastructure/token"
 )
 
-type {{CamelCase .ApplicationName}} struct {
-	httpHandler *server.GinHTTPHandler
-	controller  driver.Controller
+type {{CamelCase .ApplicationName}} struct {}
+
+func New{{PascalCase .ApplicationName}}() gogen.Runner {
+	return &{{CamelCase .ApplicationName}}{}
 }
 
-func (c {{CamelCase .ApplicationName}}) RunApplication() {
-	c.controller.RegisterRouter()
-	c.httpHandler.RunApplication()
-}
+func ({{CamelCase .ApplicationName}}) Run() error {
 
-func New{{PascalCase .ApplicationName}}() func() driver.RegistryContract {
+	const appName = "{{CamelCase .ApplicationName}}"
 
-    const appName = "{{CamelCase .ApplicationName}}"
+	cfg := config.ReadConfig()
 
-	return func() driver.RegistryContract {
+	appData := gogen.NewApplicationData(appName)
 
-	    cfg := config.ReadConfig()
+	log := logger.NewSimpleJSONLogger(appData)
 
-		appID := util.GenerateID(4)
+	jwtToken := token.NewJWTToken(cfg.JWTSecretKey)
 
-		appData := driver.NewApplicationData(appName, appID)
+	datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData, cfg)
 
-		log := logger.NewSimpleJSONLogger(appData)
+    httpHandler := server.NewGinHTTPHandler(log, cfg.Servers[appName].Address, appData)
 
-        httpHandler := server.NewGinHTTPHandler(log, cfg.Servers[appName].Address, appData)
+	{{LowerCase .ControllerName}}.NewGinController(log, cfg, jwtToken).
+		RegisterRouter(httpHandler.Router).
+		AddUsecase(
+        // {{range .UsecaseNames}}
+           {{LowerCase .}}.NewUsecase(datasource), {{end}}
+		)
 
-        datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData, cfg)
+	httpHandler.RunWithGracefullyShutdown()
 
-        return &{{CamelCase .ApplicationName}}{
-            httpHandler: &httpHandler,
-            controller: &{{LowerCase .ControllerName}}.Controller{
-                Log: log,
-                Config: cfg,
-                Router: httpHandler.Router, {{range .UsecaseNames}}
-                {{PascalCase .}}Inport: {{LowerCase .}}.NewUsecase(datasource), {{end}}
-            },
-        }
-
-    }
+	return nil
 }

@@ -38,7 +38,6 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
-- https://github.com/mirzaakhena/yourwishes
 
 > Those video and sample apps structure has become obsoleted due to the gogen evolution. 
 

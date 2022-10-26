@@ -1,0 +1,10 @@
+package run{{LowerCase .EntityName}}update
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+type Outport interface {
+	repository.FindOne{{PascalCase .EntityName}}ByIDRepo
+	repository.Save{{PascalCase .EntityName}}Repo
+}

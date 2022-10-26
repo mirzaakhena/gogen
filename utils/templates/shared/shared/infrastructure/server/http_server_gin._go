@@ -9,7 +9,7 @@ import (
 
     "{{.PackagePath}}/shared/infrastructure/config"
 	"{{.PackagePath}}/shared/infrastructure/logger"
-	"{{.PackagePath}}/shared/driver"
+	"{{.PackagePath}}/shared/gogen"
 )
 
 // GinHTTPHandler will define basic HTTP configuration with gracefully shutdown
@@ -18,7 +18,7 @@ type GinHTTPHandler struct {
 	Router *gin.Engine
 }
 
-func NewGinHTTPHandler(log logger.Logger, address string, appData driver.ApplicationData) GinHTTPHandler {
+func NewGinHTTPHandler(log logger.Logger, address string, appData gogen.ApplicationData) GinHTTPHandler {
 
 	router := gin.Default()
 

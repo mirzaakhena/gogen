@@ -1,0 +1,42 @@
+package getall{{LowerCase .EntityName}}
+
+import (
+	"context"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/util"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+//go:generate mockery --name Outport -output mocks/
+
+type {{CamelCase .EntityName}}GetAllInteractor struct {
+    gogen.NameUsecase
+	outport Outport
+}
+
+func NewUsecase(outputPort Outport) gogen.Inport2 {
+	return &{{CamelCase .EntityName}}GetAllInteractor{
+	    NameUsecase: gogen.NameUsecase{Name: Name},
+		outport: outputPort,
+	}
+}
+
+func (r *{{CamelCase .EntityName}}GetAllInteractor) Execute(ctx context.Context, abstractReq any) (any, error) {
+
+	req, ok := abstractReq.(InportRequest)
+	if !ok {
+		return nil, fmt.Errorf("does not match request")
+	}
+
+	res := &InportResponse{}
+
+	{{CamelCase .EntityName}}Obj, count, err := r.outport.FindAll{{PascalCase .EntityName}}(ctx, req.FindAll{{PascalCase .EntityName}}FilterRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	res.Count = count
+	res.Items = util.ToSliceAny({{CamelCase .EntityName}}Obj)
+
+	return res, nil
+}

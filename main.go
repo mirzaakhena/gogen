@@ -25,23 +25,23 @@ import (
 func main() {
 
 	commandMap := map[string]func(...string) error{
-		"usecase":     genusecase.Run,
-		"entity":      genentity.Run,
-		"valueobject": genvalueobject.Run,
-		"valuestring": genvaluestring.Run,
-		"enum":        genenum.Run,
-		"repository":  genrepository.Run,
-		"service":     genservice.Run,
-		"gateway":     gengateway.Run,
-		"controller":  gencontroller.Run,
-		"error":       generror.Run,
-		"test":        gentest.Run,
-		"application": genapplication.Run,
-		"crud":        gencrud.Run,
-		"webapp":      genwebapp.Run,
-		"web":         genweb.Run,
-		"openapi":     genopenapi.Run,
-		"domain":      gendomain.Run,
+		"usecase":     genusecase.Run,     // uc
+		"entity":      genentity.Run,      // ent
+		"valueobject": genvalueobject.Run, // vo
+		"valuestring": genvaluestring.Run, // vs
+		"enum":        genenum.Run,        // enum
+		"repository":  genrepository.Run,  // repo
+		"service":     genservice.Run,     // svc
+		"gateway":     gengateway.Run,     // gtw
+		"controller":  gencontroller.Run,  // ctl
+		"error":       generror.Run,       // err
+		"test":        gentest.Run,        // test
+		"application": genapplication.Run, // app
+		"crud":        gencrud.Run,        // crud
+		"webapp":      genwebapp.Run,      //
+		"web":         genweb.Run,         // web
+		"openapi":     genopenapi.Run,     //
+		"domain":      gendomain.Run,      // dom
 	}
 
 	flag.Parse()

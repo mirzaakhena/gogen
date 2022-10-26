@@ -1,0 +1,5 @@
+package controller
+
+type RegisterHandlerService[T any] interface {
+	RegisterRouter(h T)
+}

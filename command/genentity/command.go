@@ -9,6 +9,7 @@ import (
 type ObjTemplate struct {
 	PackagePath string
 	EntityName  string
+	DomainName  string
 }
 
 func Run(inputs ...string) error {
@@ -28,6 +29,7 @@ func Run(inputs ...string) error {
 	obj := &ObjTemplate{
 		PackagePath: utils.GetPackagePath(),
 		EntityName:  entityName,
+		DomainName:  domainName,
 	}
 
 	fileRenamer := map[string]string{

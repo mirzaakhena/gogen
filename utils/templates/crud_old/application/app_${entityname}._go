@@ -8,7 +8,7 @@ import (
     "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readall"
     "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readone"
     "{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}update"
-    "{{.PackagePath}}/shared/driver"
+    "{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/config"
     "{{.PackagePath}}/shared/infrastructure/server"
     "{{.PackagePath}}/shared/infrastructure/logger"
@@ -17,17 +17,17 @@ import (
 
 type app{{PascalCase .EntityName}} struct {
 	*server.GinHTTPHandler
-	driver.Controller
+	gogen.Controller
 }
 
-func NewApp{{PascalCase .EntityName}}() func() driver.RegistryContract {
-	return func() driver.RegistryContract {
+func NewApp{{PascalCase .EntityName}}() func() gogen.RegistryContract {
+	return func() gogen.RegistryContract {
 
         cfg := config.ReadConfig()
 
 		appID := util.GenerateID(4)
 
-		appData := driver.NewApplicationData("{{LowerCase .EntityName}}", appID)
+		appData := gogen.NewApplicationData("{{LowerCase .EntityName}}", appID)
 
 		log := logger.NewSimpleJSONLogger(appData)
 

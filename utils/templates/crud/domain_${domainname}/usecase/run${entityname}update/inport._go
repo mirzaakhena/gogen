@@ -1,0 +1,18 @@
+package run{{LowerCase .EntityName}}update
+
+import (
+	"context"
+	"time"
+    "{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/entity"
+    "{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/vo"
+)
+
+const Name = "Run{{PascalCase .EntityName}}Update"
+
+type InportRequest struct {
+    entity.{{PascalCase .EntityName}}UpdateRequest
+    {{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID
+}
+
+type InportResponse struct {
+}

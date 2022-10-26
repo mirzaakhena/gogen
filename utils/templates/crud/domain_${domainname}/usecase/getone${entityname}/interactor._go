@@ -1,0 +1,44 @@
+package getone{{LowerCase .EntityName}}
+
+import (
+	"context"
+	"fmt"
+	"{{.PackagePath}}/shared/gogen"
+)
+
+//go:generate mockery --name Outport -output mocks/
+
+type {{CamelCase .EntityName}}GetOneInteractor struct {
+    gogen.NameUsecase
+	outport Outport
+}
+
+func NewUsecase(outputPort Outport) gogen.Inport2 {
+	return &{{CamelCase .EntityName}}GetOneInteractor{
+	    NameUsecase: gogen.NameUsecase{Name: Name},
+		outport: outputPort,
+	}
+}
+
+func (r *{{CamelCase .EntityName}}GetOneInteractor) Execute(ctx context.Context, abstractReq any) (any, error) {
+
+	req, ok := abstractReq.(InportRequest)
+	if !ok {
+		return nil, fmt.Errorf("does not match request")
+	}
+
+	res := &InportResponse{}
+
+    {{CamelCase .EntityName}}Obj, err := r.outport.FindOne{{PascalCase .EntityName}}ByID(ctx, req.{{PascalCase .EntityName}}ID)
+    if err != nil {
+        return nil, err
+    }
+
+    if {{CamelCase .EntityName}}Obj == nil {
+        return nil, fmt.Errorf("object not found")
+    }
+
+    res.{{PascalCase .EntityName}} = {{CamelCase .EntityName}}Obj
+
+	return res, nil
+}

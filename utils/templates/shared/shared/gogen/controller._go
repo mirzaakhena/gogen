@@ -1,0 +1,35 @@
+package gogen
+
+type iUsecase interface {
+	AddUsecase(inports ...Inport2) iUsecase
+}
+
+type RegisterRouterHandler[T any] interface {
+	iUsecase
+	RegisterRouter(h T) RegisterRouterHandler[T]
+}
+
+type BaseController[T any] struct {
+	inportObjs map[string]Inport2
+}
+
+func NewBaseController[T any]() *BaseController[T] {
+	return &BaseController[T]{
+		inportObjs: map[string]Inport2{},
+	}
+}
+
+func (r *BaseController[T]) GetUsecase(name string) Inport2 {
+	uc, ok := r.inportObjs[name]
+	if !ok {
+		return nil
+	}
+	return uc
+}
+
+func (r *BaseController[T]) AddUsecase(inports ...Inport2) iUsecase {
+	for _, inport := range inports {
+		r.inportObjs[inport.UsecaseName()] = inport
+	}
+	return r
+}

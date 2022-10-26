@@ -2,7 +2,7 @@ package {{LowerCase .GatewayName}}
 
 import (
 	"context"
-	"{{.PackagePath}}/shared/driver"
+	"{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/config"
     "{{.PackagePath}}/shared/infrastructure/database"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
@@ -15,12 +15,12 @@ import (
 type gateway struct {
     *database.MongoWithTransaction
     log     logger.Logger
-    appData driver.ApplicationData
+    appData gogen.ApplicationData
     config  *config.Config
 }
 
 // NewGateway ...
-func NewGateway(log logger.Logger, appData driver.ApplicationData, cfg *config.Config) (*gateway) {
+func NewGateway(log logger.Logger, appData gogen.ApplicationData, cfg *config.Config) (*gateway) {
 
 	// db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	// if err != nil {

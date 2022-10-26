@@ -1,6 +1,13 @@
 package driver
 
-import "time"
+import (
+    "time"
+    "{{.PackagePath}}/shared/util"
+)
+
+type Runner interface {
+	Run() error
+}
 
 type Controller interface {
 	RegisterRouter()
@@ -22,7 +29,8 @@ type ApplicationData struct {
 	StartTime     string `json:"startTime"`
 }
 
-func NewApplicationData (appName, appInstanceID string) ApplicationData {
+func NewApplicationData (appName string) ApplicationData {
+    appInstanceID := util.GenerateID(4)
     return ApplicationData{
         AppName:       appName,
         AppInstanceID: appInstanceID,

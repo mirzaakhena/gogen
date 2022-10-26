@@ -1,32 +1,40 @@
 package {{LowerCase .EntityName}}api
 
 import (
-	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}create"
-	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}delete"
-	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readall"
-	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}readone"
-	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .EntityName}}update"
+    "github.com/gin-gonic/gin"
+	"{{.PackagePath}}/shared/gogen"
     "{{.PackagePath}}/shared/infrastructure/config"
     "{{.PackagePath}}/shared/infrastructure/logger"
-	"github.com/gin-gonic/gin"
+    "{{.PackagePath}}/shared/infrastructure/token"
 )
 
-type Controller struct {
-	Router gin.IRouter
-	Log logger.Logger
-	Config *config.Config
-	{{PascalCase .EntityName}}CreateInport  {{LowerCase .EntityName}}create.Inport
-	{{PascalCase .EntityName}}DeleteInport  {{LowerCase .EntityName}}delete.Inport
-	{{PascalCase .EntityName}}ReadAllInport {{LowerCase .EntityName}}readall.Inport
-	{{PascalCase .EntityName}}ReadOneInport {{LowerCase .EntityName}}readone.Inport
-	{{PascalCase .EntityName}}UpdateInport  {{LowerCase .EntityName}}update.Inport
+type selectedRouter = gin.IRouter
+
+type ginController struct {
+    *gogen.BaseController[selectedRouter]
+	log      logger.Logger
+	cfg      *config.Config
+	jwtToken token.JWTToken
 }
 
-// RegisterRouter registering all the router
-func (r *Controller) RegisterRouter() {
-	r.Router.POST("/{{LowerCase .EntityName}}", r.authorized(), r.{{LowerCase .EntityName}}CreateHandler(r.{{PascalCase .EntityName}}CreateInport))
-	r.Router.DELETE("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}id", r.authorized(), r.{{LowerCase .EntityName}}DeleteHandler(r.{{PascalCase .EntityName}}DeleteInport))
-	r.Router.GET("/{{LowerCase .EntityName}}", r.authorized(), r.{{LowerCase .EntityName}}ReadAllHandler(r.{{PascalCase .EntityName}}ReadAllInport))
-	r.Router.GET("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}id", r.authorized(), r.{{LowerCase .EntityName}}ReadOneHandler(r.{{PascalCase .EntityName}}ReadOneInport))
-	r.Router.PUT("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}id", r.authorized(), r.{{LowerCase .EntityName}}UpdateHandler(r.{{PascalCase .EntityName}}UpdateInport))
+func NewGinController(log logger.Logger, cfg *config.Config, tk token.JWTToken) gogen.RegisterRouterHandler[selectedRouter] {
+	return &ginController{
+		BaseController: gogen.NewBaseController[selectedRouter](),
+		log:            log,
+		cfg:            cfg,
+		jwtToken:       tk,
+	}
+}
+
+func (r *ginController) RegisterRouter(router selectedRouter) gogen.RegisterRouterHandler[selectedRouter] {
+
+    resource := router.Group("/api/v1", r.authentication())
+
+	resource.POST("/{{LowerCase .EntityName}}", r.authorization(), r.run{{PascalCase .EntityName}}CreateHandler())
+	resource.GET("/{{LowerCase .EntityName}}", r.authorization(), r.getAll{{PascalCase .EntityName}}Handler())
+	resource.GET("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}_id", r.authorization(), r.getOne{{PascalCase .EntityName}}Handler())
+	resource.PUT("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}_id", r.authorization(), r.run{{PascalCase .EntityName}}UpdateHandler())
+	resource.DELETE("/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}_id", r.authorization(), r.run{{PascalCase .EntityName}}DeleteHandler())
+
+	return r
 }

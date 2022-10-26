@@ -1,0 +1,10 @@
+package run{{LowerCase .EntityName}}create
+
+import (
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/service"
+    "{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
+)
+
+type Outport interface {
+	repository.Save{{PascalCase .EntityName}}Repo
+}
