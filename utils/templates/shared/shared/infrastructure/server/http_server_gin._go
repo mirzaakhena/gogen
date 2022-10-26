@@ -44,8 +44,3 @@ func NewGinHTTPHandler(log logger.Logger, address string, appData gogen.Applicat
 		Router:             router,
 	}
 }
-
-// RunApplication is implementation of RegistryContract.RunApplication()
-func (r *GinHTTPHandler) RunApplication() {
-	r.RunWithGracefullyShutdown()
-}
