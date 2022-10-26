@@ -211,7 +211,7 @@ func Run(inputs ...string) error {
 
 			for _, usecase := range unexistUsecase {
 
-				dataInBytes, err := InjectRegisterUsecase(usecase, appFile)
+				dataInBytes, err := InjectRegisterUsecaseInApplication(usecase, appFile)
 				if err != nil {
 					return err
 				}
@@ -237,11 +237,14 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		// reformat router.go
-		err = utils.Reformat("main.go", dataInBytes)
-		if err != nil {
-			return err
+		if dataInBytes != nil {
+			// reformat router.go
+			err = utils.Reformat("main.go", dataInBytes)
+			if err != nil {
+				return err
+			}
 		}
+
 	}
 
 	//{
@@ -657,9 +660,13 @@ func InjectApplicationInMain(appName string) ([]byte, error) {
 
 	templateWithData := fmt.Sprintf("\"%s\":application.New%s(),", strings.ToLower(appName), utils.PascalCase(appName))
 
-	beforeLine, err := getInjectedLineInMain()
+	beforeLine, err := getInjectedLineInMain(appName)
 	if err != nil {
 		return nil, err
+	}
+
+	if beforeLine == 0 {
+		return nil, nil
 	}
 
 	file, err := os.Open("main.go")
@@ -690,7 +697,7 @@ func InjectApplicationInMain(appName string) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func getInjectedLineInMain() (int, error) {
+func getInjectedLineInMain(appName string) (int, error) {
 
 	fset := token.NewFileSet()
 	astFile, err := parser.ParseFile(fset, "main.go", nil, parser.ParseComments)
@@ -699,17 +706,50 @@ func getInjectedLineInMain() (int, error) {
 	}
 	injectedLine := 0
 
-	//ast.Print(fset, astFile)
+	foundGogenRunner := false
 
 	ast.Inspect(astFile, func(node ast.Node) bool {
 
 		for {
+
+			if foundGogenRunner {
+
+				keyValueExpr, ok := node.(*ast.KeyValueExpr)
+				if !ok {
+					break
+				}
+
+				if keyValueExpr.Key.(*ast.BasicLit).Value == fmt.Sprintf("\"%s\"", appName) {
+					injectedLine = 0
+					return false
+				}
+
+			}
+
 			compositLit, ok := node.(*ast.CompositeLit)
 			if !ok {
 				break
 			}
-			injectedLine = fset.Position(compositLit.Rbrace).Line
-			return false
+
+			mapType, ok := compositLit.Type.(*ast.MapType)
+			if !ok {
+				break
+			}
+
+			selectorExpr, ok := mapType.Value.(*ast.SelectorExpr)
+			if !ok {
+				break
+			}
+
+			if selectorExpr.X.(*ast.Ident).String() == "gogen" && selectorExpr.Sel.String() == "Runner" {
+
+				foundGogenRunner = true
+
+				injectedLine = fset.Position(compositLit.Rbrace).Line
+
+			}
+
+			break
 		}
 
 		return true
@@ -719,14 +759,14 @@ func getInjectedLineInMain() (int, error) {
 
 }
 
-func InjectRegisterUsecase(usecaseName, appFile string) ([]byte, error) {
+func InjectRegisterUsecaseInApplication(usecaseName, appFile string) ([]byte, error) {
 
 	templateWithData := fmt.Sprintf("%s.NewUsecase(datasource),", usecaseName)
 
 	// u.AddUsecase(runordercreate.NewUsecase(datasource))
 	//templateWithData := fmt.Sprintf("u.AddUsecase(%s.NewUsecase(datasource))", usecaseName)
 
-	beforeLine, err := getInjectedLine(appFile)
+	beforeLine, err := getInjectedLineInApplication(appFile)
 	if err != nil {
 		return nil, err
 	}
@@ -759,7 +799,7 @@ func InjectRegisterUsecase(usecaseName, appFile string) ([]byte, error) {
 	return buffer.Bytes(), nil
 }
 
-func getInjectedLine(appFile string) (int, error) {
+func getInjectedLineInApplication(appFile string) (int, error) {
 
 	fset := token.NewFileSet()
 	astFile, err := parser.ParseFile(fset, appFile, nil, parser.ParseComments)
