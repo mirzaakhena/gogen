@@ -1,3 +1,5 @@
+[![Go Report Card](https://goreportcard.com/badge/github.com/mirzaakhena/gogen)](https://goreportcard.com/report/github.com/mirzaakhena/gogen)
+
 # Gogen (Clean Architecture Code Generator)
 Provide code structure based on clean architecure
 
