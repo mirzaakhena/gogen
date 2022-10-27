@@ -1,6 +1,7 @@
 package gogen
 
 import (
+	"fmt"
 	"reflect"
 	"strings"
 )
@@ -24,19 +25,14 @@ func NewBaseController() *BaseController {
 	}
 }
 
-func (r *BaseController) GetUsecase(nameStructType any) any {
-
+func (r *BaseController) GetUsecase(nameStructType any) (any, error) {
 	x := reflect.TypeOf(nameStructType).String()
-
-	//fmt.Printf("keluar>>>> %v\n", x[:strings.Index(x, ".")])
-
 	packageName := x[:strings.Index(x, ".")]
-
 	uc, ok := r.inportObjs[packageName]
 	if !ok {
-		return nil
+		return nil, fmt.Errorf("usecase with package \"%s\" is not registered yet in application", packageName)
 	}
-	return uc
+	return uc, nil
 }
 
 func (r *BaseController) AddUsecase(inports ...any) iUsecase {

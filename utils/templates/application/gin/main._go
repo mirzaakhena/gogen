@@ -25,7 +25,7 @@ func main() {
     return
   }
 
-  fmt.Printf("Version %s", Version)
+  fmt.Printf("Version %s\n", Version)
   err := app.Run()
   if err != nil {
     return
