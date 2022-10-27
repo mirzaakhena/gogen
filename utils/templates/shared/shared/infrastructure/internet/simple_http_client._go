@@ -103,7 +103,14 @@ func (r *SimpleHTTPClient) Timeout(duration time.Duration) *SimpleHTTPClient {
 	return r
 }
 
-func (r *SimpleHTTPClient) Call(responseData any) error {
+type ResponseData struct {
+	Data    any
+	Code    int
+	Status  string
+	Headers map[string][]string
+}
+
+func (r *SimpleHTTPClient) Call(responseData *ResponseData) error {
 
 	if len(r.errs) > 0 {
 		errMessage := ""
@@ -147,6 +154,13 @@ func (r *SimpleHTTPClient) Call(responseData any) error {
 	err = json.Unmarshal(responseBody, responseData)
 	if err != nil {
 		return err
+	}
+
+	responseData = &ResponseData{
+		Data:    responseData,
+		Code:    response.StatusCode,
+		Status:  response.Status,
+		Headers: response.Header,
 	}
 
 	return nil

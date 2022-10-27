@@ -2,7 +2,6 @@ package getall{{LowerCase .EntityName}}
 
 import (
 	"context"
-	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/repository"
 )
@@ -13,7 +12,7 @@ type {{CamelCase .EntityName}}GetAllInteractor struct {
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .EntityName}}GetAllInteractor{
 		outport: outputPort,
 	}

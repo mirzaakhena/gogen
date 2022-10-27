@@ -13,18 +13,17 @@ import (
 
 func (r *ginController) run{{PascalCase .EntityName}}CreateHandler() gin.HandlerFunc {
 
-	anyInport := r.GetUsecase(run{{LowerCase .EntityName}}create.InportRequest{})
-	inport, ok := anyInport.(gogen.Inport[run{{LowerCase .EntityName}}create.InportRequest, run{{LowerCase .EntityName}}create.InportResponse])
-	if !ok {
-		panic("not match")
-	}
+    type InportRequest = run{{LowerCase .EntityName}}create.InportRequest
+	type InportResponse = run{{LowerCase .EntityName}}create.InportResponse
+
+	inport := gogen.GetInport[InportRequest, InportResponse](r.GetUsecase(InportRequest{}))
 
 	type request struct {
-		run{{LowerCase .EntityName}}create.InportRequest
+		InportRequest
 	}
 
 	type response struct {
-		*run{{LowerCase .EntityName}}create.InportResponse
+		*InportResponse
 	}
 
 	return func(c *gin.Context) {
@@ -40,7 +39,7 @@ func (r *ginController) run{{PascalCase .EntityName}}CreateHandler() gin.Handler
 			return
 		}
 
-		var req run{{LowerCase .EntityName}}create.InportRequest
+		var req InportRequest
 		req = jsonReq.InportRequest
 		req.Now = time.Now()
 		req.RandomString = util.GenerateID(16)

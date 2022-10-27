@@ -3,7 +3,10 @@ package run{{LowerCase .EntityName}}delete
 import (
 	"context"
     "{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/vo"
+    "{{.PackagePath}}/shared/gogen"
 )
+
+type Inport gogen.Inport[InportRequest, InportResponse]
 
 type InportRequest struct {
 	{{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID

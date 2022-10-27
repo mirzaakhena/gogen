@@ -4,7 +4,10 @@ import (
 	"context"
 	"time"
 	"{{.PackagePath}}/domain_{{LowerCase .DomainName}}/model/entity"
+	"{{.PackagePath}}/shared/gogen"
 )
+
+type Inport gogen.Inport[InportRequest, InportResponse]
 
 type InportRequest struct {
 	entity.{{PascalCase .EntityName}}CreateRequest

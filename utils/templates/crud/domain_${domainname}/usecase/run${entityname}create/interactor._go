@@ -2,7 +2,6 @@ package run{{LowerCase .EntityName}}create
 
 import (
 	"context"
-	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
 )
 
@@ -12,7 +11,7 @@ type {{CamelCase .EntityName}}CreateInteractor struct {
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .EntityName}}CreateInteractor{
 		outport: outputPort,
 	}

@@ -2,7 +2,10 @@ package {{LowerCase .UsecaseName}}
 
 import (
     "context"
+    "{{.PackagePath}}/shared/gogen"
 )
+
+type Inport gogen.Inport[InportRequest, InportResponse]
 
 type InportRequest struct {
     Page int64

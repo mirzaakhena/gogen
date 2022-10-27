@@ -2,14 +2,13 @@ package {{LowerCase .UsecaseName}}
 
 import (
     "context"
-    "{{.PackagePath}}/shared/gogen"
 )
 
 type {{CamelCase .UsecaseName}}Interactor struct {
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .UsecaseName}}Interactor{
 		outport: outputPort,
 	}

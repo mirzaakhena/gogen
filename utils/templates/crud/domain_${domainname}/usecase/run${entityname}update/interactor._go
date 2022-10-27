@@ -3,7 +3,6 @@ package run{{LowerCase .EntityName}}update
 import (
 	"context"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
-	"{{.PackagePath}}/shared/gogen"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -12,7 +11,7 @@ type {{CamelCase .EntityName}}UpdateInteractor struct {
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .EntityName}}UpdateInteractor{
 		outport: outputPort,
 	}

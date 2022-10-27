@@ -12,11 +12,10 @@ import (
 
 func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 
-	anyInport := r.GetUsecase({{LowerCase .Usecase.Name}}.InportRequest{})
-	inport, ok := anyInport.(gogen.Inport[{{LowerCase .Usecase.Name}}.InportRequest, {{LowerCase .Usecase.Name}}.InportResponse])
-	if !ok {
-		panic("not match")
-	}
+    type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
+	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
+
+    inport := gogen.GetInport[InportRequest, InportResponse](r.GetUsecase(InportRequest{}))
 
 	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
         {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
@@ -40,7 +39,7 @@ func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 			return
 		}
 
-		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+		var req InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
 		req.Now = time.Now(){{ else }}
 		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
 

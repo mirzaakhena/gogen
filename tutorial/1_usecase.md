@@ -5,8 +5,8 @@ Basically Usecase is a simple interface with one method to do only one more thin
 The basic contract form of usecase is in `shared/usecase/usecase.go`
 
 ```go
-type Inport[CONTEXT, REQUEST, RESPONSE any] interface {
-	Execute(ctx CONTEXT, req REQUEST) (*RESPONSE, error)
+type Inport[REQUEST, RESPONSE any] interface {
+	Execute(ctx context.Context, req REQUEST) (*RESPONSE, error)
 }
 ```
 

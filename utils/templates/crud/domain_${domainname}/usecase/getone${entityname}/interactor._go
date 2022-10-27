@@ -3,7 +3,6 @@ package getone{{LowerCase .EntityName}}
 import (
 	"context"
 	"fmt"
-	"{{.PackagePath}}/shared/gogen"
 )
 
 //go:generate mockery --name Outport -output mocks/
@@ -12,7 +11,7 @@ type {{CamelCase .EntityName}}GetOneInteractor struct {
 	outport Outport
 }
 
-func NewUsecase(outputPort Outport) gogen.Inport[InportRequest, InportResponse] {
+func NewUsecase(outputPort Outport) Inport {
 	return &{{CamelCase .EntityName}}GetOneInteractor{
 		outport: outputPort,
 	}

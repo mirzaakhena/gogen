@@ -1,8 +1,0 @@
-.idea/
-.DS_Store
-config.json
-*.app
-*.exe
-*.log
-*.db
-*/node_modules/

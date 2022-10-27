@@ -4,6 +4,8 @@ import (
     "context"
 )
 
+type Inport gogen.Inport[InportRequest, InportResponse]
+
 type InportRequest struct {
 }
 

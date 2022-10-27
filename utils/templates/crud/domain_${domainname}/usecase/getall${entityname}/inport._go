@@ -3,7 +3,10 @@ package getall{{LowerCase .EntityName}}
 import (
 	"context"
 	"time"
+	"{{.PackagePath}}/shared/gogen"
 )
+
+type Inport gogen.Inport[InportRequest, InportResponse]
 
 type InportRequest struct {
     repository.FindAll{{PascalCase .EntityName}}FilterRequest
