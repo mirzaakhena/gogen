@@ -384,7 +384,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 							if utils.LowerCase(ts.Name.String()) == "inportrequest" {
 
 								for _, f := range structObj.Fields.List {
-									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
 									for _, name := range f.Names {
 										inportRequestFields = append(inportRequestFields, &StructField{
 											Name: name.String(),
@@ -397,7 +397,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 							if utils.LowerCase(ts.Name.String()) == "inportresponse" {
 
 								for _, f := range structObj.Fields.List {
-									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+									fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
 									for _, name := range f.Names {
 										inportResponseFields = append(inportResponseFields, &StructField{
 											Name: name.String(),
@@ -441,7 +441,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 	//		if utils.LowerCase(ts.Name.String()) == "inportrequest" {
 	//
 	//			for _, f := range structObj.Fields.List {
-	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
 	//				for _, name := range f.Names {
 	//					inportRequestFields = append(inportRequestFields, &StructField{
 	//						Name: name.String(),
@@ -454,7 +454,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 	//		if utils.LowerCase(ts.Name.String()) == "inportresponse" {
 	//
 	//			for _, f := range structObj.Fields.List {
-	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Mulai(f.Type)
+	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
 	//				for _, name := range f.Names {
 	//					inportResponseFields = append(inportResponseFields, &StructField{
 	//						Name: name.String(),

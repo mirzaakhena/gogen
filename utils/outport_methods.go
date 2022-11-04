@@ -13,6 +13,7 @@ import (
 type OutportMethods []*method
 
 type method struct {
+	InterfaceName    string //
 	MethodName       string //
 	MethodSignature  string //
 	DefaultParamVal  string //
@@ -25,7 +26,7 @@ func NewOutportMethods(domainName, usecaseName string) (OutportMethods, error) {
 
 	var om OutportMethods
 
-	err := om.readInterface("Outport", fileReadPath, GetPackagePath())
+	err := om.readInterface("", "Outport", fileReadPath, GetPackagePath())
 	if err != nil {
 		return nil, err
 	}
@@ -33,7 +34,8 @@ func NewOutportMethods(domainName, usecaseName string) (OutportMethods, error) {
 	return om, nil
 }
 
-func (obj *OutportMethods) readInterface(interfaceName, folderPath, packagePath string) error {
+// readInterface this method is used recursively
+func (obj *OutportMethods) readInterface(packageName, interfaceName, folderPath, packagePath string) error {
 
 	fset := token.NewFileSet()
 	pkgs, err := parser.ParseDir(fset, folderPath, nil, parser.ParseComments)
@@ -61,6 +63,7 @@ func (obj *OutportMethods) readInterface(interfaceName, folderPath, packagePath 
 					is, ok := spec.(*ast.ImportSpec)
 					if ok {
 						handleImports(packagePath, is, ip)
+						continue
 					}
 
 					// Outport is must a type spec
@@ -90,14 +93,16 @@ func (obj *OutportMethods) readInterface(interfaceName, folderPath, packagePath 
 							pathWithGomod := ip[expression]
 							pathOnly := strings.TrimPrefix(pathWithGomod, packagePath+"/")
 							interfaceName := ty.Sel.String()
-							err := obj.readInterface(interfaceName, pathOnly, packagePath)
+							//fmt.Printf(">>>>> %v %v\n", expression, interfaceName)
+
+							err := obj.readInterface(fmt.Sprintf("%s.%s", expression, interfaceName), interfaceName, pathOnly, packagePath)
 							if err != nil {
 								return err
 							}
 
 						case *ast.FuncType: // as direct func (method) interface
 							//TODO cannot handle Something(c context.Context, a Hoho) yet, where the Hoho part is a struct
-							err := obj.handleMethodSignature(file.Name.String(), ty, field.Names[0].String())
+							err := obj.handleMethodSignature(packageName, file.Name.String(), ty, field.Names[0].String())
 							if err != nil {
 								return err
 							}
@@ -120,7 +125,7 @@ func (obj *OutportMethods) readInterface(interfaceName, folderPath, packagePath 
 	return nil
 }
 
-func (obj *OutportMethods) handleMethodSignature(prefixExpression string, fType *ast.FuncType, methodName string) error {
+func (obj *OutportMethods) handleMethodSignature(packageAndInterfaceName string, prefixExpression string, fType *ast.FuncType, methodName string) error {
 
 	// checking first params as context.Context
 	if !obj.validateFirstParamIsContext(fType) {
@@ -136,6 +141,7 @@ func (obj *OutportMethods) handleMethodSignature(prefixExpression string, fType 
 
 	methodSignature := TypeHandler{PrefixExpression: prefixExpression}.processFuncType(&bytes.Buffer{}, fType)
 	msObj := method{
+		InterfaceName:    packageAndInterfaceName,
 		MethodName:       methodName,
 		MethodSignature:  methodSignature,
 		DefaultParamVal:  defParVal,

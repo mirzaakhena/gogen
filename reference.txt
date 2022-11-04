@@ -111,3 +111,5 @@ https://freshman.tech/snippets/go/cross-compile-go-programs/
 
 https://hackandsla.sh/posts/2021-06-18-embed-vuejs-in-go/
 
+https://docs.github.com/en/get-started/writing-on-github/working-with-advanced-formatting/creating-diagrams
+

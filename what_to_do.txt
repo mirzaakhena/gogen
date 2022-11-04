@@ -1,0 +1,26 @@
+can select the web framework
+
+can select the database
+
+can do transaction
+
+can select the log library
+
+can store the log into file
+
+create a documentation
+
+refactor the internal code
+
+create a tutorial for gogen
+
+add to go-awesome
+
+https://github.com/Redocly/redoc
+
+interactive command line
+
+adding timeout in usecase
+
+create unit testing
+

@@ -442,6 +442,11 @@ can we use entity as database structure?
 - i recommend not to use it to database structure
 - create the other structure in gateway is better but you must create a mapper for this
 
+i suggest not to create a wrapper function at the first attempt.
+wrapper function is created after refactoring
+
+i use a existing code as a schema
+
 what you can declare in Outport?
 - (mostly) repository
 - service
@@ -513,18 +518,23 @@ who is using infrastructure?
 - gateway: log, database, publisher, util, token, cache
 - registry: log,
 
-make sure to naming bool variable as positif word like : isRunning instead of isNotRunning, isFound instead of isNotFound
+make sure to naming bool variable as positive word like :
+    isRunning instead of isNotRunning, isFound instead of isNotFound
 
 when to use panic?
 - when you first time initialize the system
-- never call it in runtime method otherwise your system will stop and crash suddenly
+- never call it in runtime method because it is very bad practice
 
 any repository, service or method in entity at least always return the error
 any repository and service method must have context.Context in its first params
 
 You are not allowed to call util directly from entity or service
 
-service may include the repository
+we currently maintain the legacy code, can we use gogen to continue our project?
+The answer is no. But, you can use gogen to build a new partial system from your existing project
+in this way, step by step you can replace the old system with gogen structure
+
+service can include the repository
 
 avoid init method
 
@@ -545,6 +555,54 @@ We always start from
 - According to DDD
 
 
+Event storming
+    Policy
+        Whenever x then y
+        capture reactive logic to events
+        may executed by people or system
+
+    Command
+        Action happening in the system
+        present tense
+        can be a commands, actions, intentions, decisions
+
+    Read Model
+        The information/detail needed
+        as an output
+
+    System
+        receive a command, maybe one of following:
+            external system
+            internal system can't/don't want to maintain
+            different organization
+            logical component
+
+    Actor
+        Person/user/roles
+        The one who trigger the event
+
+    Hotspot
+        issue in the narrative
+        miscommunication between party
+        inconsistency / misunderstanding
+        friction
+        question
+        placeholder for not yet explored branch / case / scenario
+
+    Opportunity
+        sometimes what can be looked at as
+        a hot spot is actually a business opportunity
+
+    Domain Event
+        past tense
+        an event that is interesting for the business
+        relevant to domain expert
+
+    Aggregate
+        unit of transactional consistency
+        one or more domain object whos the state can change
+        but should always  be consistent as a whole
+
 In domain, (entity, vo, service, repository) we will never find dependency to usecase, gateway and controller (outside layer)
 entity never know about the technology it used.
 so you never mention a sql or json or gorm or something else here
@@ -554,6 +612,146 @@ In usecase you mostly mention about entity, vo, service, repository and domerror
 even, no log found here
 
 in gateway and controller, you may mention about entity, vo,
+
+
+GOGEN Framework
+
+# The Background
+...
+
+# How to install
+
+* go install
+    compile, create a binary and install it into your system (you need setting path)
+    you can directly call it in terminal with 'gogen'
+
+* go build
+    just compile and create a binary in under gogen directory
+    you need to call it by './gogen'
+
+* GOOS=windows GOARCH=amd64 go build
+  GOOS=darwin  GOARCH=amd64 go build
+    cross compile for different os patform and create binary
+
+* if you use go build remember to put the binary into .gitignore
+    so it will not included in your git source code
+
+
+# The Concept
+
+* Clean Architecture
+  Usecase, Inport, Interactor, Outport
+  Controller
+  Gateway
+
+* Domain Driven Design
+  Domain
+  Entity
+  Value Object
+  Aggregate --> collection of Entity and Value Object
+  Repository
+  Service
+
+* My Own terminology
+  Application
+  Enum
+  Error
+  Log
+  Config
+
+When to decide to use repository or service
+use repository when you specifically accesing a data storage
+use service when you are using http call or run another action
+
+
+
+
+
+Todo List
+  Entity
+    Todo {
+      ID string
+      Message string
+      Created time.Time
+      Checked bool
+    }
+
+  Usecase
+    Create a Todo : command
+    Display All Todo : query
+    Check a Todo : command
+
+
+Usecase convention : we have two kind of usecase
+- command : create/update/delete  : Run
+- query   : getall/getone         : GetAll, GetOne
+
+
+Repository convention
+  SaveXXX
+  FindAllXXX
+  FindAllXXXByKeyword
+  FindOneXXXBySomething
+  DeleteXXX
+  UpdateXXX
+
+
+effort mostly in entity and usecase
+there is a rule that don't need to log in the usecase
+
+
+7 step in gogen
+
+1. create a domain : todocore
+
+2. create an entity : Todo
+
+3. create a usecase :
+    RunTodoCreate
+    RunTodoCheck
+    GetAllTodo
+
+4. define a Repository or a Service for each usecase
+    RunTodoCreate
+      x := NewTodo()
+      SaveTodo(x)
+
+    RunTodoCheck
+      x := FindOneTodoByID(TodoId)
+      x.Check()
+      SaveTodo(x)
+
+    GetAllTodo
+      x := FindAllTodo()
+      return x
+
+5. create a Gateway
+    SaveTodo() { ... }
+    FindOneTodoByID() { ... }
+    FindAllTodo { ... }
+
+6. Create a Controller
+    RunTodoCreate : POST /todo
+    RunTodoCheck  : PUT  /todo/:todoid
+    GetAllTodo    : GET  /todo
+
+7. Create an application : mytodo
+  Binding a controller + usecase + gateway
+
+
+
+* CRUD
+  "there is no CRUD, everything is a usecase"
+
+  Create  : command    : RunXXXCreate, OnXXXCreate
+  ReadOne : query      : GetOneXXX,    GetOneXXXByID
+  ReadAll : query      : GetAllXXX,    GetAllXXXChecked
+  Update  : command    : RunXXXUpdate, OnXXXUpdate
+  Delete  : command    : RunXXXDelete, OnXXXDelete
+
+
+
+
 
 
 pertanyaan
@@ -582,8 +780,116 @@ pertanyaan
 - apa fungsi controller dan RegisterRouter method ? kenapa gak bikin constructor?
 - Why do you introduce new layout instead of the standart layout from https://github.com/golang-standards/project-layout ?
 
+context bisa dipasang timeout
+locking bisa dipasang di interactor
 
 GOOS=windows GOARCH=amd64 go build
 
 GOOS=darwin GOARCH=amd64 go build
 
+go test -cover ./domain_todocore/usecase/...
+
+
+
+-----
+
+# How to Install
+
+## Install to your system
+
+1. Obviously you need to install the golang in your system
+   make sure you can run golang by running
+```shell
+$ go
+```
+
+2. Git clone gogen from github to your local
+```shell
+$ git clone github.com/mirzaakhena/gogen
+```
+
+3. Install the gogen into your system by running
+
+```shell
+$ go install
+```
+It will compile, create a executable and install it into your system (you need setting path)
+
+4. try this command to call it via terminal
+```shell
+$ gogen
+```
+If you see
+```
+Try one of this command to learn how to use it
+  gogen service
+  gogen gateway
+  gogen controller
+  gogen web
+  gogen usecase
+  gogen application
+  gogen webapp
+  gogen enum
+  gogen repository
+  gogen error
+  gogen test
+  gogen valuestring
+  gogen valueobject
+  gogen crud
+  gogen openapi
+  gogen domain
+  gogen entity
+```
+
+Then gogen is ready to use
+
+But if you see
+```
+zsh: command not found: gogen
+```
+
+Means that you are not setting the go path correctly.
+
+---
+
+### Create an executable
+
+**This is an alternative way to have a gogen executable**
+Ideally gogen is installed in your system, you can use this method if you have difficulty to setting your path and you are in the 'rush' of using gogen
+
+You can also create a gogen executable with
+```shell
+$ go build
+```
+
+it will compile and create a executable file in under gogen directory.
+
+in mac or linux you may find one file named `gogen` in gogen repository
+or in windows it names `gogen.exe`
+
+
+Copy the built executable file and paste it to your project. Then you can call
+```shell
+$ ./gogen
+```
+
+---
+
+### Create a executable for cross platform
+Create for a windows
+```shell
+$ GOOS=windows GOARCH=amd64 go build
+```
+
+Create for a mac
+```shell
+$ GOOS=darwin  GOARCH=amd64 go build
+```
+
+Create for a linux
+```shell
+$ GOOS=linux  GOARCH=amd64 go build
+```
+
+
+If you create gogen executable manually, please remember to always to put the gogen executable into .gitignore so it will ignored in your git source code

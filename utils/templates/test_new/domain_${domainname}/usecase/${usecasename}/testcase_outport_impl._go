@@ -1,0 +1,62 @@
+package {{LowerCase .UsecaseName}}
+
+import (
+	"context"
+	"{{.PackagePath}}/domain_todocore/model/entity"
+	"{{.PackagePath}}/domain_todocore/model/repository"
+	"{{.PackagePath}}/domain_todocore/model/vo"
+	"github.com/stretchr/testify/assert"
+	"testing"
+	"time"
+)
+
+type impl struct {
+	repository.FindOneTodoByIDRepo
+	repository.SaveTodoRepo
+}
+
+type implFindOneTodoByID struct{ t *testing.T }
+
+func (r implFindOneTodoByID) FindOneTodoByID(ctx context.Context, todoID vo.TodoID) (*entity.Todo, error) {
+
+	assert.Equal(r.t, vo.TodoID("A"), todoID)
+
+	return &entity.Todo{
+		ID:      "A",
+		Message: "This is a test",
+		Checked: false,
+		Created: time.Time{},
+	}, nil
+}
+
+// ================================================
+
+type implSaveTodo struct{ t *testing.T }
+
+func (r implSaveTodo) SaveTodo(ctx context.Context, obj *entity.Todo) error {
+
+	assert.Equal(r.t, &entity.Todo{
+		ID:      "A",
+		Message: "This is a test",
+		Checked: true,
+		Created: time.Time{},
+	}, obj)
+
+	return nil
+}
+
+// ================================================
+
+type implFindOneTodoByIDWithCheckedTrue struct{ t *testing.T }
+
+func (r implFindOneTodoByIDWithCheckedTrue) FindOneTodoByID(ctx context.Context, todoID vo.TodoID) (*entity.Todo, error) {
+
+	assert.Equal(r.t, vo.TodoID("A"), todoID)
+
+	return &entity.Todo{
+		ID:      "A",
+		Message: "This is a test",
+		Checked: true,
+		Created: time.Time{},
+	}, nil
+}

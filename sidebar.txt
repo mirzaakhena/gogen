@@ -1,0 +1,54 @@
+
+Introduction : proposed to Navbar
+  What is
+  Common Existing Problem
+  What Gogen Solve
+  Who need this tools
+  Benefit
+  Applied Principle 
+  Learning Process 
+
+Getting Started : proposed to Navbar
+  User Prerequisite
+  System Prerequisite
+  Installation
+  Basic Concept
+  Quick Demo
+    Helloworld
+    Crud Product
+
+Tutorial : proposed to Navbar
+  Todolist
+  Digital Wallet
+  Simple Product Order
+  Register and Login
+  Old Sample code
+  Video
+  
+Feature : proposed to Navbar
+  Architecture
+  Code Structure Layout
+  Command Line Interface
+  Build In component
+  Naming Convention
+  How it Works
+  Code Generation Behaviour
+  Technology
+
+Learn More : proposed to Navbar
+  Concept Inspiration
+    CA
+    Hexagonal
+    DDD
+    Design Principle
+
+  How to
+    Gateway file management
+    Transaction Handling
+    Locking Handling
+    Switching Technology
+    Best Practice
+    How to write a testing
+
+  FAQ
+

@@ -58,6 +58,7 @@ func Run(inputs ...string) error {
 		obj.UsecaseName = &inputs[2]
 	}
 
+	// first we create the shared
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
 	if err != nil {
 		return err
@@ -65,9 +66,11 @@ func Run(inputs ...string) error {
 
 	var notExistingMethod utils.OutportMethods
 
+	// user is not mentioning about the specific usecase name
 	if obj.UsecaseName == nil {
 
-		var folders []string
+		// we read all the usecase folders
+		//var folders []string
 		fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
 		if err != nil {
 			return err
@@ -77,17 +80,22 @@ func Run(inputs ...string) error {
 
 		for _, file := range fileInfo {
 
+			// skip all the file
 			if !file.IsDir() {
 				continue
 			}
 
-			folders = append(folders, file.Name())
+			folderName := file.Name()
 
-			em, err := createGatewayImpl(driverName, file.Name(), obj)
+			// register all usecase name
+			//folders = append(folders, folderName)
+
+			em, err := createGatewayImpl(driverName, folderName, obj)
 			if err != nil {
 				return err
 			}
 
+			// we filter only the new method and skip the existing
 			for _, method := range em {
 
 				if _, exist := uniqueMethodMap[method.MethodName]; exist {
@@ -101,6 +109,8 @@ func Run(inputs ...string) error {
 		}
 
 	} else {
+
+		// create only for specific usecase
 
 		em, err := createGatewayImpl(driverName, *obj.UsecaseName, obj)
 		if err != nil {
@@ -148,6 +158,10 @@ func createGatewayImpl(driverName, usecaseName string, obj ObjTemplate) (utils.O
 	if err != nil {
 		return nil, err
 	}
+
+	//for _, m := range outportMethods {
+	//	fmt.Printf(">>>>>>>>>>>>> %v\n", m)
+	//}
 
 	obj.Methods = outportMethods
 	err = utils.CreateEverythingExactly("templates/gateway/", driverName, map[string]string{

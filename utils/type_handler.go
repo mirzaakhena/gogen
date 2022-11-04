@@ -11,7 +11,7 @@ type TypeHandler struct {
 	PrefixExpression string //
 }
 
-func (r TypeHandler) Mulai(expr ast.Expr) string {
+func (r TypeHandler) Start(expr ast.Expr) string {
 	return r.appendType(expr)
 }
 

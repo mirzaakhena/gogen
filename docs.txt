@@ -1,0 +1,390 @@
+Introduction
+
+  What is Gogen
+    scaffolding tools for generate a standard code for every enterprise project
+
+  Existing Problem Statement (Background and Reason)
+    Every a new joiner developer will follow their ancestor developer code structure.    
+    to many files to manage
+    very long line of code in one file
+    unclear naming
+    difficulty to find a name
+    create a file manually and naming it
+    create basic boiler plate code everytime
+    manage and relation code
+    growing of requirement
+    manage dependency of modules
+    spagheti code
+
+  What Gogen want to solve
+    Code Standard
+    Simple and fix structure layout
+    Code convention
+    Enforce and guide into clean code
+    Clear step on development
+    Clear task for developer
+    fasten development
+    easy module switching
+    clear separation between infrastructure and business process code
+    make your code readable
+    easy to find a bug
+    easy to test
+    completed basic infrastructure
+    giving a basic and useful template
+    reduce duplicate code
+
+  Who need to learn and use Gogen
+    a lazy developer who want speed up the developemnt
+    by focusing on bussines process and not want to wasting 
+    time writing a boiler plate code
+
+  Benefit using gogen
+    1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
+    2. Because it has become a standard, this tool help the communication process between developers QA, project manager, and product owner,
+    3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitated.
+    4. Speed up the code review process and minimize code conflicts during code merges.
+    5. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
+    6. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories. For example every member of developer team can have task per usecase.  
+
+  Principle Applied
+    1. These tools should not be "know-it-all" tools. The programmer should still be the master of design. Because I don't want these tools to drive logic programmers instead. This tool only helps to guide to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
+    2. This tool has several alternatives to choose the technology. So if the programmer has better technology or is more familiar, the programmer can easily replace it.
+    3. I apply the Scream Architecture concept in it so that the generated code can speak for itself to the developers about what their role is and what they are doing (helping the learning process).    
+
+Main Concept
+  Clean Architecture
+    Usecase
+    Input Port
+    Interactor
+    Output Port
+    Controller
+    Gateway
+    Presenter
+
+  Port and Adapter (Hexagonal) Architecture
+
+  Domain Driven Design
+    Entity
+    Value Object
+    Aggregate
+    Service
+    Repository
+
+  Design Principle
+    Design Pattern Strategy
+    Programming to interface not an implementation
+    SOLID Pattern
+
+  Architecture
+    Diagram
+
+  Learning and development Philosophy
+    Copy paste is faster than writing from beginning
+    Adjust and renaming the template content after copy paste
+    Always start from usecase
+    There is no CRUD, everything is a usecase
+    Being lazy and productive in the same time
+    Respect your own code
+    Separate the Business Process and Infrastructure
+    Unlimited freedom is not good, you need to set a boundary (standard)    
+
+  Learning Curve Comparison
+    There are two ways to learn
+
+    - learning from the fundamental
+        tobe an expert
+        learning from detail component
+        learning specific things
+        know the basic knowledge
+        not know the purpose
+        focus to the process
+        slow
+        learn from theoretically
+
+    - learning from middle of project
+        to be a user
+        learning from the template
+        learning general
+        not very understand the basic knowledge
+        know the purpose
+        focus to the goal
+        fast
+        learn from best practice
+
+    gogen apply the second way. 
+    The reason is you have limited time to learn all the up-to-date technology
+    you need an accelerated way to learn
+    learning from working sample is easier than writing code from the scratch
+    in the future we even no need to write any of code we just command the AI to write it for us
+    we will focus on logic only not to "how to use and write the infrastructure code"
+
+
+How it Works
+
+  gogen works by using the Abstract Syntax Tree (AST) by reading the existing code as a schema to generate the other one
+  Some code is depend on the other code in different level
+  for example, in order to create the gateway implementation, 
+  gogen will read all the outport codem filter only the unexisted method and add it into the gateway files
+  gogen also support the code injection using the special character
+
+  entity
+    create a folder and file [your_domain]/model/entity/[your_entity_name].go
+    create a folder and file [your_domain]/model/vo/[your_entity_id_name].go
+
+  usecase
+    create a folder [your_domain]/usecase/[your_usecase_name]/
+    and 4 file inport.go, interactor.go, outport.go, README.md
+    also adjust the package name, usecase name in every generated files
+
+  gateway
+    read the Outport interface in every usecase
+      it does not depend on filename
+      Outport name can be change in config file
+    read all import in the file
+    read the method list in the interface
+    if we met interface composition,
+      then go through int that interface by looking into the package
+    if we directly met the method then
+      add it into some list
+    if the gateway.go file is not exist
+    read all the method name existed in the gateway
+    compare it with the method list we already have
+    add the only unexisted method in the gateway file
+
+  test
+    ...
+
+  controller
+    read the Inport, InportRequest and InportResponse in all usecases
+    create an handler file for every usecase
+    create a router file if not exist
+    read all the existed handler in router
+    find out the latest line of code in router
+    compare then add unexisted handler into router
+    inject the new handler into router based on latest line of code
+    inject the inportrequest and inportresponse
+
+  application
+    read all the usecase
+    read all the controller
+    read all the gateway
+    read existing application
+    create application file if not exist
+    create main.go if not exist
+    inject the usecase into application file
+    inject the application into main.go file
+
+Code Generation Behaviour
+  Ignore the existing file
+  Create new file
+  Code injection
+    in middle of code
+    in last line of code
+
+Quick Start
+  Step By Step and flow
+  There are 7 basic step in order to using the gogen
+  1. create a domain
+  2. create an entity
+  3. create an usecase
+  4. Create a Repository or a Service
+  5. create a Gateway
+  6. Create a Controller
+  7. Create an application : mytodo
+
+  Helloworld
+    Write Helloworld with gogen
+  
+  Todo list
+    Create a simple todo list
+
+  Simple CRUD
+    Create a complete CRUD code with a very few step
+
+Other Example and Tutorial
+  Simple Product Order
+  Register and Login
+  Digital Wallet
+
+How to write a testing
+  generate the template
+  create the variation of inport request
+  create the variation of inport response
+  create the variation of outport implementation
+  combine inport request, inport response, and outport impl in scenario
+  register the scenario
+  run the testcase
+
+How to create an authentication and simple RBAC
+
+Command Line Interface
+  domain
+  entity
+  valueobject
+  valuestring
+  usecase
+  test
+  repository
+  service
+  gateway
+  controller
+  application
+  crud
+
+Code Structure
+  Controller
+    handler_usecasename.go
+    interceptor.go
+    router.go
+
+  Usecase
+    inport.go
+    interactor.go
+    outport.go
+
+  Gateway
+    parent gateway
+      gateway.go
+    child implementation file gateway
+      impl_entityname.go
+
+  Testcase
+    testcase_inport_request.go
+    testcase_inport_response.go
+    testcase_outport_impl.go
+    testcase_scenario_list.go
+    testcase_scenario_test.go
+
+  Application
+
+Feature
+  Enum
+    we want to have suggestion capability from IDE so we create it as a const
+
+  Error
+    we want to have suggestion capability from IDE so we create it as a const
+
+  Log
+    log structure with trace id and other essential information
+    Log only available on controller and gateway
+
+  Ping and health check
+    we can see what is the application name, the instance id and the started time
+
+  TraceID
+    it shown in log and every request. 
+    created with 16 character of nanoid 
+    with uppercase alphabet and numeric
+
+  Config
+    simple config (you choose) using json or yaml
+
+  Dependency Injection
+    We use DI in gateway implementation
+
+  mocking the implementation
+    for testing puspose, we can create mock implementation very easy with gogen structure
+
+  Unit Testing
+    we can do testing for every usecase by generate the test code template
+    and you can add your own testing scenario
+
+  By pass code for testing
+    It is very easy to by pass the controller if you want to run the code directly from console for quick test 
+
+  Switching implementation capability
+    since we can create different implementation in different package (folder)
+    we can switch the implementation very easily from application
+
+  Simple Web UI
+    still exeprimental
+    use the vitejs
+
+  multiple application in one repo
+    with gogen you can create many related application only in one repo account
+
+  separate application into domain
+    you can apply the domain concept in one repo account
+
+Advance and Tips
+  Gateway file management
+  Transaction
+  Locking
+
+Technology
+  only exist on Controller and Gateway
+  Controller
+    http server
+      gin
+      echo
+      gorilla
+      fiber
+      chi
+      martini
+    rpc server
+    grpc server
+    messaging subcriber / consumer
+      google pubsub
+      redis pub/sub
+      kafka
+      rabbitmq
+      nsq
+      zeromq
+
+  Gateway
+    database
+      mongodb
+      gorm
+    cache
+      redis
+    http client
+      simplehttpclient
+      resty
+    rpc client
+    grpc client
+    messaging publisher / producer
+      google pubsub
+      redis pubsub
+      kafka
+      rabbitmq
+      nsq
+      zeromq
+
+  Log
+    simple built-in log 
+    logrus
+    zap
+
+User Prerequisite
+    You need to understand the basic programming
+    you know about common golang knowledge
+
+Installation
+  golang install
+  vscode install
+  vscode golang plugin install
+  go build
+  go install
+
+Frequently Ask Question
+
+Best Practice
+    separating file for sake of readability
+    return value from function/method param or from result?
+    context.Context in every
+        usecase method
+        repository method
+        service method
+    Every entity has the ID in value object (value string) form
+    struct composition in gateway
+    interface composition in outport
+    always catch the error
+    do not poluting the log
+    avoid if else
+    negative scenario at first part of code and positive at the last part
+    how to initiate the slice, map, object
+    simple code is better
+    coding to interface is faster way to develop
+    write a TODO in every technical debt
+
+
