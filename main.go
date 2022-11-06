@@ -20,6 +20,8 @@ import (
 	"github.com/mirzaakhena/gogen/command/genvaluestring"
 )
 
+var Version = "v0.0.1"
+
 func main() {
 
 	commandMap := map[string]func(...string) error{
@@ -46,6 +48,7 @@ func main() {
 	cmd := flag.Arg(0)
 
 	if cmd == "" {
+		fmt.Printf("Gogen %s\n", Version)
 		fmt.Printf("Try one of this command to learn how to use it\n")
 		for k := range commandMap {
 			fmt.Printf("  gogen %s\n", k)

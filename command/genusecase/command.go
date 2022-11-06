@@ -25,12 +25,13 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 
 	usecaseName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		UsecaseName: usecaseName,
 	}
 
