@@ -6,7 +6,7 @@ Introduction : proposed to Navbar
   Who need this tools
   Benefit
   Applied Principle 
-  Learning Process 
+  Learning Process
 
 Getting Started : proposed to Navbar
   User Prerequisite
@@ -28,12 +28,25 @@ Tutorial : proposed to Navbar
 Feature : proposed to Navbar
   Architecture
   Code Structure Layout
+  Folder and File explain
   Command Line Interface
   Build In component
   Naming Convention
-  How it Works
+
+How it works
+  AST
+  Create File and Injected Content  
   Code Generation Behaviour
-  Technology
+  Contribute
+
+Switch Technology
+  gin
+  echo
+  mysql
+  postgre
+  mongodb
+  logrus
+  zap
 
 Learn More : proposed to Navbar
   Concept Inspiration

@@ -2,8 +2,9 @@ package genusecase
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"strings"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -17,8 +18,8 @@ func Run(inputs ...string) error {
 	if len(inputs) < 1 {
 		err := fmt.Errorf("\n" +
 			"   # Create a new usecase\n" +
-			"   gogen usecase CreateOrder\n" +
-			"     'CreateOrder' is an usecase name\n" +
+			"   gogen usecase RunOrderCreate\n" +
+			"     'RunOrderCreate' is an usecase name\n" +
 			"\n")
 
 		return err
