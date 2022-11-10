@@ -5,12 +5,13 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"go/ast"
 	"go/parser"
 	"go/token"
 	"os"
 	"strings"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -46,11 +47,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	applicationName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath:     utils.GetPackagePath(),
+		PackagePath:     packagePath,
 		DomainName:      domainName,
 		ApplicationName: applicationName,
 		ControllerName:  nil,

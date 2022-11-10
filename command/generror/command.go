@@ -2,8 +2,9 @@ package generror
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"go/token"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -24,11 +25,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	errorName := inputs[0]
 
 	obj := ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		ErrorName:   errorName,
 	}
 

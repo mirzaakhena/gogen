@@ -2,6 +2,7 @@ package genentity
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/utils"
 )
 
@@ -23,11 +24,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	entityName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		EntityName:  entityName,
 		DomainName:  domainName,
 	}

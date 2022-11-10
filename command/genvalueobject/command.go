@@ -2,6 +2,7 @@ package genvalueobject
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/utils"
 )
 
@@ -24,11 +25,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	valueObjectName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath:     utils.GetPackagePath(),
+		PackagePath:     packagePath,
 		ValueObjectName: valueObjectName,
 		FieldNames:      inputs[1:],
 	}

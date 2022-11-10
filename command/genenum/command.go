@@ -2,6 +2,7 @@ package genenum
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/utils"
 )
 
@@ -24,11 +25,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	enumName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		EnumName:    enumName,
 		EnumValues:  inputs[1:],
 	}

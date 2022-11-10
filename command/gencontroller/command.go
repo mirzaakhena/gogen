@@ -44,6 +44,8 @@ type StructField struct {
 
 func Run(inputs ...string) error {
 
+	packagePath := utils.GetPackagePath()
+
 	if len(inputs) < 1 {
 
 		frameworks := ""
@@ -137,8 +139,6 @@ func Run(inputs ...string) error {
 		}
 
 	}
-
-	packagePath := utils.GetPackagePath()
 
 	obj := ObjTemplate{
 		PackagePath:    packagePath,

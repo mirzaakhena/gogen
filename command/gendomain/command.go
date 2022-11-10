@@ -3,11 +3,12 @@ package gendomain
 import (
 	"bufio"
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"math/rand"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -34,6 +35,8 @@ func Run(inputs ...string) error {
 
 	domainName := inputs[0]
 
+	packagePath := utils.GetPackagePath()
+
 	gomodPath := "your/path/project"
 	defaultDomain := fmt.Sprintf("-%s", utils.LowerCase(domainName))
 
@@ -51,7 +54,7 @@ func Run(inputs ...string) error {
 
 	obj := &ObjTemplate{
 		ExecutableName: utils.GetExecutableName(),
-		PackagePath:    utils.GetPackagePath(),
+		PackagePath:    packagePath,
 		GomodPath:      gomodPath,
 		DefaultDomain:  defaultDomain,
 		DomainName:     domainName,

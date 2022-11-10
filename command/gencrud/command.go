@@ -2,6 +2,7 @@ package gencrud
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/command/gengateway"
 	"github.com/mirzaakhena/gogen/utils"
 )
@@ -14,6 +15,8 @@ type ObjTemplate struct {
 }
 
 func Run(inputs ...string) error {
+
+	packagePath := utils.GetPackagePath()
 
 	if len(inputs) < 1 {
 		err := fmt.Errorf("\n" +
@@ -30,7 +33,7 @@ func Run(inputs ...string) error {
 	entityName := inputs[0]
 
 	obj := &ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		EntityName:  entityName,
 		DomainName:  domainName,
 	}

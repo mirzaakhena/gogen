@@ -2,11 +2,12 @@ package genservice
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"go/ast"
 	"go/printer"
 	"go/token"
 	"os"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -30,11 +31,13 @@ func Run(inputs ...string) error {
 			"\n")
 		return err
 	}
+
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	serviceName := inputs[0]
 
 	obj := ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		ServiceName: serviceName,
 		UsecaseName: nil,
 	}

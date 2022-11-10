@@ -2,6 +2,7 @@ package genwebapp
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/utils"
 )
 

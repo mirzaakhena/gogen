@@ -2,8 +2,9 @@ package gengateway
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/utils"
 	"os"
+
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -38,11 +39,12 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	gatewayName := inputs[0]
 
 	obj := ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		GatewayName: gatewayName,
 		DomainName:  utils.LowerCase(domainName),
 		UsecaseName: nil,

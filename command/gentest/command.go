@@ -2,6 +2,7 @@ package gentest
 
 import (
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/utils"
 )
 
@@ -27,12 +28,13 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	testName := inputs[0]
 	usecaseName := inputs[1]
 
 	obj := ObjTemplate{
-		PackagePath: utils.GetPackagePath(),
+		PackagePath: packagePath,
 		UsecaseName: usecaseName,
 		TestName:    testName,
 		DomainName:  domainName,

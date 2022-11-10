@@ -2,12 +2,13 @@ package genrepository
 
 import (
 	"fmt"
-	"github.com/mirzaakhena/gogen/command/genentity"
-	"github.com/mirzaakhena/gogen/utils"
 	"go/ast"
 	"go/printer"
 	"go/token"
 	"os"
+
+	"github.com/mirzaakhena/gogen/command/genentity"
+	"github.com/mirzaakhena/gogen/utils"
 )
 
 // ObjTemplate ...
@@ -37,12 +38,13 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	packagePath := utils.GetPackagePath()
 	domainName := utils.GetDefaultDomain()
 	repositoryName := inputs[0]
 	entityName := inputs[1]
 
 	obj := ObjTemplate{
-		PackagePath:    utils.GetPackagePath(),
+		PackagePath:    packagePath,
 		RepositoryName: repositoryName,
 		EntityName:     entityName,
 		UsecaseName:    nil,
