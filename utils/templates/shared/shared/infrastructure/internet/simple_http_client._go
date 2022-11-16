@@ -23,7 +23,7 @@ type SimpleHTTPClient struct {
 //	"Content-Type": "application/json"
 //
 // and the timeout is 3 second
-func NewSimpleHTTPClient(method, url string, requestData ...any) *SimpleHTTPClient {
+func New(method, url string, requestData ...any) *SimpleHTTPClient {
 
 	errs := make([]error, 0)
 

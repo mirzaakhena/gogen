@@ -16,18 +16,27 @@ type {{PascalCase .EntityName}}CreateRequest struct {
 	Now          time.Time `json:"-"`
 }
 
+func (r {{PascalCase .EntityName}}CreateRequest) Validate() error {
+
+    return nil
+}
+
 func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}CreateRequest) (*{{PascalCase .EntityName}}, error) {
+
+    err := req.Validate()
+	if err != nil {
+		return nil, err
+	}
 
 	id, err := vo.New{{PascalCase .EntityName}}ID(req.RandomString, req.Now)
 	if err != nil {
 		return nil, err
 	}
 
-	// add validation and assignment value here ...
-
 	var obj {{PascalCase .EntityName}}
 	obj.ID = id
 	obj.Created = req.Now
+	// another field input here ...
 
     return &obj, nil
 }
@@ -36,9 +45,19 @@ type {{PascalCase .EntityName}}UpdateRequest struct {
 	// add field to update here ...
 }
 
+func (r {{PascalCase .EntityName}}UpdateRequest) Validate() error {
+
+    return nil
+}
+
 func (r *{{PascalCase .EntityName}}) Update(req {{PascalCase .EntityName}}UpdateRequest) error {
 
-    // add validation and assignment value here ...
+    err := req.Validate()
+    if err != nil {
+        return nil, err
+    }
+
+    // update field here ...
 
 	return nil
 }

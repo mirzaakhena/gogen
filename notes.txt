@@ -446,6 +446,9 @@ i suggest not to create a wrapper function at the first attempt.
 wrapper function is created after refactoring
 
 i use a existing code as a schema
+    instead of creating a schema for your code generation,
+    why not just use the code it self (which follow the convention) as a schema
+    to generate the next code?
 
 what you can declare in Outport?
 - (mostly) repository
