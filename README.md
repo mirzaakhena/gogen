@@ -41,7 +41,10 @@ https://youtu.be/ZqZQGllfbbs
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
 
-> Those video and sample apps structure has become obsoleted due to the gogen evolution. 
+> For those video and sample apps structure has become obsoleted due to the gogen evolution.
+
+## Documentation (still under development)
+https://mirzaakhena.github.io
 
 ## Structure
 This generator has basic structure like this
