@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/mirzaakhena/gogen/command/genusecase"
 
 	"github.com/mirzaakhena/gogen/command/genapplication"
 	"github.com/mirzaakhena/gogen/command/gencontroller"
@@ -15,7 +16,6 @@ import (
 	"github.com/mirzaakhena/gogen/command/genrepository"
 	"github.com/mirzaakhena/gogen/command/genservice"
 	"github.com/mirzaakhena/gogen/command/gentest"
-	"github.com/mirzaakhena/gogen/command/genusecase"
 	"github.com/mirzaakhena/gogen/command/genvalueobject"
 	"github.com/mirzaakhena/gogen/command/genvaluestring"
 )
@@ -24,25 +24,55 @@ var Version = "v0.0.1"
 
 func main() {
 
-	commandMap := map[string]func(...string) error{
-		"domain":      gendomain.Run,      // dom
-		"usecase":     genusecase.Run,     // uc
-		"entity":      genentity.Run,      // ent
-		"valueobject": genvalueobject.Run, // vo
-		"valuestring": genvaluestring.Run, // vs
-		"enum":        genenum.Run,        // enum
-		"repository":  genrepository.Run,  // repo
-		"service":     genservice.Run,     // svc
-		"gateway":     gengateway.Run,     // gtw
-		"controller":  gencontroller.Run,  // ctl
-		"error":       generror.Run,       // err
-		"test":        gentest.Run,        // test
-		"application": genapplication.Run, // app
-		"crud":        gencrud.Run,        // crud
-		// "webapp":      genwebapp.Run,      //
-		// "web":         genweb.Run,         // web
-		// "openapi":     genopenapi.Run,     //
+	type C struct {
+		Command string
+		Func    func(...string) error
 	}
+
+	commands := make([]C, 0)
+
+	commands = append(commands,
+		C{"domain", gendomain.Run},
+		C{"entity", genentity.Run},
+		C{"valueobject", genvalueobject.Run},
+		C{"valuestring", genvaluestring.Run},
+		C{"enum", genenum.Run},
+		C{"usecase", genusecase.Run},
+		C{"repository", genrepository.Run},
+		C{"service", genservice.Run},
+		C{"test", gentest.Run},
+		C{"gateway", gengateway.Run},
+		C{"controller", gencontroller.Run},
+		C{"error", generror.Run},
+		C{"application", genapplication.Run},
+		C{"crud", gencrud.Run},
+	)
+
+	commandMap := map[string]func(...string) error{}
+
+	for _, c := range commands {
+		commandMap[c.Command] = c.Func
+	}
+
+	//commandMap := map[string]func(...string) error{
+	//	"domain":      gendomain.Run,      // dom
+	//	"usecase":     genusecase.Run,     // uc
+	//	"entity":      genentity.Run,      // ent
+	//	"valueobject": genvalueobject.Run, // vo
+	//	"valuestring": genvaluestring.Run, // vs
+	//	"enum":        genenum.Run,        // enum
+	//	"repository":  genrepository.Run,  // repo
+	//	"service":     genservice.Run,     // svc
+	//	"test":        gentest.Run,        // test
+	//	"gateway":     gengateway.Run,     // gtw
+	//	"controller":  gencontroller.Run,  // ctl
+	//	"error":       generror.Run,       // err
+	//	"application": genapplication.Run, // app
+	//	"crud":        gencrud.Run,        // crud
+	//	// "webapp":      genwebapp.Run,      //
+	//	// "web":         genweb.Run,         // web
+	//	// "openapi":     genopenapi.Run,     //
+	//}
 
 	flag.Parse()
 	cmd := flag.Arg(0)
@@ -50,8 +80,8 @@ func main() {
 	if cmd == "" {
 		fmt.Printf("Gogen %s\n", Version)
 		fmt.Printf("Try one of this command to learn how to use it\n")
-		for k := range commandMap {
-			fmt.Printf("  gogen %s\n", k)
+		for _, k := range commands {
+			fmt.Printf("  gogen %s\n", k.Command)
 		}
 		return
 	}

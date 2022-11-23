@@ -212,13 +212,10 @@ By organize this usecase in a such structure, we can easily change the *Controll
 - allow you to do code modification for experimental purpose without changing the current implementation
 - there is no automagically in gogen. 
 
-## Download it
+## Install Gogen
+Install it into your local system
 ```
-$ go get github.com/mirzaakhena/gogen
-```
-Install it into your local system (make sure you are in gogen directory)
-```
-$ go install
+$ go install -v github.com/mirzaakhena/gogen@latest
 ```
 
 ## Step by step to working with gogen

@@ -9,14 +9,22 @@ import (
 type {{PascalCase .EntityName}} struct {
 	ID vo.{{PascalCase .EntityName}}ID `bson:"_id" json:"id"`
 	Created time.Time `bson:"created" json:"created"`
+	Updated time.Time `bson:"updated" json:"updated"`
+
+	// edit or add new necessary field here ...
 }
 
 type {{PascalCase .EntityName}}CreateRequest struct {
 	RandomString string    `json:"-"`
 	Now          time.Time `json:"-"`
+
+    // edit or add new necessary field for create request here ...
+
 }
 
 func (r {{PascalCase .EntityName}}CreateRequest) Validate() error {
+
+    // validate the create request here ...
 
     return nil
 }
@@ -36,16 +44,24 @@ func New{{PascalCase .EntityName}}(req {{PascalCase .EntityName}}CreateRequest) 
 	var obj {{PascalCase .EntityName}}
 	obj.ID = id
 	obj.Created = req.Now
+	obj.Updated = req.Now
+
 	// another field input here ...
 
     return &obj, nil
 }
 
 type {{PascalCase .EntityName}}UpdateRequest struct {
-	// add field to update here ...
+
+    Now time.Time `json:"-"`
+
+	// add new necessary field to update request here ...
+
 }
 
 func (r {{PascalCase .EntityName}}UpdateRequest) Validate() error {
+
+    // validate the update request here ...
 
     return nil
 }
@@ -54,8 +70,10 @@ func (r *{{PascalCase .EntityName}}) Update(req {{PascalCase .EntityName}}Update
 
     err := req.Validate()
     if err != nil {
-        return nil, err
+        return err
     }
+
+    r.Updated = req.Now
 
     // update field here ...
 

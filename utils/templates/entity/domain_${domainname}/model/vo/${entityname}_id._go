@@ -10,6 +10,9 @@ type {{PascalCase .EntityName}}ID string
 
 func New{{PascalCase .EntityName}}ID(randomStringID string, now time.Time) ({{PascalCase .EntityName}}ID, error) {
 	var obj = {{PascalCase .EntityName}}ID(fmt.Sprintf("OBJ-%s-%s", now.Format("060102"), randomStringID))
+
+	// you may change it as necessary ...
+
 	return obj, nil
 }
 
