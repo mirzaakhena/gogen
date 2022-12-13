@@ -33,7 +33,7 @@ Some benefits that can be obtained if you apply this tool are:
 However, this is just a tools. The important things to remember is we must follow the basic principles of clean architecture itself. You may copy and paste the existing code if you think it is easier. But remember you have to be careful anytime you do that. 
 
 ## Video Tutorial how to use it
-https://youtu.be/ZqZQGllfbbs
+https://www.youtube.com/watch?v=VyoXvQ3HIZA
 
 ## Sample Apps
 - https://github.com/mirzaakhena/userprofile
