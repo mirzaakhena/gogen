@@ -876,6 +876,8 @@ Copy the built executable file and paste it to your project. Then you can call
 $ ./gogen
 ```
 
+mengaggregasi semua best practise
+
 ---
 
 ### Create a executable for cross platform

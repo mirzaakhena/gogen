@@ -1,4 +1,4 @@
 
 type {{PascalCase .RepositoryName}}Repo interface {
-  {{PascalCase .RepositoryName}}(ctx context.Context, page, size int64, someID string) ([]*entity.{{PascalCase .EntityName}}, int64, error)
+  {{PascalCase .RepositoryName}}(ctx context.Context, page, size int, someID string) ([]*entity.{{PascalCase .EntityName}}, int64, error)
 }
