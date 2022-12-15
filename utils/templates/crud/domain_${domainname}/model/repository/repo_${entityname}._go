@@ -12,8 +12,8 @@ type Save{{PascalCase .EntityName}}Repo interface {
 }
 
 type FindAll{{PascalCase .EntityName}}FilterRequest struct {
-	Page      int64
-	Size      int64
+	Page      int
+	Size      int
 	// add other field to filter here ...
 }
 

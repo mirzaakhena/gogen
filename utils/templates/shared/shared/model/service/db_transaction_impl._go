@@ -43,6 +43,11 @@ func WithTransaction[T any](ctx context.Context, trx repository.WithTransactionD
 		}
 	}()
 
-	return trxFunc(dbCtx)
-}
+	var t *T
+	t, err = trxFunc(dbCtx)
+	if err != nil {
+		return nil, err
+	}
 
+	return t, err
+}

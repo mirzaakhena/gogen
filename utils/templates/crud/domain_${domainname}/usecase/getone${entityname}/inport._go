@@ -7,7 +7,7 @@ import (
 	"{{.PackagePath}}/shared/gogen"
 )
 
-type Inport gogen.Inport[InportRequest, InportResponse]
+type Inport = gogen.Inport[InportRequest, InportResponse]
 
 type InportRequest struct {
 	{{PascalCase .EntityName}}ID vo.{{PascalCase .EntityName}}ID
