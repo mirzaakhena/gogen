@@ -8,17 +8,17 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{CamelCase .EntityName}}GetAllInteractor struct {
+type GetAll{{PascalCase .EntityName}}Interactor struct {
 	outport Outport
 }
 
 func NewUsecase(outputPort Outport) Inport {
-	return &{{CamelCase .EntityName}}GetAllInteractor{
+	return &GetAll{{PascalCase .EntityName}}Interactor{
 		outport: outputPort,
 	}
 }
 
-func (r *{{CamelCase .EntityName}}GetAllInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *GetAll{{PascalCase .EntityName}}Interactor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 

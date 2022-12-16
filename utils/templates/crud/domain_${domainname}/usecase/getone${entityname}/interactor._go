@@ -7,17 +7,17 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{CamelCase .EntityName}}GetOneInteractor struct {
+type GetOne{{PascalCase .EntityName}}Interactor struct {
 	outport Outport
 }
 
 func NewUsecase(outputPort Outport) Inport {
-	return &{{CamelCase .EntityName}}GetOneInteractor{
+	return &GetOne{{PascalCase .EntityName}}Interactor{
 		outport: outputPort,
 	}
 }
 
-func (r *{{CamelCase .EntityName}}GetOneInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *GetOne{{PascalCase .EntityName}}Interactor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 

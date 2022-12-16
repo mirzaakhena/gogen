@@ -7,17 +7,17 @@ import (
 
 //go:generate mockery --name Outport -output mocks/
 
-type {{CamelCase .EntityName}}DeleteInteractor struct {
+type Run{{PascalCase .EntityName}}DeleteInteractor struct {
 	outport Outport
 }
 
 func NewUsecase(outputPort Outport) Inport {
-	return &{{CamelCase .EntityName}}DeleteInteractor{
+	return &Run{{PascalCase .EntityName}}DeleteInteractor{
 		outport: outputPort,
 	}
 }
 
-func (r *{{CamelCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
+func (r *Run{{PascalCase .EntityName}}DeleteInteractor) Execute(ctx context.Context, req InportRequest) (*InportResponse, error) {
 
 	res := &InportResponse{}
 
