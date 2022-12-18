@@ -6,7 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (r *ginController) authentication() gin.HandlerFunc {
+func (r *controller) authentication() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		// tokenInBytes, err := r.JwtToken.VerifyToken(c.GetHeader("token"))

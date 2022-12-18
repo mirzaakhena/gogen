@@ -7,12 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/vo"
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/run{{LowerCase .EntityName}}update"
+	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) run{{PascalCase .EntityName}}UpdateHandler() gin.HandlerFunc {
+func (r *controller) run{{PascalCase .EntityName}}UpdateHandler() gin.HandlerFunc {
 
     type InportRequest = run{{LowerCase .EntityName}}update.InportRequest
 	type InportResponse = run{{LowerCase .EntityName}}update.InportResponse

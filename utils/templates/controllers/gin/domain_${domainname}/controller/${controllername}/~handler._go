@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"github.com/gin-gonic/gin"
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"

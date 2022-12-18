@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"time"
     "{{.PackagePath}}/domain_{{.DomainName}}/usecase/getall{{LowerCase .EntityName}}"
+    "{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) getAll{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
+func (r *controller) getAll{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
 
     type InportRequest = getall{{LowerCase .EntityName}}.InportRequest
 	type InportResponse = getall{{LowerCase .EntityName}}.InportResponse

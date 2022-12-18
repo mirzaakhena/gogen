@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func (r *echoController) authentication(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *controller) authentication(next echo.HandlerFunc) echo.HandlerFunc {
 	return func(c echo.Context) error {
 
 		// tokenInBytes, err := r.JwtToken.VerifyToken(c.GetHeader("token"))
@@ -30,7 +30,7 @@ func (r *echoController) authentication(next echo.HandlerFunc) echo.HandlerFunc 
 	}
 }
 
-func (r *echoController) authorization(next echo.HandlerFunc) echo.HandlerFunc {
+func (r *controller) authorization(next echo.HandlerFunc) echo.HandlerFunc {
 
 	return func(c echo.Context) error {
 

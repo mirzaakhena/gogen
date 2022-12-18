@@ -6,12 +6,13 @@ import (
 	"time"
 	"github.com/gin-gonic/gin"
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/run{{LowerCase .EntityName}}create"
+	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) run{{PascalCase .EntityName}}CreateHandler() gin.HandlerFunc {
+func (r *controller) run{{PascalCase .EntityName}}CreateHandler() gin.HandlerFunc {
 
     type InportRequest = run{{LowerCase .EntityName}}create.InportRequest
 	type InportResponse = run{{LowerCase .EntityName}}create.InportResponse

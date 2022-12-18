@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/vo"
     "{{.PackagePath}}/domain_{{.DomainName}}/usecase/getone{{LowerCase .EntityName}}"
+    "{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) getOne{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
+func (r *controller) getOne{{PascalCase .EntityName}}Handler() gin.HandlerFunc {
 
     type InportRequest = getone{{LowerCase .EntityName}}.InportRequest
 	type InportResponse = getone{{LowerCase .EntityName}}.InportResponse

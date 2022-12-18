@@ -6,12 +6,13 @@ import (
 	"github.com/gin-gonic/gin"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/vo"
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/run{{LowerCase .EntityName}}delete"
+	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) run{{PascalCase .EntityName}}DeleteHandler() gin.HandlerFunc {
+func (r *controller) run{{PascalCase .EntityName}}DeleteHandler() gin.HandlerFunc {
 
     type InportRequest = run{{LowerCase .EntityName}}delete.InportRequest
 	type InportResponse = run{{LowerCase .EntityName}}delete.InportResponse

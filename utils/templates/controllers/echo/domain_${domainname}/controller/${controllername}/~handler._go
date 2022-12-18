@@ -10,7 +10,7 @@ import (
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *echoController) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
+func (r *controller) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
 
     type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
 	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
@@ -32,7 +32,7 @@ func (r *echoController) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
 		ctx := logger.SetTraceID(context.Background(), traceID)
 
 		var jsonReq request {{if StartWith (LowerCase .Usecase.Name) "get"}}
-		err := c.Bind(&jsonReq) { {{else}}
+		err := c.Bind(&jsonReq) {{else}}
 		err := c.Bind(&jsonReq) {{end}}
 		if err != nil {
 			r.log.Error(ctx, err.Error())

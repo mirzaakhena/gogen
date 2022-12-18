@@ -1,5 +1,6 @@
 ###
 
 PUT http://localhost:8000/api/v1/{{LowerCase .EntityName}}/:{{LowerCase .EntityName}}_id
+Content-Type: application/json
 
 {}
