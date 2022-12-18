@@ -1,1 +1,1 @@
-r.Router.HandleFunc("/{{LowerCase .Usecase.Name}}", r.authorized(r.{{CamelCase .Usecase.Name}}Handler(http.MethodGet, r.{{PascalCase .Usecase.Name}}Inport)))
+r.Router.HandleFunc("/api/v1/{{LowerCase .Usecase.Name}}", r.authorization(r.{{CamelCase .Usecase.Name}}Handler(http.MethodGet)))

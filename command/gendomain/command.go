@@ -100,44 +100,44 @@ config.json
 		return err
 	}
 
-	inFile, err := os.Open(".gogen/domain")
-	if err != nil {
-		return err
-	}
-	defer func(inFile *os.File) {
-		err := inFile.Close()
-		if err != nil {
-
-		}
-	}(inFile)
-
-	scanner := bufio.NewScanner(inFile)
-	for scanner.Scan() {
-		domainNameInGogenFile := strings.TrimSpace(scanner.Text())
-		if domainNameInGogenFile == "" {
-			continue
-		}
-		if strings.HasPrefix(domainNameInGogenFile, "-") {
-			domainNameInGogenFile = strings.ReplaceAll(domainNameInGogenFile, "-", "")
-		}
-		domainNameInGogenFile = strings.ToLower(domainNameInGogenFile)
-		//_, err := utils.CreateFolderIfNotExist(fmt.Sprintf("domain_%s", domainNameInGogenFile))
-		//if err != nil {
-		//	return err
-		//}
-
-		fileRenamer := map[string]string{
-			"domainname": utils.LowerCase(domainNameInGogenFile),
-		}
-
-		domainObj := ObjTemplate{DomainName: domainNameInGogenFile}
-
-		err = utils.CreateEverythingExactly("templates/", "domain", fileRenamer, domainObj, utils.AppTemplates)
-		if err != nil {
-			return err
-		}
-
-	}
+	//inFile, err := os.Open(".gogen/domain")
+	//if err != nil {
+	//	return err
+	//}
+	//defer func(inFile *os.File) {
+	//	err := inFile.Close()
+	//	if err != nil {
+	//
+	//	}
+	//}(inFile)
+	//
+	//scanner := bufio.NewScanner(inFile)
+	//for scanner.Scan() {
+	//	domainNameInGogenFile := strings.TrimSpace(scanner.Text())
+	//	if domainNameInGogenFile == "" {
+	//		continue
+	//	}
+	//	if strings.HasPrefix(domainNameInGogenFile, "-") {
+	//		domainNameInGogenFile = strings.ReplaceAll(domainNameInGogenFile, "-", "")
+	//	}
+	//	domainNameInGogenFile = strings.ToLower(domainNameInGogenFile)
+	//	//_, err := utils.CreateFolderIfNotExist(fmt.Sprintf("domain_%s", domainNameInGogenFile))
+	//	//if err != nil {
+	//	//	return err
+	//	//}
+	//
+	//	fileRenamer := map[string]string{
+	//		"domainname": utils.LowerCase(domainNameInGogenFile),
+	//	}
+	//
+	//	domainObj := ObjTemplate{DomainName: domainNameInGogenFile}
+	//
+	//	err = utils.CreateEverythingExactly("templates/", "domain", fileRenamer, domainObj, utils.AppTemplates)
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//}
 
 	return nil
 

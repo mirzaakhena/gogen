@@ -1,0 +1,6 @@
+POST http://localhost:8000/api/v1/{{LowerCase .Usecase.Name}}
+Content-Type: application/json
+
+{ {{range .Usecase.InportRequestFields}}
+  "{{SnakeCase .Name}}": "", {{end}}
+}

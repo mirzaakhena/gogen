@@ -105,7 +105,7 @@ func Run(inputs ...string) error {
 	domainName := utils.GetDefaultDomain()
 	controllerName := inputs[0]
 
-	driverName := "default"
+	driverName := "gin"
 	if len(inputs) >= 2 {
 		driverName = utils.LowerCase(inputs[1])
 	}

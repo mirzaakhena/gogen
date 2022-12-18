@@ -1,0 +1,44 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"net/http"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/infrastructure/config"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/server"
+	"{{.PackagePath}}/shared/infrastructure/token"
+	"time"
+)
+
+type controller struct {
+	gogen.ControllerStarter                // built-in http that has gracefullyshutdown
+	gogen.UsecaseRegisterer                // collect all the inports
+	Router                  *http.ServeMux // the router from preference web framework
+	log                     logger.Logger
+	cfg                     *config.Config
+	jwtToken                token.JWTToken
+}
+
+func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
+
+	router := http.NewServeMux()
+
+    router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
+        if r.Method != "GET" {
+            return
+        }
+        fmt.Fprint(w, appData)
+    })
+
+	address := cfg.Servers[appData.AppName].Address
+
+	return &controller{
+		UsecaseRegisterer: gogen.NewBaseController(),
+		ControllerStarter: server.NewGracefullyShutdown(log, router, address),
+		Router:            router,
+		log:               log,
+		cfg:               cfg,
+		jwtToken:          jwtToken,
+	}
+
+}
