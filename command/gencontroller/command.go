@@ -81,7 +81,7 @@ func Run(inputs ...string) error {
 		}
 
 		msg := fmt.Errorf("\n"+
-			"   # Create a controller for all usecases using gin as default web framework\n"+
+			"   # Create a controller for all usecases using default as default web framework\n"+
 			"   gogen controller restapi\n"+
 			"     'restapi' is a gateway name\n"+
 			"\n"+
@@ -93,9 +93,9 @@ func Run(inputs ...string) error {
 			"     'CreateOrder' is an usecase name\n"+
 			"\n"+
 			"   # Create a controller with defined web framework and specific usecase\n"+
-			"   gogen controller restapi gin CreateOrder\n"+
+			"   gogen controller restapi default CreateOrder\n"+
 			"     'restapi'      is a gateway name\n"+
-			"     'gin'          is a sample webframework.\n"+
+			"     'default'          is a sample webframework.\n"+
 			"     'CreateOrder'  is an usecase name\n"+
 			"\n", frameworks)
 
@@ -105,7 +105,7 @@ func Run(inputs ...string) error {
 	domainName := utils.GetDefaultDomain()
 	controllerName := inputs[0]
 
-	driverName := "gin"
+	driverName := "default"
 	if len(inputs) >= 2 {
 		driverName = utils.LowerCase(inputs[1])
 	}
@@ -261,7 +261,7 @@ func Run(inputs ...string) error {
 
 		//inject inport to struct
 		//type Controller struct {
-		//  Router            gin.IRouter
+		//  Router            default.IRouter
 		//  CreateOrderInport createorder.Inport <----- here
 		//}
 		//{

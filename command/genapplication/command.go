@@ -76,7 +76,7 @@ func Run(inputs ...string) error {
 
 	{ //---------
 
-		driverName := "gin"
+		//driverName := "default"
 
 		// if controller name is not given, then we will do auto controller discovery strategy
 		if obj.ControllerName == nil {
@@ -204,7 +204,7 @@ func Run(inputs ...string) error {
 			"applicationname": utils.LowerCase(applicationName),
 		}
 
-		err = utils.CreateEverythingExactly("templates/application/", driverName, fileRenamer, obj, utils.AppTemplates)
+		err = utils.CreateEverythingExactly("templates/application/", "default", fileRenamer, obj, utils.AppTemplates)
 		if err != nil {
 			return err
 		}
