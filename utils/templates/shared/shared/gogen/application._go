@@ -16,10 +16,9 @@ type ApplicationData struct {
 }
 
 func NewApplicationData(appName string) ApplicationData {
-	appInstanceID := util.GenerateID(4)
 	return ApplicationData{
 		AppName:       appName,
-		AppInstanceID: appInstanceID,
+		AppInstanceID: util.GenerateID(4),
 		StartTime:     time.Now().Format("2006-01-02 15:04:05"),
 	}
 }

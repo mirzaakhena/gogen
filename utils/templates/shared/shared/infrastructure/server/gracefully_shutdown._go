@@ -11,14 +11,14 @@ import (
 	"{{.PackagePath}}/shared/infrastructure/logger"
 )
 
-// GracefullyShutdown will handle http server with gracefully shutdown mechanism
-type GracefullyShutdown struct {
+// gracefullyShutdown will handle http server with gracefully shutdown mechanism
+type gracefullyShutdown struct {
 	httpServer *http.Server
 	log        logger.Logger
 }
 
-func NewGracefullyShutdown(log logger.Logger, handler http.Handler, address string) GracefullyShutdown {
-	return GracefullyShutdown{
+func NewGracefullyShutdown(log logger.Logger, handler http.Handler, address string) gogen.ControllerStarter {
+	return &gracefullyShutdown{
 		httpServer: &http.Server{
 			Addr:    address,
 			Handler: handler,
@@ -27,8 +27,7 @@ func NewGracefullyShutdown(log logger.Logger, handler http.Handler, address stri
 	}
 }
 
-// RunWithGracefullyShutdown is ...
-func (r *GracefullyShutdown) RunWithGracefullyShutdown() {
+func (r *gracefullyShutdown) Start() {
 
 	go func() {
 		if err := r.httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {

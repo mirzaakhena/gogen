@@ -1,0 +1,50 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/infrastructure/config"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/server"
+	"{{.PackagePath}}/shared/infrastructure/token"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"net/http"
+)
+
+type controller struct {
+	gogen.ControllerStarter             // built-in http that has gracefullyshutdown
+	gogen.UsecaseRegisterer             // collect all the inports
+	Router                  *echo.Echo  // the router from preference web framework
+	log                     logger.Logger
+	cfg                     *config.Config
+	jwtToken                token.JWTToken
+}
+
+func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
+
+	router := echo.New()
+
+	// PING API
+	router.GET("/ping", func(c echo.Context) error {
+		return c.JSON(http.StatusOK, appData)
+	})
+
+	// CORS
+	router.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		ExposeHeaders: []string{"Data-Length"},
+		AllowMethods:  []string{"GET", "POST", "PUT", "DELETE", "PATCH", "HEAD", "OPTIONS"},
+		AllowHeaders:  []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
+
+	address := cfg.Servers[appData.AppName].Address
+
+	return &controller{
+		UsecaseRegisterer: gogen.NewBaseController(),
+		ControllerStarter: server.NewGracefullyShutdown(log, router, address),
+		Router:            router,
+		log:               log,
+		cfg:               cfg,
+		jwtToken:          jwtToken,
+	}
+
+}

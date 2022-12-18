@@ -1,53 +1,37 @@
 package main
 
 import (
-  "flag"
-  "fmt"
-  "{{.PackagePath}}/application"
-  "{{.PackagePath}}/shared/gogen"
+    "flag"
+    "fmt"
+    "{{.PackagePath}}/application"
+    "{{.PackagePath}}/shared/gogen"
 )
 
 var Version = "0.0.1"
 
 func main() {
-  appMap := map[string]gogen.Runner{
-  //
-  }
 
-  flag.Parse()
-
-  app, exist := appMap[flag.Arg(0)]
-  if !exist {
-    fmt.Println("You may try 'go run main.go <app_name>' :")
-    for appName := range appMap {
-      fmt.Printf(" - %s\n", appName)
+    appMap := map[string]gogen.Runner{
+        //
     }
-    return
-  }
 
-  fmt.Printf("Version %s\n", Version)
-  err := app.Run()
-  if err != nil {
-    return
-  }
+    flag.Parse()
+
+    app, exist := appMap[flag.Arg(0)]
+    if !exist {
+        fmt.Printf("You may try :\n\n")
+        for appName := range appMap {
+            fmt.Printf("    go run main.go %s\n", appName)
+        }
+        fmt.Printf("\n")
+        return
+    }
+
+    fmt.Printf("Version %s\n", Version)
+
+    err := app.Run()
+    if err != nil {
+        return
+    }
 
 }
-
-// func openbrowser(url string) {
-// 	var err error
-//
-// 	switch runtime.GOOS {
-// 	case "linux":
-// 		err = exec.Command("xdg-open", url).Start()
-// 	case "windows":
-// 		err = exec.Command("rundll32", "url.dll,FileProtocolHandler", url).Start()
-// 	case "darwin":
-// 		err = exec.Command("open", url).Start()
-// 	default:
-// 		err = fmt.Errorf("unsupported platform")
-// 	}
-// 	if err != nil {
-// 		log.Fatal(err)
-// 	}
-//
-// }

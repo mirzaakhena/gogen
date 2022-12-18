@@ -10,7 +10,7 @@ import (
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
+func (r *controller) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 
     type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
 	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
@@ -32,8 +32,9 @@ func (r *ginController) {{CamelCase .Usecase.Name}}Handler() gin.HandlerFunc {
 		ctx := logger.SetTraceID(context.Background(), traceID)
 
 		var jsonReq request {{if StartWith (LowerCase .Usecase.Name) "get"}}
-		if err := c.Bind(&jsonReq); err != nil { {{else}}
-		if err := c.BindJSON(&jsonReq); err != nil { {{end}}
+		err := c.Bind(&jsonReq) { {{else}}
+		err := c.BindJSON(&jsonReq) {{end}}
+		if  err != nil {
 			r.log.Error(ctx, err.Error())
 			c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 			return

@@ -6,20 +6,26 @@ import (
 	"strings"
 )
 
-type iUsecase interface {
-	AddUsecase(inports ...any) iUsecase
+type ControllerStarter interface {
+	Start()
 }
 
-type RegisterRouterHandler[T any] interface {
-	iUsecase
-	RegisterRouter(h T)
+type UsecaseRegisterer interface {
+	AddUsecase(inports ...any)
+	GetUsecase(nameStructType any) (any, error)
+}
+
+type ControllerRegisterer interface {
+	ControllerStarter
+	UsecaseRegisterer
+	RegisterRouter()
 }
 
 type BaseController struct {
 	inportObjs map[any]any
 }
 
-func NewBaseController() *BaseController {
+func NewBaseController() UsecaseRegisterer {
 	return &BaseController{
 		inportObjs: map[any]any{},
 	}
@@ -35,11 +41,10 @@ func (r *BaseController) GetUsecase(nameStructType any) (any, error) {
 	return uc, nil
 }
 
-func (r *BaseController) AddUsecase(inports ...any) iUsecase {
+func (r *BaseController) AddUsecase(inports ...any) {
 	for _, inport := range inports {
 		x := reflect.ValueOf(inport).Elem().Type().String()
 		packagePath := x[:strings.Index(x, ".")]
 		r.inportObjs[packagePath] = inport
 	}
-	return r
 }

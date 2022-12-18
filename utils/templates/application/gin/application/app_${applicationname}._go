@@ -6,7 +6,6 @@ import (
   "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
   "{{.PackagePath}}/shared/gogen"
   "{{.PackagePath}}/shared/infrastructure/config"
-  "{{.PackagePath}}/shared/infrastructure/server"
   "{{.PackagePath}}/shared/infrastructure/logger"
   "{{.PackagePath}}/shared/infrastructure/token"
 )
@@ -31,16 +30,16 @@ func ({{CamelCase .ApplicationName}}) Run() error {
 
 	datasource := {{LowerCase .GatewayName}}.NewGateway(log, appData, cfg)
 
-    httpHandler := server.NewGinHTTPHandler(log, cfg.Servers[appName].Address, appData)
+	primaryDriver := {{LowerCase .ControllerName}}.NewController(appData, log, cfg, jwtToken)
 
-	x := {{LowerCase .ControllerName}}.NewGinController(log, cfg, jwtToken)
-	x.AddUsecase(
+	primaryDriver.AddUsecase(
         // {{range .UsecaseNames}}
         {{LowerCase .}}.NewUsecase(datasource), {{end}}
 	)
-	x.RegisterRouter(httpHandler.Router)
 
-	httpHandler.RunWithGracefullyShutdown()
+	primaryDriver.RegisterRouter()
+
+	primaryDriver.Start()
 
 	return nil
 }

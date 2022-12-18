@@ -3,17 +3,19 @@ package {{LowerCase .ControllerName}}
 import (
 	"context"
 	"net/http"
-
 	"github.com/labstack/echo/v4"
-
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
 	"{{.PackagePath}}/shared/model/payload"
 )
 
-// {{CamelCase .Usecase.Name}}Handler ...
-func (r *Controller) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
+func (r *echoController) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
+
+    type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
+	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
+
+    inport := gogen.GetInport[InportRequest, InportResponse](r.GetUsecase(InportRequest{}))
 
 	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
         {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
@@ -29,21 +31,23 @@ func (r *Controller) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
 
 		ctx := logger.SetTraceID(context.Background(), traceID)
 
-		var jsonReq request
-		if err := c.Bind(&jsonReq); err != nil {
-			r.Log.Error(ctx, err.Error())
+		var jsonReq request {{if StartWith (LowerCase .Usecase.Name) "get"}}
+		err := c.Bind(&jsonReq) { {{else}}
+		err := c.Bind(&jsonReq) {{end}}
+		if err != nil {
+			r.log.Error(ctx, err.Error())
 			return c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 		}
 
-		var req {{LowerCase .Usecase.Name}}.InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+		var req InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
 		req.Now = time.Now(){{ else }}
 		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
 
-		r.Log.Info(ctx, util.MustJSON(req))
+		r.log.Info(ctx, util.MustJSON(req))
 
-		res, err := r.{{PascalCase .Usecase.Name}}Inport.Execute(ctx, req)
+		res, err := inport.Execute(ctx, req)
 		if err != nil {
-			r.Log.Error(ctx, err.Error())
+			r.log.Error(ctx, err.Error())
 			return c.JSON(http.StatusBadRequest, payload.NewErrorResponse(err, traceID))
 		}
 
@@ -51,7 +55,7 @@ func (r *Controller) {{CamelCase .Usecase.Name}}Handler() echo.HandlerFunc {
         _ = res {{else}} {{range .Usecase.InportResponseFields}}
         jsonRes.{{.Name}} = res.{{.Name}}{{ end }} {{ end }}
 
-		r.Log.Info(ctx, util.MustJSON(jsonRes))
+		r.log.Info(ctx, util.MustJSON(jsonRes))
 		return c.JSON(http.StatusOK, payload.NewSuccessResponse(jsonRes, traceID))
 
 	}

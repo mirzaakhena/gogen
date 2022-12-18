@@ -1,1 +1,3 @@
-GET http://localhost:8000/{{LowerCase .Usecase.Name}}
+###
+
+GET http://localhost:8000/api/v1/{{LowerCase .Usecase.Name}}
