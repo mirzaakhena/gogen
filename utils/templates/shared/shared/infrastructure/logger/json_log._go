@@ -62,6 +62,6 @@ func (l simpleJSONLoggerImpl) Error(ctx context.Context, message string, args ..
 
 func (l simpleJSONLoggerImpl) printLog(ctx context.Context, flag string, data any) {
 	traceID := GetTraceID(ctx)
-	// fmt.Printf("%-5s %s %-60v %s\n", flag, traceID, data, getFileLocationInfo(3))
-	fmt.Println(newJSONLogModel(&l, flag, getFileLocationInfo(3), data, traceID))
+	fmt.Printf("%-5s %s %-60v %s\n", flag, traceID, data, getFileLocationInfo(3))
+	// fmt.Println(newJSONLogModel(&l, flag, getFileLocationInfo(3), data, traceID))
 }
