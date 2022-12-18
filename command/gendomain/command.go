@@ -85,7 +85,8 @@ func Run(inputs ...string) error {
 		_ = insertNewDomainName(gogenDomainFile, domainName)
 	}
 
-	gitignoreContent := `.idea/
+	gitignoreContent := `
+.idea/
 .DS_Store
 config.json
 *.app
