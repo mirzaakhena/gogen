@@ -1,1 +1,1 @@
-resource.Add(http.MethodGet,  "/{{LowerCase .Name}}", r.authorized(r.{{CamelCase .Name}}Handler()))
+resource.GET("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())

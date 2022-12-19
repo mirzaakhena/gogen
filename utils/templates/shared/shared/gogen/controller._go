@@ -36,7 +36,10 @@ func (r *BaseController) GetUsecase(nameStructType any) (any, error) {
 	packageName := x[:strings.Index(x, ".")]
 	uc, ok := r.inportObjs[packageName]
 	if !ok {
-		return nil, fmt.Errorf("usecase with package \"%s\" is not registered yet in application", packageName)
+
+	    msg := "usecase with package \"%s\" is not registered yet in application. Please call 'gogen application' manually"
+
+		return nil, fmt.Errorf(msg, packageName)
 	}
 	return uc, nil
 }

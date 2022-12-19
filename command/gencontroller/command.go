@@ -19,7 +19,7 @@ type ObjTemplate struct {
 	DomainName     string
 	ControllerName string
 	DriverName     string
-	Usecases       []*Usecase
+	//Usecases       []*Usecase
 }
 
 // ObjTemplateSingle ...
@@ -48,56 +48,56 @@ func Run(inputs ...string) error {
 
 	if len(inputs) < 1 {
 
-		frameworks := ""
+		//frameworks := ""
 
-		dirs, err := utils.AppTemplates.ReadDir("templates/controllers")
-		if err != nil {
-			return err
-		}
+		//dirs, err := utils.AppTemplates.ReadDir("templates/controllers")
+		//if err != nil {
+		//	return err
+		//}
+		//
+		//for i, dir := range dirs {
+		//
+		//	name := dir.Name()
+		//
+		//	if dir.IsDir() {
+		//
+		//		if len(dirs) == 1 {
+		//			frameworks = fmt.Sprintf("%s", frameworks)
+		//			continue
+		//		}
+		//
+		//		if i == 0 {
+		//			frameworks = fmt.Sprintf("%s,", name)
+		//			continue
+		//		}
+		//
+		//		if i == len(dirs)-1 {
+		//			frameworks = fmt.Sprintf("%s %s", frameworks, name)
+		//			continue
+		//		}
+		//
+		//		frameworks = fmt.Sprintf("%s %s,", frameworks, name)
+		//	}
+		//}
 
-		for i, dir := range dirs {
+		msg := fmt.Errorf("\n" +
+			"   # Create a controller for all usecases using default as default web framework\n" +
+			"   gogen controller restapi\n" +
+			"     'restapi' is a gateway name\n")
 
-			name := dir.Name()
-
-			if dir.IsDir() {
-
-				if len(dirs) == 1 {
-					frameworks = fmt.Sprintf("%s", frameworks)
-					continue
-				}
-
-				if i == 0 {
-					frameworks = fmt.Sprintf("%s,", name)
-					continue
-				}
-
-				if i == len(dirs)-1 {
-					frameworks = fmt.Sprintf("%s %s", frameworks, name)
-					continue
-				}
-
-				frameworks = fmt.Sprintf("%s %s,", frameworks, name)
-			}
-		}
-
-		msg := fmt.Errorf("\n"+
-			"   # Create a controller for all usecases using default as default web framework\n"+
-			"   gogen controller restapi\n"+
-			"     'restapi' is a gateway name\n"+
-			"\n"+
-			"   # Create a controller with for all usecases with selected framework\n"+
-			"   You may try the other one like : %s\n"+
-			"   in this example we use 'echo'\n"+
-			"   gogen controller restapi echo\n"+
-			"     'restapi'     is a gateway name\n"+
-			"     'CreateOrder' is an usecase name\n"+
-			"\n"+
-			"   # Create a controller with defined web framework and specific usecase\n"+
-			"   gogen controller restapi default CreateOrder\n"+
-			"     'restapi'      is a gateway name\n"+
-			"     'default'          is a sample webframework.\n"+
-			"     'CreateOrder'  is an usecase name\n"+
-			"\n", frameworks)
+		//"   # Create a controller with for all usecases with selected framework\n"+
+		//"   You may try the other one like : %s\n"+
+		//"   in this example we use 'echo'\n"+
+		//"   gogen controller restapi echo\n"+
+		//"     'restapi'     is a gateway name\n"+
+		//"     'CreateOrder' is an usecase name\n"+
+		//"\n"+
+		//"   # Create a controller with defined web framework and specific usecase\n"+
+		//"   gogen controller restapi default CreateOrder\n"+
+		//"     'restapi'      is a gateway name\n"+
+		//"     'default'          is a sample webframework.\n"+
+		//"     'CreateOrder'  is an usecase name\n"+
+		//"\n", frameworks)
 
 		return msg
 	}
@@ -112,45 +112,48 @@ func Run(inputs ...string) error {
 
 	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", domainName)
 
-	usecaseNames := make([]string, 0)
+	//usecaseNames := make([]string, 0)
 
 	usecases := make([]*Usecase, 0)
 
-	if len(inputs) >= 3 {
-		usecaseNames = append(usecaseNames, inputs[2])
+	//if len(inputs) >= 3 {
+	//	usecaseNames = append(usecaseNames, inputs[2])
+	//
+	//	usecaseName := utils.LowerCase(inputs[2])
+	//
+	//	usecases = injectUsecaseInportFields(usecaseFolderName, usecaseName, usecases)
+	//
+	//} else {
 
-		usecaseName := utils.LowerCase(inputs[2])
+	// disini kita hanya meng-handle controller, interceptor dan router saja.
 
-		usecases = injectUsecaseInportFields(usecaseFolderName, usecaseName, usecases)
+	err := utils.CreateEverythingExactly("templates/", "shared", nil, nil, utils.AppTemplates)
+	if err != nil {
+		return err
+	}
 
-	} else {
+	fileInfo, err := os.ReadDir(usecaseFolderName)
+	if err != nil {
+		return err
+	}
 
-		fileInfo, err := os.ReadDir(usecaseFolderName)
-		if err != nil {
-			return err
+	for _, file := range fileInfo {
+		if !file.IsDir() {
+			continue
 		}
-
-		for _, file := range fileInfo {
-			if !file.IsDir() {
-				continue
-			}
-			usecases = injectUsecaseInportFields(usecaseFolderName, file.Name(), usecases)
-
-		}
+		usecases = injectUsecaseInportFields(usecaseFolderName, file.Name(), usecases)
 
 	}
 
+	//}
+
+	// siapkan obj controller yg akan di inject-kan, berisi list of usecases
 	obj := ObjTemplate{
 		PackagePath:    packagePath,
 		DomainName:     domainName,
 		ControllerName: controllerName,
 		DriverName:     driverName,
-		Usecases:       usecases,
-	}
-
-	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
-	if err != nil {
-		return err
+		//Usecases:       usecases,
 	}
 
 	fileRenamer := map[string]string{
@@ -163,8 +166,10 @@ func Run(inputs ...string) error {
 		return err
 	}
 
+	// -------------- done --------------
+
 	// handler_<usecase>.go
-	for _, usecase := range obj.Usecases {
+	for _, usecase := range usecases {
 
 		singleObj := ObjTemplateSingle{
 			PackagePath:    obj.PackagePath,
@@ -174,6 +179,7 @@ func Run(inputs ...string) error {
 			Usecase:        usecase,
 		}
 
+		// khusus nge-handle handler_usecasename.go saja
 		{
 			templateCode, err := getHandlerTemplate(obj.DriverName)
 			if err != nil {
@@ -199,39 +205,45 @@ func Run(inputs ...string) error {
 			}
 		}
 
-		if strings.HasPrefix(strings.ToLower(usecase.Name), "get") {
+		// khusus handle httpclient saja
+		{
 
-			templateCode, err := getHTTPClientGETTemplate(obj.DriverName)
-			if err != nil {
-				return err
-			}
+			if strings.HasPrefix(strings.ToLower(usecase.Name), "get") {
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				templateCode, err := getHTTPClientGETTemplate(obj.DriverName)
+				if err != nil {
+					return err
+				}
 
-			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
-			if err != nil {
-				return err
-			}
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
-		} else if strings.HasPrefix(strings.ToLower(usecase.Name), "run") {
+				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
+				if err != nil {
+					return err
+				}
 
-			templateCode, err := getHTTPClientPOSTTemplate(obj.DriverName)
-			if err != nil {
-				return err
-			}
+			} else if strings.HasPrefix(strings.ToLower(usecase.Name), "run") {
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				templateCode, err := getHTTPClientPOSTTemplate(obj.DriverName)
+				if err != nil {
+					return err
+				}
 
-			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
-			if err != nil {
-				return err
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+
+				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
+				if err != nil {
+					return err
+				}
+
 			}
 
 		}
 
 	}
 
-	unexistedUsecases, err := getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName, obj.Usecases)
+	// ambil semua usecase yang BELUM terdaftar di router
+	unexistedUsecases, err := getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName, usecases)
 	if err != nil {
 		return err
 	}
@@ -258,34 +270,6 @@ func Run(inputs ...string) error {
 			Usecase:        usecase,
 			DriverName:     driverName,
 		}
-
-		//inject inport to struct
-		//type Controller struct {
-		//  Router            default.IRouter
-		//  CreateOrderInport createorder.Inport <----- here
-		//}
-		//{
-		//	templateCode, err := getRouterInportTemplate(obj.DriverName)
-		//	if err != nil {
-		//		return err
-		//	}
-		//
-		//	templateWithData, err := utils.PrintTemplate(string(templateCode), singleObj)
-		//	if err != nil {
-		//		return err
-		//	}
-		//
-		//	dataInBytes, err := injectInportToStruct(obj, templateWithData)
-		//	if err != nil {
-		//		return err
-		//	}
-		//
-		//	// reformat router.go
-		//	err = utils.Reformat(obj.getControllerRouterFileName(), dataInBytes)
-		//	if err != nil {
-		//		return err
-		//	}
-		//}
 
 		// inject router for register
 		//func (r *Controller) RegisterRouter() {
@@ -426,111 +410,7 @@ func injectUsecaseInportFields(usecaseFolderName string, usecaseName string, use
 		}
 	}
 
-	//usecases = append(usecases, &Usecase{
-	//	Name:                 usecaseNameFromConst,
-	//	InportRequestFields:  inportRequestFields,
-	//	InportResponseFields: inportResponseFields,
-	//})
-
-	//utils.IsExist(fset, fmt.Sprintf("%s/%s", usecaseFolderName, usecaseName), func(file *ast.File, ts *ast.TypeSpec) bool {
-	//
-	//	structObj, isStruct := ts.Type.(*ast.StructType)
-	//
-	//	if isStruct {
-	//
-	//		if utils.LowerCase(ts.Name.String()) == "inportrequest" {
-	//
-	//			for _, f := range structObj.Fields.List {
-	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
-	//				for _, name := range f.Names {
-	//					inportRequestFields = append(inportRequestFields, &StructField{
-	//						Name: name.String(),
-	//						Type: fieldType,
-	//					})
-	//				}
-	//			}
-	//		}
-	//
-	//		if utils.LowerCase(ts.Name.String()) == "inportresponse" {
-	//
-	//			for _, f := range structObj.Fields.List {
-	//				fieldType := utils.TypeHandler{PrefixExpression: utils.LowerCase(usecaseName)}.Start(f.Type)
-	//				for _, name := range f.Names {
-	//					inportResponseFields = append(inportResponseFields, &StructField{
-	//						Name: name.String(),
-	//						Type: fieldType,
-	//					})
-	//				}
-	//			}
-	//		}
-	//
-	//		if utils.LowerCase(ts.Name.String()) == fmt.Sprintf("%sinteractor", file.Name) {
-	//			usecaseNameWithInteractor := ts.Name.String()
-	//			usecaseNameOnly := usecaseNameWithInteractor[:strings.LastIndex(usecaseNameWithInteractor, "Interactor")]
-	//			usecases = append(usecases, &Usecase{
-	//				Name:                 usecaseNameOnly,
-	//				InportRequestFields:  inportRequestFields,
-	//				InportResponseFields: inportResponseFields,
-	//			})
-	//
-	//		}
-	//	}
-	//
-	//	return false
-	//})
-
 	return usecases
-}
-
-func getUnexistedUsecaseFromImport(packagePath, domainName, controllerName string, currentUsecases []*Usecase) ([]*Usecase, error) {
-
-	unexistUsecase := make([]*Usecase, 0)
-
-	routerFile := fmt.Sprintf("domain_%s/controller/%s/router.go", domainName, controllerName)
-
-	fset := token.NewFileSet()
-	astFile, err := parser.ParseFile(fset, routerFile, nil, parser.ParseComments)
-	if err != nil {
-		return nil, err
-	}
-
-	mapUsecase := map[string]int{}
-
-	// loop the outport for imports
-	for _, decl := range astFile.Decls {
-
-		if gen, ok := decl.(*ast.GenDecl); ok {
-
-			if gen.Tok != token.IMPORT {
-				continue
-			}
-
-			for _, spec := range gen.Specs {
-
-				importSpec := spec.(*ast.ImportSpec)
-
-				if strings.HasPrefix(importSpec.Path.Value, fmt.Sprintf("\"%s/domain_%s/usecase/", packagePath, domainName)) {
-					readUsecase := importSpec.Path.Value[strings.LastIndex(importSpec.Path.Value, "/")+1:]
-					uc := readUsecase[:len(readUsecase)-1]
-
-					mapUsecase[uc] = 1
-
-				}
-			}
-
-		}
-	}
-
-	for _, usecase := range currentUsecases {
-		_, exist := mapUsecase[utils.LowerCase(usecase.Name)]
-		if exist {
-			continue
-		}
-
-		unexistUsecase = append(unexistUsecase, usecase)
-	}
-
-	return unexistUsecase, nil
 }
 
 const HandlerSuffix = "handler"
@@ -571,27 +451,6 @@ func getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName s
 			}
 			return true
 		})
-
-		//if gen, ok := decl.(*ast.GenDecl); ok {
-		//
-		//	if gen.Tok != token.IMPORT {
-		//		continue
-		//	}
-		//
-		//	for _, spec := range gen.Specs {
-		//
-		//		importSpec := spec.(*ast.ImportSpec)
-		//
-		//		if strings.HasPrefix(importSpec.Path.Value, fmt.Sprintf("\"%s/domain_%s/usecase/", packagePath, domainName)) {
-		//			readUsecase := importSpec.Path.Value[strings.LastIndex(importSpec.Path.Value, "/")+1:]
-		//			uc := readUsecase[:len(readUsecase)-1]
-		//
-		//			mapUsecase[uc] = 1
-		//
-		//		}
-		//	}
-		//
-		//}
 	}
 
 	for _, usecase := range currentUsecases {
@@ -604,93 +463,6 @@ func getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName s
 	}
 
 	return unexistUsecase, nil
-}
-
-func injectInportToStruct(obj ObjTemplate, templateWithData string) ([]byte, error) {
-
-	inportLine, err := getInportLine(obj)
-	if err != nil {
-		return nil, err
-	}
-
-	controllerFile := obj.getControllerRouterFileName()
-
-	file, err := os.Open(controllerFile)
-	if err != nil {
-		return nil, err
-	}
-
-	defer func() {
-		if err := file.Close(); err != nil {
-			return
-		}
-	}()
-
-	scanner := bufio.NewScanner(file)
-	var buffer bytes.Buffer
-	line := 0
-	for scanner.Scan() {
-		row := scanner.Text()
-
-		if line == inportLine-1 {
-			buffer.WriteString(templateWithData)
-			buffer.WriteString("\n")
-		}
-
-		buffer.WriteString(row)
-		buffer.WriteString("\n")
-		line++
-	}
-
-	return buffer.Bytes(), nil
-}
-
-func getInportLine(obj ObjTemplate) (int, error) {
-
-	controllerFile := obj.getControllerRouterFileName()
-
-	inportLine := 0
-	fset := token.NewFileSet()
-	astFile, err := parser.ParseFile(fset, controllerFile, nil, parser.ParseComments)
-	if err != nil {
-		return 0, err
-	}
-
-	// loop the outport for imports
-	for _, decl := range astFile.Decls {
-
-		if gen, ok := decl.(*ast.GenDecl); ok {
-
-			if gen.Tok != token.TYPE {
-				continue
-			}
-
-			for _, specs := range gen.Specs {
-
-				ts, ok := specs.(*ast.TypeSpec)
-				if !ok {
-					continue
-				}
-
-				if iStruct, ok := ts.Type.(*ast.StructType); ok {
-
-					// check the specific struct name
-					if ts.Name.String() != "Controller" {
-						continue
-					}
-
-					inportLine = fset.Position(iStruct.Fields.Closing).Line
-					return inportLine, nil
-				}
-
-			}
-
-		}
-
-	}
-
-	return 0, fmt.Errorf(" Controller struct not found")
-
 }
 
 func getBindRouterLine(obj ObjTemplate) (int, error) {
@@ -834,3 +606,140 @@ func getRouterRegisterTemplate(driverName, usecase string) ([]byte, error) {
 	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-post._go", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
+
+//func injectInportToStruct(obj ObjTemplate, templateWithData string) ([]byte, error) {
+//
+//	inportLine, err := getInportLine(obj)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	controllerFile := obj.getControllerRouterFileName()
+//
+//	file, err := os.Open(controllerFile)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	defer func() {
+//		if err := file.Close(); err != nil {
+//			return
+//		}
+//	}()
+//
+//	scanner := bufio.NewScanner(file)
+//	var buffer bytes.Buffer
+//	line := 0
+//	for scanner.Scan() {
+//		row := scanner.Text()
+//
+//		if line == inportLine-1 {
+//			buffer.WriteString(templateWithData)
+//			buffer.WriteString("\n")
+//		}
+//
+//		buffer.WriteString(row)
+//		buffer.WriteString("\n")
+//		line++
+//	}
+//
+//	return buffer.Bytes(), nil
+//}
+
+//func getInportLine(obj ObjTemplate) (int, error) {
+//
+//	controllerFile := obj.getControllerRouterFileName()
+//
+//	inportLine := 0
+//	fset := token.NewFileSet()
+//	astFile, err := parser.ParseFile(fset, controllerFile, nil, parser.ParseComments)
+//	if err != nil {
+//		return 0, err
+//	}
+//
+//	// loop the outport for imports
+//	for _, decl := range astFile.Decls {
+//
+//		if gen, ok := decl.(*ast.GenDecl); ok {
+//
+//			if gen.Tok != token.TYPE {
+//				continue
+//			}
+//
+//			for _, specs := range gen.Specs {
+//
+//				ts, ok := specs.(*ast.TypeSpec)
+//				if !ok {
+//					continue
+//				}
+//
+//				if iStruct, ok := ts.Type.(*ast.StructType); ok {
+//
+//					// check the specific struct name
+//					if ts.Name.String() != "Controller" {
+//						continue
+//					}
+//
+//					inportLine = fset.Position(iStruct.Fields.Closing).Line
+//					return inportLine, nil
+//				}
+//
+//			}
+//
+//		}
+//
+//	}
+//
+//	return 0, fmt.Errorf(" Controller struct not found")
+//
+//}
+//func getUnexistedUsecaseFromImport(packagePath, domainName, controllerName string, currentUsecases []*Usecase) ([]*Usecase, error) {
+//
+//	unexistUsecase := make([]*Usecase, 0)
+//
+//	routerFile := fmt.Sprintf("domain_%s/controller/%s/router.go", domainName, controllerName)
+//
+//	fset := token.NewFileSet()
+//	astFile, err := parser.ParseFile(fset, routerFile, nil, parser.ParseComments)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	mapUsecase := map[string]int{}
+//
+//	// loop the outport for imports
+//	for _, decl := range astFile.Decls {
+//
+//		if gen, ok := decl.(*ast.GenDecl); ok {
+//
+//			if gen.Tok != token.IMPORT {
+//				continue
+//			}
+//
+//			for _, spec := range gen.Specs {
+//
+//				importSpec := spec.(*ast.ImportSpec)
+//
+//				if strings.HasPrefix(importSpec.Path.Value, fmt.Sprintf("\"%s/domain_%s/usecase/", packagePath, domainName)) {
+//					readUsecase := importSpec.Path.Value[strings.LastIndex(importSpec.Path.Value, "/")+1:]
+//					uc := readUsecase[:len(readUsecase)-1]
+//
+//					mapUsecase[uc] = 1
+//
+//				}
+//			}
+//
+//		}
+//	}
+//
+//	for _, usecase := range currentUsecases {
+//		_, exist := mapUsecase[utils.LowerCase(usecase.Name)]
+//		if exist {
+//			continue
+//		}
+//
+//		unexistUsecase = append(unexistUsecase, usecase)
+//	}
+//
+//	return unexistUsecase, nil
+//}

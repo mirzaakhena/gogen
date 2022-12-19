@@ -2,8 +2,7 @@ package {{LowerCase .ControllerName}}
 
 import "net/http"
 
-func (r *controller) RegisterRouter() { {{range .Usecases}} {{if StartWith (LowerCase .Name) "get"}}
+func (r *controller) RegisterRouter() {
     resource := r.Router.Group("/api/v1")
-    resource.Add(http.MethodGet , "/{{LowerCase .Name}}", r.authorization(r.{{CamelCase .Name}}Handler())) {{else}}
-    resource.Add(http.MethodPost, "/{{LowerCase .Name}}", r.authorization(r.{{CamelCase .Name}}Handler())) {{end}} {{end}}
+
 }

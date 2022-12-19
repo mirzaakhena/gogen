@@ -1,1 +1,1 @@
-resource.Add(http.MethodPost, "/{{LowerCase .Name}}", r.authorized(r.{{CamelCase .Name}}Handler()))
+resource.POST("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
