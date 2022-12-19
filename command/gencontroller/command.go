@@ -106,9 +106,9 @@ func Run(inputs ...string) error {
 	controllerName := inputs[0]
 
 	driverName := "gin"
-	if len(inputs) >= 2 {
-		driverName = utils.LowerCase(inputs[1])
-	}
+	//if len(inputs) >= 2 {
+	//	driverName = utils.LowerCase(inputs[1])
+	//}
 
 	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", domainName)
 
@@ -205,7 +205,7 @@ func Run(inputs ...string) error {
 			}
 		}
 
-		// khusus handle httpclient saja
+		// khusus handle httpclient.http saja
 		{
 
 			if strings.HasPrefix(strings.ToLower(usecase.Name), "get") {

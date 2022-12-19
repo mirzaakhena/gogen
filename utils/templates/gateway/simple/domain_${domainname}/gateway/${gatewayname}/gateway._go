@@ -9,9 +9,9 @@ import (
 )
 
 type gateway struct {
-    log     logger.Logger
     appData gogen.ApplicationData
     config  *config.Config
+    log     logger.Logger
 }
 
 // NewGateway ...
@@ -23,11 +23,3 @@ func NewGateway(log logger.Logger, appData gogen.ApplicationData, cfg *config.Co
 		config:  cfg,
 	}
 }
-
-{{range .Methods}}
-func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
-    r.log.Info(ctx, "called")
-
-    return {{.DefaultReturnVal}}
-}
-{{end}}

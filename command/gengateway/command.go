@@ -23,17 +23,6 @@ func Run(inputs ...string) error {
 			"   # Create a gateway for all usecases with cloverdb sample implementation\n" +
 			"   gogen gateway inmemory\n" +
 			"     'inmemory' is a gateway name\n" +
-			"\n" +
-			"   # Create a gateway for specific usecase\n" +
-			"   gogen gateway inmemory cloverdb\n" +
-			"     'inmemory' is a gateway name\n" +
-			"     'cloverdb' is a sample implementation\n" +
-			"\n" +
-			"   # Create a gateway for specific usecase\n" +
-			"   gogen gateway inmemory cloverdb CreateOrder\n" +
-			"     'inmemory'    is a gateway name\n" +
-			"     'cloverdb' is a sample implementation\n" +
-			"     'CreateOrder' is an usecase name\n" +
 			"\n")
 
 		return err
@@ -52,13 +41,13 @@ func Run(inputs ...string) error {
 
 	driverName := "simple"
 
-	if len(inputs) >= 2 {
-		driverName = inputs[1]
-	}
-
-	if len(inputs) >= 3 {
-		obj.UsecaseName = &inputs[2]
-	}
+	//if len(inputs) >= 2 {
+	//	driverName = inputs[1]
+	//}
+	//
+	//if len(inputs) >= 3 {
+	//	obj.UsecaseName = &inputs[2]
+	//}
 
 	// first we create the shared
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
@@ -69,61 +58,62 @@ func Run(inputs ...string) error {
 	var notExistingMethod utils.OutportMethods
 
 	// user is not mentioning about the specific usecase name
-	if obj.UsecaseName == nil {
+	//if obj.UsecaseName == nil {
 
-		// we read all the usecase folders
-		//var folders []string
-		fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
+	// we read all the usecase folders
+	//var folders []string
+	fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
+	if err != nil {
+		return err
+	}
+
+	uniqueMethodMap := map[string]int{}
+
+	// trace all usecase
+	for _, file := range fileInfo {
+
+		// skip all the file
+		if !file.IsDir() {
+			continue
+		}
+
+		folderName := file.Name()
+
+		// register all usecase name
+		//folders = append(folders, folderName)
+
+		em, err := createGatewayImpl(driverName, folderName, obj)
 		if err != nil {
 			return err
 		}
 
-		uniqueMethodMap := map[string]int{}
+		// we filter only the new method and skip the existing
+		for _, method := range em {
 
-		for _, file := range fileInfo {
-
-			// skip all the file
-			if !file.IsDir() {
+			if _, exist := uniqueMethodMap[method.MethodName]; exist {
 				continue
 			}
 
-			folderName := file.Name()
-
-			// register all usecase name
-			//folders = append(folders, folderName)
-
-			em, err := createGatewayImpl(driverName, folderName, obj)
-			if err != nil {
-				return err
-			}
-
-			// we filter only the new method and skip the existing
-			for _, method := range em {
-
-				if _, exist := uniqueMethodMap[method.MethodName]; exist {
-					continue
-				}
-
-				notExistingMethod = append(notExistingMethod, method)
-
-				uniqueMethodMap[method.MethodName] = 1
-			}
-		}
-
-	} else {
-
-		// create only for specific usecase
-
-		em, err := createGatewayImpl(driverName, *obj.UsecaseName, obj)
-		if err != nil {
-			return err
-		}
-
-		for _, method := range em {
 			notExistingMethod = append(notExistingMethod, method)
-		}
 
+			uniqueMethodMap[method.MethodName] = 1
+		}
 	}
+
+	//} else {
+	//
+	//	// create only for specific usecase
+	//
+	//	em, err := createGatewayImpl(driverName, *obj.UsecaseName, obj)
+	//	if err != nil {
+	//		return err
+	//	}
+	//
+	//	for _, method := range em {
+	//		notExistingMethod = append(notExistingMethod, method)
+	//	}
+	//
+	//}
 
 	gatewayCode, err := getGatewayMethodTemplate(driverName)
 	if err != nil {
@@ -145,7 +135,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	// reformat outport.go
+	// reformat gateway.go
 	err = utils.Reformat(gatewayFilename, bytes)
 	if err != nil {
 		return err
@@ -160,10 +150,6 @@ func createGatewayImpl(driverName, usecaseName string, obj ObjTemplate) (utils.O
 	if err != nil {
 		return nil, err
 	}
-
-	//for _, m := range outportMethods {
-	//	fmt.Printf(">>>>>>>>>>>>> %v\n", m)
-	//}
 
 	obj.Methods = outportMethods
 	err = utils.CreateEverythingExactly("templates/gateway/", driverName, map[string]string{
