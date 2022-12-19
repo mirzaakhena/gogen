@@ -9,12 +9,12 @@ import (
 )
 
 func CreateEverythingExactly(rootToSkip, pathUnder string, fileRenamer map[string]string, data any, efs embed.FS) error {
-	return Haha{}.CreateEverythingExactly(rootToSkip+pathUnder, fileRenamer, data, efs)
+	return createEverythingImpl{}.CreateEverythingExactly(rootToSkip+pathUnder, fileRenamer, data, efs)
 }
 
-type Haha struct{}
+type createEverythingImpl struct{}
 
-func (x Haha) CreateEverythingExactly(pathUnder string, fileRenamer map[string]string, data any, efs embed.FS) error {
+func (x createEverythingImpl) CreateEverythingExactly(pathUnder string, fileRenamer map[string]string, data any, efs embed.FS) error {
 
 	ff := FileAndFolders{
 		Folders: map[string]int{},
@@ -122,23 +122,23 @@ func (x Haha) CreateEverythingExactly(pathUnder string, fileRenamer map[string]s
 	return nil
 }
 
-func (x Haha) replaceVariable(folder string, fileRenamer map[string]string) string {
-	if fileRenamer == nil {
-		return folder
-	}
-	s := folder
-	for k, v := range fileRenamer {
-		s = strings.ReplaceAll(s, fmt.Sprintf("${%v}", k), v)
-	}
-	return s
-}
+//func (x createEverythingImpl) replaceVariable(folder string, fileRenamer map[string]string) string {
+//	if fileRenamer == nil {
+//		return folder
+//	}
+//	s := folder
+//	for k, v := range fileRenamer {
+//		s = strings.ReplaceAll(s, fmt.Sprintf("${%v}", k), v)
+//	}
+//	return s
+//}
 
 type FileAndFolders struct {
 	Folders map[string]int
 	Files   []string
 }
 
-func (x Haha) readFolders(efs embed.FS, skip, path string, ff *FileAndFolders) error {
+func (x createEverythingImpl) readFolders(efs embed.FS, skip, path string, ff *FileAndFolders) error {
 
 	dirs, err := efs.ReadDir(path)
 	if err != nil {

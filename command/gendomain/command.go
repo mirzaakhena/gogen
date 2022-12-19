@@ -2,9 +2,12 @@ package gendomain
 
 import (
 	"bufio"
+	"embed"
 	"fmt"
+	"io"
 	"math/rand"
 	"os"
+	"path/filepath"
 	"strings"
 	"time"
 
@@ -79,6 +82,122 @@ func Run(inputs ...string) error {
 	exist, err := utils.WriteFileIfNotExist(defaultDomain, gogenDomainFile, struct{}{})
 	if err != nil {
 		return err
+	}
+
+	//_, err = utils.CreateFolderIfNotExist(".gogen/templates/controller")
+	//if err != nil {
+	//	return err
+	//}
+	//
+	//_, err = utils.CreateFolderIfNotExist(".gogen/templates/gateway")
+	//if err != nil {
+	//	return err
+	//}
+
+	{
+
+		ff := FileAndFolders{
+			Folders: map[string]int{},
+			Files:   make([]string, 0),
+		}
+		err = readFolders(utils.AppTemplates, "templates/controllers", "templates/controllers", &ff)
+		if err != nil {
+			return err
+		}
+
+		for folder := range ff.Folders {
+
+			folderName := fmt.Sprintf("%v/%v", ".gogen/templates/controllers", folder)
+
+			err := os.MkdirAll(folderName, 0755)
+			if err != nil {
+				return err
+			}
+
+		}
+
+		for _, fileRaw := range ff.Files {
+
+			//fmt.Printf("file   >>>> %v/%v\n", ".gogen/templates/controllers", fileRaw)
+
+			filename := fmt.Sprintf("%v/%v", ".gogen/templates/controllers", fileRaw)
+			file, err := os.Create(filename)
+			if err != nil {
+				return fmt.Errorf("000 %v", err)
+			}
+			defer file.Close()
+
+			fileInBytes, err := utils.AppTemplates.ReadFile("templates/controllers/" + fileRaw)
+			if err != nil {
+				return fmt.Errorf("111 %v", err)
+			}
+
+			_, err = file.WriteString(string(fileInBytes))
+			if err != nil {
+				return fmt.Errorf("222 %v", err)
+			}
+
+			// Sync the file to disk
+			err = file.Sync()
+			if err != nil {
+				return fmt.Errorf("333 %v", err)
+			}
+
+		}
+
+	}
+
+	{
+
+		ff := FileAndFolders{
+			Folders: map[string]int{},
+			Files:   make([]string, 0),
+		}
+		err = readFolders(utils.AppTemplates, "templates/gateway", "templates/gateway", &ff)
+		if err != nil {
+			return err
+		}
+
+		for folder := range ff.Folders {
+
+			folderName := fmt.Sprintf("%v/%v", ".gogen/templates/gateway", folder)
+
+			err := os.MkdirAll(folderName, 0755)
+			if err != nil {
+				return err
+			}
+
+		}
+
+		for _, fileRaw := range ff.Files {
+
+			//fmt.Printf("file   >>>> %v/%v\n", ".gogen/templates/gateway", fileRaw)
+
+			filename := fmt.Sprintf("%v/%v", ".gogen/templates/gateway", fileRaw)
+			file, err := os.Create(filename)
+			if err != nil {
+				return fmt.Errorf("000 %v", err)
+			}
+			defer file.Close()
+
+			fileInBytes, err := utils.AppTemplates.ReadFile("templates/gateway/" + fileRaw)
+			if err != nil {
+				return fmt.Errorf("111 %v", err)
+			}
+
+			_, err = file.WriteString(string(fileInBytes))
+			if err != nil {
+				return fmt.Errorf("222 %v", err)
+			}
+
+			// Sync the file to disk
+			err = file.Sync()
+			if err != nil {
+				return fmt.Errorf("333 %v", err)
+			}
+
+		}
+
 	}
 
 	if exist {
@@ -195,4 +314,100 @@ func insertNewDomainName(filePath, domainName string) error {
 	fileContent += "\n"
 
 	return os.WriteFile(filePath, []byte(fileContent), 0644)
+}
+
+func Rewrite(srcDir, destDir string) {
+
+	// Walk through the source directory and copy each file and subdirectory to the destination directory
+	err := filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		// Construct the destination path by replacing the source directory with the destination directory
+		destPath := filepath.Join(destDir, path[len(srcDir):])
+
+		// If the current path is a directory, create it in the destination directory
+		if info.IsDir() {
+			os.MkdirAll(destPath, info.Mode())
+			return nil
+		}
+
+		// If the current path is a file, copy it to the destination directory
+		srcFile, err := os.Open(path)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		defer srcFile.Close()
+
+		destFile, err := os.Create(destPath)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+		defer destFile.Close()
+
+		_, err = io.Copy(destFile, srcFile)
+		if err != nil {
+			fmt.Println(err)
+			return err
+		}
+
+		return nil
+	})
+	if err != nil {
+		return
+	}
+}
+
+type FileAndFolders struct {
+	Folders map[string]int
+	Files   []string
+}
+
+func readFolders(efs embed.FS, skip, path string, ff *FileAndFolders) error {
+
+	dirs, err := efs.ReadDir(path)
+	if err != nil {
+		return err
+	}
+
+	for _, dir := range dirs {
+
+		name := dir.Name()
+
+		if dir.IsDir() {
+
+			s := fmt.Sprintf("%s/%s", path, name)
+			//fmt.Printf("found folder %s\n", s)
+
+			for k := range ff.Folders {
+				//fmt.Printf("k=%v\n", k)
+				if strings.Contains(s, k) {
+					//fmt.Printf("remove %v from %v\n", k, ff.Folders)
+					delete(ff.Folders, k)
+				}
+			}
+
+			ff.Folders[s[len(skip)+1:]] = 1
+
+			err = readFolders(efs, skip, fmt.Sprintf("%s/%s", path, name), ff)
+			if err != nil {
+				return err
+			}
+
+		} else {
+			s := fmt.Sprintf("%s/%s", path, name)
+			//fmt.Printf("found file   %s\n", s)
+			fileName := s[len(skip)+1:]
+			//fmt.Printf("%v\n", fileName)
+			ff.Files = append(ff.Files, fileName)
+		}
+
+	}
+
+	return nil
+
 }
