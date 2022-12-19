@@ -3,8 +3,6 @@
 func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
     r.log.Info(ctx, "called")
 
-    // hehe ...
-
     return {{.DefaultReturnVal}}
 }
 {{end}}

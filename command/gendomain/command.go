@@ -3,6 +3,7 @@ package gendomain
 import (
 	"bufio"
 	"embed"
+	"encoding/json"
 	"fmt"
 	"io"
 	"math/rand"
@@ -84,182 +85,112 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	//_, err = utils.CreateFolderIfNotExist(".gogen/templates/controller")
-	//if err != nil {
-	//	return err
-	//}
-	//
-	//_, err = utils.CreateFolderIfNotExist(".gogen/templates/gateway")
-	//if err != nil {
-	//	return err
-	//}
-
-	{
-
-		ff := FileAndFolders{
-			Folders: map[string]int{},
-			Files:   make([]string, 0),
-		}
-		err = readFolders(utils.AppTemplates, "templates/controllers", "templates/controllers", &ff)
-		if err != nil {
-			return err
-		}
-
-		for folder := range ff.Folders {
-
-			folderName := fmt.Sprintf("%v/%v", ".gogen/templates/controllers", folder)
-
-			err := os.MkdirAll(folderName, 0755)
-			if err != nil {
-				return err
-			}
-
-		}
-
-		for _, fileRaw := range ff.Files {
-
-			//fmt.Printf("file   >>>> %v/%v\n", ".gogen/templates/controllers", fileRaw)
-
-			filename := fmt.Sprintf("%v/%v", ".gogen/templates/controllers", fileRaw)
-			file, err := os.Create(filename)
-			if err != nil {
-				return fmt.Errorf("000 %v", err)
-			}
-			defer file.Close()
-
-			fileInBytes, err := utils.AppTemplates.ReadFile("templates/controllers/" + fileRaw)
-			if err != nil {
-				return fmt.Errorf("111 %v", err)
-			}
-
-			_, err = file.WriteString(string(fileInBytes))
-			if err != nil {
-				return fmt.Errorf("222 %v", err)
-			}
-
-			// Sync the file to disk
-			err = file.Sync()
-			if err != nil {
-				return fmt.Errorf("333 %v", err)
-			}
-
-		}
-
+	err = CopyPasteFolder(".gogen/templates", "controller")
+	if err != nil {
+		return err
 	}
 
-	{
-
-		ff := FileAndFolders{
-			Folders: map[string]int{},
-			Files:   make([]string, 0),
-		}
-		err = readFolders(utils.AppTemplates, "templates/gateway", "templates/gateway", &ff)
-		if err != nil {
-			return err
-		}
-
-		for folder := range ff.Folders {
-
-			folderName := fmt.Sprintf("%v/%v", ".gogen/templates/gateway", folder)
-
-			err := os.MkdirAll(folderName, 0755)
-			if err != nil {
-				return err
-			}
-
-		}
-
-		for _, fileRaw := range ff.Files {
-
-			//fmt.Printf("file   >>>> %v/%v\n", ".gogen/templates/gateway", fileRaw)
-
-			filename := fmt.Sprintf("%v/%v", ".gogen/templates/gateway", fileRaw)
-			file, err := os.Create(filename)
-			if err != nil {
-				return fmt.Errorf("000 %v", err)
-			}
-			defer file.Close()
-
-			fileInBytes, err := utils.AppTemplates.ReadFile("templates/gateway/" + fileRaw)
-			if err != nil {
-				return fmt.Errorf("111 %v", err)
-			}
-
-			_, err = file.WriteString(string(fileInBytes))
-			if err != nil {
-				return fmt.Errorf("222 %v", err)
-			}
-
-			// Sync the file to disk
-			err = file.Sync()
-			if err != nil {
-				return fmt.Errorf("333 %v", err)
-			}
-
-		}
-
+	err = CopyPasteFolder(".gogen/templates", "gateway")
+	if err != nil {
+		return err
 	}
 
 	if exist {
 		_ = insertNewDomainName(gogenDomainFile, domainName)
 	}
 
-	gitignoreContent := `
-.idea/
-.DS_Store
-config.json
-*.app
-*.exe
-*.log
-*.db
-*/node_modules/
-`
-	_, err = utils.WriteFileIfNotExist(gitignoreContent, "./.gitignore", struct{}{})
+	// handle gogen/config.json
+	{
+		gogenDomainFile := "./.gogen/config.json"
+
+		data := struct {
+			Domain     string `json:"domain"`
+			Controller string `json:"controller"`
+			Gateway    string `json:"gateway"`
+		}{
+			Domain: domainName, Controller: "default", Gateway: "default",
+		}
+
+		jsonInBytes, err := json.MarshalIndent(data, "", " ")
+		if err != nil {
+			return err
+		}
+		_, err = utils.WriteFileIfNotExist(string(jsonInBytes), gogenDomainFile, struct{}{})
+		if err != nil {
+			return err
+		}
+	}
+
+	// handle .gitignore
+	{
+
+		gitignoreFile := fmt.Sprintf("templates/domain/%s", "gitignore")
+
+		fileBytes, err := utils.AppTemplates.ReadFile(gitignoreFile)
+		if err != nil {
+			return err
+		}
+
+		_, err = utils.WriteFileIfNotExist(string(fileBytes), "./.gitignore", struct{}{})
+		if err != nil {
+			return err
+		}
+
+	}
+
+	return nil
+
+}
+
+func CopyPasteFolder(destFolder, sourceFolder string) error {
+
+	ff := FileAndFolders{
+		Folders: map[string]int{},
+		Files:   make([]string, 0),
+	}
+
+	templateController := fmt.Sprintf("templates/%s", sourceFolder)
+	err := readFolders(utils.AppTemplates, templateController, templateController, &ff)
 	if err != nil {
 		return err
 	}
 
-	//inFile, err := os.Open(".gogen/domain")
-	//if err != nil {
-	//	return err
-	//}
-	//defer func(inFile *os.File) {
-	//	err := inFile.Close()
-	//	if err != nil {
-	//
-	//	}
-	//}(inFile)
-	//
-	//scanner := bufio.NewScanner(inFile)
-	//for scanner.Scan() {
-	//	domainNameInGogenFile := strings.TrimSpace(scanner.Text())
-	//	if domainNameInGogenFile == "" {
-	//		continue
-	//	}
-	//	if strings.HasPrefix(domainNameInGogenFile, "-") {
-	//		domainNameInGogenFile = strings.ReplaceAll(domainNameInGogenFile, "-", "")
-	//	}
-	//	domainNameInGogenFile = strings.ToLower(domainNameInGogenFile)
-	//	//_, err := utils.CreateFolderIfNotExist(fmt.Sprintf("domain_%s", domainNameInGogenFile))
-	//	//if err != nil {
-	//	//	return err
-	//	//}
-	//
-	//	fileRenamer := map[string]string{
-	//		"domainname": utils.LowerCase(domainNameInGogenFile),
-	//	}
-	//
-	//	domainObj := ObjTemplate{DomainName: domainNameInGogenFile}
-	//
-	//	err = utils.CreateEverythingExactly("templates/", "domain", fileRenamer, domainObj, utils.AppTemplates)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//}
+	for folder := range ff.Folders {
+		err := os.MkdirAll(fmt.Sprintf("%s/%s/%v", destFolder, sourceFolder, folder), 0755)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, fileRaw := range ff.Files {
+
+		file, err := os.Create(fmt.Sprintf("%s/%s/%s", destFolder, sourceFolder, fileRaw))
+		if err != nil {
+			return err
+		}
+
+		fileInBytes, err := utils.AppTemplates.ReadFile(fmt.Sprintf("templates/%s/%s", sourceFolder, fileRaw))
+		if err != nil {
+			return err
+		}
+
+		_, err = file.WriteString(string(fileInBytes))
+		if err != nil {
+			return err
+		}
+
+		err = file.Sync()
+		if err != nil {
+			return err
+		}
+
+		err = file.Close()
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
-
 }
 
 func insertNewDomainName(filePath, domainName string) error {

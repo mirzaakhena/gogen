@@ -50,7 +50,7 @@ func Run(inputs ...string) error {
 
 		//frameworks := ""
 
-		//dirs, err := utils.AppTemplates.ReadDir("templates/controllers")
+		//dirs, err := utils.AppTemplates.ReadDir("templates/controller")
 		//if err != nil {
 		//	return err
 		//}
@@ -161,7 +161,7 @@ func Run(inputs ...string) error {
 		"domainname":     utils.LowerCase(domainName),
 	}
 
-	err = utils.CreateEverythingExactly("templates/controllers/", obj.DriverName, fileRenamer, obj, utils.AppTemplates)
+	err = utils.CreateEverythingExactly("templates/controller/", obj.DriverName, fileRenamer, obj, utils.AppTemplates)
 	if err != nil {
 		return err
 	}
@@ -578,32 +578,32 @@ func (o ObjTemplate) getControllerRouterFileName() string {
 }
 
 func getHTTPClientGETTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~httpclient-get._http", driverName)
+	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~httpclient-get._http", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
 
 func getHTTPClientPOSTTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~httpclient-post._http", driverName)
+	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~httpclient-post._http", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
 
 func getHandlerTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~handler._go", driverName)
+	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~handler._go", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
 
 func getRouterInportTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~inject-router-inport._go", driverName)
+	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-inport._go", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
 
 func getRouterRegisterTemplate(driverName, usecase string) ([]byte, error) {
 	if strings.HasPrefix(strings.ToLower(usecase), "get") {
-		path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-get._go", driverName)
+		path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-get._go", driverName)
 		return utils.AppTemplates.ReadFile(path)
 	}
 
-	path := fmt.Sprintf("templates/controllers/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-post._go", driverName)
+	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-post._go", driverName)
 	return utils.AppTemplates.ReadFile(path)
 }
 
