@@ -3,8 +3,6 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/mirzaakhena/gogen/command/genusecase"
-
 	"github.com/mirzaakhena/gogen/command/genapplication"
 	"github.com/mirzaakhena/gogen/command/gencontroller"
 	"github.com/mirzaakhena/gogen/command/gencrud"
@@ -16,6 +14,7 @@ import (
 	"github.com/mirzaakhena/gogen/command/genrepository"
 	"github.com/mirzaakhena/gogen/command/genservice"
 	"github.com/mirzaakhena/gogen/command/gentest"
+	"github.com/mirzaakhena/gogen/command/genusecase"
 	"github.com/mirzaakhena/gogen/command/genvalueobject"
 	"github.com/mirzaakhena/gogen/command/genvaluestring"
 )
