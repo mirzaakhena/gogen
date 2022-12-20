@@ -48,7 +48,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_codes.go", gcfg)
+	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_codes.go", gcfg.Domain)
 
 	// inject to error_codes.go
 	{

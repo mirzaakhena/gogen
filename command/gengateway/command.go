@@ -41,14 +41,6 @@ func Run(inputs ...string) error {
 
 	driverName := "simple"
 
-	//if len(inputs) >= 2 {
-	//	driverName = inputs[1]
-	//}
-	//
-	//if len(inputs) >= 3 {
-	//	obj.UsecaseName = &inputs[2]
-	//}
-
 	// first we create the shared
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
 	if err != nil {
@@ -57,12 +49,9 @@ func Run(inputs ...string) error {
 
 	var notExistingMethod utils.OutportMethods
 
-	// user is not mentioning about the specific usecase name
-	//if obj.UsecaseName == nil {
-
 	// we read all the usecase folders
 	//var folders []string
-	fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", gcfg))
+	fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", gcfg.Domain))
 	if err != nil {
 		return err
 	}
@@ -78,9 +67,6 @@ func Run(inputs ...string) error {
 		}
 
 		folderName := file.Name()
-
-		// register all usecase name
-		//folders = append(folders, folderName)
 
 		em, err := createGatewayImpl(driverName, folderName, obj)
 		if err != nil {
@@ -100,21 +86,6 @@ func Run(inputs ...string) error {
 		}
 	}
 
-	//} else {
-	//
-	//	// create only for specific usecase
-	//
-	//	em, err := createGatewayImpl(driverName, *obj.UsecaseName, obj)
-	//	if err != nil {
-	//		return err
-	//	}
-	//
-	//	for _, method := range em {
-	//		notExistingMethod = append(notExistingMethod, method)
-	//	}
-	//
-	//}
-
 	gatewayCode, err := getGatewayMethodTemplate(driverName)
 	if err != nil {
 		return err
@@ -128,7 +99,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	gatewayFilename := fmt.Sprintf("domain_%s/gateway/%s/gateway.go", gcfg, gatewayName)
+	gatewayFilename := fmt.Sprintf("domain_%s/gateway/%s/gateway.go", gcfg.Domain, gatewayName)
 
 	bytes, err := injectToGateway(gatewayFilename, templateHasBeenInjected)
 	if err != nil {

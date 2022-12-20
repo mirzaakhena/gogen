@@ -56,7 +56,7 @@ func Run(inputs ...string) error {
 	}
 
 	// service.go file is already exist, but is the interface is exist ?
-	exist, err := isServiceExist(fmt.Sprintf("domain_%s/model/service", gcfg), serviceName)
+	exist, err := isServiceExist(fmt.Sprintf("domain_%s/model/service", gcfg.Domain), serviceName)
 	if err != nil {
 		return err
 	}
@@ -98,7 +98,7 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		outportFile := fmt.Sprintf("domain_%s/usecase/%s/outport.go", gcfg, *obj.UsecaseName)
+		outportFile := fmt.Sprintf("domain_%s/usecase/%s/outport.go", gcfg.Domain, *obj.UsecaseName)
 
 		// reformat outport.go
 		err = utils.Reformat(outportFile, nil)

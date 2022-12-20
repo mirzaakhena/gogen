@@ -110,7 +110,7 @@ func Run(inputs ...string) error {
 	//	driverName = utils.LowerCase(inputs[1])
 	//}
 
-	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", gcfg)
+	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", gcfg.Domain)
 
 	//usecaseNames := make([]string, 0)
 
@@ -191,7 +191,7 @@ func Run(inputs ...string) error {
 			//	return err
 			//}
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", gcfg.Domain, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 			if err != nil {
@@ -215,7 +215,7 @@ func Run(inputs ...string) error {
 					return err
 				}
 
-				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg.Domain, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 				if err != nil {
@@ -229,7 +229,7 @@ func Run(inputs ...string) error {
 					return err
 				}
 
-				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg.Domain, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 				if err != nil {
