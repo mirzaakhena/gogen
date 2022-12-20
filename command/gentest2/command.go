@@ -93,10 +93,9 @@ func Run(inputs ...string) error {
 				}
 
 				for _, method := range interfaceType.Methods.List {
-					switch x := method.Type.(type) {
+					switch method.Type.(type) {
 					case *ast.SelectorExpr:
-					case :
-						
+
 					}
 				}
 
