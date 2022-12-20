@@ -49,7 +49,7 @@ func Run(inputs ...string) error {
 
 	// TODO check existing entity. if exist, read all the field else create new one
 
-	err = utils.CreateEverythingExactly2(".gogen/templates/", "crud/", fileRenamer, obj)
+	err = utils.CreateEverythingExactly2(".gogen/templates/crud/", gcfg.Controller, fileRenamer, obj)
 	if err != nil {
 		return err
 	}
