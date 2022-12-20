@@ -26,7 +26,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 
 	usecaseName := inputs[0]
 
@@ -37,7 +37,7 @@ func Run(inputs ...string) error {
 
 	fileRenamer := map[string]string{
 		"usecasename": utils.LowerCase(usecaseName),
-		"domainname":  domainName,
+		"domainname":  gcfg.Domain,
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)

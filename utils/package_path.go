@@ -2,7 +2,9 @@ package utils
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"github.com/mirzaakhena/gogen/utils/model"
 	"os"
 	"strings"
 )
@@ -13,7 +15,27 @@ func GetPackageName(rootFolderName string) string {
 	return rootFolderName[i+1:]
 }
 
-func GetDefaultDomain() string {
+func GetGogenConfig() model.GogenConfig {
+
+	fileInBytes, err := os.ReadFile("./.gogen/gogenrc.json")
+	if err != nil {
+		fmt.Printf(".gogen/gogenrc.json is not found. Please run 'gogen domain' first\n")
+		os.Exit(1)
+	}
+
+	var cfg model.GogenConfig
+
+	err = json.Unmarshal(fileInBytes, &cfg)
+	if err != nil {
+		fmt.Printf("fail to unmarshal .gogen/gogenrc.json\n")
+		os.Exit(1)
+	}
+
+	return cfg
+
+}
+
+func GetDefaultDomain2() string {
 
 	var defaultDomain string
 

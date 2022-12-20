@@ -5,7 +5,7 @@ import (
   "{{.PackagePath}}/domain_{{.DomainName}}/gateway/{{LowerCase .GatewayName}}" {{range .UsecaseNames}}
   "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .}}" {{end}}
   "{{.PackagePath}}/shared/gogen"
-  "{{.PackagePath}}/shared/infrastructure/config"
+  "{{.PackagePath}}/shared/config"
   "{{.PackagePath}}/shared/infrastructure/logger"
   "{{.PackagePath}}/shared/infrastructure/token"
 )

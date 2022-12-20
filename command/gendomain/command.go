@@ -1,14 +1,12 @@
 package gendomain
 
 import (
-	"bufio"
 	"embed"
 	"encoding/json"
 	"fmt"
-	"io"
+	"github.com/mirzaakhena/gogen/utils/model"
 	"math/rand"
 	"os"
-	"path/filepath"
 	"strings"
 	"time"
 
@@ -74,17 +72,6 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	_, err = utils.CreateFolderIfNotExist(".gogen")
-	if err != nil {
-		return err
-	}
-
-	gogenDomainFile := "./.gogen/domain"
-	exist, err := utils.WriteFileIfNotExist(defaultDomain, gogenDomainFile, struct{}{})
-	if err != nil {
-		return err
-	}
-
 	err = CopyPasteFolder(".gogen/templates", "controller")
 	if err != nil {
 		return err
@@ -95,20 +82,14 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	if exist {
-		_ = insertNewDomainName(gogenDomainFile, domainName)
-	}
-
 	// handle gogen/config.json
 	{
-		gogenDomainFile := "./.gogen/config.json"
+		gogenDomainFile := "./.gogen/gogenrc.json"
 
-		data := struct {
-			Domain     string `json:"domain"`
-			Controller string `json:"controller"`
-			Gateway    string `json:"gateway"`
-		}{
-			Domain: domainName, Controller: "default", Gateway: "default",
+		data := model.GogenConfig{
+			Domain:     domainName,
+			Controller: "default",
+			Gateway:    "default",
 		}
 
 		jsonInBytes, err := json.MarshalIndent(data, "", " ")
@@ -124,7 +105,7 @@ func Run(inputs ...string) error {
 	// handle .gitignore
 	{
 
-		gitignoreFile := fmt.Sprintf("templates/domain/%s", "gitignore")
+		gitignoreFile := fmt.Sprintf("templates/domain/%s", "~gitignore")
 
 		fileBytes, err := utils.AppTemplates.ReadFile(gitignoreFile)
 		if err != nil {
@@ -193,106 +174,6 @@ func CopyPasteFolder(destFolder, sourceFolder string) error {
 	return nil
 }
 
-func insertNewDomainName(filePath, domainName string) error {
-
-	f, err := os.Open(filePath)
-	if err != nil {
-		return err
-	}
-	defer func(f *os.File) {
-		err := f.Close()
-		if err != nil {
-
-		}
-	}(f)
-
-	isEmptyFile := true
-
-	fileContent := ""
-	scanner := bufio.NewScanner(f)
-	for scanner.Scan() {
-
-		line := strings.TrimSpace(scanner.Text())
-
-		if line == "" {
-			continue
-		}
-
-		isEmptyFile = false
-
-		x := line
-		if strings.HasPrefix(line, "-") {
-			x = line[1:]
-		}
-
-		if x == domainName {
-			return fmt.Errorf("domain name already exist")
-		}
-
-		fileContent += line
-		fileContent += "\n"
-	}
-	if err := scanner.Err(); err != nil {
-		return err
-	}
-
-	if isEmptyFile {
-		fileContent += fmt.Sprintf("-%s", domainName)
-	} else {
-		fileContent += domainName
-	}
-
-	fileContent += "\n"
-
-	return os.WriteFile(filePath, []byte(fileContent), 0644)
-}
-
-func Rewrite(srcDir, destDir string) {
-
-	// Walk through the source directory and copy each file and subdirectory to the destination directory
-	err := filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-
-		// Construct the destination path by replacing the source directory with the destination directory
-		destPath := filepath.Join(destDir, path[len(srcDir):])
-
-		// If the current path is a directory, create it in the destination directory
-		if info.IsDir() {
-			os.MkdirAll(destPath, info.Mode())
-			return nil
-		}
-
-		// If the current path is a file, copy it to the destination directory
-		srcFile, err := os.Open(path)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		defer srcFile.Close()
-
-		destFile, err := os.Create(destPath)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-		defer destFile.Close()
-
-		_, err = io.Copy(destFile, srcFile)
-		if err != nil {
-			fmt.Println(err)
-			return err
-		}
-
-		return nil
-	})
-	if err != nil {
-		return
-	}
-}
-
 type FileAndFolders struct {
 	Folders map[string]int
 	Files   []string
@@ -342,3 +223,103 @@ func readFolders(efs embed.FS, skip, path string, ff *FileAndFolders) error {
 	return nil
 
 }
+
+//func insertNewDomainName(filePath, domainName string) error {
+//
+//	f, err := os.Open(filePath)
+//	if err != nil {
+//		return err
+//	}
+//	defer func(f *os.File) {
+//		err := f.Close()
+//		if err != nil {
+//
+//		}
+//	}(f)
+//
+//	isEmptyFile := true
+//
+//	fileContent := ""
+//	scanner := bufio.NewScanner(f)
+//	for scanner.Scan() {
+//
+//		line := strings.TrimSpace(scanner.Text())
+//
+//		if line == "" {
+//			continue
+//		}
+//
+//		isEmptyFile = false
+//
+//		x := line
+//		if strings.HasPrefix(line, "-") {
+//			x = line[1:]
+//		}
+//
+//		if x == domainName {
+//			return fmt.Errorf("domain name already exist")
+//		}
+//
+//		fileContent += line
+//		fileContent += "\n"
+//	}
+//	if err := scanner.Err(); err != nil {
+//		return err
+//	}
+//
+//	if isEmptyFile {
+//		fileContent += fmt.Sprintf("-%s", domainName)
+//	} else {
+//		fileContent += domainName
+//	}
+//
+//	fileContent += "\n"
+//
+//	return os.WriteFile(filePath, []byte(fileContent), 0644)
+//}
+//
+//func Rewrite(srcDir, destDir string) {
+//
+//	// Walk through the source directory and copy each file and subdirectory to the destination directory
+//	err := filepath.Walk(srcDir, func(path string, info os.FileInfo, err error) error {
+//		if err != nil {
+//			fmt.Println(err)
+//			return err
+//		}
+//
+//		// Construct the destination path by replacing the source directory with the destination directory
+//		destPath := filepath.Join(destDir, path[len(srcDir):])
+//
+//		// If the current path is a directory, create it in the destination directory
+//		if info.IsDir() {
+//			os.MkdirAll(destPath, info.Mode())
+//			return nil
+//		}
+//
+//		// If the current path is a file, copy it to the destination directory
+//		srcFile, err := os.Open(path)
+//		if err != nil {
+//			fmt.Println(err)
+//			return err
+//		}
+//		defer srcFile.Close()
+//
+//		destFile, err := os.Create(destPath)
+//		if err != nil {
+//			fmt.Println(err)
+//			return err
+//		}
+//		defer destFile.Close()
+//
+//		_, err = io.Copy(destFile, srcFile)
+//		if err != nil {
+//			fmt.Println(err)
+//			return err
+//		}
+//
+//		return nil
+//	})
+//	if err != nil {
+//		return
+//	}
+//}

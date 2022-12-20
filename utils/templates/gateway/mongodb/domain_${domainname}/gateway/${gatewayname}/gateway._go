@@ -3,7 +3,7 @@ package {{LowerCase .GatewayName}}
 import (
 	"context"
 	"{{.PackagePath}}/shared/gogen"
-    "{{.PackagePath}}/shared/infrastructure/config"
+    "{{.PackagePath}}/shared/config"
     "{{.PackagePath}}/shared/infrastructure/database"
 	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
 	"{{.PackagePath}}/shared/infrastructure/logger"

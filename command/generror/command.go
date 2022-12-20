@@ -26,7 +26,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	errorName := inputs[0]
 
 	obj := ObjTemplate{
@@ -35,7 +35,7 @@ func Run(inputs ...string) error {
 	}
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gcfg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
@@ -48,7 +48,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_codes.go", domainName)
+	errEnumFile := fmt.Sprintf("domain_%s/model/errorenum/error_codes.go", gcfg)
 
 	// inject to error_codes.go
 	{

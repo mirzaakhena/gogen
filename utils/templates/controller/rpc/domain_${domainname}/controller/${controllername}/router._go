@@ -2,7 +2,7 @@ package {{LowerCase .ControllerName}}
 
 import (
     "{{.PackagePath}}/shared/infrastructure/remoting"
-    "{{.PackagePath}}/shared/infrastructure/config"
+    "{{.PackagePath}}/shared/config"
 	"{{.PackagePath}}/shared/infrastructure/logger" {{range .Usecases}}
     "{{$.PackagePath}}/domain_{{$.DomainName}}/usecase/{{LowerCase .Name}}" {{end}}
 )

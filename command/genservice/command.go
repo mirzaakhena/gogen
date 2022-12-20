@@ -33,7 +33,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	serviceName := inputs[0]
 
 	obj := ObjTemplate{
@@ -47,7 +47,7 @@ func Run(inputs ...string) error {
 	}
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gcfg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "service", fileRenamer, obj, utils.AppTemplates)
@@ -56,7 +56,7 @@ func Run(inputs ...string) error {
 	}
 
 	// service.go file is already exist, but is the interface is exist ?
-	exist, err := isServiceExist(fmt.Sprintf("domain_%s/model/service", domainName), serviceName)
+	exist, err := isServiceExist(fmt.Sprintf("domain_%s/model/service", gcfg), serviceName)
 	if err != nil {
 		return err
 	}
@@ -73,13 +73,13 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		dataInBytes, err := injectCodeToServiceFile(domainName, templateHasBeenInjected)
+		dataInBytes, err := injectCodeToServiceFile(gcfg.Domain, templateHasBeenInjected)
 		if err != nil {
 			return err
 		}
 
 		// reformat interactor.go
-		err = utils.Reformat(getServiceFile(domainName), dataInBytes)
+		err = utils.Reformat(getServiceFile(gcfg.Domain), dataInBytes)
 		if err != nil {
 			return err
 		}
@@ -93,12 +93,12 @@ func Run(inputs ...string) error {
 
 	// inject to outport
 	{
-		err := injectToOutport(domainName, obj)
+		err := injectToOutport(gcfg.Domain, obj)
 		if err != nil {
 			return err
 		}
 
-		outportFile := fmt.Sprintf("domain_%s/usecase/%s/outport.go", domainName, *obj.UsecaseName)
+		outportFile := fmt.Sprintf("domain_%s/usecase/%s/outport.go", gcfg, *obj.UsecaseName)
 
 		// reformat outport.go
 		err = utils.Reformat(outportFile, nil)
@@ -120,7 +120,7 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		interactorFilename := getInteractorFilename(domainName, *obj.UsecaseName)
+		interactorFilename := getInteractorFilename(gcfg.Domain, *obj.UsecaseName)
 
 		interactorBytes, err := utils.InjectToInteractor(interactorFilename, templateHasBeenInjected)
 		if err != nil {

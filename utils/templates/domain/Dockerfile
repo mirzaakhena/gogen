@@ -2,7 +2,7 @@
 # BUILD BINARY #
 ################
 
-FROM golang:1.18.2-alpine3.15 as builder
+FROM golang:1.19.4-alpine as builder
 
 RUN apk update && apk add --no-cache git
 

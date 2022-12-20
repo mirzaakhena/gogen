@@ -35,7 +35,7 @@ func Run(inputs ...string) error {
 	//	return err
 	//}
 
-	domainName := utils.GetDefaultDomain()
+	domainName := utils.GetGogenConfig()
 
 	//entityName := inputs[0]
 

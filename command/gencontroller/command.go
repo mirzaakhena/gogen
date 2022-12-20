@@ -102,7 +102,7 @@ func Run(inputs ...string) error {
 		return msg
 	}
 
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	controllerName := inputs[0]
 
 	driverName := "gin"
@@ -110,7 +110,7 @@ func Run(inputs ...string) error {
 	//	driverName = utils.LowerCase(inputs[1])
 	//}
 
-	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", domainName)
+	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", gcfg)
 
 	//usecaseNames := make([]string, 0)
 
@@ -150,7 +150,7 @@ func Run(inputs ...string) error {
 	// siapkan obj controller yg akan di inject-kan, berisi list of usecases
 	obj := ObjTemplate{
 		PackagePath:    packagePath,
-		DomainName:     domainName,
+		DomainName:     gcfg.Domain,
 		ControllerName: controllerName,
 		DriverName:     driverName,
 		//Usecases:       usecases,
@@ -158,7 +158,7 @@ func Run(inputs ...string) error {
 
 	fileRenamer := map[string]string{
 		"controllername": utils.LowerCase(controllerName),
-		"domainname":     utils.LowerCase(domainName),
+		"domainname":     utils.LowerCase(gcfg.Domain),
 	}
 
 	err = utils.CreateEverythingExactly("templates/controller/", obj.DriverName, fileRenamer, obj, utils.AppTemplates)
@@ -173,7 +173,7 @@ func Run(inputs ...string) error {
 
 		singleObj := ObjTemplateSingle{
 			PackagePath:    obj.PackagePath,
-			DomainName:     domainName,
+			DomainName:     gcfg.Domain,
 			ControllerName: controllerName,
 			DriverName:     driverName,
 			Usecase:        usecase,
@@ -191,7 +191,7 @@ func Run(inputs ...string) error {
 			//	return err
 			//}
 
-			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+			filename := fmt.Sprintf("domain_%s/controller/%s/handler_%s.go", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 			_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 			if err != nil {
@@ -215,7 +215,7 @@ func Run(inputs ...string) error {
 					return err
 				}
 
-				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 				if err != nil {
@@ -229,7 +229,7 @@ func Run(inputs ...string) error {
 					return err
 				}
 
-				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", domainName, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
+				filename := fmt.Sprintf("domain_%s/controller/%s/http_%s.http", gcfg, utils.LowerCase(controllerName), utils.LowerCase(usecase.Name))
 
 				_, err = utils.WriteFileIfNotExist(string(templateCode), filename, singleObj)
 				if err != nil {
@@ -243,12 +243,12 @@ func Run(inputs ...string) error {
 	}
 
 	// ambil semua usecase yang BELUM terdaftar di router
-	unexistedUsecases, err := getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName, usecases)
+	unexistedUsecases, err := getUnexistedUsecaseFromRouterBind(packagePath, gcfg.Domain, controllerName, usecases)
 	if err != nil {
 		return err
 	}
 
-	//unexistedUsecases, err := getUnexistedUsecaseFromImport(packagePath, domainName, controllerName, obj.Usecases)
+	//unexistedUsecases, err := getUnexistedUsecaseFromImport(packagePath, gcfg, controllerName, obj.Usecases)
 	//if err != nil {
 	//	return err
 	//}
@@ -265,7 +265,7 @@ func Run(inputs ...string) error {
 
 		singleObj := ObjTemplateSingle{
 			PackagePath:    obj.PackagePath,
-			DomainName:     domainName,
+			DomainName:     gcfg.Domain,
 			ControllerName: controllerName,
 			Usecase:        usecase,
 			DriverName:     driverName,

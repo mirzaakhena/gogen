@@ -29,13 +29,13 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	gatewayName := inputs[0]
 
 	obj := ObjTemplate{
 		PackagePath: packagePath,
 		GatewayName: gatewayName,
-		DomainName:  utils.LowerCase(domainName),
+		DomainName:  utils.LowerCase(gcfg.Domain),
 		UsecaseName: nil,
 	}
 
@@ -62,7 +62,7 @@ func Run(inputs ...string) error {
 
 	// we read all the usecase folders
 	//var folders []string
-	fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", domainName))
+	fileInfo, err := os.ReadDir(fmt.Sprintf("domain_%s/usecase", gcfg))
 	if err != nil {
 		return err
 	}
@@ -128,7 +128,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	gatewayFilename := fmt.Sprintf("domain_%s/gateway/%s/gateway.go", domainName, gatewayName)
+	gatewayFilename := fmt.Sprintf("domain_%s/gateway/%s/gateway.go", gcfg, gatewayName)
 
 	bytes, err := injectToGateway(gatewayFilename, templateHasBeenInjected)
 	if err != nil {

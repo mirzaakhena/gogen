@@ -26,7 +26,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gfcg := utils.GetGogenConfig()
 	enumName := inputs[0]
 
 	obj := &ObjTemplate{
@@ -37,7 +37,7 @@ func Run(inputs ...string) error {
 
 	fileRenamer := map[string]string{
 		"enumname":   utils.SnakeCase(enumName),
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gfcg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "enum", fileRenamer, obj, utils.AppTemplates)

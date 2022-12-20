@@ -48,12 +48,12 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gfcg := utils.GetGogenConfig()
 	applicationName := inputs[0]
 
 	obj := &ObjTemplate{
 		PackagePath:     packagePath,
-		DomainName:      domainName,
+		DomainName:      gfcg.Domain,
 		ApplicationName: applicationName,
 		ControllerName:  nil,
 		GatewayName:     nil,
@@ -82,7 +82,7 @@ func Run(inputs ...string) error {
 		if obj.ControllerName == nil {
 
 			// look up the controller by foldername
-			objControllers, err := findAllObjController(domainName)
+			objControllers, err := findAllObjController(gfcg.Domain)
 			if err != nil {
 				return err
 			}
@@ -108,7 +108,7 @@ func Run(inputs ...string) error {
 			var err error
 
 			// when controller name is given
-			objController, err = findControllerByName(domainName, *obj.ControllerName)
+			objController, err = findControllerByName(gfcg.Domain, *obj.ControllerName)
 			if err != nil {
 				return err
 			}
@@ -124,7 +124,7 @@ func Run(inputs ...string) error {
 		if obj.GatewayName == nil {
 
 			// look up the gateway by foldername
-			objGateways, err := findAllObjGateway(domainName)
+			objGateways, err := findAllObjGateway(gfcg.Domain)
 			if err != nil {
 				return err
 			}
@@ -150,7 +150,7 @@ func Run(inputs ...string) error {
 			var err error
 
 			// when gateway name is given
-			objGateway, err = findGatewayByName(domainName, *obj.GatewayName)
+			objGateway, err = findGatewayByName(gfcg.Domain, *obj.GatewayName)
 			if err != nil {
 				return err
 			}
@@ -164,7 +164,7 @@ func Run(inputs ...string) error {
 		// ================
 
 		// get all usecase from controller
-		usecaseNames, err := findAllUsecaseInportNameFromController(domainName, objController)
+		usecaseNames, err := findAllUsecaseInportNameFromController(gfcg.Domain, objController)
 		if err != nil {
 			return err
 		}
@@ -200,7 +200,7 @@ func Run(inputs ...string) error {
 		obj.UsecaseNames = unexistUsecase
 
 		fileRenamer := map[string]string{
-			"domainname":      utils.LowerCase(domainName),
+			"domainname":      utils.LowerCase(gfcg.Domain),
 			"applicationname": utils.LowerCase(applicationName),
 		}
 

@@ -134,7 +134,7 @@ type OASRoot struct {
 
 func Run(inputs ...string) error {
 
-	domainName := utils.GetDefaultDomain()
+	domainName := utils.GetGogenConfig()
 
 	data := OASRoot{
 		OpenAPI: "3.0.3",

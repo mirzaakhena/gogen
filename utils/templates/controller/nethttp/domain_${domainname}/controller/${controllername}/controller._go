@@ -3,7 +3,7 @@ package {{LowerCase .ControllerName}}
 import (
 	"net/http"
 	"{{.PackagePath}}/shared/gogen"
-	"{{.PackagePath}}/shared/infrastructure/config"
+	"{{.PackagePath}}/shared/config"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/infrastructure/server"
 	"{{.PackagePath}}/shared/infrastructure/token"

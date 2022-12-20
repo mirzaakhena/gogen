@@ -25,18 +25,18 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	entityName := inputs[0]
 
 	obj := &ObjTemplate{
 		PackagePath: packagePath,
 		EntityName:  entityName,
-		DomainName:  domainName,
+		DomainName:  gcfg.Domain,
 	}
 
 	fileRenamer := map[string]string{
 		"entityname": utils.SnakeCase(entityName),
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gcfg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "entity", fileRenamer, obj, utils.AppTemplates)

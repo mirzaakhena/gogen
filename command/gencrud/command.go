@@ -28,18 +28,18 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 
 	entityName := inputs[0]
 
 	obj := &ObjTemplate{
 		PackagePath: packagePath,
 		EntityName:  entityName,
-		DomainName:  domainName,
+		DomainName:  gcfg.Domain,
 	}
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gcfg.Domain),
 		"entityname": utils.LowerCase(entityName),
 	}
 

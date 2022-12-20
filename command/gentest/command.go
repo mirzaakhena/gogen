@@ -29,7 +29,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	testName := inputs[0]
 	usecaseName := inputs[1]
 
@@ -37,11 +37,11 @@ func Run(inputs ...string) error {
 		PackagePath: packagePath,
 		UsecaseName: usecaseName,
 		TestName:    testName,
-		DomainName:  domainName,
+		DomainName:  gcfg.Domain,
 		Methods:     nil,
 	}
 
-	outportMethods, err := utils.NewOutportMethods(domainName, usecaseName)
+	outportMethods, err := utils.NewOutportMethods(gcfg.Domain, usecaseName)
 	if err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func Run(inputs ...string) error {
 	obj.Methods = outportMethods
 
 	fileRenamer := map[string]string{
-		"domainname":  utils.LowerCase(domainName),
+		"domainname":  utils.LowerCase(gcfg.Domain),
 		"usecasename": utils.LowerCase(usecaseName),
 		"testname":    utils.LowerCase(testName),
 	}
@@ -60,7 +60,7 @@ func Run(inputs ...string) error {
 
 	// file gateway impl file is already exist, we want to inject non existing method
 	structName := fmt.Sprintf("mockOutport%s", utils.PascalCase(testName))
-	rootFolderName := fmt.Sprintf("domain_%s/usecase/%s", utils.LowerCase(domainName), utils.LowerCase(usecaseName))
+	rootFolderName := fmt.Sprintf("domain_%s/usecase/%s", utils.LowerCase(gcfg.Domain), utils.LowerCase(usecaseName))
 	existingFunc, err := utils.NewOutportMethodImpl(structName, rootFolderName)
 	if err != nil {
 		return err

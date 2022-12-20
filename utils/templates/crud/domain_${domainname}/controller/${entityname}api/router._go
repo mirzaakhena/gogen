@@ -3,7 +3,6 @@ package {{LowerCase .EntityName}}api
 import (
     "github.com/gin-gonic/gin"
 	"{{.PackagePath}}/shared/gogen"
-    "{{.PackagePath}}/shared/infrastructure/config"
     "{{.PackagePath}}/shared/infrastructure/logger"
     "{{.PackagePath}}/shared/infrastructure/token"
 )

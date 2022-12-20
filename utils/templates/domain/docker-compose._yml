@@ -26,9 +26,9 @@ services:
         ports:
             - "6379:6379"
 
-  myapp:
-    container_name: myapp
-    build: .
-    entrypoint: "./{{.ExecutableName}} myapp"
-    ports:
-      - "8080:8080"
+    myapp:
+        container_name: myapp
+        build: .
+        entrypoint: "./{{.ExecutableName}} myapp"
+        ports:
+            - "8080:8080"

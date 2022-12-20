@@ -24,7 +24,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gfcg := utils.GetGogenConfig()
 	valueStringName := inputs[0]
 
 	obj := &ObjTemplate{
@@ -34,7 +34,7 @@ func Run(inputs ...string) error {
 
 	fileRenamer := map[string]string{
 		"valuestringname": utils.SnakeCase(valueStringName),
-		"domainname":      utils.LowerCase(domainName),
+		"domainname":      utils.LowerCase(gfcg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "valuestring", fileRenamer, obj, utils.AppTemplates)

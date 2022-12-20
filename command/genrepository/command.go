@@ -39,7 +39,7 @@ func Run(inputs ...string) error {
 	}
 
 	packagePath := utils.GetPackagePath()
-	domainName := utils.GetDefaultDomain()
+	gcfg := utils.GetGogenConfig()
 	repositoryName := inputs[0]
 	entityName := inputs[1]
 
@@ -55,7 +55,7 @@ func Run(inputs ...string) error {
 	}
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gcfg.Domain),
 	}
 
 	err := genentity.Run(entityName)
@@ -69,7 +69,7 @@ func Run(inputs ...string) error {
 	}
 
 	// repository.go file is already exist, but is the interface is exist ?
-	exist, err := isRepoExist(getRepositoryFolder(domainName), repositoryName)
+	exist, err := isRepoExist(getRepositoryFolder(gcfg.Domain), repositoryName)
 	if err != nil {
 		return err
 	}
@@ -86,13 +86,13 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		dataInBytes, err := injectCodeToRepositoryFile(domainName, templateHasBeenInjected)
+		dataInBytes, err := injectCodeToRepositoryFile(gcfg.Domain, templateHasBeenInjected)
 		if err != nil {
 			return err
 		}
 
 		// reformat interactor.go
-		err = utils.Reformat(getRepositoryFile(domainName), dataInBytes)
+		err = utils.Reformat(getRepositoryFile(gcfg.Domain), dataInBytes)
 		if err != nil {
 			return err
 		}
@@ -106,12 +106,12 @@ func Run(inputs ...string) error {
 
 	// inject to outport
 	{
-		err := injectToOutport(domainName, obj)
+		err := injectToOutport(gcfg.Domain, obj)
 		if err != nil {
 			return err
 		}
 
-		outportFile := getOutportFile(domainName, *obj.UsecaseName)
+		outportFile := getOutportFile(gcfg.Domain, *obj.UsecaseName)
 
 		// reformat outport._go
 		err = utils.Reformat(outportFile, nil)
@@ -133,7 +133,7 @@ func Run(inputs ...string) error {
 			return err
 		}
 
-		interactorFilename := getInteractorFilename(domainName, *obj.UsecaseName)
+		interactorFilename := getInteractorFilename(gcfg.Domain, *obj.UsecaseName)
 
 		interactorBytes, err := utils.InjectToInteractor(interactorFilename, templateHasBeenInjected)
 		if err != nil {
