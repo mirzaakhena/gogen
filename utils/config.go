@@ -33,6 +33,7 @@ func CreateGogenConfig(err error, domainName string) error {
 			Domain:     domainName,
 			Controller: "gin",
 			Gateway:    "simple",
+			Crud:       "gin",
 		}
 
 		jsonInBytes, err := json.MarshalIndent(data, "", " ")
