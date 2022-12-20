@@ -2,7 +2,6 @@ package gencrud
 
 import (
 	"fmt"
-
 	"github.com/mirzaakhena/gogen/command/gengateway"
 	"github.com/mirzaakhena/gogen/utils"
 )
@@ -50,7 +49,7 @@ func Run(inputs ...string) error {
 
 	// TODO check existing entity. if exist, read all the field else create new one
 
-	err = utils.CreateEverythingExactly("templates/", "crud", fileRenamer, obj, utils.AppTemplates)
+	err = utils.CreateEverythingExactly2(".gogen/templates/", "crud/", fileRenamer, obj)
 	if err != nil {
 		return err
 	}

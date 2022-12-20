@@ -48,84 +48,22 @@ func Run(inputs ...string) error {
 
 	if len(inputs) < 1 {
 
-		//frameworks := ""
-
-		//dirs, err := utils.AppTemplates.ReadDir("templates/controller")
-		//if err != nil {
-		//	return err
-		//}
-		//
-		//for i, dir := range dirs {
-		//
-		//	name := dir.Name()
-		//
-		//	if dir.IsDir() {
-		//
-		//		if len(dirs) == 1 {
-		//			frameworks = fmt.Sprintf("%s", frameworks)
-		//			continue
-		//		}
-		//
-		//		if i == 0 {
-		//			frameworks = fmt.Sprintf("%s,", name)
-		//			continue
-		//		}
-		//
-		//		if i == len(dirs)-1 {
-		//			frameworks = fmt.Sprintf("%s %s", frameworks, name)
-		//			continue
-		//		}
-		//
-		//		frameworks = fmt.Sprintf("%s %s,", frameworks, name)
-		//	}
-		//}
-
 		msg := fmt.Errorf("\n" +
 			"   # Create a controller for all usecases using default as default web framework\n" +
 			"   gogen controller restapi\n" +
-			"     'restapi' is a gateway name\n")
-
-		//"   # Create a controller with for all usecases with selected framework\n"+
-		//"   You may try the other one like : %s\n"+
-		//"   in this example we use 'echo'\n"+
-		//"   gogen controller restapi echo\n"+
-		//"     'restapi'     is a gateway name\n"+
-		//"     'CreateOrder' is an usecase name\n"+
-		//"\n"+
-		//"   # Create a controller with defined web framework and specific usecase\n"+
-		//"   gogen controller restapi default CreateOrder\n"+
-		//"     'restapi'      is a gateway name\n"+
-		//"     'default'          is a sample webframework.\n"+
-		//"     'CreateOrder'  is an usecase name\n"+
-		//"\n", frameworks)
+			"     'restapi' is a gateway name" +
+			"\n")
 
 		return msg
 	}
 
 	gcfg := utils.GetGogenConfig()
 	controllerName := inputs[0]
-
-	driverName := "gin"
-	//if len(inputs) >= 2 {
-	//	driverName = utils.LowerCase(inputs[1])
-	//}
+	driverName := gcfg.Controller
 
 	usecaseFolderName := fmt.Sprintf("domain_%s/usecase", gcfg.Domain)
 
-	//usecaseNames := make([]string, 0)
-
 	usecases := make([]*Usecase, 0)
-
-	//if len(inputs) >= 3 {
-	//	usecaseNames = append(usecaseNames, inputs[2])
-	//
-	//	usecaseName := utils.LowerCase(inputs[2])
-	//
-	//	usecases = injectUsecaseInportFields(usecaseFolderName, usecaseName, usecases)
-	//
-	//} else {
-
-	// disini kita hanya meng-handle controller, interceptor dan router saja.
 
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, nil, utils.AppTemplates)
 	if err != nil {
@@ -161,7 +99,7 @@ func Run(inputs ...string) error {
 		"domainname":     utils.LowerCase(gcfg.Domain),
 	}
 
-	err = utils.CreateEverythingExactly("templates/controller/", obj.DriverName, fileRenamer, obj, utils.AppTemplates)
+	err = utils.CreateEverythingExactly2(".gogen/templates/controller/", obj.DriverName, fileRenamer, obj)
 	if err != nil {
 		return err
 	}
@@ -210,7 +148,7 @@ func Run(inputs ...string) error {
 
 			if strings.HasPrefix(strings.ToLower(usecase.Name), "get") {
 
-				templateCode, err := getHTTPClientGETTemplate(obj.DriverName)
+				templateCode, err := getHTTPClientTemplate(obj.DriverName, "get")
 				if err != nil {
 					return err
 				}
@@ -224,7 +162,7 @@ func Run(inputs ...string) error {
 
 			} else if strings.HasPrefix(strings.ToLower(usecase.Name), "run") {
 
-				templateCode, err := getHTTPClientPOSTTemplate(obj.DriverName)
+				templateCode, err := getHTTPClientTemplate(obj.DriverName, "post")
 				if err != nil {
 					return err
 				}
@@ -296,12 +234,6 @@ func Run(inputs ...string) error {
 		}
 
 	}
-
-	//fmt.Printf("Code is generated successfuly. If you saw the error like :\n")
-	//fmt.Printf("- could not import \"some/path\" (no required module provides package \"some/path\")\n")
-	//fmt.Printf("- unresolved type 'x'\n")
-	//fmt.Printf("- cannot resolve symbol 'x'\n")
-	//fmt.Printf("try to run the 'go mod tidy' manually in order to download required dependency\n")
 
 	return nil
 
@@ -504,33 +436,6 @@ func getBindRouterLine(obj ObjTemplate) (int, error) {
 
 	return routerLine, nil
 
-	//for _, decl := range astFile.Decls {
-	//
-	//	if gen, ok := decl.(*ast.FuncDecl); ok {
-	//
-	//		if gen.Recv == nil {
-	//			continue
-	//		}
-	//
-	//		startExp, ok := gen.Recv.List[0].Type.(*ast.StarExpr)
-	//		if !ok {
-	//			continue
-	//		}
-	//
-	//		if startExp.X.(*ast.Ident).String() != "Controller" {
-	//			continue
-	//		}
-	//
-	//		if gen.Name.String() != "RegisterRouter" {
-	//			continue
-	//		}
-	//
-	//		routerLine = fset.Position(gen.Body.Rbrace).Line
-	//		return routerLine, nil
-	//	}
-	//
-	//}
-
 }
 
 func injectRouterBind(obj ObjTemplate, templateWithData string) ([]byte, error) {
@@ -577,34 +482,23 @@ func (o ObjTemplate) getControllerRouterFileName() string {
 	return fmt.Sprintf("domain_%s/controller/%s/router.go", utils.LowerCase(o.DomainName), utils.LowerCase(o.ControllerName))
 }
 
-func getHTTPClientGETTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~httpclient-get._http", driverName)
-	return utils.AppTemplates.ReadFile(path)
-}
-
-func getHTTPClientPOSTTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~httpclient-post._http", driverName)
-	return utils.AppTemplates.ReadFile(path)
+func getHTTPClientTemplate(driverName, method string) ([]byte, error) {
+	path := fmt.Sprintf(".gogen/templates/controller/%s/domain_${domainname}/controller/${controllername}/~httpclient-%s._http", driverName, method)
+	return os.ReadFile(path)
 }
 
 func getHandlerTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~handler._go", driverName)
-	return utils.AppTemplates.ReadFile(path)
-}
-
-func getRouterInportTemplate(driverName string) ([]byte, error) {
-	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-inport._go", driverName)
-	return utils.AppTemplates.ReadFile(path)
+	path := fmt.Sprintf(".gogen/templates/controller/%s/domain_${domainname}/controller/${controllername}/~handler._go", driverName)
+	return os.ReadFile(path)
 }
 
 func getRouterRegisterTemplate(driverName, usecase string) ([]byte, error) {
+	method := "post"
 	if strings.HasPrefix(strings.ToLower(usecase), "get") {
-		path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-get._go", driverName)
-		return utils.AppTemplates.ReadFile(path)
+		method = "get"
 	}
-
-	path := fmt.Sprintf("templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-post._go", driverName)
-	return utils.AppTemplates.ReadFile(path)
+	path := fmt.Sprintf(".gogen/templates/controller/%s/domain_${domainname}/controller/${controllername}/~inject-router-register-%s._go", driverName, method)
+	return os.ReadFile(path)
 }
 
 //func injectInportToStruct(obj ObjTemplate, templateWithData string) ([]byte, error) {

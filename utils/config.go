@@ -20,14 +20,19 @@ func CreateGogenConfig(err error, domainName string) error {
 		return err
 	}
 
+	err = CopyPasteFolder(".gogen/templates", "crud")
+	if err != nil {
+		return err
+	}
+
 	// handle gogen/config.json
 	{
 		gogenDomainFile := "./.gogen/gogenrc.json"
 
 		data := model.GogenConfig{
 			Domain:     domainName,
-			Controller: "default",
-			Gateway:    "default",
+			Controller: "gin",
+			Gateway:    "simple",
 		}
 
 		jsonInBytes, err := json.MarshalIndent(data, "", " ")

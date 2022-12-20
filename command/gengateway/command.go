@@ -39,7 +39,7 @@ func Run(inputs ...string) error {
 		UsecaseName: nil,
 	}
 
-	driverName := "simple"
+	driverName := gcfg.Gateway
 
 	// first we create the shared
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)
@@ -123,10 +123,10 @@ func createGatewayImpl(driverName, usecaseName string, obj ObjTemplate) (utils.O
 	}
 
 	obj.Methods = outportMethods
-	err = utils.CreateEverythingExactly("templates/gateway/", driverName, map[string]string{
+	err = utils.CreateEverythingExactly2(".gogen/templates/gateway/", driverName, map[string]string{
 		"gatewayname": utils.LowerCase(obj.GatewayName),
 		"domainname":  obj.DomainName,
-	}, obj, utils.AppTemplates)
+	}, obj)
 	if err != nil {
 		return nil, err
 	}
@@ -151,8 +151,8 @@ func createGatewayImpl(driverName, usecaseName string, obj ObjTemplate) (utils.O
 
 // getGatewayMethodTemplate ...
 func getGatewayMethodTemplate(driverName string) ([]byte, error) {
-	s := fmt.Sprintf("templates/gateway/%s/domain_${domainname}/gateway/${gatewayname}/~inject._go", driverName)
-	return utils.AppTemplates.ReadFile(s)
+	s := fmt.Sprintf(".gogen/templates/gateway/%s/domain_${domainname}/gateway/${gatewayname}/~inject._go", driverName)
+	return os.ReadFile(s)
 }
 
 func injectToGateway(gatewayFilename, injectedCode string) ([]byte, error) {
