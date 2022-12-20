@@ -20,29 +20,3 @@ func scenario0(t *testing.T) testScenario {
 		ExpectedError: nil,
 	}
 }
-
-func scenario1(t *testing.T) testScenario {
-	return testScenario{
-		Name:           "TodoID is Empty",
-		InportRequest:  requestTodoIDEmpty,
-		InportResponse: &responseEmpty,
-		Outport: &impl{
-			FindOneTodoByIDRepo: &implFindOneTodoByID{t: t},
-			SaveTodoRepo:        &implSaveTodo{t: t},
-		},
-		ExpectedError: errorenum.TodoMustNotEmpty,
-	}
-}
-
-func scenario3(t *testing.T) testScenario {
-	return testScenario{
-		Name:           "Todo already checked",
-		InportRequest:  requestTodoIDA,
-		InportResponse: &responseEmpty,
-		Outport: &impl{
-			FindOneTodoByIDRepo: &implFindOneTodoByIDWithCheckedTrue{t: t},
-			SaveTodoRepo:        &implSaveTodo{t: t},
-		},
-		ExpectedError: errorenum.TodoAlreadyChecked.Var("This is a test"),
-	}
-}

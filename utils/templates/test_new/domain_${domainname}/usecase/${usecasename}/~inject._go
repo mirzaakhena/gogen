@@ -1,7 +1,0 @@
-{{range .Methods}}
-func (r *mockOutport{{PascalCase $.TestName}}) {{.MethodName}}{{.MethodSignature}} {
-    log.Info(ctx, "called")
-
-    return {{.DefaultReturnVal}}
-}
-{{end}}

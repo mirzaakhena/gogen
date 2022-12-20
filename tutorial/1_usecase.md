@@ -2,7 +2,7 @@
 
 Usecase follow the usecase definition in Uncle bob Architecture. 
 Basically Usecase is a simple interface with one method to do only one more thing (to support the single responsibility principle). 
-The basic contract form of usecase is in `shared/usecase/usecase.go`
+The basic contract form of usecase is in `shared/gogen/usecase.go`
 
 ```go
 type Inport[REQUEST, RESPONSE any] interface {
@@ -20,12 +20,11 @@ Then you will have this three file `inport.go`, `interactor.go` and `outport.go`
 
 ### inport.go
 
-Inport define the InportRequest and InportResponse. 
-InportRequest define all the required argument to run the usecase and 
-InportResponse define all the result value after run the usecase. 
+Inport define the InportRequest which define all the required payload to run the usecase and 
+InportResponse which define all the result value after run the usecase. 
 
 ```go
-type Inport usecase.Inport[context.Context, InportRequest, InportResponse]
+type Inport = usecase.Inport[context.Context, InportRequest, InportResponse]
 
 type InportRequest struct {
 }
@@ -36,7 +35,7 @@ type InportResponse struct {
 
 ### interactor.go
 
-Interactor have a `struct` and the `struct method` that implement the Inport interface.
+Interactor is a struct that implement the Inport interface.
 In the struct we have one (and only one) outport field with type interface
 
 ```go

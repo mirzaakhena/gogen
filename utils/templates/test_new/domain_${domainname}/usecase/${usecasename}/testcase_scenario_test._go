@@ -8,7 +8,5 @@ import (
 func TestUsecases(t *testing.T) {
 	gogen.RunTestcaseScenarios(t, func(o Outport) Inport { return NewUsecase(o) },
 		scenario0(t),
-		scenario1(t),
-		scenario3(t),
 	)
 }
