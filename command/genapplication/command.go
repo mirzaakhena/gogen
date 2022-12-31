@@ -49,7 +49,7 @@ func Run(inputs ...string) error {
 
 	packagePath := utils.GetPackagePath()
 	gfcg := utils.GetGogenConfig()
-	applicationName := inputs[0]
+	applicationName := utils.CamelCase(inputs[0])
 
 	obj := &ObjTemplate{
 		PackagePath:     packagePath,
