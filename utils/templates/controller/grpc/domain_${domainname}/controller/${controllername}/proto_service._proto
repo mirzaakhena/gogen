@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package hello;
+
+option go_package = "shared/grpcstub";
+
+message RunProductCreateRequest {
+  string name = 1;
+  int32 price = 2;
+}
+
+message RunProductCreateResponse {
+  string productId = 1;
+}
+
+service GrpcServerService {
+  rpc RunProductCreateExecute (RunProductCreateRequest) returns (RunProductCreateResponse);
+}

@@ -1,0 +1,54 @@
+package {{LowerCase .ControllerName}}
+
+
+import (
+	"{{.PackagePath}}/shared/config"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/token"
+	"{{.PackagePath}}/shared/protogrpc"
+	"google.golang.org/grpc"
+	"net"
+)
+
+//go:generate protoc -I . --go-grpc_out=../../../. --go_out=../../../. ./product.proto
+
+type controller struct {
+	protogrpc.UnimplementedProductControllerServer
+	gogen.UsecaseRegisterer
+	server   *grpc.Server
+	log      logger.Logger
+	cfg      *config.Config
+	jwtToken token.JWTToken
+}
+
+func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
+
+	server := grpc.NewServer()
+
+	return &controller{
+		UsecaseRegisterer: gogen.NewBaseController(),
+		server:            server,
+		log:               log,
+		cfg:               cfg,
+		jwtToken:          jwtToken,
+	}
+
+}
+
+func (r *controller) RegisterRouter() {
+	protogrpc.RegisterProductControllerServer(r.server, r)
+}
+
+func (r *controller) Start() {
+
+	listen, err := net.Listen("tcp", ":9000")
+	if err != nil {
+		panic(err)
+	}
+
+	err = r.server.Serve(listen)
+	if err != nil {
+		panic(err)
+	}
+}

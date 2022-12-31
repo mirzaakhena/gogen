@@ -1,0 +1,24 @@
+
+{{range .Methods}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	client := grpcstub.NewGrpcServerServiceClient(r.conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	payload := grpcstub.RunProductCreateRequest{
+		Name:  "Jeruk",
+		Price: 200,
+	}
+	executeResponse, err := client.RunProductCreateExecute(ctx, &payload)
+	if err != nil {
+		return err
+	}
+
+	r.log.Info(ctx, ">>>> response %v", executeResponse.GetProductId())
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}

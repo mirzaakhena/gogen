@@ -1,0 +1,36 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"net/http"
+	"github.com/gin-gonic/gin"
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/grpcstub"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/util"
+)
+
+func (r *controller) {{CamelCase .Usecase.Name}}Handler(ctx context.Context, stubReq *grpcstub.RunProductCreateRequest) (*grpcstub.RunProductCreateResponse, error) {
+
+    type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
+	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
+
+    inport := gogen.GetInport[InportRequest, InportResponse](r.GetUsecase(InportRequest{}))
+
+	var req InportRequest
+	req.Name = stubReq.Name
+	req.Price = stubReq.Price
+	req.Now = time.Now()
+	req.RandomString = util.GenerateID(5)
+
+	res, err := inport.Execute(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+
+	var stubRes grpcstub.RunProductCreateResponse
+	stubRes.ProductId = string(res.ProductID)
+
+	return &stubRes, nil
+}

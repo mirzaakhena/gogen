@@ -1,0 +1,60 @@
+package {{LowerCase .GatewayName}}
+
+import (
+	"context"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/grpcstub"
+    "{{.PackagePath}}/shared/config"
+	"{{.PackagePath}}/domain_{{.DomainName}}/model/entity"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+
+    // "gorm.io/driver/sqlite"
+    // "gorm.io/gorm"
+)
+
+type gateway struct {
+    log     logger.Logger
+    appData gogen.ApplicationData
+    config  *config.Config
+    // conn    *grpc.ClientConn
+}
+
+// NewGateway ...
+func NewGateway(log logger.Logger, appData gogen.ApplicationData, cfg *config.Config) (*gateway) {
+
+	conn, err := grpc.Dial("localhost:9000", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	if err != nil {
+		panic(err)
+	}
+
+	return &gateway{
+	    log:     log,
+		appData: appData,
+		config:  cfg,
+		// conn:    conn,
+	}
+}
+
+{{range .Methods}}
+func (r *gateway) {{.MethodName}}{{.MethodSignature}} {
+    r.log.Info(ctx, "called")
+
+	client := grpcstub.NewGrpcServerServiceClient(r.conn)
+
+	ctx, cancel := context.WithTimeout(context.Background(), time.Second)
+	defer cancel()
+
+	payload := grpcstub.RunProductCreateRequest{
+		Name:  "Jeruk",
+		Price: 200,
+	}
+	executeResponse, err := client.RunProductCreateExecute(ctx, &payload)
+	if err != nil {
+		return err
+	}
+
+	r.log.Info(ctx, ">>>> response %v", executeResponse.GetProductId())
+
+    return {{.DefaultReturnVal}}
+}
+{{end}}
