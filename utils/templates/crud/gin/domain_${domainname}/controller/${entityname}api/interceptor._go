@@ -30,7 +30,7 @@ func (r *controller) authentication() gin.HandlerFunc {
 	}
 }
 
-func (r *ginController) authorization() gin.HandlerFunc {
+func (r *controller) authorization() gin.HandlerFunc {
 
 	return func(c *gin.Context) {
 

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/mirzaakhena/gogen/utils"
-	"io/ioutil"
+	"os"
 )
 
 // ObjTemplate ...
@@ -244,7 +244,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	err = ioutil.WriteFile(fmt.Sprintf("domain_%s/openapi.json", domainName), file, 0644)
+	err = os.WriteFile(fmt.Sprintf("domain_%s/openapi.json", domainName), file, 0644)
 	if err != nil {
 		return err
 	}

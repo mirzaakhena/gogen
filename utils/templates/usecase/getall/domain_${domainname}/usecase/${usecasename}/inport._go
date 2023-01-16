@@ -1,7 +1,6 @@
 package {{LowerCase .UsecaseName}}
 
 import (
-    "context"
     "{{.PackagePath}}/shared/gogen"
 )
 

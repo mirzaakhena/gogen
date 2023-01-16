@@ -1,7 +1,7 @@
 package {{LowerCase .UsecaseName}}
 
 import (
-    "context"
+    "{{.PackagePath}}/shared/gogen"
 )
 
 type Inport = gogen.Inport[InportRequest, InportResponse]
