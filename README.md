@@ -453,18 +453,26 @@ $ gogen usecase RunPaymentCreate
 
 But, hei the usecase is created under the order domain! How to create it under payment domain?
 
-open the folder `.gogen` you will see file `domain`. You need to update the file from this
+open the folder `.gogen` you will see file `gogenrc.json`. You need to update the file from this
 
 ```
--order
-payment
+{
+  "domain": "order",
+  "controller": "gin",
+  "gateway": "simple",
+  "crud": "gin"
+}
 ```
 
 into this
 
 ```
-order
--payment
+{
+  "domain": "payment",
+  "controller": "gin",
+  "gateway": "simple",
+  "crud": "gin"
+}
 ```
 
 Now you are working under payment domain. 
