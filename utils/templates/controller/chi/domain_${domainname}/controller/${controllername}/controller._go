@@ -1,18 +1,19 @@
 package {{LowerCase .ControllerName}}
 
 import (
-	"net/http"
 	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/config"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/infrastructure/token"
-	"time"
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
+	"net/http"
 )
 
 type controller struct {
-	gogen.ControllerStarter                // built-in http that has gracefullyshutdown
-	gogen.UsecaseRegisterer                // collect all the inports
-	Router                  *http.ServeMux // the router from preference web framework
+	gogen.ControllerStarter             // built-in http that has gracefullyshutdown
+	gogen.UsecaseRegisterer             // collect all the inports
+	Router                  *chi.Mux  // the router from preference web framework
 	log                     logger.Logger
 	cfg                     *config.Config
 	jwtToken                token.JWTToken
@@ -20,14 +21,7 @@ type controller struct {
 
 func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
 
-	router := http.NewServeMux()
-
-    router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-        if r.Method != "GET" {
-            return
-        }
-        fmt.Fprint(w, appData)
-    })
+	router := chi.NewRouter()
 
 	address := cfg.Servers[appData.AppName].Address
 

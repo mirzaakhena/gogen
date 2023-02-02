@@ -1,0 +1,11 @@
+package {{LowerCase .ControllerName}}
+
+import (
+    "github.com/go-chi/chi/v5"
+)
+
+func (r *controller) RegisterRouter() {
+    r.Router.Route("/api/v1", func(rc chi.Router) {
+        //!
+    })
+}

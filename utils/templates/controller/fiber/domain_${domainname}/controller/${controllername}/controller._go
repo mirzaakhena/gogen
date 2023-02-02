@@ -1,10 +1,13 @@
 package {{LowerCase .ControllerName}}
 
 import (
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2"
 	"net/http"
 	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/config"
 	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/infrastructure/server"
 	"{{.PackagePath}}/shared/infrastructure/token"
 	"time"
 )
@@ -12,22 +15,31 @@ import (
 type controller struct {
 	gogen.ControllerStarter                // built-in http that has gracefullyshutdown
 	gogen.UsecaseRegisterer                // collect all the inports
-	Router                  *http.ServeMux // the router from preference web framework
-	log                     logger.Logger
-	cfg                     *config.Config
-	jwtToken                token.JWTToken
+	Router                  *fiber.App     // the router from preference web framework
+	log                     logger.Logger  //
+	cfg                     *config.Config //
+	jwtToken                token.JWTToken //
 }
 
 func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
 
-	router := http.NewServeMux()
+	router := fiber.New()
 
-    router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-        if r.Method != "GET" {
-            return
-        }
-        fmt.Fprint(w, appData)
-    })
+	// PING API
+	router.Get("/ping", func(c *fiber.Ctx) error {
+		return c.JSON(appData)
+	})
+
+    // used for web ui development
+	// contentStatic, _ := fs.Sub(web.StaticFiles, "dist")
+	// router.StaticFS("/web", http.FS(contentStatic))
+
+	// CORS
+	router.Use(cors.New(cors.Config{
+		ExposeHeaders: "Data-Length",
+		AllowMethods:  "GET, POST, PUT, DELETE, PATCH, HEAD, OPTIONS",
+		AllowHeaders:  "Content-Type, Authorization",
+	}))
 
 	address := cfg.Servers[appData.AppName].Address
 

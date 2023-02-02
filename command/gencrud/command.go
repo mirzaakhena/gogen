@@ -39,7 +39,7 @@ func Run(inputs ...string) error {
 
 	fileRenamer := map[string]string{
 		"domainname": utils.LowerCase(gcfg.Domain),
-		"entityname": utils.LowerCase(entityName),
+		"entityname": utils.SnakeCase(entityName),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "shared", nil, obj, utils.AppTemplates)

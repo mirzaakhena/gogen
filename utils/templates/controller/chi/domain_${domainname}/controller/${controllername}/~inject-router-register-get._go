@@ -1,0 +1,2 @@
+rc.Get("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
+//!

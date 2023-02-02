@@ -4,5 +4,5 @@ import "net/http"
 
 func (r *controller) RegisterRouter() {
     resource := r.Router.Group("/api/v1")
-
+    //!
 }

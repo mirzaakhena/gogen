@@ -1,0 +1,2 @@
+r.Router.HandleFunc("/api/v1/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
+//!

@@ -1,1 +1,2 @@
 resource.POST("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
+//!

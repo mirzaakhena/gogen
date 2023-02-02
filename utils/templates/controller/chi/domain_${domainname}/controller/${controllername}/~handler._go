@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
+	"github.com/go-chi/render"
 	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/model/payload"
 	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/util"
-
 )
 
 func (r *controller) {{CamelCase .Usecase.Name}}Handler() http.HandlerFunc {
@@ -29,27 +29,16 @@ func (r *controller) {{CamelCase .Usecase.Name}}Handler() http.HandlerFunc {
 
 	return func(hw http.ResponseWriter, hr *http.Request) {
 
-		// for accessing query params /yourpath?id=123
-		// r.URL.Query().Get("id")
-
-		// use
-		// import "github.com/gorilla/mux"
-		// for sample path url
-		// /hotel/{hotel_id}/room/{room_id}
-		// vars := mux.Vars(r)
-		// hotelID := vars["hotel_id"]
-		// roomID := vars["room_id"]
-
 		traceID := util.GenerateID(16)
 
 		ctx := logger.SetTraceID(context.Background(), traceID)
 
-		// var jsonReq request
-		// if err := json.NewDecoder(hr.Body).Decode(&jsonReq); err != nil {
-		// 	r.log.Error(ctx, err.Error())
-		// 	http.Error(hw, util.MustJSON(payload.NewErrorResponse(err, traceID)), http.StatusBadRequest)
-		// 	return
-		// }
+		var jsonReq request
+		if err := json.NewDecoder(hr.Body).Decode(&jsonReq); err != nil {
+			r.log.Error(ctx, err.Error())
+			http.Error(hw, util.MustJSON(payload.NewErrorResponse(err, traceID)), http.StatusBadRequest)
+			return
+		}
 
 		var req InportRequest
 
@@ -66,7 +55,7 @@ func (r *controller) {{CamelCase .Usecase.Name}}Handler() http.HandlerFunc {
 		_ = res
 
 		r.log.Info(ctx, util.MustJSON(jsonRes))
-		_, _ = fmt.Fprint(hw, payload.NewSuccessResponse(jsonRes, traceID))
+		render.JSON(hw, hr, payload.NewSuccessResponse(jsonRes, traceID))
 
 	}
 

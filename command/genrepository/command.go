@@ -135,7 +135,7 @@ func Run(inputs ...string) error {
 
 		interactorFilename := getInteractorFilename(gcfg.Domain, *obj.UsecaseName)
 
-		interactorBytes, err := utils.InjectToInteractor(interactorFilename, templateHasBeenInjected)
+		interactorBytes, err := utils.InjectToCode(interactorFilename, templateHasBeenInjected)
 		if err != nil {
 			return err
 		}

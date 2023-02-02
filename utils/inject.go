@@ -15,16 +15,18 @@ import (
 
 const injectedCodeLocation = "//!"
 
-// InjectToInteractor ...
-func InjectToInteractor(interactorFilename, injectedCode string) ([]byte, error) {
-
-	existingFile := interactorFilename
+func InjectToCode(existingFile, injectedCode string) ([]byte, error) {
 
 	// open interactor file
 	file, err := os.Open(existingFile)
 	if err != nil {
 		return nil, err
 	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			return
+		}
+	}()
 
 	needToInject := false
 
@@ -32,7 +34,6 @@ func InjectToInteractor(interactorFilename, injectedCode string) ([]byte, error)
 	var buffer bytes.Buffer
 	for scanner.Scan() {
 		row := scanner.Text()
-
 		// check the injected code in interactor
 		if strings.TrimSpace(row) == injectedCodeLocation {
 
@@ -54,14 +55,10 @@ func InjectToInteractor(interactorFilename, injectedCode string) ([]byte, error)
 		return nil, nil
 	}
 
-	if err := file.Close(); err != nil {
-		return nil, err
-	}
-
 	// rewrite the file
-	if err := os.WriteFile(existingFile, buffer.Bytes(), 0644); err != nil {
-		return nil, err
-	}
+	//if err = os.WriteFile(existingFile, buffer.Bytes(), 0644); err != nil {
+	//	return nil, err
+	//}
 
 	return buffer.Bytes(), nil
 }

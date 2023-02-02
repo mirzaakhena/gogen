@@ -1,7 +1,7 @@
 package {{LowerCase .ControllerName}}
 
 func (r *controller) RegisterRouter() {
-
     resource := r.Router.Group("/api/v1", r.authentication()) 
+    //!
 
 }

@@ -1,0 +1,29 @@
+package {{LowerCase .ControllerName}}
+
+
+import (
+	"fmt"
+	"github.com/gofiber/fiber/v2"
+)
+
+func (r *controller) authentication() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+
+		return c.Next()
+	}
+
+}
+
+func (r *controller) authorization() fiber.Handler {
+
+	return func(c *fiber.Ctx) error {
+
+		authorized := true
+
+		if !authorized {
+			return fmt.Errorf("forbidden")
+		}
+
+		return c.Next()
+	}
+}

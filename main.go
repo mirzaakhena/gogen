@@ -17,9 +17,11 @@ import (
 	"github.com/mirzaakhena/gogen/command/genusecase"
 	"github.com/mirzaakhena/gogen/command/genvalueobject"
 	"github.com/mirzaakhena/gogen/command/genvaluestring"
+	"github.com/mirzaakhena/gogen/command/genweb"
+	"github.com/mirzaakhena/gogen/command/genwebapp"
 )
 
-var Version = "v0.0.2"
+var Version = "v0.0.21"
 
 func main() {
 
@@ -45,6 +47,8 @@ func main() {
 		C{"error", generror.Run},
 		C{"application", genapplication.Run},
 		C{"crud", gencrud.Run},
+		C{"webapp", genwebapp.Run},
+		C{"web", genweb.Run},
 	)
 
 	commandMap := map[string]func(...string) error{}

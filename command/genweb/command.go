@@ -35,14 +35,14 @@ func Run(inputs ...string) error {
 	//	return err
 	//}
 
-	domainName := utils.GetGogenConfig()
+	gCfg := utils.GetGogenConfig()
 
 	//entityName := inputs[0]
 
 	controllerName := "restapi"
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
+		"domainname": utils.LowerCase(gCfg.Domain),
 	}
 
 	err := utils.CreateEverythingExactly("templates/web/", "shared", fileRenamer, struct{}{}, utils.AppTemplates)
@@ -50,7 +50,7 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	controllerFolderName := fmt.Sprintf("domain_%s/controller/%s", domainName, controllerName)
+	controllerFolderName := fmt.Sprintf("domain_%s/controller/%s", gCfg.Domain, controllerName)
 
 	fileInfo, err := os.ReadDir(controllerFolderName)
 	if err != nil {
@@ -93,12 +93,12 @@ func Run(inputs ...string) error {
 			usecaseName := methodName[:i]
 
 			fileRenamer := map[string]string{
-				"domainname":  utils.LowerCase(domainName),
+				"domainname":  utils.LowerCase(gCfg.Domain),
 				"usecasename": utils.LowerCase(usecaseName),
 			}
 
 			obj := &ObjTemplate{
-				DomainName:  domainName,
+				DomainName:  gCfg.Domain,
 				UsecaseName: usecaseName,
 			}
 

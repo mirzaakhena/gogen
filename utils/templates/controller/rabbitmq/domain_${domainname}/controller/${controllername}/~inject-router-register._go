@@ -1,1 +1,0 @@
-r.Messaging.Handle("{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler(r.{{PascalCase .Usecase.Name}}Inport))

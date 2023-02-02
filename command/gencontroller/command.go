@@ -1,8 +1,6 @@
 package gencontroller
 
 import (
-	"bufio"
-	"bytes"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -191,13 +189,13 @@ func Run(inputs ...string) error {
 	//	return err
 	//}
 
-	if len(unexistedUsecases) == 0 {
-		// reformat router.go
-		err = utils.Reformat(obj.getControllerRouterFileName(), nil)
-		if err != nil {
-			return err
-		}
-	}
+	//if len(unexistedUsecases) == 0 {
+	//	// reformat router.go
+	//	err = utils.Reformat(obj.getControllerRouterFileName(), nil)
+	//	if err != nil {
+	//		return err
+	//	}
+	//}
 
 	for _, usecase := range unexistedUsecases {
 
@@ -214,14 +212,21 @@ func Run(inputs ...string) error {
 		//  r.Router.POST("/createorder", r.authorized(), r.createOrderHandler(r.CreateOrderInport)) <-- here
 		//}
 		{
+
 			templateCode, err := getRouterRegisterTemplate(obj.DriverName, usecase.Name)
 
-			templateWithData, err := utils.PrintTemplate(string(templateCode), singleObj)
+			templateHasBeenInjected, err := utils.PrintTemplate(string(templateCode), singleObj)
 			if err != nil {
 				return err
 			}
 
-			dataInBytes, err := injectRouterBind(obj, templateWithData)
+			//dataInBytes, err := injectRouterBind(obj, templateHasBeenInjected)
+			//if err != nil {
+			//	return err
+			//}
+
+			controllerFile := obj.getControllerRouterFileName()
+			dataInBytes, err := utils.InjectToCode(controllerFile, templateHasBeenInjected)
 			if err != nil {
 				return err
 			}
@@ -397,85 +402,85 @@ func getUnexistedUsecaseFromRouterBind(packagePath, domainName, controllerName s
 	return unexistUsecase, nil
 }
 
-func getBindRouterLine(obj ObjTemplate) (int, error) {
+//func getBindRouterLine(obj ObjTemplate) (int, error) {
+//
+//	controllerFile := obj.getControllerRouterFileName()
+//
+//	fset := token.NewFileSet()
+//	astFile, err := parser.ParseFile(fset, controllerFile, nil, parser.ParseComments)
+//	if err != nil {
+//		return 0, err
+//	}
+//	routerLine := 0
+//
+//	//ast.Print(fset, astFile)
+//
+//	ast.Inspect(astFile, func(node ast.Node) bool {
+//
+//		for {
+//			funcDecl, ok := node.(*ast.FuncDecl)
+//			if !ok {
+//				break
+//			}
+//
+//			if funcDecl.Name.String() != "RegisterRouter" {
+//				break
+//			}
+//
+//			routerLine = fset.Position(funcDecl.Body.Rbrace).Line
+//
+//			return false
+//		}
+//
+//		return true
+//	})
+//
+//	if routerLine == 0 {
+//		return 0, fmt.Errorf("register router Not found")
+//	}
+//
+//	return routerLine, nil
+//
+//}
 
-	controllerFile := obj.getControllerRouterFileName()
-
-	fset := token.NewFileSet()
-	astFile, err := parser.ParseFile(fset, controllerFile, nil, parser.ParseComments)
-	if err != nil {
-		return 0, err
-	}
-	routerLine := 0
-
-	//ast.Print(fset, astFile)
-
-	ast.Inspect(astFile, func(node ast.Node) bool {
-
-		for {
-			funcDecl, ok := node.(*ast.FuncDecl)
-			if !ok {
-				break
-			}
-
-			if funcDecl.Name.String() != "RegisterRouter" {
-				break
-			}
-
-			routerLine = fset.Position(funcDecl.Body.Rbrace).Line
-
-			return false
-		}
-
-		return true
-	})
-
-	if routerLine == 0 {
-		return 0, fmt.Errorf("register router Not found")
-	}
-
-	return routerLine, nil
-
-}
-
-func injectRouterBind(obj ObjTemplate, templateWithData string) ([]byte, error) {
-
-	controllerFile := obj.getControllerRouterFileName()
-
-	routerLine, err := getBindRouterLine(obj)
-	if err != nil {
-		return nil, err
-	}
-
-	file, err := os.Open(controllerFile)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err := file.Close(); err != nil {
-			return
-		}
-	}()
-
-	scanner := bufio.NewScanner(file)
-	var buffer bytes.Buffer
-	line := 0
-	for scanner.Scan() {
-		row := scanner.Text()
-
-		if line == routerLine-1 {
-			buffer.WriteString(templateWithData)
-			buffer.WriteString("\n")
-		}
-
-		buffer.WriteString(row)
-		buffer.WriteString("\n")
-		line++
-	}
-
-	return buffer.Bytes(), nil
-
-}
+//func injectRouterBind(obj ObjTemplate, templateWithData string) ([]byte, error) {
+//
+//	controllerFile := obj.getControllerRouterFileName()
+//
+//	routerLine, err := getBindRouterLine(obj)
+//	if err != nil {
+//		return nil, err
+//	}
+//
+//	file, err := os.Open(controllerFile)
+//	if err != nil {
+//		return nil, err
+//	}
+//	defer func() {
+//		if err := file.Close(); err != nil {
+//			return
+//		}
+//	}()
+//
+//	scanner := bufio.NewScanner(file)
+//	var buffer bytes.Buffer
+//	line := 0
+//	for scanner.Scan() {
+//		row := scanner.Text()
+//
+//		if line == routerLine-1 {
+//			buffer.WriteString(templateWithData)
+//			buffer.WriteString("\n")
+//		}
+//
+//		buffer.WriteString(row)
+//		buffer.WriteString("\n")
+//		line++
+//	}
+//
+//	return buffer.Bytes(), nil
+//
+//}
 
 // getControllerRouterFileName ...
 func (o ObjTemplate) getControllerRouterFileName() string {

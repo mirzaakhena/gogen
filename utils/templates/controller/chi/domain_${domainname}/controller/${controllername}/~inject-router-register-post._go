@@ -1,0 +1,2 @@
+rc.Post("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
+//!

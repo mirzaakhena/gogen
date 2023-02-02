@@ -1,0 +1,63 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"context"
+	"github.com/gofiber/fiber/v2"
+	"{{.PackagePath}}/domain_{{.DomainName}}/usecase/{{LowerCase .Usecase.Name}}"
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"{{.PackagePath}}/shared/util"
+	"{{.PackagePath}}/shared/model/payload"
+)
+
+func (r *controller) {{CamelCase .Usecase.Name}}Handler() fiber.Handler {
+
+    type InportRequest = {{LowerCase .Usecase.Name}}.InportRequest
+	type InportResponse = {{LowerCase .Usecase.Name}}.InportResponse
+
+    inport := gogen.GetInport[InportRequest, InportResponse](r.GetUsecase(InportRequest{}))
+
+	type request struct {  {{range .Usecase.InportRequestFields}} {{if ne .Name "Now"}}
+        {{.Name}} {{.Type}} {{if StartWith (LowerCase $.Usecase.Name) "get"}} `form:"{{SnakeCase .Name}},omitempty,default=0"` {{else}} `json:"{{SnakeCase .Name}}"` {{end}} {{end}} {{end}}
+	}
+
+	type response struct { {{range .Usecase.InportResponseFields}}
+        {{.Name}} {{.Type}} `json:"{{SnakeCase .Name}}"` {{end}}
+	}
+
+	return func(c *fiber.Ctx) error {
+
+		traceID := util.GenerateID(16)
+
+		ctx := logger.SetTraceID(context.Background(), traceID)
+
+		var jsonReq request {{if StartWith (LowerCase .Usecase.Name) "get"}}
+		err := c.BodyParser(&jsonReq) {{else}}
+		err := c.BodyParser(&jsonReq) {{end}}
+		if  err != nil {
+			r.log.Error(ctx, err.Error())
+			_ = c.Status(fiber.StatusBadRequest).JSON(payload.NewErrorResponse(err, traceID))
+			return err
+		}
+
+		var req InportRequest {{range .Usecase.InportRequestFields}}{{if eq .Name "Now"}}
+		req.Now = time.Now(){{ else }}
+		req.{{.Name}} = jsonReq.{{.Name}}{{ end }}{{ end }}
+
+		r.log.Info(ctx, util.MustJSON(req))
+
+		res, err := inport.Execute(ctx, req)
+		if err != nil {
+			r.log.Error(ctx, err.Error())
+			_ = c.Status(fiber.StatusBadRequest).JSON(payload.NewErrorResponse(err, traceID))
+			return err
+		}
+
+		var jsonRes response {{ if eq (len .Usecase.InportResponseFields) 0 }}
+        _ = res {{else}} {{range .Usecase.InportResponseFields}}
+        jsonRes.{{.Name}} = res.{{.Name}}{{ end }} {{ end }}
+
+		r.log.Info(ctx, util.MustJSON(jsonRes))
+		return c.JSON(payload.NewSuccessResponse(jsonRes, traceID))
+	}
+}

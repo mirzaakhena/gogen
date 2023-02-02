@@ -1,4 +1,4 @@
-package server
+package {{LowerCase .ControllerName}}
 
 import (
 	"context"

@@ -1,1 +1,2 @@
 resource.GET("/{{LowerCase .Usecase.Name}}", r.{{CamelCase .Usecase.Name}}Handler())
+//!

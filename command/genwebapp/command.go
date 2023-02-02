@@ -24,18 +24,18 @@ func Run(inputs ...string) error {
 		return err
 	}
 
-	domainName := utils.GetGogenConfig()
+	gCfg := utils.GetGogenConfig()
 
 	entityName := inputs[0]
 
 	obj := &ObjTemplate{
 		EntityName: entityName,
-		DomainName: domainName,
+		DomainName: gCfg.Domain,
 	}
 
 	fileRenamer := map[string]string{
-		"domainname": utils.LowerCase(domainName),
-		"entityname": utils.LowerCase(entityName),
+		"domainname": utils.LowerCase(gCfg.Domain),
+		"entityname": utils.SnakeCase(entityName),
 	}
 
 	err := utils.CreateEverythingExactly("templates/", "webapp", fileRenamer, obj, utils.AppTemplates)

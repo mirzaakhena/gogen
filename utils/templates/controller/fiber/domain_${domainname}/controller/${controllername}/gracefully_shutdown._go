@@ -1,0 +1,30 @@
+package {{LowerCase .ControllerName}}
+
+import (
+	"{{.PackagePath}}/shared/gogen"
+	"{{.PackagePath}}/shared/infrastructure/logger"
+	"github.com/gofiber/fiber/v2"
+)
+
+// gracefullyShutdown will handle http server with gracefully shutdown mechanism
+type gracefullyShutdown struct {
+	fiberApp *fiber.App
+	log      logger.Logger
+	address  string
+}
+
+func NewGracefullyShutdown(log logger.Logger, fiberApp *fiber.App, address string) gogen.ControllerStarter {
+	return &gracefullyShutdown{
+		fiberApp: fiberApp,
+		log:      log,
+		address:  address,
+	}
+}
+
+func (r *gracefullyShutdown) Start() {
+
+	err := r.fiberApp.Listen(r.address)
+	if err != nil {
+		panic(err)
+	}
+}

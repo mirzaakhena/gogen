@@ -1,12 +1,11 @@
 package {{LowerCase .ControllerName}}
 
 import (
-	"net/http"
-	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/config"
+	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/infrastructure/logger"
 	"{{.PackagePath}}/shared/infrastructure/token"
-	"time"
+	"net/http"
 )
 
 type controller struct {
@@ -21,13 +20,6 @@ type controller struct {
 func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config.Config, jwtToken token.JWTToken) gogen.ControllerRegisterer {
 
 	router := http.NewServeMux()
-
-    router.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-        if r.Method != "GET" {
-            return
-        }
-        fmt.Fprint(w, appData)
-    })
 
 	address := cfg.Servers[appData.AppName].Address
 
