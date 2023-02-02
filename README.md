@@ -218,7 +218,7 @@ By organize this usecase in a such structure, we can easily change the *Controll
 ## Install Gogen
 Install it into your local system
 ```
-$ go install -v github.com/mirzaakhena/gogen@v0.0.21
+$ go install -v github.com/mirzaakhena/gogen@v0.0.22
 ```
 
 ## Step by step to working with gogen

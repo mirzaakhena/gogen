@@ -21,7 +21,7 @@ import (
 	"github.com/mirzaakhena/gogen/command/genwebapp"
 )
 
-var Version = "v0.0.21"
+var Version = "v0.0.22"
 
 func main() {
 
