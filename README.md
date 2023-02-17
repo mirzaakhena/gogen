@@ -35,13 +35,14 @@ However, this is just a tools. The important things to remember is we must follo
 ## Video Tutorial how to use it
 https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
 
-## Sample Apps
+## Sample New Code
+- https://github.com/mirzaakhena/theitem
+
+## Sample Old Code (obsolete due to gogen evolution)
 - https://github.com/mirzaakhena/userprofile
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
-
-> For those video and sample apps structure has become obsoleted due to the gogen evolution.
 
 ## Documentation (still under development)
 https://mirzaakhena.github.io
