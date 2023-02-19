@@ -898,3 +898,86 @@ $ GOOS=linux  GOARCH=amd64 go build
 
 
 If you create gogen executable manually, please remember to always to put the gogen executable into .gitignore so it will ignored in your git source code
+
+
+## Clean Architecture Concept
+The main purpose of this architecture is :
+* Separation concern between INFRASTRUCTURE part and LOGIC Part
+* Independent of Framework. Free to swap to any framework
+* Independent of UI. Free to swap UI. For ex: from Web UI to Console UI
+* Independent of Database. Free to swap to any database (data storage)
+* Independent of any external agency. Business rule doesn’t know anything about outside world
+* Testable. The business rules can be tested without the UI, Database, Web Server, or any other external element
+
+
+## How to use the gogen?
+You always start from creating an usecase, then you continue to create the gateway, then create the controller, and the last step is bind those three (usecase + gateway + controller) in application part. That's it.
+
+To create the usecase, you need to understand the concept of usecase according to Uncle Bob's Clean Architecture article. Usecase has 3 main part.
+* Input Port (Inport)
+* Interactor
+* Output Port (Outport)
+
+```
+Controller is using an Inport.
+Inport is implemented by Interactor
+Interactor is using an Outport
+Outport is implemented by Gateway
+```
+
+*Inport* is an interface that has only one method (named `Execute`) that will be called by *Controller*. The method in an interface define all the required (request and response) parameter to run the specific usecase. *Inport* will implemented by *Interactor*.
+
+*Interactor* is the place that you can define your business process flow by involving entity, valueobject, service and repository. When an usecase logic need a data, it will ask the *Outport* to provide it. *Interactor* also use *Outport* to send data, store data or do some action to other service. *Interactor* only have one *Outport* field. We must not adding new *Outport* field to *Interactor* to keep a simplicity and consistency.
+
+*Outport* is a data and action provider for *Interactor*. *Outport* never know how it is implemented. The implementor (in this case a *Gateway*) will decide how to provide a data or do an action. This *Outport* is very exclusive for specific usecase (in this case *Interactor*) and must not shared to other usecase. By having exclusive *Outport* it will isolate the testing for usecase.
+
+By organize this usecase in a such structure, we can easily change the *Controller*, or the *Gateway* in very flexible way without worry to change the logic part. This is how the logic and infrastructure separation is working.
+
+## Comparison with three layer architecture (Controller -> Service -> Repository) pattern
+* *Controller* is the same controller for both architecture.
+* *Service* is similar like *Interactor* with additional strict rule. *Service* allowed to have many repositories. In gogen Clean Architecture, *Interactor* only have one *Outport*.
+* *Service* have many method grouped by the domain. In Clean Architecture, we focus per usecase. One usecase for One Class to achieve *Single Responsibility Principle*.
+* In *Repository* you often see the CRUD pattern. Every developer can added new method if they think they need it. In reality this *Repository* is shared to different *Service* that may not use that method. In *Outport* you will strictly to adding method that guarantee used. Even adding new method or updating existing method will not interfere another usecase.
+* *Repository* is an *Outport* with *Gateway* as its implementation.
+
+## Gogen Convention
+* Usecase is first class citizen.
+* We always start the code from the usecase.
+* Usecase doesn't care about what the technology will be used
+* Usecase basically manage interaction between entity, value object, repository and service
+* As interface, inport has one and only one method which handle one usecase
+* Interactor is a manager for entity and outport
+* Interactor must not decide to have any technology. All technology is provided by Outport.
+* Outport is a servant for an interactor. It will provide any data from external source
+* As interface, Outport at least have one method and can have multiple method
+* All method in Outport is guarantee used by interactor
+* Inport and Outport must not shared to other usecase. They are exclusive for specific usecase
+* Interactor have one and only one outport. Mutiple outport is prohibited
+* Entity is mandatory to make a validation for any input. Controller optionaly handle the validation
+* Interactor is the one who made a decision mostly based on Entity consideration.
+* Entity must not produce unpredictible value like current time, or UUID value. Unpredictible value is provided by Inport or Outport (external Entity)
+* Since a log is technology, log only found in Controller and Gateway not in Interactor or Entity
+* To avoid a log polution, Log only printing the coming request, leaving response or error response
+* Error code can be produced by anyone and will printed in log
+* If somehow Gateway produce an error it may log the error, forward back the error,
+  forward back the error with new error message or all the possibility
+* Error code at least have messaged and code (imitate the http protocol response code)
+* Error enum must accessed by the developer and Error code can read by end user
+* Interactor and Entity is prioritized to be tested first rather than Controller and Gateway
+* Controller name can be an actor name who is using the system
+
+## Why you (will) need gogen?
+- we want to separate logic code and infrastructure code
+- save time because we think less for naming (one of "hardest" think in programming), conventions and structure
+- Increase readability, scream architecture
+- built for lazy developer
+- consistent structure
+- gogen is zero dependency. Your code will not have dependency to gogen at all
+- gogen is not engine it just a "well written code" so there is no performance issue
+- gogen is good templating tools, because deleting is easier than creating right
+- gogen support multiple application in one repo
+- gogen already implement trace id in every usecase Request
+- support lazy documentation. Your interactor is telling everything about how it's work. no need to work twice only to write/update doc
+- suitable for new project and revamp existing project per service
+- allow you to do code modification for experimental purpose without changing the current implementation
+- there is no automagically in gogen.
