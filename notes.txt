@@ -981,3 +981,26 @@ By organize this usecase in a such structure, we can easily change the *Controll
 - suitable for new project and revamp existing project per service
 - allow you to do code modification for experimental purpose without changing the current implementation
 - there is no automagically in gogen.
+
+
+Clean Architecture is a concept of "composing and organizing folder and code files in the very maintainable ways" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
+
+This concept is agnostic against the technology. Means it does not depend on specific programming language.
+
+Some principles I apply are
+1. These tools should not be "know-it-all" tools. The programmer should still be the master of design. Because We don't want these tools to drive logic programmers instead. This tool only helps to guide to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
+2. This tool has several alternatives to choose the technology. So if the programmer has better technology or is more familiar, the programmer can easily replace it.
+3. I apply the Scream Architecture concept in it so that the generated code can speak for itself to the developers about what their role is and what they are doing (helping the learning process).
+
+
+## Benefit using Gogen
+1. These tools can become standard in a team. We love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
+2. Because it has become a standard, this tool help the communication process between developers QA, project manager, and product owner,
+3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitated.
+4. Speed up the code review process and minimize code conflicts during code merges.
+5. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
+6. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories. For example every member of developer team can have task per usecase.
+
+However, this is just a tools. The important things to remember is we must follow the basic principles of clean architecture itself. You may copy and paste the existing code if you think it is easier. But remember you have to be careful anytime you do that.
+
+The bigger the interface, the weaker the abstraction, Rob Pike

@@ -1,36 +1,59 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mirzaakhena/gogen)](https://goreportcard.com/report/github.com/mirzaakhena/gogen)
 
-# Gogen (Clean Architecture Code Generator)
-Provide code structure based on clean architecure
+# Gogen Framework
+A Code generator and Code Structure Provider which follow the Clean Architecture and Domain Driven Design Concept
+
+## The Problem Gogen Want To Solve
+If we are googling looking for how the Clean Architecture code structure, 
+then there will be many code examples in google, github and stackoverflow 
+which claimed apply the Clean Architecture concept.
+
+But in general, it is all just a project template. If you want to apply it, you must clone and imitate it.
+
+Gogen trying to go one step further. Instead of copying the project template, 
+Gogen help you to generate a code that applies this Clean Architecture and Domain Driven Design concept. 
+
+These tools not only bootstrap the code once in the beginning, 
+you can use it progressively to generate other component like 
+entity, value object, repository, use case, controller
+so that developers don't have to struggle with imitating the template projects that aren't necessarily proven.
+
+It help you to focus on the core of logic and business process rather than manually create a file, name it, create a struct, interface or any other file.
+
+## Gogen Features
+- Flexible Config
+- Interchangeable log 
+- Adjustable response code
+- Error message catalog with error code
+- Trace Id integration in every log and response code
+- Customizable code template
+
+## What is Clean Architecture ?
+Clean Architecture is an architectural pattern for designing software systems that aims to achieve separation of concerns and maintainability by keeping the codebase independent of any particular UI framework, database, or external service. It is based on the principles of "SOLID" and "DDD" (Domain-Driven Design).
+
+The purpose of Clean Architecture is to create a software system that is easy to understand, maintain, and change over time. It accomplishes this by structuring the system into layers that enforce a clear separation of concerns, where each layer has a specific responsibility and dependencies only flow inwards.
+
+The core idea of Clean Architecture is to establish a clear separation of concerns between the business logic, the application logic, and the infrastructure details. The business logic, which encapsulates the essential rules and behaviors of the system, should be independent of any implementation details, such as UI, database, or third-party services. This allows the business logic to be tested and developed independently from the infrastructure.
+
+The concept you need to understand in order to use gogen
+- Interface as Contract
+- Fat Interface
+- Interface Segregation Principle and Interface Composition
+- Single Responsibility Principle
+- Dependency Inversion Principle
+- Rich Domain Model (instead of Anemic Domain Model)
+- Entity 
+- Value Object
+- Enum
+- Error
+- Repository
+- Service
+- Use Case (Input Port, Interactor and Output Port)
+
+We know it's a lot, but it is worth to know. 
 
 
-## The problem gogen wants to solve
-CLEAN ARCHITECTURE (CA) is a concept of "composing and organizing folder and code files in the very maintainable ways" which has the benefit of separating code logic and infrastructure very neatly so that it is easy to test, easy to mock and easy to switch between technologies with very few changes.
-
-This concept is agnostic against the technology. Means it does not depend on specific programming language. 
-
-If we are googling looking for how the CA structure, then there will be many code examples that implement CA in many programming language. But in general it is just a project template. If we want to apply it, we must imitate it.
-
-I'm trying to go one step further. Instead of copying the project template, why not create a code generator that applies this CA concept. These tools will help bootstrap the code so that developers don't have to struggle with imitating previous projects that aren't necessarily proven.
-
-The process of drafting the concept and making it is also not easy and requires time and coding experience. I had to do some research by reading and studying dozens of articles on the internet about Clean Architecture, Clean Code, Solid Design, Domain Driven Design.
-
-I try to empathize with programmers. Try to feel what they think when they want to write code. For example, "what should I create first? where should I put the controller? what is the proper name for this file?" I try to pour all these feelings and thoughts into this tool. So that it can guide programmers in coding activities.
-
-Some principles I apply are
-1. These tools should not be "know-it-all" tools. The programmer should still be the master of design. Because I don't want these tools to drive logic programmers instead. This tool only helps to guide to write standard code templates with clear names and conventions. The rest we still give the programmer space to work.
-2. This tool has several alternatives to choose the technology. So if the programmer has better technology or is more familiar, the programmer can easily replace it.
-3. I apply the Scream Architecture concept in it so that the generated code can speak for itself to the developers about what their role is and what they are doing (helping the learning process).
-
-Some benefits that can be obtained if you apply this tool are:
-1. These tools can become standard in a team. I love innovation and improvisation. However, if innovation and improvisation do not have a clear concept, it is feared that it will mislead the development process and complicate the process of changing or adding requirements in the future.
-2. Because it has become a standard, this tool help the communication process between developers QA, project manager, and product owner, 
-3. Help the handover process and knowledge transfer with new programmers because it is easy to learn and imitated.
-4. Speed up the code review process and minimize code conflicts during code merges.
-5. The code generated results in a readable, simple structure with few directories and a minimum depth that has been calculated very carefully.
-6. Facilitate the creation of story cards. a standard structure will help shape the mindset of project managers when making stories. For example every member of developer team can have task per usecase. 
-
-However, this is just a tools. The important things to remember is we must follow the basic principles of clean architecture itself. You may copy and paste the existing code if you think it is easier. But remember you have to be careful anytime you do that. 
+ 
 
 ## Video Tutorial how to use it
 https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
@@ -38,20 +61,18 @@ https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
 ## Sample New Code
 - https://github.com/mirzaakhena/theitem
 
-## Sample Old Code (obsolete due to gogen evolution)
+## Sample Old Code 
+those code are obsolete due to gogen evolution. But the concept is still relevant
 - https://github.com/mirzaakhena/userprofile
 - https://github.com/mirzaakhena/danarisan
 - https://github.com/mirzaakhena/kraicklist
 - https://github.com/mirzaakhena/mywallet
 
-## Documentation (still under development)
-https://mirzaakhena.github.io
-
 ## Structure
 This generator has basic structure like this
 
 ```
-  ├── .gogen
+  ├── .gogen      
   ├── application
   │   ├── app_one.go
   │   ├── app_two.go  
@@ -59,6 +80,7 @@ This generator has basic structure like this
   ├── domain_order                    
   │   ├── controller
   │   │   └── restapi
+  │   │       ├── controller.go
   │   │       ├── handler_getallorder.go
   │   │       ├── handler_getoneorder.go    
   │   │       ├── handler_onwebhook.go
@@ -93,7 +115,7 @@ This generator has basic structure like this
   │   │   ├── onpaymentfail
   │   │   └── runordersubmit   
   │   └── README.md                     
-  ├── domain_payment                
+  ├── domain_product                
   │   ├── controller          
   │   ├── gateway
   │   ├── model             
@@ -106,19 +128,17 @@ This generator has basic structure like this
   │   ├── usecase              
   │   └── README.md    
   ├── shared
-  │   ├── driver          
-  │   ├── gateway   
+  │   ├── config
+  │   ├── gogen            
   │   ├── infrastructure          
   │   │   ├── cache
-  │   │   ├── config
   │   │   ├── database
   │   │   ├── logger
   │   │   ├── messaging
   │   │   ├── remoting
   │   │   ├── server
   │   │   └── token 
-  │   ├── model
-  │   ├── usecase                                       
+  │   ├── model                             
   │   └── util
   ├── .gitignore    
   ├── config.json    
@@ -132,15 +152,41 @@ This generator has basic structure like this
 
 ![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-1.png)
 
-
 ## Install Gogen
 Install it into your local system
 ```
 $ go install -v github.com/mirzaakhena/gogen@v0.0.22
 ```
+After calling that command, gogen will be installed in `/Users/<username>/go/bin`. 
+
+Try to call 
+```shell
+$ gogen
+```
+
+It must shown something like this
+```shell
+Try one of this command to learn how to use it
+  gogen domain
+  gogen entity
+  gogen valueobject
+  gogen valuestring
+  gogen enum
+  gogen usecase
+  gogen repository
+  gogen service
+  gogen test
+  gogen gateway
+  gogen controller
+  gogen error
+  gogen application
+  gogen crud
+  gogen webapp
+  gogen web
+```
 
 ### Troubleshooting
-After calling that command, gogen will be installed in `/Users/<username>/go/bin`.
+
 
 If you find something like
 ```shell
@@ -158,6 +204,16 @@ export PATH
 
 ## Step by step to working with gogen
 
+There is minimal 7 step to work with gogen
+1. create the domain
+2. create the entity, value object, enum or error
+3. create a use case
+4. create a repository or service
+5. create a gateway as outport implementation
+6. create a controller which call the inport
+7. create a application which bind controller, use case and gateway
+
+
 ## Create a domain
 
 You need to create the domain first. Let say you want to create order domain
@@ -167,40 +223,36 @@ $ gogen domain order
 
 Then you will see some file and folder created for you
 
-## Create your basic usecase structure
+## Create your basic use case structure
 
-So you will create your first usecase. Let say the usecase name is  a `RunOrderCreate`. We will always create our usecase name with `PascalCase`. Now let's try our gogen code generator to create this usecase for us.
+So you will create your first use case. Let say the use case name is  a `RunOrderCreate`. We will always create our use case name with `PascalCase`. Now let's try our gogen code generator to create this use case for us.
 ```
 $ gogen usecase RunOrderCreate
 ```
 
-But wait, why the name is very awkward?
-
-In Gogen we have some usecase name convention
+In Gogen we have some use case name convention
 
 ```
 Run<SomeEntityName><Action>
-On<SomeEntityName><Action>
 GetAll<SomeEntityName><Action>
 GetOne<SomeEntityName><Action>
 ```
 
-Run prefix used for command usecase that is actively called by external service, something like restapi. 
-GetAll prefix used for usecase that return a list. 
-GetOne (or just Get) prefix used for usecase that return single object.
-On prefix used for command usecase that is passively called by internal service, something like messagebroker event.
+- `Run` prefix used for command use case that is actively called by external service, something like restapi, or grpc.
+- `GetAll` prefix used for use case that return a list. 
+- `GetOne` (or just Get) prefix used for use case that return single object.
 
-Usecase name will be used as a package name under usecase folder by lowercasing the usecase name.
+Use case name will be used as a package name under use case folder by lower-casing the use case name.
 
 - `domain_order/usecase/runordercreate/inport.go` is an interface with one method that will implement by your usecase. The standart method name is a `Execute`.
 - `domain_order/usecase/runordercreate/outport.go` is an interface which has many methods that will be used by your usecase. It must not shared to another usecase.
 - `domain_order/usecase/runordercreate/interactor.go` is the core implementation of the usecase (handle your bussiness application). It implements the method from inport and call the method from outport.
 
-## Create your usecase test file
+## Create your use case test file
 ```
 $ gogen test normal RunOrderCreate
 ```
-normal is the test name and RunOrderCreate is the usecase name.
+normal is the test name and RunOrderCreate is the use case name.
 This command will help you
 - create a test file `domain_order/usecase/runordercreate/testcase_normal_test.go`
 
@@ -236,7 +288,6 @@ In this example we will set name : prod
 $ gogen gateway prod
 ```
 This command will read the Outport of `runordercreate` usecase and implement all the method needed in `domain_order/gateway/prod/gateway.go`
-
 
 ## Create a controller for your usecase
 
@@ -361,10 +412,10 @@ Just call like this
 $ gogen repository
 
    # Create a repository and inject the template code into interactor file with '//!' flag
-   gogen repository SaveOrder Order CreateOrder
-     'SaveOrder'   is a repository func name
-     'Order'       is an entity name
-     'CreateOrder' is an usecase name
+   gogen repository SaveOrder Order RunOrderCreate
+     'SaveOrder'      is a repository method name
+     'Order'          is an entity name
+     'RunOrderCreate' is an usecase name
 
    # Create a repository without inject the template code into usecase
    gogen repository SaveOrder Order
