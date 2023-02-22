@@ -1,7 +1,7 @@
 [![Go Report Card](https://goreportcard.com/badge/github.com/mirzaakhena/gogen)](https://goreportcard.com/report/github.com/mirzaakhena/gogen)
 
 # Gogen Framework
-A Code generator and Code Structure Provider which follow the Clean Architecture and Domain Driven Design Concept
+A **Code Generator** and **Code Structure** provider which follow the **Clean Architecture** and **Domain Driven Design** concept
 
 ## The Problem Gogen Want To Solve
 If we are googling looking for how the Clean Architecture code structure, 
@@ -27,6 +27,7 @@ It help you to focus on the core of logic and business process rather than manua
 - Error message catalog with error code
 - Trace Id integration in every log and response code
 - Customizable code template
+- Infrastructure Agnostic
 
 ## What is Clean Architecture ?
 Clean Architecture is an architectural pattern for designing software systems that aims to achieve separation of concerns and maintainability by keeping the codebase independent of any particular UI framework, database, or external service. It is based on the principles of "SOLID" and "DDD" (Domain-Driven Design).
@@ -38,7 +39,7 @@ The core idea of Clean Architecture is to establish a clear separation of concer
 The concept you need to understand in order to use gogen
 - Interface as Contract
 - Fat Interface
-- Interface Segregation Principle and Interface Composition
+- Interface Segregation Principle
 - Single Responsibility Principle
 - Dependency Inversion Principle
 - Rich Domain Model (instead of Anemic Domain Model)
@@ -203,6 +204,12 @@ export PATH
 ```
 
 ## Step by step to working with gogen
+
+Before we start, make sure you already have `go.mod` file.
+If you don't have it, create the new one with this command
+```shell
+$ go mod init your/awesome/project
+```
 
 There is minimal 7 step to work with gogen
 1. create the domain
@@ -426,20 +433,23 @@ $ gogen repository
 
 It will show sample command to remind you on how to use it. In this case, repository has 2 type of command.  
 
+## Working in Another domain 
+
 You can create another domain let say you want to create domain payment
 
 ```
 $ gogen domain payment
 ```
 
-Then you want to create a usecase under domain payment
+Then you want to create a use case under domain payment
 ```
 $ gogen usecase RunPaymentCreate
 ```
+After you run it, you will find the use case still created under domain order.
 
-But, hei the usecase is created under the order domain! How to create it under payment domain?
+How to work under payment domain?
 
-open the folder `.gogen` you will see file `gogenrc.json`. You need to update the file from this
+open the folder `.gogen` you will see file `gogenrc.json`. Just update the domain field, from `order`
 
 ```
 {
@@ -450,7 +460,7 @@ open the folder `.gogen` you will see file `gogenrc.json`. You need to update th
 }
 ```
 
-into this
+into `payment`
 
 ```
 {
@@ -461,14 +471,14 @@ into this
 }
 ```
 
-Now you are working under payment domain. 
+That's it, now you are working under payment domain. 
 
 Re-run the command again
 ```
 $ gogen usecase RunPaymentCreate
 ```
 
-Now you got the usecase boilerplate code created under payment domain. (don't forget to delete your previous RunPaymentCreate usecase under the order domain manually)
+Now you got the usecase boilerplate code created under payment domain. (don't forget to delete your previous RunPaymentCreate use case under the order domain manually)
 
 ---
 
