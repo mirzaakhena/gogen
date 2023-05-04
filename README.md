@@ -21,7 +21,7 @@ so that developers don't have to struggle with imitating the template projects t
 It helps you to focus on the core of logic and business process rather than manually create a file, name it, create a struct, interface or any other file.
 
 ## Architecture
-![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-mirza.jpeg)
+![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-1.png)
 
 ## Structure
 This generator has basic structure like this
