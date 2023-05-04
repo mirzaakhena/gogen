@@ -8,7 +8,7 @@ If we are googling looking for how the Clean Architecture code structure,
 then there will be many code examples in google, github and stackoverflow 
 which claimed apply the Clean Architecture concept.
 
-But in general, it is all just a project template. If you want to apply it, you must clone and imitate it.
+But in general, it is all just a project template. If you want to apply it, you must clone, imitate it or can just follow the folder and code structure. You are still doing anything manually like create a folder, create a file, naming a struct, an interface, basically everything.  
 
 Gogen trying to go one step further. Instead of copying the project template, 
 Gogen help you to generate a code that applies this Clean Architecture and Domain Driven Design concept. 
@@ -18,56 +18,10 @@ you can use it progressively to generate other component like
 entity, value object, repository, use case, controller
 so that developers don't have to struggle with imitating the template projects that aren't necessarily proven.
 
-It help you to focus on the core of logic and business process rather than manually create a file, name it, create a struct, interface or any other file.
+It helps you to focus on the core of logic and business process rather than manually create a file, name it, create a struct, interface or any other file.
 
-## Gogen Features
-- Flexible Config
-- Interchangeable log 
-- Adjustable response code
-- Error message catalog with error code
-- Trace Id integration in every log and response code
-- Customizable code template
-- Infrastructure Agnostic
-
-## What is Clean Architecture ?
-Clean Architecture is an architectural pattern for designing software systems that aims to achieve separation of concerns and maintainability by keeping the codebase independent of any particular UI framework, database, or external service. It is based on the principles of "SOLID" and "DDD" (Domain-Driven Design).
-
-The purpose of Clean Architecture is to create a software system that is easy to understand, maintain, and change over time. It accomplishes this by structuring the system into layers that enforce a clear separation of concerns, where each layer has a specific responsibility and dependencies only flow inwards.
-
-The core idea of Clean Architecture is to establish a clear separation of concerns between the business logic, the application logic, and the infrastructure details. The business logic, which encapsulates the essential rules and behaviors of the system, should be independent of any implementation details, such as UI, database, or third-party services. This allows the business logic to be tested and developed independently from the infrastructure.
-
-The concept you need to understand in order to use gogen
-- Interface as Contract
-- Fat Interface
-- Interface Segregation Principle
-- Single Responsibility Principle
-- Dependency Inversion Principle
-- Rich Domain Model (instead of Anemic Domain Model)
-- Entity 
-- Value Object
-- Enum
-- Error
-- Repository
-- Service
-- Use Case (Input Port, Interactor and Output Port)
-
-We know it's a lot, but it is worth to know. 
-
-
- 
-
-## Video Tutorial how to use it
-https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
-
-## Sample New Code
-- https://github.com/mirzaakhena/theitem
-
-## Sample Old Code 
-those code are obsolete due to gogen evolution. But the concept is still relevant
-- https://github.com/mirzaakhena/userprofile
-- https://github.com/mirzaakhena/danarisan
-- https://github.com/mirzaakhena/kraicklist
-- https://github.com/mirzaakhena/mywallet
+## Architecture
+![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-mirza.jpeg)
 
 ## Structure
 This generator has basic structure like this
@@ -151,7 +105,50 @@ This generator has basic structure like this
   └── README.md
 ```
 
-![gogen architecture](https://github.com/mirzaakhena/gogen/blob/master/gogen-architecture-1.png)
+## Gogen Features
+- Simple And Flexible Config (`shared/config/data.go`)
+- Interchangeable log with trace_id (`shared/infrastructure/logger`)
+- Adjustable response code (`shared/infrastructure/model/payload/response.go`)
+- Error message catalog with error code (`domain_yourdomain/model/errorenum`)
+- Customizable code template (`.gogen/templates`)
+- Infrastructure Agnostic (you can choose your own framework and library)
+
+## What is Clean Architecture ?
+Clean Architecture is an architectural pattern for designing software systems that aims to achieve separation of concerns and maintainability by keeping the codebase independent of any particular UI framework, database, or external service. It is based on the principles of "SOLID" and "DDD" (Domain-Driven Design).
+
+The purpose of Clean Architecture is to create a software system that is easy to understand, maintain, and change over time. It accomplishes this by structuring the system into layers that enforce a clear separation of concerns, where each layer has a specific responsibility and dependencies only flow inwards.
+
+The core idea of Clean Architecture is to establish a clear separation of concerns between the business logic, the application logic, and the infrastructure details. The business logic, which encapsulates the essential rules and behaviors of the system, should be independent of any implementation details, such as UI, database, or third-party services. This allows the business logic to be tested and developed independently from the infrastructure.
+
+The concept you need to understand in order to use gogen
+- Interface as Contract
+- Fat Interface
+- Interface Segregation Principle
+- Single Responsibility Principle
+- Dependency Inversion Principle
+- Rich Domain Model (instead of Anemic Domain Model)
+- Entity 
+- Value Object
+- Enum
+- Error
+- Repository
+- Service
+- Use Case (Input Port, Interactor and Output Port)
+
+We know it's a lot, but it is worth to know. 
+
+## Video Tutorial how to use it
+https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
+
+## Sample New Code
+- https://github.com/mirzaakhena/theitem
+
+## Sample Old Code 
+those code are obsolete due to gogen evolution. But the concept is still relevant
+- https://github.com/mirzaakhena/userprofile
+- https://github.com/mirzaakhena/danarisan
+- https://github.com/mirzaakhena/kraicklist
+- https://github.com/mirzaakhena/mywallet
 
 ## Install Gogen
 Install it into your local system
@@ -207,6 +204,7 @@ export PATH
 
 Before we start, make sure you already have `go.mod` file.
 If you don't have it, create the new one with this command
+(for example your module name is : "your/awesome/project")
 ```shell
 $ go mod init your/awesome/project
 ```
