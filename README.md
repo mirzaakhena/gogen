@@ -141,7 +141,8 @@ We know it's a lot, but it is worth to know.
 https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
 
 ## Sample New Code
-- https://github.com/mirzaakhena/theitem
+- https://github.com/mirzaakhena/theitem Code sample for CRUD implementation
+- https://github.com/mirzaakhena/gogengrpc Code sample for GRPC Implementation
 
 ## Sample Old Code 
 those code are obsolete due to gogen evolution. But the concept is still relevant
