@@ -121,7 +121,13 @@ The purpose of Clean Architecture is to create a software system that is easy to
 The core idea of Clean Architecture is to establish a clear separation of concerns between the business logic, the application logic, and the infrastructure details. The business logic, which encapsulates the essential rules and behaviors of the system, should be independent of any implementation details, such as UI, database, or third-party services. This allows the business logic to be tested and developed independently from the infrastructure.
 
 ## Video Tutorial how to use it
-https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
+[All Playlist](https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
+
+- [Create Simple Todolist](https://www.youtube.com/watch?v=VyoXvQ3HIZA&list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
+- [Adding Database](https://youtube.com/watch?v=M7oTDoa_70I&list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
+- [Using NoSQL DB](https://www.youtube.com/watch?v=pZG_aQBG0xM&list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
+- [Implement CRUD](https://youtube.com/watch?v=BvoOPssFp10&list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
+- [Database Transaction](https://www.youtube.com/watch?v=Wv6s-p3zotg&list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa)
 
 ## Sample New Code
 - https://github.com/mirzaakhena/theitem Code sample for CRUD implementation
