@@ -142,7 +142,7 @@ https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
 
 ## Sample New Code
 - https://github.com/mirzaakhena/theitem Code sample for CRUD implementation
-- https://github.com/mirzaakhena/gogengrpc Code sample for GRPC Implementation
+- https://github.com/mirzaakhena/gogen_grpc_graphql Code sample for GRPC Implementation
 
 ## Sample Old Code 
 those code are obsolete due to gogen evolution. But the concept is still relevant
