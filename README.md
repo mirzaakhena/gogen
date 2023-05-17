@@ -120,29 +120,13 @@ The purpose of Clean Architecture is to create a software system that is easy to
 
 The core idea of Clean Architecture is to establish a clear separation of concerns between the business logic, the application logic, and the infrastructure details. The business logic, which encapsulates the essential rules and behaviors of the system, should be independent of any implementation details, such as UI, database, or third-party services. This allows the business logic to be tested and developed independently from the infrastructure.
 
-The concept you need to understand in order to use gogen
-- Interface as Contract
-- Fat Interface
-- Interface Segregation Principle
-- Single Responsibility Principle
-- Dependency Inversion Principle
-- Rich Domain Model (instead of Anemic Domain Model)
-- Entity 
-- Value Object
-- Enum
-- Error
-- Repository
-- Service
-- Use Case (Input Port, Interactor and Output Port)
-
-We know it's a lot, but it is worth to know. 
-
 ## Video Tutorial how to use it
 https://www.youtube.com/playlist?list=PLWBGlxJNCxvoONzJPKfLZxFQ0CDxkbECa
 
 ## Sample New Code
 - https://github.com/mirzaakhena/theitem Code sample for CRUD implementation
-- https://github.com/mirzaakhena/gogen_grpc_graphql Code sample for GRPC Implementation
+- https://github.com/mirzaakhena/gogen_grpc_graphql Code sample for gRPC and GraphQL Implementation
+- https://github.com/mirzaakhena/gogen_pubsub Code sample for Redis PubSub and Kafka Implementation
 
 ## Sample Old Code 
 those code are obsolete due to gogen evolution. But the concept is still relevant

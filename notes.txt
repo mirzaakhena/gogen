@@ -1004,3 +1004,20 @@ Some principles I apply are
 However, this is just a tools. The important things to remember is we must follow the basic principles of clean architecture itself. You may copy and paste the existing code if you think it is easier. But remember you have to be careful anytime you do that.
 
 The bigger the interface, the weaker the abstraction, Rob Pike
+
+Some of the concept you that may help leverage your knowledge in order to
+- Interface as Contract
+- Fat Interface
+- Interface Segregation Principle
+- Single Responsibility Principle
+- Dependency Inversion Principle
+- Rich Domain Model (instead of Anemic Domain Model)
+- Entity
+- Value Object
+- Enum
+- Error
+- Repository
+- Service
+- Use Case (Input Port, Interactor and Output Port)
+
+We know it's a lot, but it is worth to know.
