@@ -1005,6 +1005,7 @@ However, this is just a tools. The important things to remember is we must follo
 
 The bigger the interface, the weaker the abstraction, Rob Pike
 
+
 Some of the concept you that may help leverage your knowledge in order to
 - Interface as Contract
 - Fat Interface
