@@ -7,7 +7,6 @@ import (
 	"{{.PackagePath}}/shared/gogen"
 	"{{.PackagePath}}/shared/config"
 	"{{.PackagePath}}/shared/infrastructure/logger"
-	"{{.PackagePath}}/shared/infrastructure/server"
 	"{{.PackagePath}}/shared/infrastructure/token"
 	"time"
 )
@@ -47,7 +46,7 @@ func NewController(appData gogen.ApplicationData, log logger.Logger, cfg *config
 
 	return &controller{
 		UsecaseRegisterer: gogen.NewBaseController(),
-		ControllerStarter: server.NewGracefullyShutdown(log, router, address),
+		ControllerStarter: NewGracefullyShutdown(log, router, address),
 		Router:            router,
 		log:               log,
 		cfg:               cfg,

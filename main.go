@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+
 	"github.com/mirzaakhena/gogen/command/genapplication"
 	"github.com/mirzaakhena/gogen/command/gencontroller"
 	"github.com/mirzaakhena/gogen/command/gencrud"
@@ -21,7 +22,7 @@ import (
 	"github.com/mirzaakhena/gogen/command/genwebapp"
 )
 
-var Version = "v0.0.22"
+var Version = "v0.0.23"
 
 func main() {
 
